@@ -49,11 +49,6 @@ export class Server {
     onNet(Events.playerConnected, async(oldId: number, restarted: boolean = false) => {
       await this.playerConnected(oldId, restarted);
     });
-
-    RegisterCommand("disconnectTest", async(source: string) => {
-      console.log(source);
-      await this.playerManager.Remove(source, "Test disconnect!");
-    }, false);
   }
 
   // Get Requests
@@ -83,9 +78,6 @@ export class Server {
 
   private registerCommands(): void {
     // Commands
-    new Command("tits", "Tits command", [{name: "server_id", help: "The server ID of the player."}], true, (source: string, args: any) => {
-      console.log("Tits command used!", source, JSON.stringify(args));
-    }, Ranks.User);
 
     new Command("veh", "Spawns you inside a specified vehicle.", [{name: "vehicleModel", help: "The spawn name of the vehicle, you're wanting to spawn."}], true, async(source: string, args: any[]) => {
       if (args[0]) {
@@ -119,6 +111,7 @@ export class Server {
   private async playerConnected(oldId: number, restarted: boolean): Promise<void> {
     const src = global.source;
     let player;
+    
     if (!restarted) { // If joined, get our old id and update our data in player manager to new server ID
       await this.playerManager.Update(src, oldId.toString())
       player = await this.playerManager.GetPlayer(src);
