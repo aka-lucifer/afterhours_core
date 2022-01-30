@@ -1,0 +1,13 @@
+{
+    "debug": true,
+    "whitelist": true,
+    "discordLogs": {
+        "urls": {
+            "connectionsURL": "https://discord.com/api/webhooks/937103967710761061/RWauR_xJqBVydEOtb9ugIEZJonR3Lgn4pg90KKTfw5IYxXSMZwjkonBUb8iTCsZm7xmm",
+            "killURL": "",
+            "chatURL": "",
+            "actionURL": ""
+        },
+        "footerLogo": "https://i.imgur.com/BXogrnJ.png"
+    }
+}

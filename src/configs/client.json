@@ -1,0 +1,16 @@
+{
+    "debug": true,
+    "richPresence": {
+        "appId": "",
+        "largeImage": {
+            "display": false,
+            "image": "",
+            "text": ""
+        },
+        "smallImage": {
+            "display": false,
+            "image": "",
+            "text": ""
+        }
+    }
+}

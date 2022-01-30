@@ -1,0 +1,113 @@
+To Do List:
+
+- SQL Structure
+- Clickup
+- Log Integration (maybe a manager)
+
+
+Core:
+
+- Setup | Player Tracking (Holds unique player_id, identifiers, last join, last leave, commends/warnings/kicks/ban, playtime, permission, check symbols in name, metadata["show name tags", "show rank in name", etc])
+
+ - Setup | Need a player manager to track and process all players, instead of using CFX methods forcing server hitches (timeouts in the server console).
+
+Characters (char_id, firstname, secondname, dob, sex (boolean | 1 | 0) metadata["job, onduty, status, callsign, department", "fingerprints"])
+
+Jobs Tracking (job_id, job, jobLabel, jobRank, linking_key)
+
+Vehicles (veh_id, display label, model, plate, owner (character -> char_id), registered_on, infractions (maybe, maybe use some cad table for this unknown rn))
+
+Chat System (command class (for better perms and organisation, bool and object after, for chat suggestion), disable commands being sent as chat messages, system to display an error when a non existent command is entered).
+
+Disablers (NPC EMS & LEO, LEO Vehicles, Ambient LEO Sirens)
+
+
+[JOBS - LEO]
+
+- LEO vehicle tracking (drop 1 set of spikestrips behind vehicle | look at source for lx_tracking)
+- LEO Props (spikestrips, barriers, cones)
+- LEO Cuffing/Uncuffing (use taskadvancedanim - so you physically grab and do animations with the players (similar to LSPD))
+- LEO Grabbing (See if I can find an arm grab animation for realistic looking grabbing, instead of hovering in front of YE DICK)
+- normal styled prison
+- Going on duty (inside PD)
+- Jailing - Jail from inside PD from a computer
+- How to change status ->
+
+[STATE CHECKER]
+enum {
+  Busy,
+  Available,
+}
+
+[MENU DESIGN]
+- Busy
+- Available
+
+{Set Status} | {Reset Status}
+
+
+
+[JOBS - EMS]
+
+- Send to hospital (send to the nearest hospital, will need MLO's for this with beds, have them lay there for until time is over | use boolean if they're dead (maybe a report form or something), make the time like 300 seconds).
+
+^^^^ (ADD A RESTRICTION ON CHARACTERS IN THE UI, IF SAID CHARACTER DIED, LOCK THAT CHARACTER FOR 2 HOURS | MAKE DEAD TIME AND LOCK TIME CHANGEABLE IN A JSON CONFIG).
+
+
+[Death System]
+
+- (First half of being dead (unconscious) FOR EMT | second half of being dead (ems & leo) can wake the cunt up!)
+
+
+[JOBS - FIRE]
+
+- Fire system
+- Fire hose
+
+
+[AOP]
+
+/update_aop North Yankton
+/reset_cycler
+
+- Use automated AOP's, based on upon numbers that can be changed
+- Default AOP's will be preset, within a menu, used for determining positions for spawning. (In Menu)
+- Can provide a custom AOP, which will spawn them in random locations on the map.
+
+[Priority]
+
+- Automatic priority (2 or more, units available)
+- Priority manager (using priority classes [id, created_by, timestamp, creator_username, firstRespondeded, etc], the manager can control these (remove, pause, etc))
+- /attach - To make yourself the primary unit on scene (scene commander), it will look through the priority manager (server code), find the closest and assign you to it, if there is no one assigned, however if there is someone assigned and you outrank, you take command.
+- /transfer_scene {server_id} - Updated the firstRespondeded to the provided officer.
+- /priority_controller - For admins to control, cancel, delete priorities, etc. (see priority info)
+
+[HUD]
+- Draw Rectangle Map (Remove blurred borders)
+- Display street
+- Veh hud
+- current aop & priority status `Priority: ${availableUnits >= 2 ? "Available" : "Unavailable"}`;)
+
+
+[Weapons]
+
+- Weapon equiping would be based upon rank of the user.
+- Firing modes (Safety)
+- Manual Reloading (set keybind of this to custom value in their fivem keybinds)
+- Weapon Jamming (based on low percentage, shouldn't happen very often, maybe 5% of the time or something)
+
+
+[Vehicles]
+
+- Vehicles equiping would be based upon rank of the user.
+
+(Use entityCreated with GetEntityType to perm check creating vehs)
+(Use base events for entering vehs, to do perm checks)
+
+
+[Community Officers | MAYBE]
+
+
+[Phone]
+
+- Adverts, twitter, sms and calling
