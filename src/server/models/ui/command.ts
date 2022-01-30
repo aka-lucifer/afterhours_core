@@ -1,5 +1,6 @@
 import { Log } from "../../utils";
 import { server } from "../../server";
+
 import { Ranks } from "../../../shared/enums/ranks";
 
 export class Command {
