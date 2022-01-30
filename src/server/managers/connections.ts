@@ -24,6 +24,7 @@ export class ConnectionsManager {
     on(Events.playerConnecting, async(name, setKickReason, deferrals) => {
       deferrals.defer()
       const src = (global as any).source;
+      
       const player = new Player(src);      
       const playerExists = await player.Exists();
       

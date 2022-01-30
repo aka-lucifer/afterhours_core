@@ -12,6 +12,7 @@ import WebhookMessage from "./webhook/webhookMessage";
 export class Player {
   public id: number;
   private license: string;
+  private hardwareId: string;
   public handle: string;
   private name: string;
   private rank: number;
@@ -22,6 +23,8 @@ export class Player {
   private whitelisted: boolean = false;
 
   constructor(handle: string) {
+    const token = GetPlayerToken(handle, 0);
+    this.hardwareId = token;
     this.handle = handle;
     this.name = GetPlayerName(this.handle);
     this.rank = Ranks.User;
@@ -91,12 +94,13 @@ export class Player {
 
   public async Exists(): Promise<boolean> {
     this.license = await this.GetIdentifier("license");
-    const results = await Database.SendQuery("SELECT `player_id`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
+    const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
       identifier: this.license
     });
 
     if (results.data.length > 0) {
       this.id = results.data[0].player_id;
+      this.hardwareId = results.data[0].hardware_id;
       this.whitelisted = results.data[0].whitelisted > 0 ? true : false;
       return true;
     }
@@ -105,9 +109,10 @@ export class Player {
   }
 
   public async Insert(): Promise<boolean> {
-    const inserted = await Database.SendQuery("INSERT INTO `players` (`name`, `identifier`, `steam_hex`, `xbl`, `live`, `discord`, `fivem`, `ip`) VALUES (:name, :identifier, :steam_hex, :xbl, :live, :discord, :fivem, :ip)", {
+    const inserted = await Database.SendQuery("INSERT INTO `players` (`name`, `identifier`, `hardware_id`, `steam_hex`, `xbl`, `live`, `discord`, `fivem`, `ip`) VALUES (:name, :identifier, :hardwareId, :steam_hex, :xbl, :live, :discord, :fivem, :ip)", {
       name: this.name,
       identifier: await this.GetIdentifier("license"),
+      hardwareId: this.hardwareId,
       steam_hex: await this.GetIdentifier("steam"),
       xbl: await this.GetIdentifier("xbl"),
       live: await this.GetIdentifier("live"),
@@ -115,6 +120,8 @@ export class Player {
       fivem: await this.GetIdentifier("fivem"),
       ip: await this.GetIdentifier("ip"),
     });
+    
+    console.log(inserted);
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       return true;
