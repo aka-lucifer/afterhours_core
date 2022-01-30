@@ -3,6 +3,6 @@
     "port": 3306,
     "user": "root",
     "password": "",
-    "database": "unnamed_project",
+    "database": "astrid_dev",
     "connectionLimit": 100
 }
