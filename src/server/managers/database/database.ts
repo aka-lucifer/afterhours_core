@@ -1,7 +1,7 @@
 import { createPool, MysqlError, PoolConnection } from "mysql";
-import { DBResult, DBMeta } from "../models/database";
-import { Delay, Error} from "../utils";
-import DBConfig from "../../configs/database.json";
+import { DBResult, DBMeta } from "../../models/database/database"
+import { Delay, Error} from "../../utils"
+import DBConfig from "../../../configs/database.json"
 
 const pool = createPool(DBConfig);
 const storedQueries: Record<string, string> = {};
@@ -26,7 +26,7 @@ export async function isConnected(): Promise<[boolean, any]> {
   let finished = false;
 
   pool.getConnection(function(err, connection) {
-    if (!err || err == undefined) {
+    if (!err) {
       dbConnected = true;
     } else {
       errorState = err;
@@ -43,8 +43,6 @@ export async function isConnected(): Promise<[boolean, any]> {
 
   return [dbConnected, errorState];
 }
-
-isConnected();
 
 /**
  * 

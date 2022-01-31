@@ -1,20 +1,20 @@
 
-import { Playtime } from "../models/playtime";
-import * as Database from "../managers/database"
-import { Events } from "../../shared/enums/events";
-import { Ranks } from "../../shared/enums/ranks";
-import * as Utils from "../utils";
-import serverConfig from "../../configs/server.json";
-import { server } from "../server";
-import { LogTypes } from "../enums/logTypes";
-import WebhookMessage from "./webhook/webhookMessage";
+import { Playtime } from "./playtime";
+import * as Database from "../../managers/database/database"
+import { Events } from "../../../shared/enums/events";
+import { Ranks } from "../../../shared/enums/ranks";
+import * as Utils from "../../utils";
+import serverConfig from "../../../configs/server.json";
+import { server } from "../../server";
+import { LogTypes } from "../../enums/logTypes";
+import WebhookMessage from "../webhook/webhookMessage";
 
 export class Player {
   public id: number;
   private license: string;
   private hardwareId: string;
   public handle: string;
-  private name: string;
+  private readonly name: string;
   private rank: number;
   public identifiers: Record<string, string>;
   public ping: number;
@@ -23,8 +23,7 @@ export class Player {
   private whitelisted: boolean = false;
 
   constructor(handle: string) {
-    const token = GetPlayerToken(handle, 0);
-    this.hardwareId = token;
+    this.hardwareId = GetPlayerToken(handle, 0);
     this.handle = handle;
     this.name = GetPlayerName(this.handle);
     this.rank = Ranks.User;
@@ -33,6 +32,10 @@ export class Player {
   }
 
   // Get Requests
+  public get HardwareId(): string {
+    return this.hardwareId;
+  }
+
   public get GetHandle(): string {
     return this.handle
   }
@@ -94,14 +97,15 @@ export class Player {
 
   public async Exists(): Promise<boolean> {
     this.license = await this.GetIdentifier("license");
-    const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
+    const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
       identifier: this.license
     });
 
     if (results.data.length > 0) {
       this.id = results.data[0].player_id;
       this.hardwareId = results.data[0].hardware_id;
-      this.whitelisted = results.data[0].whitelisted > 0 ? true : false;
+      this.rank = results.data[0].rank;
+      this.whitelisted = results.data[0].whitelisted > 0;
       return true;
     }
 
@@ -120,14 +124,8 @@ export class Player {
       fivem: await this.GetIdentifier("fivem"),
       ip: await this.GetIdentifier("ip"),
     });
-    
-    console.log(inserted);
 
-    if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
-      return true;
-    }
-    
-    return false;
+    return inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0;
   }
 
   public async Update(): Promise<boolean> {
@@ -143,25 +141,22 @@ export class Player {
       last_connection: await Utils.GetTimestamp()
     });
     
-    if (updated.data.length > 0) {
-      return true;
-    }
-    
-    return false;
+    return updated.data.length > 0;
   }
 
   public async Load(): Promise<boolean> {
     this.license = await this.GetIdentifier("license");
-    const playerData = await Database.SendQuery("SELECT `player_id`, `rank`, `whitelisted`, `playtime`, `last_connection` FROM `players` WHERE `identifier` = :identifier", {
+    const playerData = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted`, `playtime`, `last_connection` FROM `players` WHERE `identifier` = :identifier", {
       identifier: this.license
-    })
+    });
 
     if (playerData.data.length > 0) {
       
       // Get Player Data
       this.id = playerData.data[0].player_id;
+      this.hardwareId = playerData.data[0].hardware_id;
       this.rank = playerData.data[0].rank;
-      this.whitelisted = playerData.data[0].whitelisted > 0 ? true : false;
+      this.whitelisted = playerData.data[0].whitelisted > 0;
       this.playtime = playerData.data[0].playtime;
       this.joinTime = playerData.data[0].last_connection;
       return true;
@@ -186,7 +181,7 @@ export class Player {
       newDisconnection: leaveTime
     });
 
-    server.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+    await server.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
       color: 4431943,
       title: "Player Disconnected",
       description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n`,

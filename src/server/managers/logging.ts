@@ -12,9 +12,9 @@ import serverConfig from "../../configs/server.json"
 export class LogManager {
   private server: Server;
   private readonly connectionsURL: string = serverConfig.discordLogs.urls.connectionsURL;
-  private readonly killURL: string;
-  private readonly chatURL: string;
-  private readonly actionURL: string;
+  private readonly killURL: string = serverConfig.discordLogs.urls.killURL;
+  private readonly chatURL: string = serverConfig.discordLogs.urls.chatURL;
+  private readonly actionURL: string = serverConfig.discordLogs.urls.actionURL;
 
   constructor(server: Server) {
     this.server = server;

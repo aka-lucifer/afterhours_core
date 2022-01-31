@@ -1,5 +1,5 @@
 import { Server } from "../server";
-import { Player } from "../models/player";
+import { Player } from "../models/database/player";
 import { Log } from "../utils";
 
 export class PlayerManager {

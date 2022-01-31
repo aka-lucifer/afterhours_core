@@ -1,4 +1,4 @@
-import { Times } from "../enums/times";
+import { Times } from "../../enums/database/times";
 
 export class Playtime {
   public days: number;

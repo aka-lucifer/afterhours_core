@@ -1,5 +1,5 @@
 import { Server } from "../../server";
-import { Player } from "../../models/player";
+import { Player } from "../../models/database/player";
 import { Command } from "../../models/ui/command";
 import { ChatLog } from "../../models/ui/chatLog";
 import { Events } from "../../../shared/enums/events";

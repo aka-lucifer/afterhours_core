@@ -1,5 +1,5 @@
-import { Player } from "../player";
-import * as Database from "../../managers/database";
+import { Player } from "../database/player";
+import * as Database from "../../managers/database/database";
 
 export class ChatLog {
   private player: Player;
@@ -16,10 +16,6 @@ export class ChatLog {
       message: this.message,
     });
 
-    if (storedMessage.meta.affectedRows > 0 && storedMessage.meta.insertId > 0) {
-      return true;
-    }
-
-    return false;
+    return storedMessage.meta.affectedRows > 0 && storedMessage.meta.insertId > 0;
   }
 }
