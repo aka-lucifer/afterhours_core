@@ -8,6 +8,7 @@ import serverConfig from "../../../configs/server.json";
 import { server } from "../../server";
 import { LogTypes } from "../../enums/logTypes";
 import WebhookMessage from "../webhook/webhookMessage";
+import {EmbedColours} from "../../../shared/enums/embedColours";
 
 export class Player {
   public id: number;
@@ -75,8 +76,8 @@ export class Player {
 
     for (let b = 0; b < identifiers.length; b++) {
       if (identifiers[b].includes(type)) {
-        // return identifiers[b];
-        return identifiers[b];
+        const identifierIndex = identifiers[b].indexOf(":") + 1; // Add one as we have to get the next index
+        return identifiers[b].substring((identifierIndex));
       }
     }
 
@@ -160,21 +161,40 @@ export class Player {
   }
 
   public async Load(): Promise<boolean> {
-    this.license = await this.GetIdentifier("license");
-    const playerData = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted`, `playtime`, `last_connection` FROM `players` WHERE `identifier` = :identifier", {
-      identifier: this.license
-    });
+    if (GetConvar('sv_lan', "off") == "false") {
+      this.license = await this.GetIdentifier("license");
+      const playerData = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted`, `playtime`, `last_connection` FROM `players` WHERE `identifier` = :identifier", {
+        identifier: this.license
+      });
 
-    if (playerData.data.length > 0) {
-      
-      // Get Player Data
-      this.id = playerData.data[0].player_id;
-      this.hardwareId = playerData.data[0].hardware_id;
-      this.rank = playerData.data[0].rank;
-      this.whitelisted = playerData.data[0].whitelisted > 0;
-      this.playtime = playerData.data[0].playtime;
-      this.joinTime = playerData.data[0].last_connection;
-      return true;
+      if (playerData.data.length > 0) {
+
+        // Get Player Data
+        this.id = playerData.data[0].player_id;
+        this.hardwareId = playerData.data[0].hardware_id;
+        this.rank = playerData.data[0].rank;
+        this.whitelisted = playerData.data[0].whitelisted > 0;
+        this.playtime = playerData.data[0].playtime;
+        this.joinTime = playerData.data[0].last_connection;
+        return true;
+      }
+    } else {
+      const playerData = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted`, `playtime`, `last_connection` FROM `players` WHERE `steam_hex` = :steam OR `ip` = :ip", {
+        steam: await this.GetIdentifier("steam"),
+        ip: await this.GetIdentifier("ip")
+      });
+
+      if (playerData.data.length > 0) {
+
+        // Get Player Data
+        this.id = playerData.data[0].player_id;
+        this.hardwareId = playerData.data[0].hardware_id;
+        this.rank = playerData.data[0].rank;
+        this.whitelisted = playerData.data[0].whitelisted > 0;
+        this.playtime = playerData.data[0].playtime;
+        this.joinTime = playerData.data[0].last_connection;
+        return true;
+      }
     }
 
     return false;
@@ -197,16 +217,10 @@ export class Player {
     });
 
     await server.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
-      color: 4431943,
-      title: "Player Disconnected",
-      description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n`,
-      fields: [
-        {
-          name: `Player Information:`,
-          value: `**Name**: ${this.GetName}\n**Ranks**: ${Ranks[this.rank]}\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n**Whitelisted**: ${this.whitelisted}\n**Identifiers**: ${JSON.stringify(this.identifiers)}`
-        },
-      ],
-      footer: {text: "Unnamed Project", icon_url: "https://i.imgur.com/BXogrnJ.png"}
+      color: EmbedColours.Red,
+      title: "__Player Disconnected__",
+      description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n\n**Name**: ${this.GetName}\n\n**Rank**: ${Ranks[this.rank]}\n\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n\n**Whitelisted**: ${this.whitelisted}\n\n**Identifiers**: ${JSON.stringify(this.identifiers)}`,
+      footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
     }]}));
 
     if (updatedDisconnection.meta.affectedRows > 0) {
