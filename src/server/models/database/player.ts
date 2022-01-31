@@ -68,17 +68,21 @@ export class Player {
 
   // Methods
   public async GetIdentifier(type : string): Promise<string> {
-    const identifiers : string[] = [];
-    const identifierAmount = GetNumPlayerIdentifiers(this.handle);
-    for (let a = 0; a < identifierAmount; a++) {
-      identifiers[a] = GetPlayerIdentifier(this.handle, a);
-    }
+    // const identifiers : string[] = []; OLD VERSION
+    // const identifierAmount = GetNumPlayerIdentifiers(this.handle);
+    // for (let a = 0; a < identifierAmount; a++) {
+    //   identifiers[a] = GetPlayerIdentifier(this.handle, a);
+    // }
+    //
+    // for (let b = 0; b < identifiers.length; b++) {
+    //   if (identifiers[b].includes(type)) {
+    //     const identifierIndex = identifiers[b].indexOf(":") + 1; // Add one as we have to get the next index
+    //     return identifiers[b].substring((identifierIndex));
+    //   }
+    // }
 
-    for (let b = 0; b < identifiers.length; b++) {
-      if (identifiers[b].includes(type)) {
-        const identifierIndex = identifiers[b].indexOf(":") + 1; // Add one as we have to get the next index
-        return identifiers[b].substring((identifierIndex));
-      }
+    if (this.identifiers[type]) {
+      return this.identifiers[type];
     }
 
     return "Unknown";
@@ -91,7 +95,8 @@ export class Player {
     for (let a = 0; a < identCount; a++) {
       const value = GetPlayerIdentifier(this.handle, a);
       const index = value.substr(0, value.indexOf(":"));
-      identifiers[index] = value
+      const identifierIndex = value.indexOf(":") + 1; // Add one as we have to get the next index
+      identifiers[index] = value.substring(identifierIndex);
     }
     return identifiers;
   }
