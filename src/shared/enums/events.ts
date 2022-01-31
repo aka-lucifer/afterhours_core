@@ -30,8 +30,9 @@ export enum Events {
   enteredVehicle = "baseevents:enteredVehicle",
   leftVehicle = "baseevents:leftVehicle",
 
-  // Undefined Server Events
+  // Astrid Server Events
+  getPlayer = "astrid:server:getPlayer",
 
-  // Undefined Client Events
-  serverStarted = "undefined:client:serverStarted"
+  // Astrid Client Events
+  serverStarted = "astrid:client:serverStarted"
 }

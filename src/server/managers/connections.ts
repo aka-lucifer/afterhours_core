@@ -43,9 +43,9 @@ export class ConnectionsManager {
             if (results.data.length > 0) {
               const banDate = new Date(banData.issued_until);
               if (banDate.getFullYear() < 9999) {
-                deferrals.done(`[${sharedConfig.serverName}]: You were banned from Astrid Network.\n\nBan Id: ${banData.id}\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
+                deferrals.done(`\n \n [${sharedConfig.serverName}]: You were banned from ${sharedConfig.serverName}.\n\n__Ban Id: #${banData.id}__\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
               } else {
-                deferrals.done(`[${sharedConfig.serverName}]: You were permanently banned from Astrid by [${Ranks[results.data[0].rank]}] - ${results.data[0].name}, for ${banData.reason}.`);
+                deferrals.done(`\n \n [${sharedConfig.serverName}]: You were permanently banned from ${sharedConfig.serverName}.\n\n__Ban Id: #${banData.id}__\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.reason}.`);
               }
               return;
             } else {

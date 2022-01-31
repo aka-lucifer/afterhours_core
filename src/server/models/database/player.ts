@@ -1,14 +1,18 @@
-
 import { Playtime } from "./playtime";
-import * as Database from "../../managers/database/database"
-import { Events } from "../../../shared/enums/events";
-import { Ranks } from "../../../shared/enums/ranks";
 import * as Utils from "../../utils";
-import serverConfig from "../../../configs/server.json";
-import { server } from "../../server";
+
+import * as Database from "../../managers/database/database"
+
 import { LogTypes } from "../../enums/logTypes";
 import WebhookMessage from "../webhook/webhookMessage";
+
+import serverConfig from "../../../configs/server.json";
+import { server } from "../../server";
+
+import { Events } from "../../../shared/enums/events";
+import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
+import sharedConfig from "../../../configs/shared.json"
 
 export class Player {
   public id: number;
@@ -33,6 +37,10 @@ export class Player {
   }
 
   // Get Requests
+  public get Id(): number {
+    return this.id;
+  }
+
   public get HardwareId(): string {
     return this.hardwareId;
   }
@@ -111,6 +119,7 @@ export class Player {
       if (results.data.length > 0) {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
+        console.log("set rank 1", JSON.stringify((results.data[0])));
         this.rank = results.data[0].rank;
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
@@ -124,6 +133,7 @@ export class Player {
       if (results.data.length > 0) {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
+        console.log("set rank 2", JSON.stringify((results.data[0])));
         this.rank = results.data[0].rank;
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
@@ -150,7 +160,8 @@ export class Player {
   }
 
   public async Update(): Promise<boolean> {
-    const updated = await Database.SendQuery("UPDATE `players` SET `name` = :name, `hardware_id`, =:hardwareId, `steam_hex` = :steam_hex, `xbl` = :xbl, `live` = :live, `discord` = :discord, `fivem` = :fivem, `ip` = :ip, `last_connection` = :last_connection WHERE `identifier` = :identifier", {
+    this.hardwareId = GetPlayerToken(this.handle, 0) || "Unknown";
+    const updated = await Database.SendQuery("UPDATE `players` SET `name` = :name, `hardware_id` =:hardwareId, `steam_hex` = :steam_hex, `xbl` = :xbl, `live` = :live, `discord` = :discord, `fivem` = :fivem, `ip` = :ip, `last_connection` = :last_connection WHERE `identifier` = :identifier", {
       name: this.name,
       identifier: await this.GetIdentifier("license"),
       hardwareId: this.hardwareId,
@@ -178,7 +189,9 @@ export class Player {
         // Get Player Data
         this.id = playerData.data[0].player_id;
         this.hardwareId = playerData.data[0].hardware_id;
+        console.log("set rank 3", JSON.stringify((playerData.data[0])));
         this.rank = playerData.data[0].rank;
+        console.log("rank 3", this.rank, Ranks[this.rank]);
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
         this.joinTime = playerData.data[0].last_connection;
@@ -195,6 +208,7 @@ export class Player {
         // Get Player Data
         this.id = playerData.data[0].player_id;
         this.hardwareId = playerData.data[0].hardware_id;
+        console.log("set rank 4", JSON.stringify((playerData.data[0])));
         this.rank = playerData.data[0].rank;
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
@@ -226,7 +240,7 @@ export class Player {
       color: EmbedColours.Red,
       title: "__Player Disconnected__",
       description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n\n**Name**: ${this.GetName}\n\n**Rank**: ${Ranks[this.rank]}\n\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n\n**Whitelisted**: ${this.whitelisted}\n\n**Identifiers**: ${JSON.stringify(this.identifiers)}`,
-      footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
+      footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
     }]}));
 
     if (updatedDisconnection.meta.affectedRows > 0) {

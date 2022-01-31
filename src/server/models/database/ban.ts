@@ -82,16 +82,14 @@ export class Ban {
       if (playerIndex != -1) {
         this.player = svPlayers[playerIndex];
         this.id = inserted.meta.insertId;
-        const timestamp = this.issuedUntil.toUTCString();
-        const newTimestamp = timestamp.substring(0, timestamp.indexOf(" GMT"));
 
         if (this.issuedUntil.getFullYear() < 9999) {
           await server.logManager.Send(LogTypes.Action, new WebhookMessage({
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Banned__",
-              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n\n**Unban Date**: ${newTimestamp}**.`,
-              footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
+              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n\n**Unban Date**: ${this.issuedUntil.toUTCString()}**.`,
+              footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
             }]
           }));
         } else {
@@ -100,7 +98,7 @@ export class Ban {
               color: EmbedColours.Red,
               title: "__Player Banned__",
               description: `A player has been permanently banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>.`,
-              footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
+              footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
             }]
           }));
         }
@@ -117,9 +115,9 @@ export class Ban {
 
   public drop(): void {
     if (this.issuedUntil.getFullYear() < 9999) {
-      DropPlayer(this.player.GetHandle, `[${sharedConfig.serverName}]: You were banned for ${this.banReason}, until ${this.issuedUntil.toUTCString()}.`);
+      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were temporarily banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}\n__Expires__: ${this.issuedUntil.toUTCString()}`);
     } else {
-      DropPlayer(this.player.GetHandle, `[${sharedConfig.serverName}]: You were permanently banned for ${this.banReason}.`);
+      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were permanently banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}`);
     }
   }
 
@@ -146,7 +144,7 @@ export class Ban {
               color: EmbedColours.Red,
               title: "__Player Automatically Unbanned__",
               description: `A players ban has expired on the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${playerData.data[0].name}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[bannerData.data[0].rank]}] - ${bannerData.data[0].name}\n\n**Banners Discord**: <@${bannerData.data[0].discord}>`,
-              footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
+              footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
             }]
           }));
           return true;

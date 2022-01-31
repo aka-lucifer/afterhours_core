@@ -41,6 +41,13 @@ export class PlayerManager {
     }
   }
 
+  public async GetPlayerFromId(playerId: number): Promise<Player> {
+    const playerIndex = this.connectedPlayers.findIndex(player => player.Id == playerId);
+    if (playerIndex != -1) {
+      return this.connectedPlayers[playerIndex];
+    }
+  }
+
   public async Remove(playerHandle: string, disconnectReason: string): Promise<void> {
     const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
     if (playerIndex != -1) {

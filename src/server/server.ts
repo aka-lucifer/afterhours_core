@@ -1,4 +1,5 @@
 import { Player } from "./models/database/player";
+import {Ban} from "./models/database/ban";
 import { Command } from "./models/ui/command";
 import WebhookMessage from "./models/webhook/webhookMessage";
 
@@ -9,14 +10,14 @@ import * as Database from "./managers/database/database"
 import { LogManager } from "./managers/logging";
 import { ChatManager } from "./managers/ui/chat";
 
+import serverConfig from "../configs/server.json";
 import { LogTypes } from "./enums/logTypes";
-import { Events } from "../shared/enums/events";
 
 import { Log, Inform, Error, GetHash } from "./utils";
-import serverConfig from "../configs/server.json";
+import { Events } from "../shared/enums/events";
 import { Ranks } from "../shared/enums/ranks";
-import {Ban} from "./models/database/ban";
 import {EmbedColours} from "../shared/enums/embedColours";
+import sharedConfig from "../configs/shared.json";
 
 export class Server {
   private debugMode: boolean;
@@ -80,6 +81,7 @@ export class Server {
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
     this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
     this.registerCommands();
+    this.registerExports();
 
     emitNet(Events.serverStarted, -1);
     Inform("Un-named Project", "Successfully Loaded!");
@@ -152,6 +154,20 @@ export class Server {
     //     // banData.drop();
     //   }
     // }, Ranks.Admin);
+
+  }
+
+  private registerExports(): void {
+    global.exports("getPlayer", async(source: string) => {
+      return await this.playerManager.GetPlayer(source);
+    });
+
+    global.exports("banPlayer", async(playerId: number, hardwareId: string, reason: string, issuedBy: number) => {
+      const ban = new Ban(playerId, hardwareId, reason, issuedBy);
+      ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
+      await ban.save();
+      ban.drop();
+    });
   }
 
   // Events
@@ -178,7 +194,7 @@ export class Server {
           color: EmbedColours.Green,
           title: "__Player Connected__",
           description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n\n**Rank**: ${Ranks[player.GetRank]}\n\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n\n**Whitelisted**: ${await player.Whitelisted()}\n\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
-          footer: {text: "Unnamed Project", icon_url: "https://i.imgur.com/BXogrnJ.png"}
+          footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
         }]}));
       }
     }
