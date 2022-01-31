@@ -1,10 +1,11 @@
-import { Player } from "./models/player";
+import { Player } from "./models/database/player";
 import { Command } from "./models/ui/command";
 import WebhookMessage from "./models/webhook/webhookMessage";
 
+import { BanManager } from "./managers/database/bans";
 import { PlayerManager } from "./managers/players";
 import { ConnectionsManager } from "./managers/connections";
-import * as Database from "./managers/database"
+import * as Database from "./managers/database/database"
 import { LogManager } from "./managers/logging";
 import { ChatManager } from "./managers/ui/chat";
 
@@ -14,6 +15,7 @@ import { Events } from "../shared/enums/events";
 import { Log, Inform, Error, GetHash } from "./utils";
 import serverConfig from "../configs/server.json";
 import { Ranks } from "../shared/enums/ranks";
+import {Ban} from "./models/database/ban";
 
 export class Server {
   private debugMode: boolean;
@@ -21,6 +23,7 @@ export class Server {
   private maxPlayers: number;
 
   // Managers
+  public banManager: BanManager;
   public playerManager: PlayerManager;
   private connectionsManager: ConnectionsManager;
   public logManager: LogManager;
@@ -36,7 +39,6 @@ export class Server {
       if (GetCurrentResourceName() == resourceName) {
         const [dbStatus, connectionError] = await Database.isConnected();
         if (!dbStatus){ // DB offline or failed connection
-          console.log(dbStatus, connectionError)
           if (this.debugMode) Error("Database Connection", `Unable to connect to the database!\n\nError: ${connectionError}`);
           return;
         } else { // DB online, initiate all required managers
@@ -66,10 +68,16 @@ export class Server {
 
   // Methods
   private async initialize(): Promise<void> {
+    // Setup Managers
+    this.banManager = new BanManager(server);
     this.playerManager = new PlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server, this.playerManager);
     this.logManager = new LogManager(server);
     this.chatManager = new ChatManager(server);
+
+    // Run Manager Methods
+    await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
+    this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
     this.registerCommands();
 
     emitNet(Events.serverStarted, -1);
@@ -105,13 +113,51 @@ export class Server {
         }
       }
     }, Ranks.Admin);
+
+    new Command("id", "Returns your server ID.", [{}], false, async(source: string) => {
+      console.log(source);
+    }, Ranks.User);
+
+    new Command("chat_colours", "my nan", [], false, (source: string) => {
+      emitNet(Events.sendMessage, source, {
+        color: [255, 0, 0],
+        multiline: true,
+        args: ['^3[System]^0:', "OOPSIE THERE IS AN ERROR!"]
+      });
+    }, Ranks.User);
+
+    new Command("banreason", "Bans the specified player", [{name: "server_id", help: "The server ID of the player"}, {name: "reason", help: "Reason for banning the person"}], true, async(source: string, args: any[]) => {
+      const bannedPlayer = await this.playerManager.GetPlayer(args[0]);
+      if (bannedPlayer) {
+        const myPlayer = await this.playerManager.GetPlayer(source);
+        Log("Ban Command", `Ban the player [${bannedPlayer.GetHandle}]: ${bannedPlayer.GetName} for ${args[1]}, until im gay`);
+        const banData = new Ban(bannedPlayer.id, bannedPlayer.HardwareId, args[1], myPlayer.id);
+        banData.Banner = myPlayer;
+        await banData.save();
+      }
+    }, Ranks.Admin);
+    //
+    // new Command("bantime", "Bans the specified player", [{name: "server_id", help: "The server ID of the player"}, {name: "time", help: "The time to ban them in seconds!"}], true, async(source: string, args: any[]) => {
+    //   const bannedPlayer = await this.playerManager.GetPlayer(args[0]);
+    //   if (bannedPlayer) {
+    //     const myPlayer = await this.playerManager.GetPlayer(source);
+    //     const currTime = new Date();
+    //     const currSeconds = currTime.getSeconds();
+    //     currTime.setSeconds(currSeconds + args[1]);
+    //     Log("Ban Command", `Ban the player [${bannedPlayer.GetHandle}]: ${bannedPlayer.GetName} for no reason specified, until ${currTime.toUTCString()}`);
+    //     const banData = new Ban(bannedPlayer.id, bannedPlayer.HardwareId,"no reason specified", myPlayer.id, currTime);
+    //     banData.Banner = myPlayer;
+    //     await banData.save();
+    //     // banData.drop();
+    //   }
+    // }, Ranks.Admin);
   }
 
   // Events
   private async playerConnected(oldId: number, restarted: boolean): Promise<void> {
     const src = global.source;
     let player;
-    
+
     if (!restarted) { // If joined, get our old id and update our data in player manager to new server ID
       await this.playerManager.Update(src, oldId.toString())
       player = await this.playerManager.GetPlayer(src);
@@ -127,7 +173,7 @@ export class Server {
       this.chatManager.createChatSuggestions();
 
       if (!restarted) {
-        this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+        await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
           color: 4431943,
           title: "Player Connected",
           description: "A player has connected to the server.",

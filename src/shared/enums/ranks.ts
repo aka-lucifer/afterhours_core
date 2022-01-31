@@ -1,10 +1,11 @@
 export enum Ranks {
   User,
-  Trusted,
   Honorable,
+  Trusted,
   Moderator,
   Admin,
+  SeniorAdmin,
   Developer,
-  Manager,
+  Management,
   Owner
 }
