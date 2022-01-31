@@ -16,6 +16,7 @@ import { Log, Inform, Error, GetHash } from "./utils";
 import serverConfig from "../configs/server.json";
 import { Ranks } from "../shared/enums/ranks";
 import {Ban} from "./models/database/ban";
+import {EmbedColours} from "../shared/enums/embedColours";
 
 export class Server {
   private debugMode: boolean;
@@ -39,7 +40,7 @@ export class Server {
       if (GetCurrentResourceName() == resourceName) {
         const [dbStatus, connectionError] = await Database.isConnected();
         if (!dbStatus){ // DB offline or failed connection
-          if (this.debugMode) Error("Database Connection", `Unable to connect to the database!\n\nError: ${connectionError}`);
+          if (this.debugMode) Error("Database Connection", `Unable to connect to the database! | ${connectionError}`);
           return;
         } else { // DB online, initiate all required managers
           if (this.debugMode) Inform("Database Connection", "Database connection successful!");
@@ -174,15 +175,9 @@ export class Server {
 
       if (!restarted) {
         await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
-          color: 4431943,
-          title: "Player Connected",
-          description: "A player has connected to the server.",
-          fields: [
-            {
-              name: `Player Information:`,
-              value: `**Name**: ${player.GetName}\n**Ranks**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`
-            },
-          ],
+          color: EmbedColours.Green,
+          title: "__Player Connected__",
+          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n\n**Rank**: ${Ranks[player.GetRank]}\n\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n\n**Whitelisted**: ${await player.Whitelisted()}\n\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
           footer: {text: "Unnamed Project", icon_url: "https://i.imgur.com/BXogrnJ.png"}
         }]}));
       }
