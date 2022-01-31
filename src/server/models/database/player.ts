@@ -24,7 +24,7 @@ export class Player {
   private whitelisted: boolean = false;
 
   constructor(handle: string) {
-    this.hardwareId = GetPlayerToken(handle, 0);
+    this.hardwareId = GetPlayerToken(handle, 0) || "Unknown";
     this.handle = handle;
     this.name = GetPlayerName(this.handle);
     this.rank = Ranks.User;
@@ -150,9 +150,10 @@ export class Player {
   }
 
   public async Update(): Promise<boolean> {
-    const updated = await Database.SendQuery("UPDATE `players` SET `name` = :name, `steam_hex` = :steam_hex, `xbl` = :xbl, `live` = :live, `discord` = :discord, `fivem` = :fivem, `ip` = :ip, `last_connection` = :last_connection WHERE `identifier` = :identifier", {
+    const updated = await Database.SendQuery("UPDATE `players` SET `name` = :name, `hardware_id`, =:hardwareId, `steam_hex` = :steam_hex, `xbl` = :xbl, `live` = :live, `discord` = :discord, `fivem` = :fivem, `ip` = :ip, `last_connection` = :last_connection WHERE `identifier` = :identifier", {
       name: this.name,
       identifier: await this.GetIdentifier("license"),
+      hardwareId: this.hardwareId,
       steam_hex: await this.GetIdentifier("steam"),
       xbl: await this.GetIdentifier("xbl"),
       live: await this.GetIdentifier("live"),

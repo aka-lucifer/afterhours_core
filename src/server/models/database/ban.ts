@@ -1,13 +1,18 @@
 import {Player} from "./player";
-import * as Database from "../../managers/database/database";
 import {server} from "../../server";
-import {LogTypes} from "../../enums/logTypes";
+
 import WebhookMessage from "../webhook/webhookMessage";
+import * as Database from "../../managers/database/database";
+
+import {LogTypes} from "../../enums/logTypes";
 import {BanStates} from "../../enums/database/bans";
+
 import {Error} from "../../utils";
+
 import {Ranks} from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import { ErrorCodes } from "../../../shared/enums/errors";
+import * as sharedConfig from "../../../configs/shared.json"
 
 export class Ban {
   private id: number;
@@ -80,17 +85,12 @@ export class Ban {
         const timestamp = this.issuedUntil.toUTCString();
         const newTimestamp = timestamp.substring(0, timestamp.indexOf(" GMT"));
 
-
-        const dbDiscord = await this.banner.GetIdentifier("discord");
-        const discIndex = dbDiscord.indexOf(":") + 1; // Add one as we have to get the next index
-        const discordId = dbDiscord.substring(discIndex);
-
         if (this.issuedUntil.getFullYear() < 9999) {
           await server.logManager.Send(LogTypes.Action, new WebhookMessage({
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Banned__",
-              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${discordId}>\n\n**Unban Date**: ${newTimestamp}**.`,
+              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n\n**Unban Date**: ${newTimestamp}**.`,
               footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
             }]
           }));
@@ -99,7 +99,7 @@ export class Ban {
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Banned__",
-              description: `A player has been permanently banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${discordId}>.`,
+              description: `A player has been permanently banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>.`,
               footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
             }]
           }));
@@ -117,9 +117,9 @@ export class Ban {
 
   public drop(): void {
     if (this.issuedUntil.getFullYear() < 9999) {
-      DropPlayer(this.player.GetHandle, `[Astrid Network]: You were banned for ${this.banReason}, until ${this.issuedUntil.toUTCString()}.`);
+      DropPlayer(this.player.GetHandle, `[${sharedConfig.serverName}]: You were banned for ${this.banReason}, until ${this.issuedUntil.toUTCString()}.`);
     } else {
-      DropPlayer(this.player.GetHandle, `[Astrid Network]: You were permanently banned for ${this.banReason}.`);
+      DropPlayer(this.player.GetHandle, `[${sharedConfig.serverName}]: You were permanently banned for ${this.banReason}.`);
     }
   }
 
@@ -139,27 +139,23 @@ export class Ban {
           banId: this.id
         });
 
-        const dbDiscord = bannerData.data[0].discord;
-        const discIndex = dbDiscord.indexOf(":") + 1; // Add one as we have to get the next index
-        const discordId = dbDiscord.substring(discIndex);
-
         if (updatedBan.meta.affectedRows > 0 && updatedBan.meta.changedRows > 0) {
           this.state = BanStates.Completed;
           await server.logManager.Send(LogTypes.Action, new WebhookMessage({
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Automatically Unbanned__",
-              description: `A players ban has expired on the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${playerData.data[0].name}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[bannerData.data[0].rank]}] - ${bannerData.data[0].name}\n\n**Banners Discord**: <@${discordId}>`,
+              description: `A players ban has expired on the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${playerData.data[0].name}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[bannerData.data[0].rank]}] - ${bannerData.data[0].name}\n\n**Banners Discord**: <@${bannerData.data[0].discord}>`,
               footer: {text: "Astrid Network", icon_url: "https://i.imgur.com/BXogrnJ.png"}
             }]
           }));
           return true;
         }
       } else {
-        Error("Ban Class", `[Astrid Network]: There was an issue getting your banners player data.\n\nError Code: ${ErrorCodes.NoDBPlayer}.`)
+        Error("Ban Class", `[${sharedConfig.serverName}]: There was an issue getting your banners player data.\n\nError Code: ${ErrorCodes.NoDBPlayer}.`)
       }
     } else {
-      Error("Ban Class", `[Astrid Network]: There was an issue getting your player data.\n\nError Code: ${ErrorCodes.NoDBPlayer}.`)
+      Error("Ban Class", `[${sharedConfig.serverName}]: There was an issue getting your player data.\n\nError Code: ${ErrorCodes.NoDBPlayer}.`)
     }
 
     return false;

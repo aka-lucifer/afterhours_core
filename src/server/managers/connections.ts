@@ -10,6 +10,7 @@ import {ErrorCodes} from "../../shared/enums/errors";
 import {Ranks} from "../../shared/enums/ranks";
 
 import { Log, Error, Inform, Delay } from "../utils";
+import * as sharedConfig from "../../configs/shared.json";
 
 
 export class ConnectionsManager {
@@ -42,13 +43,13 @@ export class ConnectionsManager {
             if (results.data.length > 0) {
               const banDate = new Date(banData.issued_until);
               if (banDate.getFullYear() < 9999) {
-                deferrals.done(`[Astrid Network]: You were banned from Astrid Network.\n\nBan Id: ${banData.id}\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
+                deferrals.done(`[${sharedConfig.serverName}]: You were banned from Astrid Network.\n\nBan Id: ${banData.id}\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
               } else {
-                deferrals.done(`[Astrid Network]: You were permanently banned from Astrid by [${Ranks[results.data[0].rank]}] - ${results.data[0].name}, for ${banData.reason}.`);
+                deferrals.done(`[${sharedConfig.serverName}]: You were permanently banned from Astrid by [${Ranks[results.data[0].rank]}] - ${results.data[0].name}, for ${banData.reason}.`);
               }
               return;
             } else {
-              deferrals.done(`[Astrid Network]: There was an issue checking your data, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoBannerFound}.`)
+              deferrals.done(`[${sharedConfig.serverName}]: There was an issue checking your data, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoBannerFound}.`)
             }
           }
         }
@@ -68,7 +69,6 @@ export class ConnectionsManager {
         }
         deferrals.update("Creating Player Data...");
         await Delay(200);
-        
 
         const insertedData = await player.Insert();
         if (insertedData) {
@@ -76,7 +76,7 @@ export class ConnectionsManager {
             Log("Connection Manager", `DB Player (${player.GetName}) Result Created!`);
           }
         } else {
-          deferrals.done(`[Astrid Network]: There was an error creating your information, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoInsert}.`)
+          deferrals.done(`[${sharedConfig.serverName}]: There was an error creating your information, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoInsert}.`)
           Error("Connection Manager", "There was an error creating your information")
           return;
         }
@@ -89,7 +89,7 @@ export class ConnectionsManager {
         const whitelisted = await player.Whitelisted();
         if (!whitelisted) {
           Inform("Whitelist Check", "Not whitelisted!");
-          deferrals.done("[Unnamed Project]: Whitelist Active!");
+          deferrals.done(`[${sharedConfig.serverName}]: Whitelist Active!`);
         } else {
           deferrals.done();
         }
