@@ -1,18 +1,15 @@
-
 import { Player  } from "../models/database/player";
-import WebhookMessage from "../models/webhook/webhookMessage";
 
-import { PlayerManager } from "../managers/players";
+import * as Database from "./database/database";
+import { PlayerManager } from "./players";
 
-import { Log, Error, Inform, Delay } from "../utils";
-import { LogTypes } from "../enums/logTypes";
 
-import * as Config from "../../configs/server.json";
 import { Events } from "../../shared/enums/events";
 import { Server } from "../server";
-import * as Database from "./database/database";
 import {ErrorCodes} from "../../shared/enums/errors";
 import {Ranks} from "../../shared/enums/ranks";
+
+import { Log, Error, Inform, Delay } from "../utils";
 
 
 export class ConnectionsManager {
@@ -51,7 +48,7 @@ export class ConnectionsManager {
               }
               return;
             } else {
-              deferrals.done(`[Astrid Network]: There was an issue checking your data, make a support ticket.\n\nError Code: ${ErrorCodes.NoBannerFound}.`)
+              deferrals.done(`[Astrid Network]: There was an issue checking your data, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoBannerFound}.`)
             }
           }
         }
@@ -79,7 +76,7 @@ export class ConnectionsManager {
             Log("Connection Manager", `DB Player (${player.GetName}) Result Created!`);
           }
         } else {
-          deferrals.done(`[Astrid Network]: There was an error creating your information, make a support ticket.\n\nError Code: ${ErrorCodes.NoInsert}.`)
+          deferrals.done(`[Astrid Network]: There was an error creating your information, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoInsert}.`)
           Error("Connection Manager", "There was an error creating your information")
           return;
         }

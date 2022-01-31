@@ -1,9 +1,9 @@
 {
-  "name": "undefined",
+  "name": "astrid_core",
   "version": "1.0.0",
   "description": "",
   "main": "dist/client/main.js",
-  "repository": "https://github.com/aka-lucifer/lx_racing",
+  "repository": "https://github.com/aka-lucifer/astrid_core",
   "author": "akaLucifer#0103",
   "scripts": {
     "build": "webpack --mode production",

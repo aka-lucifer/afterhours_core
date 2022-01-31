@@ -96,17 +96,32 @@ export class Player {
   }
 
   public async Exists(): Promise<boolean> {
-    this.license = await this.GetIdentifier("license");
-    const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
-      identifier: this.license
-    });
+    if (GetConvar('sv_lan', "off") == "false") {
+      this.license = await this.GetIdentifier("license");
+      const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
+        identifier: this.license
+      });
 
-    if (results.data.length > 0) {
-      this.id = results.data[0].player_id;
-      this.hardwareId = results.data[0].hardware_id;
-      this.rank = results.data[0].rank;
-      this.whitelisted = results.data[0].whitelisted > 0;
-      return true;
+      if (results.data.length > 0) {
+        this.id = results.data[0].player_id;
+        this.hardwareId = results.data[0].hardware_id;
+        this.rank = results.data[0].rank;
+        this.whitelisted = results.data[0].whitelisted > 0;
+        return true;
+      }
+    } else {
+      const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted` FROM `players` WHERE `steam_hex` = :steam OR `ip` = :ip", {
+        steam: await this.GetIdentifier("steam"),
+        ip: await this.GetIdentifier("ip")
+      });
+
+      if (results.data.length > 0) {
+        this.id = results.data[0].player_id;
+        this.hardwareId = results.data[0].hardware_id;
+        this.rank = results.data[0].rank;
+        this.whitelisted = results.data[0].whitelisted > 0;
+        return true;
+      }
     }
 
     return false;
