@@ -1,17 +1,23 @@
-import { Player } from "./models/player";
+import { Game } from "fivem-js"
+
+import { ServerCallback} from "./models/serverCallback";
+
 import { RichPresence } from "./managers/richPresence";
-import { Events } from "../shared/enums/events";
+import {ServerCallbackManager} from "./managers/serverCallbacks";
+
 import Config from "../configs/client.json";
 import { Inform } from "./utils";
 
-// Managers Declaration
-export let richPresence;
+import { Events } from "../shared/enums/events";
 
 export class Client {
   private debugging: boolean;
   private initialSpawn: boolean;
-  private richPresenceData: Record<string, any>; 
-  private player: Player;
+  private richPresenceData: Record<string, any>;
+
+  // Managers
+  private richPresence: RichPresence;
+  private serverCallbackManager: ServerCallbackManager;
 
   constructor() {
     this.debugging = Config.debug;
@@ -26,7 +32,13 @@ export class Client {
 
     onNet(Events.serverStarted, () => {
       this.initialize();
-    })
+    });
+
+    onNet(Events.testServerCB, (data) => {
+      data.position = Game.PlayerPed.Position;
+      data.model = Game.PlayerPed.Model;
+      emitNet(Events.receiveClientCB, false, data);
+    });
   }
 
   // Get Requests
@@ -44,8 +56,15 @@ export class Client {
 
   // Methods
   private initialize(): void {
-    richPresence = new RichPresence(client);
+    this.richPresence = new RichPresence(client);
+    this.serverCallbackManager = new ServerCallbackManager(client);
     Inform("Un-named Project", "Successfully Loaded!");
+
+    setTimeout(() => {
+      this.serverCallbackManager.Add(new ServerCallback(Events.testClientCB, {}, (cbData, passedData) => {
+        console.log("client client cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+      }))
+    }, 0);
   }
 }
 
