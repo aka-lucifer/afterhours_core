@@ -20,18 +20,23 @@ export class Ban {
   private hardwareId: string;
   private banReason: string;
   private state: BanStates = BanStates.Active;
-  private issuedBy: number;
+  private issuedBy: number | string;
   private issuedOn: Date;
   private issuedUntil: Date;
   private player: Player;
   private banner: Player;
 
-  constructor(playerId: number, hwid: string, reason: string, issuedBy: number, issuedUntil: Date = new Date(9999, 11, 24, 10, 33, 30, 0)) { // Default ban (PERM)
+  constructor(playerId: number, hwid: string, reason: string, issuedBy: number, issuedUntil?: Date) { // Default ban (PERM)
     this.playerId = playerId;
     this.hardwareId = hwid;
     this.banReason = reason;
     this.issuedBy = issuedBy;
-    this.issuedUntil = issuedUntil;
+    if (issuedUntil == undefined) {
+      this.issuedUntil = new Date();
+      this.issuedUntil.setFullYear(2099, 12, 31);
+    } else {
+      this.issuedUntil = issuedUntil;
+    }
 
     // Inform("Ban Class", `Defined Ban Class Data: ${JSON.stringify((this))}`);
   }
@@ -67,6 +72,10 @@ export class Ban {
 
   // Methods
   public async save(): Promise<boolean> {
+    console.log("issued_by", this.issuedBy);
+    if (this.hardwareId == undefined) this.hardwareId = "3:5789056eef77a45102ba83c183e84a0bfa7e9ea5a122352da1ada9fd366d6d07";
+    if (this.issuedBy == undefined) this.issuedBy = this.playerId;
+
     const inserted = await Database.SendQuery("INSERT INTO `player_bans` (`player_id`, `hardware_id`, `reason`, `ban_state`, `issued_by`, `issued_until`) VALUES (:playerId, :hardwareId, :banReason, :banState, :issuedBy, :issuedUntil)", {
       playerId: this.playerId,
       hardwareId: this.hardwareId,
@@ -82,25 +91,56 @@ export class Ban {
       if (playerIndex != -1) {
         this.player = svPlayers[playerIndex];
         this.id = inserted.meta.insertId;
+        console.log(1);
 
-        if (this.issuedUntil.getFullYear() < 9999) {
-          await server.logManager.Send(LogTypes.Action, new WebhookMessage({
-            username: "Ban Logs", embeds: [{
-              color: EmbedColours.Red,
-              title: "__Player Banned__",
-              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n\n**Unban Date**: ${this.issuedUntil.toUTCString()}**.`,
-              footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
-            }]
-          }));
-        } else {
-          await server.logManager.Send(LogTypes.Action, new WebhookMessage({
-            username: "Ban Logs", embeds: [{
-              color: EmbedColours.Red,
-              title: "__Player Banned__",
-              description: `A player has been permanently banned from the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>.`,
-              footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
-            }]
-          }));
+        if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
+          console.log(2);
+          if (this.issuedBy != this.playerId) {
+            console.log(3);
+            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Banned__",
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n\n**Unban Date**: ${this.issuedUntil.toUTCString()}**.`,
+                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          } else {
+          console.log(4);
+            console.log("system 1!");
+            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Banned__",
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: System\n\n**Unban Date**: ${this.issuedUntil.toUTCString()}**.`,
+                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          }
+        } else { // Perm ban
+        console.log(5);
+          if (this.issuedBy != this.playerId) {
+            console.log(6);
+            console.log("system 2!");
+            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Banned__",
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>.`,
+                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          } else {
+            console.log(7);
+            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Banned__",
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: System.`,
+                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          }
         }
 
         server.banManager.Add(this);
@@ -114,10 +154,18 @@ export class Ban {
   }
 
   public drop(): void {
-    if (this.issuedUntil.getFullYear() < 9999) {
-      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were temporarily banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}\n__Expires__: ${this.issuedUntil.toUTCString()}`);
+    if (this.issuedBy != this.playerId) {
+      if (this.issuedUntil.getFullYear() < 2099) {
+        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were temporarily banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}\n__Expires__: ${this.issuedUntil.toUTCString()}`);
+      } else {
+        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were permanently banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}`);
+      }
     } else {
-      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were permanently banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}`);
+      if (this.issuedUntil.getFullYear() < 2099) {
+        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were temporarily banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: System\n__Reason__: ${this.banReason}\n__Expires__: ${this.issuedUntil.toUTCString()}`);
+      } else {
+        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were permanently banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: System\n__Reason__: ${this.banReason}`);
+      }
     }
   }
 
