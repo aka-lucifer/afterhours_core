@@ -158,15 +158,35 @@ export class Server {
   }
 
   private registerExports(): void {
+    global.exports("getRanks", async() => {
+      const ranks: Record<string, any> = {};
+      for (let i = 0; i < Object.keys(Ranks).length; i++) {
+        if (Ranks[i] != undefined) {
+          ranks[i] = Ranks[i];
+        }
+      }
+
+      return ranks;
+    });
+
+    global.exports("hasPermission", async(role: number, permission) => {
+      const rolePerms: string[] = sharedConfig.permissions[Ranks[role]];
+      const index = rolePerms.findIndex(rolePermission => rolePermission == permission);
+      return index != -1;
+    });
+
     global.exports("getPlayer", async(source: string) => {
       return await this.playerManager.GetPlayer(source);
     });
 
-    global.exports("banPlayer", async(playerId: number, hardwareId: string, reason: string, issuedBy: number) => {
+    global.exports("banPlayer", async(playerId: number, hardwareId: string, reason: string, issuedBy?: number) => {
+      console.log(playerId, hardwareId, reason, issuedBy);
       const ban = new Ban(playerId, hardwareId, reason, issuedBy);
-      ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
+      if (issuedBy != undefined) {
+        ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
+      }
       await ban.save();
-      ban.drop();
+      // ban.drop();
     });
   }
 
