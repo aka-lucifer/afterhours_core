@@ -32,7 +32,9 @@ export enum Events {
 
   // Astrid Server Events
   getPlayer = "astrid:server:getPlayer",
+  receiveClientCB = "astrid:server:receiveClientCB",
 
   // Astrid Client Events
-  serverStarted = "astrid:client:serverStarted"
+  serverStarted = "astrid:client:serverStarted",
+  receiveServerCB = "astrid:client:recieveServerCB"
 }
