@@ -1,6 +1,6 @@
 import { Server } from "../server";
 import { Player } from "../models/database/player";
-import { Log } from "../utils";
+import {Inform, Log} from "../utils";
 
 export class PlayerManager {
   public server: Server;
@@ -48,13 +48,23 @@ export class PlayerManager {
     }
   }
 
-  public async Remove(playerHandle: string, disconnectReason: string): Promise<void> {
+  public async Disconnect(playerHandle: string, disconnectReason: string): Promise<void> {
     const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
     if (playerIndex != -1) {
       const player = await this.GetPlayer(playerHandle);
+      const tempData = `[${player.GetHandle}] - ${player.GetName}`;
+
       if (player) {
         await player.Disconnect(disconnectReason)
       }
+      this.connectedPlayers.splice(playerIndex, 1);
+      Inform("Player Manager", `${tempData} | Removed from player manager!\n\nPlayer Manager Contents Now: ${JSON.stringify(this.GetPlayers)}`);
+    }
+  }
+
+  public async Remove(playerHandle: string): Promise<void> {
+    const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
+    if (playerIndex != -1) {
       this.connectedPlayers.splice(playerIndex, 1);
     }
   }
