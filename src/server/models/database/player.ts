@@ -4,7 +4,7 @@ import * as Utils from "../../utils";
 import * as Database from "../../managers/database/database"
 
 import { LogTypes } from "../../enums/logTypes";
-import WebhookMessage from "../webhook/webhookMessage";
+import WebhookMessage from "../webhook/discord/webhookMessage";
 
 import serverConfig from "../../../configs/server.json";
 import { server } from "../../server";
@@ -119,7 +119,6 @@ export class Player {
       if (results.data.length > 0) {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
-        console.log("set rank 1", JSON.stringify((results.data[0])));
         this.rank = results.data[0].rank;
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
@@ -133,7 +132,6 @@ export class Player {
       if (results.data.length > 0) {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
-        console.log("set rank 2", JSON.stringify((results.data[0])));
         this.rank = results.data[0].rank;
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
@@ -189,9 +187,7 @@ export class Player {
         // Get Player Data
         this.id = playerData.data[0].player_id;
         this.hardwareId = playerData.data[0].hardware_id;
-        console.log("set rank 3", JSON.stringify((playerData.data[0])));
         this.rank = playerData.data[0].rank;
-        console.log("rank 3", this.rank, Ranks[this.rank]);
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
         this.joinTime = playerData.data[0].last_connection;
@@ -208,7 +204,6 @@ export class Player {
         // Get Player Data
         this.id = playerData.data[0].player_id;
         this.hardwareId = playerData.data[0].hardware_id;
-        console.log("set rank 4", JSON.stringify((playerData.data[0])));
         this.rank = playerData.data[0].rank;
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
@@ -239,8 +234,8 @@ export class Player {
     await server.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
       color: EmbedColours.Red,
       title: "__Player Disconnected__",
-      description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n\n**Name**: ${this.GetName}\n\n**Rank**: ${Ranks[this.rank]}\n\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n\n**Whitelisted**: ${this.whitelisted}\n\n**Identifiers**: ${JSON.stringify(this.identifiers)}`,
-      footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+      description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n**Name**: ${this.GetName}\n**Rank**: ${Ranks[this.rank]}\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n**Whitelisted**: ${this.whitelisted}\n**Identifiers**: ${JSON.stringify(this.identifiers)}`,
+      footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
     }]}));
 
     if (updatedDisconnection.meta.affectedRows > 0) {

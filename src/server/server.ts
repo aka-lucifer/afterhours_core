@@ -1,21 +1,25 @@
-import { Player } from "./models/database/player";
+import {Player} from "./models/database/player";
 import {Ban} from "./models/database/ban";
-import { Command } from "./models/ui/command";
-import WebhookMessage from "./models/webhook/webhookMessage";
+import {Command} from "./models/ui/command";
+import WebhookMessage from "./models/webhook/discord/webhookMessage";
+import Screenshoter from "./models/webhook/screenshot/screenshoter";
+import { ClientCallback } from "./models/clientCallback";
 
-import { BanManager } from "./managers/database/bans";
-import { PlayerManager } from "./managers/players";
-import { ConnectionsManager } from "./managers/connections";
+import {BanManager} from "./managers/database/bans";
+import {PlayerManager} from "./managers/players";
+import {ClientCallbackManager} from "./managers/clientCallbacks";
+import {ConnectionsManager} from "./managers/connections";
 import * as Database from "./managers/database/database"
-import { LogManager } from "./managers/logging";
-import { ChatManager } from "./managers/ui/chat";
+import {LogManager} from "./managers/logging";
+import {ChatManager} from "./managers/ui/chat";
 
 import serverConfig from "../configs/server.json";
-import { LogTypes } from "./enums/logTypes";
+import {LogTypes} from "./enums/logTypes";
 
-import { Log, Inform, Error, GetHash } from "./utils";
-import { Events } from "../shared/enums/events";
-import { Ranks } from "../shared/enums/ranks";
+import {Error, GetHash, Inform, Log} from "./utils";
+import {Events} from "../shared/enums/events";
+import {Callbacks} from "../shared/enums/callbacks";
+import {Ranks} from "../shared/enums/ranks";
 import {EmbedColours} from "../shared/enums/embedColours";
 import sharedConfig from "../configs/shared.json";
 
@@ -27,6 +31,7 @@ export class Server {
   // Managers
   public banManager: BanManager;
   public playerManager: PlayerManager;
+  private clientCallbackManager: ClientCallbackManager;
   private connectionsManager: ConnectionsManager;
   public logManager: LogManager;
   public chatManager: ChatManager;
@@ -53,6 +58,12 @@ export class Server {
     onNet(Events.playerConnected, async(oldId: number, restarted: boolean = false) => {
       await this.playerConnected(oldId, restarted);
     });
+
+    // Server CB Test
+    onNet(Callbacks.testClientCB, (data) => {
+      data.serverId = source;
+      emitNet(Events.receiveServerCB, source, false, data);
+    });
   }
 
   // Get Requests
@@ -73,6 +84,7 @@ export class Server {
     // Setup Managers
     this.banManager = new BanManager(server);
     this.playerManager = new PlayerManager(server);
+    this.clientCallbackManager = new ClientCallbackManager(server);
     this.connectionsManager = new ConnectionsManager(server, this.playerManager);
     this.logManager = new LogManager(server);
     this.chatManager = new ChatManager(server);
@@ -155,6 +167,23 @@ export class Server {
     //   }
     // }, Ranks.Admin);
 
+    new Command("screenshot", "no_descript", [], false, (source: string) => {
+      this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, source, {}, async(cbData, passedData) => {
+        console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+        const message = new WebhookMessage({
+          username: "Screenshot Test", embeds: [{
+            color: EmbedColours.Orange,
+            title: "__Screenshot Test Title__",
+            description: "screenshot test description",
+            image: {
+              url: passedData.url
+            },
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]
+        });
+        await server.logManager.Send(LogTypes.Anticheat, message);
+      }));
+    }, Ranks.User);
   }
 
   private registerExports(): void {
@@ -169,9 +198,11 @@ export class Server {
       return ranks;
     });
 
-    global.exports("hasPermission", async(role: number, permission) => {
+    global.exports("hasPermission", async(role: number, permission: string) => {
+      // console.log("perm", role, permission)
       const rolePerms: string[] = sharedConfig.permissions[Ranks[role]];
       const index = rolePerms.findIndex(rolePermission => rolePermission == permission);
+      // console.log("index", index)
       return index != -1;
     });
 
@@ -186,7 +217,28 @@ export class Server {
         ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
       }
       await ban.save();
-      // ban.drop();
+      ban.drop();
+    });
+
+    global.exports("anticheatBan", async(playerId: number, hardwareId: string, reason: string, takeScreenshot: boolean, issuedBy?: number) => {
+      console.log(playerId, hardwareId, reason, issuedBy);
+
+      const player = await this.playerManager.GetPlayerFromId(playerId);
+      if (player) {
+        this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.GetHandle, {}, async (cbData, passedData) => {
+          console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+          const ban = new Ban(playerId, hardwareId, reason, issuedBy);
+          ban.Logger = LogTypes.Anticheat;
+
+          if (passedData.url) ban.URL = passedData.url;
+          if (takeScreenshot) ban.Screenshot = takeScreenshot;
+          if (issuedBy != undefined) {
+            ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
+          }
+
+          await ban.save();
+        }));
+      }
     });
   }
 
@@ -194,27 +246,33 @@ export class Server {
   private async playerConnected(oldId: number, restarted: boolean): Promise<void> {
     const src = global.source;
     let player;
+    let loadedPlayer;
 
     if (!restarted) { // If joined, get our old id and update our data in player manager to new server ID
       await this.playerManager.Update(src, oldId.toString())
       player = await this.playerManager.GetPlayer(src);
+      loadedPlayer = await player.Load();
     } else { // If restarted resource
       player = new Player(src);
+      loadedPlayer = await player.Load();
+      this.playerManager.Add(player);
     }
-
-    const loadedPlayer = await player.Load();
 
     if (loadedPlayer) {
       Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
-      this.playerManager.Add(player);
+      // this.playerManager.Add(player);
       this.chatManager.createChatSuggestions();
 
       if (!restarted) {
+        const discord = await player.GetIdentifier("discord");
+        const discString = discord != "Unknown" ? `<@${discord}>` : "Not found";
+        console.log("discord", discord, discString);
+
         await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Player Connected__",
-          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n\n**Rank**: ${Ranks[player.GetRank]}\n\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n\n**Whitelisted**: ${await player.Whitelisted()}\n\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
-          footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${await player.GetIdentifier("discord") != "Unknown" ? `<@${await player.GetIdentifier("discord")}>` : "Not found"}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }
     }
