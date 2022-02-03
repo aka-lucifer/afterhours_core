@@ -2,5 +2,6 @@ export enum LogTypes {
   Connection,
   Kill,
   Chat,
-  Action
+  Action,
+  Anticheat
 }
