@@ -1,15 +1,15 @@
 {
   "serverName": "Astrid Network",
-  "serverLogo": "https://i.imgur.com/BXogrnJ.png",
+  "serverLogo": "https://i.imgur.com/dAfJ9nu.jpg",
   "permissions": {
     "User": [""],
     "Honorable": [""],
     "Trusted": [""],
     "Moderator": ["menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive"],
-    "Admin": ["menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement"],
-    "SeniorAdmin": ["clearPedTasks", "weapon", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
-    "Developer": ["clearPedTasks", "weapon", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
-    "Management": ["clearPedTasks", "weapon", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
-    "Owner": ["clearPedTasks", "weapon", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"]
+    "Admin": ["blacklistedEntity", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "freecam",  "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement"],
+    "SeniorAdmin": ["blacklistedEntity", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "freecam",  "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
+    "Developer": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
+    "Management": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
+    "Owner": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"]
   }
 }
