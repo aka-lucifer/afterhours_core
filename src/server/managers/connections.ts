@@ -11,6 +11,7 @@ import {Ranks} from "../../shared/enums/ranks";
 
 import { Log, Error, Inform, Delay } from "../utils";
 import * as sharedConfig from "../../configs/shared.json";
+import {Ban} from "../models/database/ban";
 
 
 export class ConnectionsManager {
@@ -29,7 +30,7 @@ export class ConnectionsManager {
       const player = new Player(src);      
       const playerExists = await player.Exists();
       
-      deferrals.update("Checking Player Data...");
+      deferrals.update(`[${sharedConfig.serverName}]: Checking Player Data...`);
       await Delay(200);
 
       if (playerExists) { // If your DB entry exists
@@ -63,7 +64,18 @@ export class ConnectionsManager {
           }
         }
 
-        deferrals.update("Updating Player Data...");
+        deferrals.update(`[${sharedConfig.serverName}]: We're checking your name...`);
+        this.playerManager.Add(player);
+
+        if (player.GetRank < Ranks.Management && player.GetName.includes("<") || player.GetName.includes(">")) {
+          const ban = new Ban(player.id, player.HardwareId, "We've detected you using the XSS exploit", player.id);
+          await ban.save();
+          deferrals.done(`[${sharedConfig.serverName}]: You've been permanently banned from ${sharedConfig.serverName}.\nBan Id: #${ban.Id}\nBy: System\nReason: ${ban.Reason}`);
+          this.playerManager.Remove(player.handle);
+          return;
+        }
+
+        deferrals.update(`[${sharedConfig.serverName}]: Updating Player Data...`);
         await Delay(200);
 
         const updatedData = player.Update();
@@ -76,7 +88,7 @@ export class ConnectionsManager {
         if (this.server.IsDebugging) {
           Error("Connection Manager", "No DB entry found, make one!")
         }
-        deferrals.update("Creating Player Data...");
+        deferrals.update(`[${sharedConfig.serverName}]: Creating Player Data...`);
         await Delay(200);
 
         const insertedData = await player.Insert();
@@ -108,7 +120,7 @@ export class ConnectionsManager {
     })
 
     on(Events.playerDisconnected, async(reason: string) => {
-      await playerManager.Remove(source, reason);
+      await playerManager.Disconnect(source, reason);
     });
   }
 }

@@ -1,7 +1,7 @@
 import {Player} from "./player";
-import {server} from "../../server";
+import { server } from "../../server";
 
-import WebhookMessage from "../webhook/webhookMessage";
+import WebhookMessage from "../webhook/discord/webhookMessage";
 import * as Database from "../../managers/database/database";
 
 import {LogTypes} from "../../enums/logTypes";
@@ -11,8 +11,17 @@ import {Error} from "../../utils";
 
 import {Ranks} from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
-import { ErrorCodes } from "../../../shared/enums/errors";
+import {ErrorCodes} from "../../../shared/enums/errors";
 import * as sharedConfig from "../../../configs/shared.json"
+
+/***
+ *
+ * @param playerId The players DB ID to ban
+ * @param hwid The players hardware ID
+ * @param reason The ban reason
+ * @param issuedBy Who issued the ban, if it's system, this should be the bannee's player ID
+ * @param issuedUntil Ban date, leave blank for permanent
+ */
 
 export class Ban {
   private id: number;
@@ -25,6 +34,9 @@ export class Ban {
   private issuedUntil: Date;
   private player: Player;
   private banner: Player;
+  private logger: LogTypes = LogTypes.Action;
+  private url: string;
+  private screenshot: boolean;
 
   constructor(playerId: number, hwid: string, reason: string, issuedBy: number, issuedUntil?: Date) { // Default ban (PERM)
     this.playerId = playerId;
@@ -50,6 +62,10 @@ export class Ban {
     this.id = newId;
   }
 
+  public get Reason(): string {
+    return this.banReason;
+  }
+
   public get State(): BanStates {
     return this.state;
   }
@@ -68,6 +84,18 @@ export class Ban {
 
   public set Banner(newBanner: Player) {
     this.banner = newBanner;
+  }
+
+  public set Logger(newType: LogTypes) {
+    this.logger = newType;
+  }
+
+  public set URL(newUrl: string) {
+    this.url = newUrl;
+  }
+
+  public set Screenshot(takeScreenshot: boolean) {
+    this.screenshot = takeScreenshot;
   }
 
   // Methods
@@ -97,23 +125,28 @@ export class Ban {
           console.log(2);
           if (this.issuedBy != this.playerId) {
             console.log(3);
-            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+            await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Banned__",
-                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n\n**Unban Date**: ${this.issuedUntil.toUTCString()}**.`,
-                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+                image: {
+                  url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
+                },
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n**Unban Date**: ${this.issuedUntil.toUTCString()}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
           } else {
-          console.log(4);
-            console.log("system 1!");
-            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+            console.log(4);
+            await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Banned__",
-                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: System\n\n**Unban Date**: ${this.issuedUntil.toUTCString()}**.`,
-                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+                image: {
+                  url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
+                },
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: System\n**Unban Date**: ${this.issuedUntil.toUTCString()}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
           }
@@ -122,22 +155,25 @@ export class Ban {
           if (this.issuedBy != this.playerId) {
             console.log(6);
             console.log("system 2!");
-            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+            await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Banned__",
-                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>.`,
-                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
           } else {
             console.log(7);
-            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+            await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Banned__",
-                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n\n**Username**: ${this.player.GetName}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: System.`,
-                footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+                image: {
+                  url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
+                },
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: System`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
           }
@@ -187,12 +223,12 @@ export class Ban {
 
         if (updatedBan.meta.affectedRows > 0 && updatedBan.meta.changedRows > 0) {
           this.state = BanStates.Completed;
-          await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+          await server.logManager.Send(this.logger, new WebhookMessage({
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Automatically Unbanned__",
-              description: `A players ban has expired on the server.\n\n**Ban ID**: ${this.id}\n\n**Username**: ${playerData.data[0].name}\n\n**Reason**: ${this.banReason}\n\n**Banned By**: [${Ranks[bannerData.data[0].rank]}] - ${bannerData.data[0].name}\n\n**Banners Discord**: <@${bannerData.data[0].discord}>`,
-              footer: {text: sharedConfig.serverName, icon_url: sharedConfig.serverLogo}
+              description: `A players ban has expired on the server.\n**Ban ID**: ${this.id}\n**Username**: ${playerData.data[0].name}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[bannerData.data[0].rank]}] - ${bannerData.data[0].name}\n**Banners Discord**: <@${bannerData.data[0].discord}>`,
+              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));
           return true;
