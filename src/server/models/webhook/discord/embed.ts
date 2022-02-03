@@ -1,4 +1,4 @@
-import { Colour } from "../../../shared/models/utils/colour";
+import { Colour } from "../../../../shared/models/utils/colour";
 
 import EmbedFooter from "./embedFooter";
 import EmbedMedia from "./embedMedia";
