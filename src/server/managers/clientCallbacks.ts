@@ -12,7 +12,7 @@ export class ClientCallbackManager {
   constructor(server: Server) {
     this.server = server;
 
-    // Events
+    // Detect Returned Client CB
     onNet(Events.receiveClientCB, (result, data ) => {
       this.registeredCallbacks[data.callbackID](result, data);
       delete this.registeredCallbacks[data.callbackID];
