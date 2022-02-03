@@ -9,6 +9,9 @@ import Config from "../configs/client.json";
 import { Inform } from "./utils";
 
 import { Events } from "../shared/enums/events";
+import {Callbacks} from "../shared/enums/callbacks";
+
+let takingScreenshot = false;
 
 export class Client {
   private debugging: boolean;
@@ -34,10 +37,22 @@ export class Client {
       this.initialize();
     });
 
-    onNet(Events.testServerCB, (data) => {
-      data.position = Game.PlayerPed.Position;
-      data.model = Game.PlayerPed.Model;
-      emitNet(Events.receiveClientCB, false, data);
+    // Screenshot Client CB
+    onNet(Callbacks.takeScreenshot, (data) => {
+      if (!takingScreenshot) {
+        takingScreenshot = true;
+        global.exports['astrid_notify'].requestScreenshotUpload("https://api.imgur.com/3/image", 'imgur', {
+          headers: {
+            ['authorization']: "Client-ID 3886c6731298c37",
+            ['content-type']: 'multipart/form-data'
+          }
+        }, (results) => {
+          console.log(JSON.parse(results).data.link)
+          data.url = JSON.parse(results).data.link;
+          takingScreenshot = false
+          emitNet(Events.receiveClientCB, false, data);
+        });
+      }
     });
   }
 
@@ -61,8 +76,8 @@ export class Client {
     Inform("Un-named Project", "Successfully Loaded!");
 
     setTimeout(() => {
-      this.serverCallbackManager.Add(new ServerCallback(Events.testClientCB, {}, (cbData, passedData) => {
-        console.log("client client cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+      this.serverCallbackManager.Add(new ServerCallback(Callbacks.testClientCB, {}, (cbData, passedData) => {
+        console.log("server -> client cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
       }))
     }, 0);
   }
