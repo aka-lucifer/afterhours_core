@@ -22,19 +22,27 @@ import sharedConfig from "../configs/shared.json";
 import {Callbacks} from "../shared/enums/callbacks";
 import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
-import {ChatTypes, SystemTypes} from "../shared/enums/ui/chat/types";
+import {SystemTypes} from "../shared/enums/ui/chat/types";
+import {CommandManager} from "./managers/ui/command";
 
 export class Server {
   private debugMode: boolean;
   private serverWhitelisted: boolean;
   private maxPlayers: number;
 
-  // Managers
+  // Player Control
   public banManager: BanManager;
   public playerManager: PlayerManager;
-  private clientCallbackManager: ClientCallbackManager;
   private connectionsManager: ConnectionsManager;
+
+  // Client Callbacks
+  private clientCallbackManager: ClientCallbackManager;
+
+  // Logging
   public logManager: LogManager;
+
+  // Chat
+  public commandManager: CommandManager;
   public chatManager: ChatManager;
 
   constructor() {
@@ -76,12 +84,19 @@ export class Server {
 
   // Methods
   private async initialize(): Promise<void> {
-    // Setup Managers
+    // Player Controller
     this.banManager = new BanManager(server);
     this.playerManager = new PlayerManager(server);
-    this.clientCallbackManager = new ClientCallbackManager(server);
     this.connectionsManager = new ConnectionsManager(server, this.playerManager);
+
+    // Client Callbacks
+    this.clientCallbackManager = new ClientCallbackManager(server);
+
+    // Logging
     this.logManager = new LogManager(server);
+
+    // Chat
+    this.commandManager = new CommandManager(server);
     this.chatManager = new ChatManager(server);
 
     // Run Manager Methods
@@ -125,10 +140,14 @@ export class Server {
       }
     }, Ranks.Admin);
 
-    new Command("id", "Returns your server ID.", [{}], false, async (source: string) => {
+    new Command("me", "Returns your server ID.", [{name: "content", help: "The content of your /me message."}], true, async (source: string, args: any[]) => {
       const player = await this.playerManager.GetPlayer(source);
-      await player.TriggerEvent(Events.sendSystemMessage, new Message("Anyone wanna fuck my wife?", SystemTypes.Advert));
-
+      const messageContents = args.join(" ");
+      if (messageContents.length > 0) {
+        await player.TriggerEvent(Events.sendSystemMessage, new Message(messageContents, SystemTypes.Me), player.GetName);
+      } else {
+        await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
+      }
     }, Ranks.User);
   }
   private registerExports(): void {
@@ -208,7 +227,7 @@ export class Server {
 
       // Send player data to client
       emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
-      this.chatManager.createChatSuggestions(player);
+      this.commandManager.createChatSuggestions(player);
 
       if (!restarted) {
         const discord = await player.GetIdentifier("discord");

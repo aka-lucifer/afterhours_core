@@ -19,7 +19,7 @@ export class Command {
         this.callback = cmdCallback;
         this.permission = cmdPermission;
 
-        server.chatManager.addCommand(this);
+        server.commandManager.addCommand(this);
         Log("Commands Manager", `Command (${this.name}) added with permission (${(Ranks[this.permission]) || Ranks[Ranks.User]})`);
     }
 }

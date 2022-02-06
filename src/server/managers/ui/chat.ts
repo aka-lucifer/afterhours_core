@@ -1,24 +1,20 @@
-import {server, Server} from "../../server";
-import { Player } from "../../models/database/player";
-import { Command } from "../../models/ui/chat/command";
+import {Server} from "../../server";
+import { Dist, Log, Inform, Error, NumToVector3 } from "../../utils";
+import {LogTypes} from "../../enums/logTypes";
+
 import { ChatLog } from "../../models/ui/chat/chatLog";
+import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 
 import { Message } from "../../../shared/models/ui/chat/message";
 import { Events } from "../../../shared/enums/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {ChatTypes} from "../../../shared/enums/ui/chat/types";
-import { Dist, Log, Inform, Error, NumToVector3 } from "../../utils";
 import { Callbacks } from "../../../shared/enums/callbacks";
-import { Vector3 } from "fivem-js";
-import {LogTypes} from "../../enums/logTypes";
-import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json";
-import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
 
 export class ChatManager {
   private server: Server;
-  private registeredCommands: Command[] = [];
 
   constructor(server: Server) {
     this.server = server;
@@ -33,27 +29,32 @@ export class ChatManager {
       if (message.content.includes("/")) { // If it's a command
         const args = String(message.content).replace("/", "").split(" "); // All of the arguments of the message
         const command = args[0].toLowerCase();
+        const registeredCommands = this.server.commandManager.Commands;
 
-        if (this.registeredCommands.filter(cmd => cmd.name == command).length <= 0) {
+        console.log("one!");
+        if (registeredCommands.filter(cmd => cmd.name == command).length <= 0) {
+          console.log("two!");
           Error("Chat Manager", `Command (/${command}) doesn't exist!`)
           emitNet(Events.receiveServerCB, src, false, data);
           return;
         } else {
+          console.log("three!");
           args.splice(0, 1); // Remove the first argument (the command) from the args table.
           CancelEvent();
   
-          for (let a = 0; a < this.registeredCommands.length; a++) {
-            if (command == this.registeredCommands[a].name) {
-              if (player.GetRank >= this.registeredCommands[a].permission) {
-                if (this.registeredCommands[a].argsRequired) {
-                  if (Object.keys(this.registeredCommands[a].args).length > 0 && args.length >= Object.keys(this.registeredCommands[a].args).length) {
-                    this.registeredCommands[a].callback(player.GetHandle, args);
+          for (let a = 0; a < registeredCommands.length; a++) {
+            if (command == registeredCommands[a].name) {
+              if (player.GetRank >= registeredCommands[a].permission) {
+                if (registeredCommands[a].argsRequired) {
+                  if (Object.keys(registeredCommands[a].args).length > 0 && args.length >= Object.keys(registeredCommands[a].args).length) {
+                    registeredCommands[a].callback(player.GetHandle, args);
+                    emitNet(Events.receiveServerCB, src, true, data);
                   } else {
                     Error("Chat Manager", "All command arguments must be entered!")
                     emitNet(Events.receiveServerCB, src, false, data);
                   }
                 } else {
-                  this.registeredCommands[a].callback(player.GetHandle, args);
+                  registeredCommands[a].callback(player.GetHandle, args);
                   emitNet(Events.receiveServerCB, src, true, data);
                 }
               } else {
@@ -111,18 +112,6 @@ export class ChatManager {
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }
-    });
-  }
-
-  // Methods
-  public addCommand(command: Command): void {
-    this.registeredCommands.push(command);
-  }
-
-  public createChatSuggestions(player: Player): void {
-    this.registeredCommands.forEach(command => {
-      // console.log("create suggestion", command.name, command.description, command.args)
-      command.argsRequired ? player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
     });
   }
 }
