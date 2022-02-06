@@ -10,5 +10,6 @@ export enum SystemTypes {
   Interaction = "interaction",
   Action = "action",
   Error = "error",
-  Advert = "advert" // Requires you to pass player name param to client
+  Advert = "advert", // Requires you to pass player name param to client
+  Me = "me", // Requires you to pass player name param to client
 }

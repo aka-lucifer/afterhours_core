@@ -89,14 +89,18 @@ export class ChatManager {
 
   // Events
   private EVENT_addSuggestion(suggestion: Suggestion): void {
-    SendNuiMessage(JSON.stringify({
-      event: NuiMessages.AddSuggestion,
-      data: {
-        name: suggestion.name,
-        description: suggestion.description,
-        params: suggestion.commandParams
-      }
-    }))
+    console.log("Add Suggestion", suggestion)
+    console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.commandParams}`));
+    setTimeout(() => {
+      SendNuiMessage(JSON.stringify({
+        event: NuiMessages.AddSuggestion,
+        data: {
+          name: suggestion.name,
+          description: suggestion.description,
+          params: suggestion.commandParams
+        }
+      }))
+    }, 0);
   }
 
   private EVENT_newMsg(message: Message, sender?: string): void {

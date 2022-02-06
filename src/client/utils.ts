@@ -1,5 +1,5 @@
 import { Colour } from "../shared/models/utils/colour";
-import { Vector3, Ped, World, Font } from "fivem-js";
+import { Vector3, Ped, World, Font, Game } from "fivem-js";
 
 /**
  * @param reference Title for organisation logs
@@ -210,4 +210,46 @@ export async function PlayAnim(ped: Ped, animDict: string, animName: string, fla
   } else {
 		return false;
   }
+}
+
+export async function closestPed(): Promise<[Ped, number]> {
+  let closestPed: Ped;
+  let closestDistance = 1000;
+  let justStarted = true;
+  const worldPeds = World.getAllPeds();
+  
+  worldPeds.forEach(ped => {
+    if (Game.PlayerPed.Handle != ped.Handle) {
+      const pedDist = Dist(Game.PlayerPed.Position, ped.Position, true);
+
+      if (justStarted) {
+        closestPed = ped;
+        closestDistance = pedDist;
+        justStarted = false;
+      }
+
+      if (pedDist < closestDistance) {
+        closestPed = ped;
+        closestDistance = pedDist;
+      }
+    }
+  });
+
+  console.log(`Ped: ${closestPed.Handle} | Distance: ${closestDistance}`);
+  if (closestDistance <= 10.0) {
+    return [closestPed, closestDistance];
+  } else {
+    Error("(closestPed)", "No ped found!");
+    return [null, null];
+  }
+}
+
+/**
+ * 
+ * @param callbackName Name of the callback
+ * @param callback Function
+ */
+export function RegisterNuiCallback(callbackName: string, callback: CallableFunction): void {
+  RegisterNuiCallbackType(callbackName); // register the type
+  on(`__cfx_nui:${callbackName}`, callback);
 }
