@@ -71,7 +71,7 @@ export class ConnectionsManager {
           const ban = new Ban(player.id, player.HardwareId, "We've detected you using the XSS exploit", player.id);
           await ban.save();
           deferrals.done(`[${sharedConfig.serverName}]: You've been permanently banned from ${sharedConfig.serverName}.\nBan Id: #${ban.Id}\nBy: System\nReason: ${ban.Reason}`);
-          this.playerManager.Remove(player.handle);
+          await this.playerManager.Remove(player.handle);
           return;
         }
 
@@ -102,8 +102,6 @@ export class ConnectionsManager {
           return;
         }
       }
-
-      this.server.playerManager.Add(player);
 
       if (this.server.Whitelisted) {
         Inform("Whitelist Check", "Whitelist Active!");
