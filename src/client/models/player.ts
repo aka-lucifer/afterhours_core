@@ -10,7 +10,7 @@ export class Player {
   constructor(playerData: Player) {
     this.id = playerData.id;
     this.handle = Game.Player.Handle;
-    this.name = GetPlayerName(this.handle);
+    this.name = playerData.name;
     this.rank = playerData.rank;
     this.ped = Game.Player.Character;
   }
