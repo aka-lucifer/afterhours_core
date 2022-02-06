@@ -100,7 +100,6 @@ export class Ban {
 
   // Methods
   public async save(): Promise<boolean> {
-    console.log("issued_by", this.issuedBy);
     if (this.hardwareId == undefined) this.hardwareId = "3:5789056eef77a45102ba83c183e84a0bfa7e9ea5a122352da1ada9fd366d6d07";
     if (this.issuedBy == undefined) this.issuedBy = this.playerId;
 
@@ -119,12 +118,10 @@ export class Ban {
       if (playerIndex != -1) {
         this.player = svPlayers[playerIndex];
         this.id = inserted.meta.insertId;
-        console.log(1);
 
         if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
-          console.log(2);
           if (this.issuedBy != this.playerId) {
-            console.log(3);
+            const bannersDiscord = await this.banner.GetIdentifier("discord");
             await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
@@ -132,12 +129,11 @@ export class Ban {
                 image: {
                   url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
                 },
-                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>\n**Unban Date**: ${this.issuedUntil.toUTCString()}`,
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}\n**Unban Date**: ${this.issuedUntil.toUTCString()}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
           } else {
-            console.log(4);
             await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
@@ -151,20 +147,17 @@ export class Ban {
             }));
           }
         } else { // Perm ban
-        console.log(5);
           if (this.issuedBy != this.playerId) {
-            console.log(6);
-            console.log("system 2!");
+            const bannersDiscord = await this.banner.GetIdentifier("discord");
             await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Banned__",
-                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: <@${await this.banner.GetIdentifier("discord")}>`,
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
           } else {
-            console.log(7);
             await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
