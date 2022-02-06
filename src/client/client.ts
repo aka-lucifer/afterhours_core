@@ -1,15 +1,19 @@
 import { Game } from "fivem-js"
 
 import { ServerCallback} from "./models/serverCallback";
+import { Player } from "./models/player";
 
 import { RichPresence } from "./managers/richPresence";
-import {ServerCallbackManager} from "./managers/serverCallbacks";
+import { ServerCallbackManager } from "./managers/serverCallbacks";
+import { ChatManager } from "./managers/ui/chat";
+import { CuffingStuff } from "./cuffing";
 
 import Config from "../configs/client.json";
-import { Inform } from "./utils";
+import { closestPed, Inform } from "./utils";
 
 import { Events } from "../shared/enums/events";
 import {Callbacks} from "../shared/enums/callbacks";
+import sharedConfig from "../configs/shared.json";
 
 let takingScreenshot = false;
 
@@ -18,42 +22,32 @@ export class Client {
   private initialSpawn: boolean;
   private richPresenceData: Record<string, any>;
 
+  // Player Data
+  public player: Player;
+
   // Managers
   private richPresence: RichPresence;
-  private serverCallbackManager: ServerCallbackManager;
+  public serverCallbackManager: ServerCallbackManager;
+  private chatManager: ChatManager;
+  private cuffing: CuffingStuff;
 
   constructor() {
     this.debugging = Config.debug;
     this.richPresenceData = Config.richPresence;
     this.initialSpawn = true;
     
-    on(Events.resourceStart, (resourceName: string) => {
-      if (resourceName == GetCurrentResourceName()) {
-        emitNet(Events.playerConnected, undefined, true);
-      }
-    });
+    // Events
+    on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
+    onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
+    onNet(Events.serverStarted, this.initialize.bind(this));
 
-    onNet(Events.serverStarted, () => {
-      this.initialize();
-    });
+    // Callbacks
+    onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
 
-    // Screenshot Client CB
-    onNet(Callbacks.takeScreenshot, (data) => {
-      if (!takingScreenshot) {
-        takingScreenshot = true;
-        global.exports['astrid_notify'].requestScreenshotUpload("https://api.imgur.com/3/image", 'imgur', {
-          headers: {
-            ['authorization']: "Client-ID 3886c6731298c37",
-            ['content-type']: 'multipart/form-data'
-          }
-        }, (results) => {
-          console.log(JSON.parse(results).data.link)
-          data.url = JSON.parse(results).data.link;
-          takingScreenshot = false
-          emitNet(Events.receiveClientCB, false, data);
-        });
-      }
-    });
+    RegisterCommand("cuff", async() => {
+      const [ped, distance] = await closestPed();
+      this.cuffing.init(ped.Handle);
+    }, false);
   }
 
   // Get Requests
@@ -73,13 +67,45 @@ export class Client {
   private initialize(): void {
     this.richPresence = new RichPresence(client);
     this.serverCallbackManager = new ServerCallbackManager(client);
-    Inform("Un-named Project", "Successfully Loaded!");
+    
+    // Chat
+    this.chatManager = new ChatManager(client);
+    this.chatManager.init();
 
-    setTimeout(() => {
-      this.serverCallbackManager.Add(new ServerCallback(Callbacks.testClientCB, {}, (cbData, passedData) => {
-        console.log("server -> client cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
-      }))
-    }, 0);
+    this.cuffing = new CuffingStuff();
+
+    Inform(sharedConfig.serverName, "Successfully Loaded!");
+  }
+
+  // Events
+  private EVENT_resourceRestarted(resourceName: string): void {
+    if (resourceName == GetCurrentResourceName()) {
+      emitNet(Events.playerConnected, undefined, true);
+    }
+  }
+
+  private EVENT_playerLoaded(player: any): void {
+    this.player = new Player(player);
+    console.log("Event Triggered (playerLoaded)", this.player);
+    this.chatManager.setup();
+  }
+
+  // Callbacks
+  private CALLBACK_screenshot(data): void { // Screenshot Client CB
+    if (!takingScreenshot) {
+      takingScreenshot = true;
+      global.exports['astrid_notify'].requestScreenshotUpload("https://api.imgur.com/3/image", 'imgur', {
+        headers: {
+          ['authorization']: "Client-ID 3886c6731298c37",
+          ['content-type']: 'multipart/form-data'
+        }
+      }, (results) => {
+        console.log(JSON.parse(results).data.link)
+        data.url = JSON.parse(results).data.link;
+        takingScreenshot = false
+        emitNet(Events.receiveClientCB, false, data);
+      });
+    }
   }
 }
 
