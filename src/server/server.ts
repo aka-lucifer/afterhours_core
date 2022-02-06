@@ -1,9 +1,7 @@
 import {Player} from "./models/database/player";
 import {Ban} from "./models/database/ban";
-import {Command} from "./models/ui/command";
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
-import Screenshoter from "./models/webhook/screenshot/screenshoter";
-import { ClientCallback } from "./models/clientCallback";
+import {ClientCallback} from "./models/clientCallback";
 
 import {BanManager} from "./managers/database/bans";
 import {PlayerManager} from "./managers/players";
@@ -15,13 +13,16 @@ import {ChatManager} from "./managers/ui/chat";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
-
 import {Error, GetHash, Inform, Log} from "./utils";
+
 import {Events} from "../shared/enums/events";
-import {Callbacks} from "../shared/enums/callbacks";
 import {Ranks} from "../shared/enums/ranks";
 import {EmbedColours} from "../shared/enums/embedColours";
 import sharedConfig from "../configs/shared.json";
+import {Callbacks} from "../shared/enums/callbacks";
+import {Command} from "./models/ui/chat/command";
+import {Message} from "../shared/models/ui/chat/message";
+import {ChatTypes, SystemTypes} from "../shared/enums/ui/chat/types";
 
 export class Server {
   private debugMode: boolean;
@@ -58,12 +59,6 @@ export class Server {
     onNet(Events.playerConnected, async(oldId: number, restarted: boolean = false) => {
       await this.playerConnected(oldId, restarted);
     });
-
-    // Server CB Test
-    onNet(Callbacks.testClientCB, (data) => {
-      data.serverId = source;
-      emitNet(Events.receiveServerCB, source, false, data);
-    });
   }
 
   // Get Requests
@@ -96,13 +91,14 @@ export class Server {
     this.registerExports();
 
     emitNet(Events.serverStarted, -1);
-    Inform("Un-named Project", "Successfully Loaded!");
+    Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
 
   private registerCommands(): void {
-    // Commands
-
-    new Command("veh", "Spawns you inside a specified vehicle.", [{name: "vehicleModel", help: "The spawn name of the vehicle, you're wanting to spawn."}], true, async(source: string, args: any[]) => {
+    new Command("veh", "Spawns you inside a specified vehicle.", [{
+      name: "vehicleModel",
+      help: "The spawn name of the vehicle, you're wanting to spawn."
+    }], true, async (source: string, args: any[]) => {
       if (args[0]) {
         const vehModel = String(args[0]);
         const myPed = GetPlayerPed(source);
@@ -115,7 +111,7 @@ export class Server {
       }
     }, Ranks.Admin);
 
-    new Command("delveh", "Deletes the vehicle you're inside.", [{}], false, async(source: string) => {
+    new Command("delveh", "Deletes the vehicle you're inside.", [{}], false, async (source: string) => {
       const myPed = GetPlayerPed(source);
       const currVeh = GetVehiclePedIsIn(myPed, false);
       if (currVeh > 0) {
@@ -129,63 +125,12 @@ export class Server {
       }
     }, Ranks.Admin);
 
-    new Command("id", "Returns your server ID.", [{}], false, async(source: string) => {
-      console.log(source);
-    }, Ranks.User);
+    new Command("id", "Returns your server ID.", [{}], false, async (source: string) => {
+      const player = await this.playerManager.GetPlayer(source);
+      await player.TriggerEvent(Events.sendSystemMessage, new Message("Anyone wanna fuck my wife?", SystemTypes.Advert));
 
-    new Command("chat_colours", "my nan", [], false, (source: string) => {
-      emitNet(Events.sendMessage, source, {
-        color: [255, 0, 0],
-        multiline: true,
-        args: ['^3[System]^0:', "OOPSIE THERE IS AN ERROR!"]
-      });
-    }, Ranks.User);
-
-    new Command("banreason", "Bans the specified player", [{name: "server_id", help: "The server ID of the player"}, {name: "reason", help: "Reason for banning the person"}], true, async(source: string, args: any[]) => {
-      const bannedPlayer = await this.playerManager.GetPlayer(args[0]);
-      if (bannedPlayer) {
-        const myPlayer = await this.playerManager.GetPlayer(source);
-        Log("Ban Command", `Ban the player [${bannedPlayer.GetHandle}]: ${bannedPlayer.GetName} for ${args[1]}, until im gay`);
-        const banData = new Ban(bannedPlayer.id, bannedPlayer.HardwareId, args[1], myPlayer.id);
-        banData.Banner = myPlayer;
-        await banData.save();
-      }
-    }, Ranks.Admin);
-    //
-    // new Command("bantime", "Bans the specified player", [{name: "server_id", help: "The server ID of the player"}, {name: "time", help: "The time to ban them in seconds!"}], true, async(source: string, args: any[]) => {
-    //   const bannedPlayer = await this.playerManager.GetPlayer(args[0]);
-    //   if (bannedPlayer) {
-    //     const myPlayer = await this.playerManager.GetPlayer(source);
-    //     const currTime = new Date();
-    //     const currSeconds = currTime.getSeconds();
-    //     currTime.setSeconds(currSeconds + args[1]);
-    //     Log("Ban Command", `Ban the player [${bannedPlayer.GetHandle}]: ${bannedPlayer.GetName} for no reason specified, until ${currTime.toUTCString()}`);
-    //     const banData = new Ban(bannedPlayer.id, bannedPlayer.HardwareId,"no reason specified", myPlayer.id, currTime);
-    //     banData.Banner = myPlayer;
-    //     await banData.save();
-    //     // banData.drop();
-    //   }
-    // }, Ranks.Admin);
-
-    new Command("screenshot", "no_descript", [], false, (source: string) => {
-      this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, source, {}, async(cbData, passedData) => {
-        console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
-        const message = new WebhookMessage({
-          username: "Screenshot Test", embeds: [{
-            color: EmbedColours.Orange,
-            title: "__Screenshot Test Title__",
-            description: "screenshot test description",
-            image: {
-              url: passedData.url
-            },
-            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-          }]
-        });
-        await server.logManager.Send(LogTypes.Anticheat, message);
-      }));
     }, Ranks.User);
   }
-
   private registerExports(): void {
     global.exports("getRanks", async() => {
       const ranks: Record<string, any> = {};
@@ -245,7 +190,7 @@ export class Server {
   // Events
   private async playerConnected(oldId: number, restarted: boolean): Promise<void> {
     const src = global.source;
-    let player;
+    let player: Player;
     let loadedPlayer;
 
     if (!restarted) { // If joined, get our old id and update our data in player manager to new server ID
@@ -260,18 +205,18 @@ export class Server {
 
     if (loadedPlayer) {
       Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
-      // this.playerManager.Add(player);
-      this.chatManager.createChatSuggestions();
+
+      // Send player data to client
+      emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
+      this.chatManager.createChatSuggestions(player);
 
       if (!restarted) {
         const discord = await player.GetIdentifier("discord");
-        const discString = discord != "Unknown" ? `<@${discord}>` : "Not found";
-        console.log("discord", discord, discString);
 
         await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Player Connected__",
-          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${await player.GetIdentifier("discord") != "Unknown" ? `<@${await player.GetIdentifier("discord")}>` : "Not found"}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }

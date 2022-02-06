@@ -1,7 +1,7 @@
 export enum Callbacks {
-  // Astrid Server Callbacks
-  takeScreenshot = "astrid:client:testServerCB",
+  // Astrid Client -> Server Callbacks
+  takeScreenshot = "astrid:client:screenshot",
 
-  // Astrid Client Callbacks
-  testClientCB = "astrid:client:testClientCB"
+  // Astrid Server -> Client Callbacks
+  sendMessage = "astrid:server:sendMessage"
 }

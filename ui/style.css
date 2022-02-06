@@ -1,0 +1,224 @@
+/* FONTS */
+@font-face {
+  font-family: 'PT-Sans-Bold';
+  src: url('./assets/fonts/PT-Sans-Bold.ttf');
+}
+
+/* ROOT */
+:root {
+  /* Vars */
+  --header-font-size: 90px;
+
+  /* Colors */
+  --white: white;
+  --black: #000000;
+  --background: rgba(25, 25, 25, 0.8);
+  --darkBackground: #1e1e1e;
+  --green: rgba(33, 165, 23, 0.6);
+  --background: #353535;
+  --text: rgba(255, 255, 255, 0.85);
+  --headerGreen: #4caf50;
+  --headerRed: #d42727;
+  --notificationBG: rgba(17, 17, 17, 0.8);
+  --notificationGreen: #51bd7d;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#Astrid_Chat {
+  width: 100%;
+  height: 100%;
+
+  font-family: "Segoe UI", "Segoe UI Symbol", "Segoe UI Emoji",  Arial, sans-serif;
+
+  /* background-color: var(--darkBackground) !important; */
+  background-color: transparent !important;
+}
+
+/* Chat Messages */
+#Chat-Messages {
+  position: absolute;
+  display: none;
+
+  top: 56%;
+  right: 1%;
+  transform: translate(1%, -56%);
+
+  /* Sliding */
+  margin-right: -35%;
+  
+  width: 30%;
+  /* max-height: 15%; */
+  max-height: 25%;
+
+  color: white;
+  /* background-color: var(--notificationBG); */
+  
+  overflow-y: scroll;
+  /* text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black; CREATES STROKE & DROP SHADOW */
+  text-shadow: -1px -1px 2px #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+#Chat-Messages::-webkit-scrollbar {
+  width: 5px;
+}
+
+#Chat-Messages::-webkit-scrollbar-thumb {
+  background: white !important;
+}
+
+#Chat-Message {
+  padding: 5px;
+  font-size: 1em;
+}
+
+.killLog {
+  color: gold;
+  font-weight: bold;
+}
+
+.interaction {
+  color: rgba(0, 255, 0, 0.75);
+  font-weight: bold;
+}
+
+.action {
+  color: rgb(255, 128, 0);
+  font-weight: bold;
+}
+
+.advert {
+  color: rgb(167, 59, 255);
+  font-weight: bold;
+}
+
+.fault {
+  color: #e21e1e;
+  /* color: rgb(255, 81, 0); */
+  font-weight: bold;
+}
+
+.local {
+  color: white;
+  font-weight: bold;
+}
+
+.global {
+  color: #0099cc;
+  font-weight: bold;
+}
+
+.admin {
+  color: #e21e1e;
+  font-weight: bold;
+}
+
+/* Chat Classes */
+.chatBorder {
+  border: 1px solid rgb(189, 189, 189);
+}
+
+/* Input */
+#Chat-Input {
+  /* IMPORTANT */
+  position: absolute;
+  display: flex;
+
+  /* Position */
+  bottom: 5%;
+  right: 1%;
+  transform: translate(1%, 5%);
+
+  /* Size */
+  width: 30%;
+  
+  background-color: var(--notificationBG);
+}
+
+/* Suggestions */
+#Chat-Suggestions {
+  /* IMPORTANT */
+  position: absolute;
+  display: flex;
+
+  /* Position */
+  bottom: 14%;
+  right: 1%;
+  transform: translate(1%, 14%);
+
+  /* Size */
+  width: 30%;
+  max-height: 20%;
+  padding: 10px;
+
+  overflow-y: scroll;
+  
+  background-color: var(--notificationBG);
+}
+
+#Chat-Suggestions::-webkit-scrollbar {
+  width: 5px;
+}
+
+#Chat-Suggestions::-webkit-scrollbar-thumb {
+  background: white !important;
+}
+
+.suggestions {
+  list-style-type: none;
+  padding: 0.5%;
+  padding-left: 1.4%;
+  font-size: 1.3vh;
+  box-sizing: border-box;
+  color: white;
+  /* background-color: rgba(44, 62, 80, 1.0); */
+  width: 100%;
+}
+
+.help {
+  color: #b0bbbd;
+  margin-top: 1%;
+  font-weight: normal;
+}
+
+.disabled {
+  color: #b0bbbd;
+}
+
+.suggestion {
+  margin-top: 0.5%;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

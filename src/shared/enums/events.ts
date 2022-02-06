@@ -17,8 +17,6 @@ export enum Events {
   playerDisconnected = "playerDropped",
   populationPedCreating = "populationPedCreating",
   playerSpawned = "playerSpawned",
-  sendMessage = "chat:addMessage",
-  onMessage = "chatMessage",
   chatSuggestion = "chat:addSuggestion",
 
   // Base Events
@@ -34,7 +32,17 @@ export enum Events {
   getPlayer = "astrid:server:getPlayer",
   receiveClientCB = "astrid:server:receiveClientCB",
 
+  // (Chat)
+  sendMessage = "astrid:server:sendMessage",
+
   // Astrid Client Events
   serverStarted = "astrid:client:serverStarted",
-  receiveServerCB = "astrid:client:recieveServerCB"
+  playerLoaded = "astrid:client:playerLoaded",
+  receiveServerCB = "astrid:client:recieveServerCB",
+
+  // (Chat)
+  sendClientMessage = "astrid:client:sendClientMessage",
+  sendSystemMessage = "astrid:client:sendSystemMessage",
+  addSuggestion = "astrid:client:addSuggestion",
+  removeSuggestion = "astrid:client:removeSuggestion"
 }

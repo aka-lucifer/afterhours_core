@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>Astrid Chat</title>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@500&family=Quicksand&display=swap" rel="stylesheet">
+    
+    <!--Google Icon Font -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,500i,700,700i" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="./libraries/css/all.css" />
+
+    <!-- Vuetify -->
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    
+    <!-- Material -->
+    <link rel="stylesheet" href="./libraries/css/material.css">
+
+    <!-- Default -->
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <v-app id="Astrid_Chat">
+      <div id="Chat-Messages">
+        <div v-for="(message, index) in chatMessages">
+          <div v-if="message.type == 'system'">
+            <div id="Chat-Message" class="killLog" v-if="message.notificationType == 'kill'">{{ message.contents }}</div>
+            <div id="Chat-Message" class="interaction" v-if="message.notificationType == 'interaction'">{{ message.contents }}</div>
+            <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'">{{ message.contents }}</div>
+            <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: {{ message.contents }}</div>
+            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): {{ message.contents }}</div>
+          </div>
+
+          <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
+          <div id="Chat-Message" class="global" v-else-if="message.type != 'system' && chatTypes[message.type] == 'global'">(Global | OOC - {{ message.sender}}): {{message.contents}}</div>
+          <div id="Chat-Message" class="admin" v-else-if="message.type != 'system' && chatTypes[message.type] == 'admin'">(Admin - {{ message.sender}}): {{message.contents}}</div>
+        </div>
+      </div>
+
+      <div id="Chat-Suggestions" class="chatBorder" v-show="showInput && currentSuggestions.length > 0">
+        <ul class="suggestions" class="chatBorder">
+
+          <li class="suggestion" v-for="s in currentSuggestions">
+            <p>
+              <span :class="{ 'disabled': s.disabled }">
+                Name: {{s.name}}
+              </span>
+              <span class="param"
+                      v-for="(p, index) in s.params"
+                      :class="{ 'disabled': p.disabled }">
+                [{{p.name}}]
+              </span>
+            </p>
+
+            <small class="help">
+              <template v-if="!s.disabled">
+                {{s.description}}
+              </template>
+
+              <template v-for="p in s.params" v-if="!p.disabled">
+                {{p.help}}
+              </template>
+            </small>
+          </li>
+        </ul>
+      </div>
+
+      <div id="Chat-Input" class="chatBorder" v-show="showInput">
+        <span v-bind:class="{'local': chatTypes[currentType] == 'local', 'global': chatTypes[currentType] == 'global', 'admin': chatTypes[currentType] == 'admin'}"
+          style="text-transform: uppercase; padding: 10px;">
+          {{ chatTypes[currentType] }}
+        </span>
+        <input ref="input" type="text" v-model="chatMessage" style="padding: 5px; color: white; width: 90%; outline: none;" placeholder="Enter chat message...">
+        <span style="float: right; padding: 10px;"><v-icon color="white">mdi-arrow-right-bold</v-icon></span>
+      </div>
+    </v-app>
+
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- Vutify & Vue.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="./libraries/js/vue-snotify.min.js"></script>
+
+    <!-- JQuery -->
+    <script src="./libraries/js/jquery.min.js"></script>
+
+    <!-- Default -->
+    <script src="events.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

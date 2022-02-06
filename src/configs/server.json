@@ -5,10 +5,10 @@
         "urls": {
             "connectionsURL": "https://discord.com/api/webhooks/937103967710761061/RWauR_xJqBVydEOtb9ugIEZJonR3Lgn4pg90KKTfw5IYxXSMZwjkonBUb8iTCsZm7xmm",
             "killURL": "",
-            "chatURL": "",
+            "chatURL": "https://discord.com/api/webhooks/939578616189157397/z-YgoqeIdu_O0eOXLFi8MUloV9pNVe0F56_frsIYlFtgBsV9kwYD2CSDUOvE1AbDRT7m",
             "actionURL": "https://discord.com/api/webhooks/937429667567251526/Ea6B-cFiBAKr_W3lY1JDM184f7S8WbP_m6DMB30YchL8uKUzCbJc857hP8ztoNAzV2s0",
             "anticheatURL": "https://discord.com/api/webhooks/938225013969002497/hdbFIDn-oqKNYyTCoWouEQpj-9apI-JavVUiO1jIfjd8gLa3xcpkxnxxIXeijxxqD97w"
         },
-        "footerLogo": "https://i.imgur.com/dAfJ9nu.jpg"
+        "footerLogo": "https://i.imgur.com/nZqsLQH.png"
     }
 }
