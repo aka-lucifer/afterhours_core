@@ -31,14 +31,11 @@ export class ChatManager {
         const command = args[0].toLowerCase();
         const registeredCommands = this.server.commandManager.Commands;
 
-        console.log("one!");
         if (registeredCommands.filter(cmd => cmd.name == command).length <= 0) {
-          console.log("two!");
           Error("Chat Manager", `Command (/${command}) doesn't exist!`)
           emitNet(Events.receiveServerCB, src, false, data);
           return;
         } else {
-          console.log("three!");
           args.splice(0, 1); // Remove the first argument (the command) from the args table.
           CancelEvent();
   
