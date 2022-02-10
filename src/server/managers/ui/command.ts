@@ -1,6 +1,8 @@
-import {Command} from "../../models/ui/chat/command";
 import {Server} from "../../server";
+
+import {Command} from "../../models/ui/chat/command";
 import {Player} from "../../models/database/player";
+
 import {Events} from "../../../shared/enums/events";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
 
@@ -23,8 +25,10 @@ export class CommandManager {
   }
 
   public createChatSuggestions(player: Player): void {
-    this.registeredCommands.forEach(command => {
-      command.argsRequired ? player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
+    this.registeredCommands.forEach((command, index) => {
+      if (player.GetRank >= command.permission) {
+        command.argsRequired ? player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
+      }
     });
   }
 }
