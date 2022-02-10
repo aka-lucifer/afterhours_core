@@ -52,7 +52,23 @@ export class PlayerManager {
     const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
     if (playerIndex != -1) {
       const player = await this.GetPlayer(playerHandle);
-      const tempData = `[${player.GetHandle}] - ${player.GetName}`;
+      const name = player.GetName;
+      const tempData = `[${player.GetHandle}] - ${name}`;
+
+      // Change Name Detection
+      const disconnectIndex = this.server.connectionsManager.disconnectedPlayers.findIndex(connectedPlayer => connectedPlayer.name == name);
+      if (disconnectIndex == -1) {
+        const license = await player.GetIdentifier("license");
+        const ip = await player.GetIdentifier("ip");
+        const hardwareId = player.HardwareId;
+
+        this.server.connectionsManager.disconnectedPlayers.push({
+          name: name,
+          license: license,
+          ip: ip,
+          hardwareId: hardwareId
+        });
+      }
 
       if (player) {
         await player.Disconnect(disconnectReason)
