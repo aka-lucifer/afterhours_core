@@ -8,7 +8,7 @@ import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { Events } from "../../../shared/enums/events";
 import { Ranks } from "../../../shared/enums/ranks";
-import {ChatTypes} from "../../../shared/enums/ui/chat/types";
+import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/chat/types";
 import { Callbacks } from "../../../shared/enums/callbacks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json";
@@ -47,7 +47,8 @@ export class ChatManager {
                     registeredCommands[a].callback(player.GetHandle, args);
                     emitNet(Events.receiveServerCB, src, true, data);
                   } else {
-                    Error("Chat Manager", "All command arguments must be entered!")
+                    Error("Chat Manager", "All command arguments must be entered!");
+                    await player.TriggerEvent(Events.sendSystemMessage, new Message("All command arguments must be entered!", SystemTypes.Error));
                     emitNet(Events.receiveServerCB, src, false, data);
                   }
                 } else {
@@ -56,6 +57,7 @@ export class ChatManager {
                 }
               } else {
                 Error("Chat Manager", "Access Denied!");
+                await player.TriggerEvent(Events.sendSystemMessage, new Message("Access Denied!", SystemTypes.Error));
                 emitNet(Events.receiveServerCB, src, false, data);
               }
             }
@@ -95,8 +97,6 @@ export class ChatManager {
         }
 
         // do blacklist check in here
-        // proximity chat here if nothing passed.
-        // roles before names
 
         const chatLog = new ChatLog(player, message);
         await chatLog.Store();
