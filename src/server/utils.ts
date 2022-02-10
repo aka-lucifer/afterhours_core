@@ -94,3 +94,33 @@ export function RandomBetween(min: number, max: number): number {
 export function NumToVector3(numberData: number[]): Vector3 {
   return new Vector3(numberData[0], numberData[1], numberData[2])
 }
+
+
+
+export async function HexadecimalToDec(s: any): Promise<string> {
+
+  function add(x, y) {
+    let c = 0;
+    const r = [];
+    x = x.split('').map(Number);
+    y = y.split('').map(Number);
+    while(x.length || y.length) {
+      const s = (x.pop() || 0) + (y.pop() || 0) + c;
+      r.unshift(s < 10 ? s : s - 10);
+      c = s < 10 ? 0 : 1;
+    }
+    if(c) r.unshift(c);
+    return r.join('');
+  }
+
+  let dec = '0';
+  s.split('').forEach(function(chr) {
+    const n = parseInt(chr, 16);
+    for(let t = 8; t; t >>= 1) {
+      dec = add(dec, dec);
+      if(n & t) dec = add(dec, '1');
+    }
+  });
+
+  return dec;
+}

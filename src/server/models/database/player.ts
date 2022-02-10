@@ -1,3 +1,4 @@
+import axios, { AxiosError} from "axios";
 import { Playtime } from "./playtime";
 import * as Utils from "../../utils";
 
@@ -13,11 +14,13 @@ import { Events } from "../../../shared/enums/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json"
+import {Delay} from "../../utils";
 
 export class Player {
   public id: number;
   private license: string;
   private hardwareId: string;
+  public steamAvatar: string;
   public handle: string;
   private readonly name: string;
   private rank: number;
@@ -112,7 +115,7 @@ export class Player {
   public async Exists(): Promise<boolean> {
     if (GetConvar('sv_lan', "off") == "false") {
       this.license = await this.GetIdentifier("license");
-      const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
+      const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `playtime`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
         identifier: this.license
       });
 
@@ -120,11 +123,12 @@ export class Player {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
         this.rank = results.data[0].rank;
+        this.playtime = results.data[0].playtime;
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
       }
     } else {
-      const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `whitelisted` FROM `players` WHERE `steam_hex` = :steam OR `ip` = :ip", {
+      const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `playtime`, `whitelisted` FROM `players` WHERE `steam_hex` = :steam OR `ip` = :ip", {
         steam: await this.GetIdentifier("steam"),
         ip: await this.GetIdentifier("ip")
       });
@@ -133,6 +137,7 @@ export class Player {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
         this.rank = results.data[0].rank;
+        this.playtime = results.data[0].playtime;
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
       }
@@ -183,7 +188,6 @@ export class Player {
       });
 
       if (playerData.data.length > 0) {
-
         // Get Player Data
         this.id = playerData.data[0].player_id;
         this.hardwareId = playerData.data[0].hardware_id;
@@ -223,6 +227,28 @@ export class Player {
     return emitNet(eventName, this.handle, ...args);
   }
 
+  public async GetProfileAvatar(steamHex: string): Promise<string> {
+    // console.log("DO IT!");
+    const profileId = await Utils.HexadecimalToDec(steamHex)
+    const steamAPIKey = GetConvar('steam_webApiKey', "off");
+    let avatarUrl = "";
+    let doneProcessing = false;
+
+    axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPIKey}&steamids=${profileId}`, {}).then(response => {
+      // console.log("post repsonse", response.data.response.players[0].avatarfull);
+      avatarUrl = response.data.response.players[0].avatarfull;
+      doneProcessing = true;
+    }).catch(error => {
+      console.log("post error", error);
+    });
+
+    while (!doneProcessing) {
+      await Delay(0);
+    }
+
+    return avatarUrl;
+  }
+
   public async Disconnect(disconnectReason: string): Promise<boolean> { // Handles updating your disconnection timestamp and your total playtime
     const leaveTime = await Utils.GetTimestamp();
     const updatedDisconnection = await Database.SendQuery("UPDATE `players` SET `playtime` = :newPlaytime, `last_disconnection` = :newDisconnection WHERE `identifier` = :identifier", {
@@ -231,10 +257,11 @@ export class Player {
       newDisconnection: leaveTime
     });
 
+    const discord = await this.GetIdentifier("discord");
     await server.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
       color: EmbedColours.Red,
       title: "__Player Disconnected__",
-      description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n**Name**: ${this.GetName}\n**Rank**: ${Ranks[this.rank]}\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n**Whitelisted**: ${this.whitelisted}\n**Identifiers**: ${JSON.stringify(this.identifiers)}`,
+      description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n**Name**: ${this.GetName}\n**Rank**: ${Ranks[this.rank]}\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n**Whitelisted**: ${this.whitelisted}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(this.identifiers)}`,
       footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
     }]}));
 
