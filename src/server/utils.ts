@@ -1,5 +1,15 @@
-// import { Player } from "./models/database/player";
 import { Vector3 } from "fivem-js";
+
+import {server} from "./server";
+import {LogTypes} from "./enums/logTypes";
+
+import WebhookMessage from "./models/webhook/discord/webhookMessage";
+
+import {EmbedColours} from "../shared/enums/embedColours";
+import {ChatTypes} from "../shared/enums/ui/chat/types";
+import {Ranks} from "../shared/enums/ranks";
+import sharedConfig from "../configs/shared.json";
+import {Player} from "./models/database/player";
 
 /**
  * @param reference Title for organisation logs
@@ -33,6 +43,11 @@ export function Error(reference: string, message: string): void {
   console.log(`[^8ERROR^7]\t[^8${reference}^7] ${message}`);
 }
 
+/**
+ *
+ * @param hashValue A string to convert to a hash
+ * @returns: A converted string into a hash format
+ */
 export function GetHash(hashValue: string): string | number {
   if (typeof hashValue == "number") return hashValue;
   if (typeof hashValue == "string") return GetHashKey(hashValue);
@@ -41,8 +56,8 @@ export function GetHash(hashValue: string): string | number {
 /**
  * @param c1 First Coord location
  * @param c2 Second Coord location
- * @param useZCoord Whether or not to use the Z coordinate to determine your distance.
- * @returns 
+ * @param useZCoord Whether or not to use the Z coordinate to determine your distance (2D - false | 3D - true).
+ * @returns: The distance between the two provided locations, either in 2D or 3D.
  */
 export function Dist(c1: Vector3, c2: Vector3, useZCoord: boolean): number {
   if (useZCoord) {
@@ -72,16 +87,30 @@ function TwoDigits(d) {
   if(-10 < d && d < 0) return "-0" + (-1*d).toString();
   return d.toString();
 }
-
-export function Capitalize(stringMsg: string): string {
-  if (typeof stringMsg !== 'string') return ''
-  return stringMsg.charAt(0).toUpperCase() + stringMsg.slice(1)
+/**
+ *
+ * @param content The string to capitalize
+ * @returns: Capitalizes the first letter of the provided strings
+ */
+export function Capitalize(content: string): string {
+  if (typeof content !== 'string') return ''
+  return content.charAt(0).toUpperCase() + content.slice(1)
 }
 
+/**
+ *
+ * @param ms The amount of time in milliseconds
+ * @returns: Makes the program sleep for a provided amount of milliseconds
+ */
 export function Delay(ms : number) : Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
-
+/**
+ *
+ * @param min The minimum number to start at
+ * @param max The maximum number to start at
+ * @returns: A random number between the minimum and maximum number
+ */
 export function RandomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -89,15 +118,18 @@ export function RandomBetween(min: number, max: number): number {
 /**
  * 
  * @param numberData The number array
- * @returns The number array data converted into a Vector3 format
+ * @returns: The number array data converted into a Vector3 format
  */
 export function NumToVector3(numberData: number[]): Vector3 {
   return new Vector3(numberData[0], numberData[1], numberData[2])
 }
 
-
-
-export async function HexadecimalToDec(s: any): Promise<string> {
+/**
+ *
+ * @param hexadecimal The hexadecimal string to convert to decimal
+ * @returns: Converted the provided hexadecimal to a decimal
+ */
+export async function HexadecimalToDec(hexadecimal: any): Promise<string> {
 
   function add(x, y) {
     let c = 0;
@@ -114,7 +146,7 @@ export async function HexadecimalToDec(s: any): Promise<string> {
   }
 
   let dec = '0';
-  s.split('').forEach(function(chr) {
+  hexadecimal.split('').forEach(function(chr) {
     const n = parseInt(chr, 16);
     for(let t = 8; t; t >>= 1) {
       dec = add(dec, dec);
@@ -123,4 +155,35 @@ export async function HexadecimalToDec(s: any): Promise<string> {
   });
 
   return dec;
+}
+
+/**
+ *
+ * @param name The name of the command
+ * @param player The player who sent the command
+ * @param args Command args or message from the string
+ * @returns: Logs the used command to the chat log webhook
+ */
+export async function logCommand(name: string, player: Player, args?: string): Promise<void> {
+  const sendersDisc = await player.GetIdentifier("discord");
+
+  if (args) {
+    await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
+      username: "Chat Logs", embeds: [{
+        color: EmbedColours.Green,
+        title: "__Chat Command__",
+        description: `A player has sent a chat message.\n\n**Command**: ${name}\n**Args**: ${args}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      }]
+    }));
+  } else {
+    await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
+      username: "Chat Logs", embeds: [{
+        color: EmbedColours.Green,
+        title: "__Chat Command__",
+        description: `A player has sent a chat message.\n\n**Command**: ${name}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      }]
+    }));
+  }
 }

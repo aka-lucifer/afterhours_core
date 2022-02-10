@@ -18,7 +18,7 @@ import {CommandManager} from "./managers/ui/command";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
-import {Error, GetHash, Inform, Log} from "./utils";
+import {Error, GetHash, Inform, Log, logCommand} from "./utils";
 
 import {Events} from "../shared/enums/events";
 import {Ranks} from "../shared/enums/ranks";
@@ -118,12 +118,14 @@ export class Server {
       help: "The spawn name of the vehicle, you're wanting to spawn."
     }], true, async (source: string, args: any[]) => {
       if (args[0]) {
+        const player = await this.playerManager.GetPlayer(source);
         const vehModel = String(args[0]);
         const myPed = GetPlayerPed(source);
         const myPosition = GetEntityCoords(myPed);
         const vehicle = CreateVehicle(await GetHash(vehModel), myPosition[0], myPosition[1], myPosition[2], GetEntityHeading(myPed), true, false);
         SetPedIntoVehicle(myPed, vehicle, -1);
-        SetVehicleNumberPlateText(vehicle, "FWarfare");
+        SetVehicleNumberPlateText(vehicle, "Astrid");
+        await logCommand("/veh", player, "");
       } else {
         Error("Restore Command", "No 1st argument provided!");
       }
@@ -137,6 +139,7 @@ export class Server {
         const loaded = await player.Load();
         if (loaded) {
           DeleteEntity(currVeh);
+          await logCommand("/delveh", player);
           Error("Del Veh Cmd", "Vehicle Deleted");
           // player.TriggerEvent(Events.systemMessage, SystemMessages.Action, "Vehicle Deleted.")
         }
@@ -148,6 +151,7 @@ export class Server {
       const messageContents = args.join(" ");
       if (messageContents.length > 0) {
         await player.TriggerEvent(Events.sendSystemMessage, new Message(messageContents, SystemTypes.Me), player.GetName);
+        await logCommand("/me", player, messageContents);
       } else {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
       }
