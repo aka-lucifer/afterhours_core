@@ -1,4 +1,4 @@
-import { World, Vehicle} from "fivem-js"
+import { World, Vehicle, Game, Vector3, VehicleSeat} from "fivem-js"
 
 import { Player } from "./models/player";
 
@@ -8,11 +8,13 @@ import { ChatManager } from "./managers/ui/chat";
 import { CuffingStuff } from "./cuffing";
 
 import Config from "../configs/client.json";
-import { closestPed, Inform } from "./utils";
+import {closestPed, GetHash, Inform} from "./utils";
 
 import { Events } from "../shared/enums/events";
 import {Callbacks} from "../shared/enums/callbacks";
 import sharedConfig from "../configs/shared.json";
+import {Weapons} from "../shared/enums/weapons";
+import {GameEvents} from "../shared/enums/gameEvents";
 
 let takingScreenshot = false;
 
@@ -39,6 +41,7 @@ export class Client {
     on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
     onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
+    onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
@@ -72,8 +75,19 @@ export class Client {
     this.chatManager.init();
 
     this.cuffing = new CuffingStuff();
-
     Inform(sharedConfig.serverName, "Successfully Loaded!");
+
+    RegisterCommand("pistol", () => {
+      const currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+      if (currWeapon == Weapons.Pistol) {
+        console.log(`Pistol Data: ${JSON.stringify(sharedConfig.weapons[currWeapon])}`)
+      }
+    }, false);
+
+    RegisterCommand("tpm", () => {
+      Game.PlayerPed.Position = new Vector3(1649.11, 3237.66, 40.49);
+      Game.PlayerPed.Heading = 280.32;
+    }, false);
   }
 
   // Events
@@ -95,6 +109,25 @@ export class Client {
       vehicle.delete();
       vehicle.markAsNoLongerNeeded();
     });
+  }
+
+  private EVENT_gameEvent(eventName: string, eventArgs: any[]): void {
+    if (eventName == GameEvents.entityDamaged) {
+      const damagedEntity = eventArgs[0];
+      const attackingEntity = eventArgs[1];
+
+      if (IsPedAPlayer(damagedEntity) && IsPedAPlayer(attackingEntity) && damagedEntity == Game.PlayerPed.Handle) {
+        const isFatal = eventArgs[5];
+        if (isFatal) {
+          emitNet(Events.logDeath, {
+            type: GetEntityType(attackingEntity),
+            inVeh: IsPedInAnyVehicle(attackingEntity, false) && GetPedInVehicleSeat(GetVehiclePedIsIn(attackingEntity, false), VehicleSeat.Driver),
+            weapon: eventArgs[6],
+            attacker: GetPlayerServerId(NetworkGetPlayerIndexFromPed(eventArgs[1]))
+          });
+        }
+      }
+    }
   }
 
   // Callbacks

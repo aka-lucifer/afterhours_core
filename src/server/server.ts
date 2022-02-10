@@ -1,3 +1,5 @@
+import {VehicleSeat} from "fivem-js";
+
 import {Player} from "./models/database/player";
 import {Ban} from "./models/database/ban";
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
@@ -18,7 +20,7 @@ import {CommandManager} from "./managers/ui/command";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
-import {Error, GetHash, Inform, Log, logCommand} from "./utils";
+import {Capitalize, Dist, Error, GetHash, Inform, Log, logCommand} from "./utils";
 
 import {Events} from "../shared/enums/events";
 import {Ranks} from "../shared/enums/ranks";
@@ -30,6 +32,7 @@ import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/chat/types";
 
 export class Server {
+  // Debug Data
   private debugMode: boolean;
   private serverWhitelisted: boolean;
   private maxPlayers: number;
@@ -55,22 +58,9 @@ export class Server {
     this.maxPlayers = GetConvarInt("sv_maxclients", 32);
 
     // Events
-    onNet(Events.resourceStart, async(resourceName: string) => { // Database Connection Processor
-      if (GetCurrentResourceName() == resourceName) {
-        const [dbStatus, connectionError] = await Database.isConnected();
-        if (!dbStatus){ // DB offline or failed connection
-          if (this.debugMode) Error("Database Connection", `Unable to connect to the database! | ${connectionError}`);
-          return;
-        } else { // DB online, initiate all required managers
-          if (this.debugMode) Inform("Database Connection", "Database connection successful!");
-          await this.initialize();
-        }
-      }
-    });
-
-    onNet(Events.playerConnected, async(oldId: number, restarted: boolean = false) => {
-      await this.playerConnected(oldId, restarted);
-    });
+    onNet(Events.resourceStart, this.EVENT_resourceStarted.bind(this));
+    onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
+    onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
   }
 
   // Get Requests
@@ -218,7 +208,20 @@ export class Server {
   }
 
   // Events
-  private async playerConnected(oldId: number, restarted: boolean): Promise<void> {
+  private async EVENT_resourceStarted(resourceName: string): Promise<void> { // Database Connection Processor
+    if (GetCurrentResourceName() == resourceName) {
+      const [dbStatus, connectionError] = await Database.isConnected();
+      if (!dbStatus){ // DB offline or failed connection
+        if (this.debugMode) Error("Database Connection", `Unable to connect to the database! | ${connectionError}`);
+        return;
+      } else { // DB online, initiate all required managers
+        if (this.debugMode) Inform("Database Connection", "Database connection successful!");
+        await this.initialize();
+      }
+    }
+  }
+
+  private async EVENT_playerConnected(oldId: number, restarted: boolean = false): Promise<void> {
     const src = global.source;
     let player: Player;
     let loadedPlayer;
@@ -275,10 +278,33 @@ export class Server {
               title: "__Player Connected__",
               description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-          }]}));
+            }]}));
         }
       }
     }
+  }
+
+  private async EVENT_playerKilled(data: Record<string, any>): Promise<void> {
+    const src = source;
+    const player = await this.playerManager.GetPlayer(src);
+    const killer = await this.playerManager.GetPlayer(data.attacker);
+    const weaponData = sharedConfig.weapons[data.weapon];
+
+    if (!data.inVeh) {
+      const killDistance = Dist(player.Position(), killer.Position(), false);
+      emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+    }
+
+    const victimsDisc = await player.GetIdentifier("discord");
+    const killersDisc = await killer.GetIdentifier("discord");
+    await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
+      username: "Kill Logs", embeds: [{
+        color: EmbedColours.Green,
+        title: "__Player Killed__",
+        description: `A player has been killed.\n\n**Victim**: ${player.GetName}\n**Killer**: ${killer.GetName}\n**Weapon**: ${weaponData.label}\n**Cause**: ${Capitalize(weaponData.reason)}\n**Victims Discord**: ${victimsDisc != "Unknown" ? `<@${victimsDisc}>` : victimsDisc}\n**Killers Discord**: ${killersDisc != "Unknown" ? `<@${killersDisc}>` : killersDisc}`,
+        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      }]
+    }));
   }
 }
 

@@ -1,4 +1,6 @@
 import axios, { AxiosError} from "axios";
+import { Vector3 } from "fivem-js";
+
 import { Playtime } from "./playtime";
 import * as Utils from "../../utils";
 
@@ -14,7 +16,7 @@ import { Events } from "../../../shared/enums/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json"
-import {Delay} from "../../utils";
+import {Delay, NumToVector3} from "../../utils";
 
 export class Player {
   public id: number;
@@ -221,6 +223,10 @@ export class Player {
 
   public async Whitelisted(): Promise<boolean> {
     return this.whitelisted;
+  }
+
+  public Position(): Vector3 {
+    return NumToVector3(GetEntityCoords(GetPlayerPed(this.GetHandle)));
   }
 
   public async TriggerEvent(eventName: Events, ...args: any[]): Promise<void> {

@@ -31,6 +31,7 @@ export enum Events {
   // Astrid Server Events
   getPlayer = "astrid:server:getPlayer",
   receiveClientCB = "astrid:server:receiveClientCB",
+  logDeath = "astrid:server:logDeath",
 
   // (Chat)
   sendMessage = "astrid:server:sendMessage",

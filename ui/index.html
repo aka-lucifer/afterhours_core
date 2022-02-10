@@ -34,12 +34,12 @@
       <div id="Chat-Messages">
         <div v-for="(message, index) in chatMessages">
           <div v-if="message.type == 'system'">
-            <div id="Chat-Message" class="killLog" v-if="message.notificationType == 'kill'">{{ message.contents }}</div>
+            <div id="Chat-Message" class="killLog" v-if="message.notificationType == 'kill'">(Global): {{ message.contents }}</div>
             <div id="Chat-Message" class="interaction" v-if="message.notificationType == 'interaction'">{{ message.contents }}</div>
             <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'">{{ message.contents }}</div>
             <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: {{ message.contents }}</div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): {{ message.contents }}</div>
-            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">(Me - {{ message.sender}}): {{ message.contents }}</div>
+            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">*{{ message.sender}} {{ message.contents }}*</div>
           </div>
 
           <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
