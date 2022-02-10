@@ -39,6 +39,7 @@
             <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'">{{ message.contents }}</div>
             <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: {{ message.contents }}</div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): {{ message.contents }}</div>
+            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">(Me - {{ message.sender}}): {{ message.contents }}</div>
           </div>
 
           <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
@@ -53,7 +54,7 @@
           <li class="suggestion" v-for="s in currentSuggestions">
             <p>
               <span :class="{ 'disabled': s.disabled }">
-                Name: {{s.name}}
+                {{s.name}}
               </span>
               <span class="param"
                       v-for="(p, index) in s.params"

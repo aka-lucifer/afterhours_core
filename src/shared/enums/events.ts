@@ -39,6 +39,7 @@ export enum Events {
   serverStarted = "astrid:client:serverStarted",
   playerLoaded = "astrid:client:playerLoaded",
   receiveServerCB = "astrid:client:recieveServerCB",
+  clearWorldVehs = "astrid:client:clearWorldVehs",
 
   // (Chat)
   sendClientMessage = "astrid:client:sendClientMessage",

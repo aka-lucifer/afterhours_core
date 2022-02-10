@@ -33,6 +33,7 @@ const Chat = new Vue({
     },
 
     AddSuggestion(data) {
+      console.log("Push suggestion data", JSON.stringify(data));
       this.suggestions.push(data);
     },
     
@@ -150,7 +151,7 @@ const Chat = new Vue({
 
   computed: {
     currentSuggestions() {
-      if (this.chatMessage === "" || this.chatManager === undefined) {
+      if (this.chatMessage === "" || this.chatMessage == null) {
         return [];
       }
 
