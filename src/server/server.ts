@@ -3,13 +3,18 @@ import {Ban} from "./models/database/ban";
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
 import {ClientCallback} from "./models/clientCallback";
 
+// Player Control
 import {BanManager} from "./managers/database/bans";
 import {PlayerManager} from "./managers/players";
-import {ClientCallbackManager} from "./managers/clientCallbacks";
 import {ConnectionsManager} from "./managers/connections";
+// Client Callbacks
+import {ClientCallbackManager} from "./managers/clientCallbacks";
 import * as Database from "./managers/database/database"
+// Logging
 import {LogManager} from "./managers/logging";
+// Chat
 import {ChatManager} from "./managers/ui/chat";
+import {CommandManager} from "./managers/ui/command";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
@@ -23,7 +28,6 @@ import {Callbacks} from "../shared/enums/callbacks";
 import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/chat/types";
-import {CommandManager} from "./managers/ui/command";
 
 export class Server {
   private debugMode: boolean;
@@ -33,7 +37,7 @@ export class Server {
   // Player Control
   public banManager: BanManager;
   public playerManager: PlayerManager;
-  private connectionsManager: ConnectionsManager;
+  public connectionsManager: ConnectionsManager;
 
   // Client Callbacks
   private clientCallbackManager: ClientCallbackManager;
@@ -105,7 +109,6 @@ export class Server {
     this.registerCommands();
     this.registerExports();
 
-    emitNet(Events.serverStarted, -1);
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
 
@@ -149,6 +152,10 @@ export class Server {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
       }
     }, Ranks.User);
+
+    new Command("vehclear", "Clear the vehicles in the area", [], false, async(source: string) => {
+      emitNet(Events.clearWorldVehs, -1);
+    }, Ranks.Admin);
   }
   private registerExports(): void {
     global.exports("getRanks", async() => {
@@ -226,18 +233,46 @@ export class Server {
       Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
 
       // Send player data to client
-      emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
-      this.commandManager.createChatSuggestions(player);
+      setTimeout(() => { // Need a 0ms timeout otherwise the suggestions are sent over before the chat manager is initialized
+        emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
+        this.commandManager.createChatSuggestions(player);
+      }, 0);
+
+      const discord = await player.GetIdentifier("discord");
 
       if (!restarted) {
-        const discord = await player.GetIdentifier("discord");
+        const rejoined = this.connectionsManager.disconnectedPlayers.findIndex(tempPlayer => tempPlayer.license == player.GetIdentifier("license") || tempPlayer.ip == player.GetIdentifier("ip") || tempPlayer.hardwareId == player.HardwareId);
 
-        await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Player Connected__",
-          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
-          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-        }]}));
+        if (rejoined != -1) { // If the player hasn't left the server
+          if (this.connectionsManager.disconnectedPlayers[rejoined].name != player.GetName) {
+            await this.logManager.Send(LogTypes.Anticheat, new WebhookMessage({
+              username: "Anticheat Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Name Change Detected__",
+                description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+            this.connectionsManager.disconnectedPlayers.splice(rejoined, 1);
+          } else {
+            await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+                color: EmbedColours.Green,
+                title: "__Player Connected__",
+                description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]}));
+          }
+        } else {
+          await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+              color: EmbedColours.Green,
+              title: "__Player Connected__",
+              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]}));
+        }
       }
     }
   }

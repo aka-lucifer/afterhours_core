@@ -1,6 +1,5 @@
-import { Game } from "fivem-js"
+import { World, Vehicle} from "fivem-js"
 
-import { ServerCallback} from "./models/serverCallback";
 import { Player } from "./models/player";
 
 import { RichPresence } from "./managers/richPresence";
@@ -39,7 +38,7 @@ export class Client {
     // Events
     on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
-    onNet(Events.serverStarted, this.initialize.bind(this));
+    onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
@@ -64,7 +63,7 @@ export class Client {
   }
 
   // Methods
-  private initialize(): void {
+  public initialize(): void {
     this.richPresence = new RichPresence(client);
     this.serverCallbackManager = new ServerCallbackManager(client);
     
@@ -90,6 +89,14 @@ export class Client {
     this.chatManager.setup();
   }
 
+  private EVENT_clearVehs(): void {
+    const worldVehs = World.getAllVehicles();
+    worldVehs.forEach((vehicle: Vehicle, index) => {
+      vehicle.delete();
+      vehicle.markAsNoLongerNeeded();
+    });
+  }
+
   // Callbacks
   private CALLBACK_screenshot(data): void { // Screenshot Client CB
     if (!takingScreenshot) {
@@ -110,3 +117,4 @@ export class Client {
 }
 
 const client = new Client();
+client.initialize();
