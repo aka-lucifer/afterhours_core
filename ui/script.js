@@ -73,21 +73,26 @@ const Chat = new Vue({
     Close() {
       if (this.showInput) this.showInput = false;
       clearTimeout(this.focusTimer);
-      
-      if (this.closeTimeout === undefined) {
-        this.closeTimeout = setTimeout(() => {
-          if (!this.showInput) { // Double check if chat isn't toggled
-            $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
 
-            clearTimeout(this.closeTimeout);
-            this.closeTimeout = null;
-            
-            setTimeout(() => {
-              $("#Chat-Messages").css("display", "none");
-            }, 500);
-          }
-        }, 4700);
+      // console.log("CLOSE TIMEOUT");
+
+      if (this.closeTimeout === undefined) {
+        clearTimeout(this.closeTimeout);
+        this.closeTimeout = undefined;
       }
+
+      this.closeTimeout = setTimeout(() => {
+        if (!this.showInput) { // Double check if chat isn't toggled
+          $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
+
+          clearTimeout(this.closeTimeout);
+          this.closeTimeout = null;
+
+          setTimeout(() => {
+            $("#Chat-Messages").css("display", "none");
+          }, 500);
+        }
+      }, 4700);
       this.Post("CLOSE_CHAT");
     },
 
