@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `chat_logs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `player_id` int(11) NOT NULL,
   `message` varchar(300) NOT NULL,
+  `type` int(11) NOT NULL DEFAULT 0,
   `sent` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `player_id` (`player_id`),
