@@ -15,7 +15,6 @@ export class Playtime {
 
   // Methods
   public async FormatTime(): Promise<string> {
-    console.log(this.seconds, this.days, this.hours, this.minutes);
     if (this.days > 0) {
       return `${this.days}d ${this.hours}h ${this.minutes}m`;
     } else if (this.days <= 0 && this.hours > 0) {
