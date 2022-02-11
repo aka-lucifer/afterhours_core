@@ -4,6 +4,7 @@ import {LogTypes} from "../../enums/logTypes";
 
 import { ChatLog } from "../../models/database/chatLog";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";
+import {Command} from "../../models/ui/chat/command";
 
 import { Message } from "../../../shared/models/ui/chat/message";
 import { Events } from "../../../shared/enums/events";
@@ -15,6 +16,7 @@ import sharedConfig from "../../../configs/shared.json";
 
 export class ChatManager {
   private server: Server;
+  private chatFrozen: boolean = false;
 
   constructor(server: Server) {
     this.server = server;
@@ -111,5 +113,24 @@ export class ChatManager {
         }]}));
       }
     });
+  }
+
+  public init(): void {
+    new Command("clearchat", "Clears all of the chats messages", [], false, async(source: string) => {
+      const player = await this.server.playerManager.GetPlayer(source);
+      emitNet(Events.clearChat, -1);
+      emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been cleared by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement), player.GetName);
+    }, Ranks.Admin);
+
+    new Command("freezechat", "Freezes the chat", [], false, async(source: string) => {
+      const player = await this.server.playerManager.GetPlayer(source);
+      this.chatFrozen = !this.chatFrozen;
+      emitNet(Events.freezeChat, -1, this.chatFrozen);
+      if (this.chatFrozen) {
+        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been frozen by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement), player.GetName);
+      } else {
+        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been unfrozen by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement), player.GetName);
+      }
+    }, Ranks.Admin);
   }
 }

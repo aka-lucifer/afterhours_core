@@ -33,7 +33,7 @@ export enum Events {
   receiveClientCB = "astrid:server:receiveClientCB",
   logDeath = "astrid:server:logDeath",
 
-  // (Chat)
+  // (Chat Server)
   sendMessage = "astrid:server:sendMessage",
 
   // Astrid Client Events
@@ -42,9 +42,11 @@ export enum Events {
   receiveServerCB = "astrid:client:recieveServerCB",
   clearWorldVehs = "astrid:client:clearWorldVehs",
 
-  // (Chat)
+  // (Chat Client)
   sendClientMessage = "astrid:client:sendClientMessage",
   sendSystemMessage = "astrid:client:sendSystemMessage",
   addSuggestion = "astrid:client:addSuggestion",
-  removeSuggestion = "astrid:client:removeSuggestion"
+  removeSuggestion = "astrid:client:removeSuggestion",
+  clearChat = "astrid:client:clearChat",
+  freezeChat = "astrid:client:freezeChat"
 }

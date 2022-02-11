@@ -94,6 +94,7 @@ export class Server {
     // Chat
     this.commandManager = new CommandManager(server);
     this.chatManager = new ChatManager(server);
+    this.chatManager.init();
 
     // Run Manager Methods
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager

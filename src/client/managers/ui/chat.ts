@@ -26,6 +26,8 @@ export class ChatManager {
     onNet(Events.addSuggestion, this.EVENT_addSuggestion.bind(this));
     onNet(Events.sendClientMessage, this.EVENT_newMsg.bind(this))
     onNet(Events.sendSystemMessage, this.EVENT_systemMsg.bind(this));
+    onNet(Events.clearChat, this.EVENT_clearChat.bind(this));
+    onNet(Events.freezeChat, this.EVENT_freezeChat.bind(this));
   }
 
   public init(): void {
@@ -57,17 +59,33 @@ export class ChatManager {
     RegisterKeyMapping("open_chat", "Opens the chat", "keyboard", "T");
     RegisterCommand("open_chat", () => {
       if (!IsPauseMenuActive()) {
-        if (this.chatState != ChatStates.Hidden && this.chatState != ChatStates.Disabled) {
-          this.chatState = ChatStates.Open;
-          SetNuiFocus(true, true);
-          SendNuiMessage(JSON.stringify({
-            event: NuiMessages.OpenChat,
-            data: {
-              toggle: true
+        if (this.chatState != ChatStates.Hidden) {
+          if (this.client.player.Rank >= Ranks.Admin) {
+            console.log("CAN OPEN CHAT EVEN IF ITS DISABLED AS YOUR STAFF");
+            this.chatState = ChatStates.Open;
+            SetNuiFocus(true, true);
+            SendNuiMessage(JSON.stringify({
+              event: NuiMessages.OpenChat,
+              data: {
+                toggle: true
+              }
+            }))
+          } else {
+            if (this.chatState != ChatStates.Disabled) {
+              this.chatState = ChatStates.Open;
+              SetNuiFocus(true, true);
+              SendNuiMessage(JSON.stringify({
+                event: NuiMessages.OpenChat,
+                data: {
+                  toggle: true
+                }
+              }))
+            } else {
+              console.log("CANT OPEN CHAT AS ITS DISABLED BY STAFF!");
             }
-          }))
+          }
         } else {
-          console.log("Chat is hidden or disabled!");
+          console.log("CANT OPEN CHAT AS ITS HIDDEN!");
         }
       }
     }, false);
@@ -159,5 +177,19 @@ export class ChatManager {
         sender: sender,
       }
     }));
+  }
+
+  private EVENT_clearChat(): void {
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.ClearChat
+    }))
+  }
+
+  private EVENT_freezeChat(freezeState: boolean): void {
+    if (freezeState) {
+      this.chatState = ChatStates.Disabled;
+    } else {
+      this.chatState = ChatStates.Closed;
+    }
   }
 }

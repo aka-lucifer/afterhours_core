@@ -38,6 +38,7 @@
             <div id="Chat-Message" class="interaction" v-if="message.notificationType == 'interaction'">{{ message.contents }}</div>
             <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'">{{ message.contents }}</div>
             <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: {{ message.contents }}</div>
+            <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]:</span><span style="color: white; font-weight: bold;"> {{ message.contents }}</span></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): {{ message.contents }}</div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">*{{ message.sender}} {{ message.contents }}*</div>
           </div>

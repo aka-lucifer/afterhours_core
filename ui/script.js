@@ -4,6 +4,7 @@ const Chat = new Vue({
   data: {
     // Important Data
     resource: "astrid_core",
+    chatToggled: true,
 
     // Chat Types
     chatTypes: ["local", "global"],
@@ -37,7 +38,7 @@ const Chat = new Vue({
       this.suggestions.push(data);
     },
     
-    Toggle(data) {
+    Open(data) {
       setTimeout(() => {
         if (data.toggle) {
           // Clear close timeout if exists
@@ -119,30 +120,38 @@ const Chat = new Vue({
 
     NewMsg(data) {
       this.chatMessages.push(data);
-      
-      if (!$('#Chat-Messages').is(":visible")) {
-        $("#Chat-Messages").css("display", "block");
-        $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
-      }
-      
-      setTimeout(() => {
-        $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight; // Scroll to bottom of messages
-      }, 10);
 
-      if (this.closeTimeout == undefined) {
-        this.closeTimeout = setTimeout(() => {
-          if (!this.showInput) { // Double check if chat isn't toggled
-            $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
+      if (this.chatToggled) {
+        if (!$('#Chat-Messages').is(":visible")) {
+          $("#Chat-Messages").css("display", "block");
+          $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
+        }
 
-            clearTimeout(this.closeTimeout);
-            this.closeTimeout = null;
-            
-            setTimeout(() => {
-              $("#Chat-Messages").css("display", "none");
-            }, 500);
-          }
-        }, 2500);
+        setTimeout(() => {
+          $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight; // Scroll to bottom of messages
+        }, 10);
+
+        if (this.closeTimeout == undefined) {
+          this.closeTimeout = setTimeout(() => {
+            if (!this.showInput) { // Double check if chat isn't toggled
+              $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
+
+              clearTimeout(this.closeTimeout);
+              this.closeTimeout = null;
+
+              setTimeout(() => {
+                $("#Chat-Messages").css("display", "none");
+              }, 500);
+            }
+          }, 2500);
+        }
+      } else {
+        console.log("ADDED CHAT MESSAGE BUT NOT DISPLAYING AS CHAT IS DISABLED!");
       }
+    },
+
+    Toggle(data) {
+      this.chatToggled = data.state;
     },
 
     Post(event, data, cb) {
@@ -151,6 +160,10 @@ const Chat = new Vue({
       }
 
       $.post(`http://${this.resource}/${event}`, JSON.stringify(data), cb);
+    },
+
+    Clear() {
+      this.chatMessages = []
     }
   },
 
@@ -197,8 +210,10 @@ const Chat = new Vue({
     // Events
     RegisterEvent("SETUP_CHAT", this.Setup);
     RegisterEvent("ADD_SUGGESTION", this.AddSuggestion);
+    RegisterEvent("OPEN_CHAT", this.Open);
+    RegisterEvent("SEND_MESSAGE", this.NewMsg);
     RegisterEvent("TOGGLE_CHAT", this.Toggle);
-    RegisterEvent("SEND_MESSAGE", this.NewMsg)
+    RegisterEvent("CLEAR_CHAT", this.Clear);
 
     // Key Presses
     window.addEventListener("keydown", function(event) {
