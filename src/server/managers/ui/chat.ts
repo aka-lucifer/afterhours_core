@@ -2,7 +2,7 @@ import {Server} from "../../server";
 import { Dist, Log, Inform, Error, NumToVector3 } from "../../utils";
 import {LogTypes} from "../../enums/logTypes";
 
-import { ChatLog } from "../../models/ui/chat/chatLog";
+import { ChatLog } from "../../models/database/chatLog";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 
 import { Message } from "../../../shared/models/ui/chat/message";
@@ -99,7 +99,7 @@ export class ChatManager {
         // do blacklist check in here
 
         const chatLog = new ChatLog(player, message);
-        await chatLog.Store();
+        await chatLog.save();
 
         const sendersDisc = await player.GetIdentifier("discord");
         await this.server.logManager.Send(LogTypes.Chat, new WebhookMessage({username: "Chat Logs", embeds: [{
