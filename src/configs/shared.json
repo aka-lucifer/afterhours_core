@@ -11,5 +11,22 @@
     "Developer": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
     "Management": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
     "Owner": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"]
+  },
+  "weapons": {
+    "453432689": {
+      "name": "weapon_pistol", "label": "Berreta M9", "ammoType": "AMMO_PISTOL", "components": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_PISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_PISTOL_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP_02"}
+      ],
+      "reason": "pistoled"
+    },
+    "-1553120962": {
+      "name": "WEAPON_RUN_OVER_BY_CAR",
+      "label": "Car",
+      "reason": "flattened"
+    },
+    "http://www.kronzky.info/fivemwiki/index.php/Weapons": "USE THIS FOR ADDING WEAPONS"
   }
 }
