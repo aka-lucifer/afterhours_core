@@ -1,4 +1,4 @@
-import { World, Vehicle, Game, Vector3, VehicleSeat} from "fivem-js"
+import { World, Game, Vector3, VehicleSeat} from "fivem-js"
 
 import { Player } from "./models/player";
 
@@ -8,7 +8,7 @@ import { ChatManager } from "./managers/ui/chat";
 import { CuffingStuff } from "./cuffing";
 
 import Config from "../configs/client.json";
-import {closestPed, GetHash, Inform} from "./utils";
+import {closestPed, Inform} from "./utils";
 
 import { Events } from "../shared/enums/events";
 import {Callbacks} from "../shared/enums/callbacks";
@@ -105,7 +105,7 @@ export class Client {
 
   private EVENT_clearVehs(): void {
     const worldVehs = World.getAllVehicles();
-    worldVehs.forEach((vehicle: Vehicle, index) => {
+    worldVehs.forEach(vehicle => {
       vehicle.delete();
       vehicle.markAsNoLongerNeeded();
     });
@@ -116,15 +116,23 @@ export class Client {
       const damagedEntity = eventArgs[0];
       const attackingEntity = eventArgs[1];
 
-      if (IsPedAPlayer(damagedEntity) && IsPedAPlayer(attackingEntity) && damagedEntity == Game.PlayerPed.Handle) {
-        const isFatal = eventArgs[5];
-        if (isFatal) {
-          emitNet(Events.logDeath, {
-            type: GetEntityType(attackingEntity),
-            inVeh: IsPedInAnyVehicle(attackingEntity, false) && GetPedInVehicleSeat(GetVehiclePedIsIn(attackingEntity, false), VehicleSeat.Driver),
-            weapon: eventArgs[6],
-            attacker: GetPlayerServerId(NetworkGetPlayerIndexFromPed(eventArgs[1]))
-          });
+      if (IsPedAPlayer(damagedEntity) && damagedEntity == Game.PlayerPed.Handle) {
+        if (IsPedAPlayer(attackingEntity)) {
+          const isFatal = eventArgs[5];
+          if (isFatal) {
+            emitNet(Events.logDeath, {
+              type: GetEntityType(attackingEntity),
+              inVeh: IsPedInAnyVehicle(attackingEntity, false) && GetPedInVehicleSeat(GetVehiclePedIsIn(attackingEntity, false), VehicleSeat.Driver),
+              weapon: eventArgs[6],
+              attacker: GetPlayerServerId(NetworkGetPlayerIndexFromPed(eventArgs[1]))
+            });
+          }
+        } else {
+          if (attackingEntity == -1) {
+            emitNet(Events.logDeath, {
+              attacker: attackingEntity
+            });
+          }
         }
       }
     }
