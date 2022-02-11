@@ -13,6 +13,7 @@ import {ConnectionsManager} from "./managers/connections";
 import {ClientCallbackManager} from "./managers/clientCallbacks";
 import * as Database from "./managers/database/database"
 // Logging
+import {StaffLogManager} from "./managers/database/staffLogs";
 import {LogManager} from "./managers/logging";
 // Chat
 import {ChatManager} from "./managers/ui/chat";
@@ -46,6 +47,7 @@ export class Server {
   private clientCallbackManager: ClientCallbackManager;
 
   // Logging
+  public staffLogManager: StaffLogManager;
   public logManager: LogManager;
 
   // Chat
@@ -87,6 +89,8 @@ export class Server {
     this.clientCallbackManager = new ClientCallbackManager(server);
 
     // Logging
+    this.staffLogManager = new StaffLogManager(server);
+
     this.logManager = new LogManager(server);
 
     // Chat
@@ -96,6 +100,9 @@ export class Server {
     // Run Manager Methods
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
     this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
+
+    await this.staffLogManager.loadLogs(); // Loads all the server logs
+
     this.registerCommands();
     this.registerExports();
 
@@ -121,7 +128,7 @@ export class Server {
       }
     }, Ranks.Admin);
 
-    new Command("delveh", "Deletes the vehicle you're inside.", [{}], false, async (source: string) => {
+    new Command("dv", "Deletes the vehicle you're inside.", [{}], false, async (source: string) => {
       const myPed = GetPlayerPed(source);
       const currVeh = GetVehiclePedIsIn(myPed, false);
       if (currVeh > 0) {

@@ -1,15 +1,16 @@
-import { Vector3 } from "fivem-js";
+import {Vector3} from "fivem-js";
 
 import {server} from "./server";
 import {LogTypes} from "./enums/logTypes";
 
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
+import {StaffLog} from "./models/database/staffLog";
 
 import {EmbedColours} from "../shared/enums/embedColours";
-import {ChatTypes} from "../shared/enums/ui/chat/types";
 import {Ranks} from "../shared/enums/ranks";
 import sharedConfig from "../configs/shared.json";
 import {Player} from "./models/database/player";
+import {StaffLogs} from "./enums/database/staffLogs";
 
 /**
  * @param reference Title for organisation logs
@@ -166,24 +167,28 @@ export async function HexadecimalToDec(hexadecimal: any): Promise<string> {
  */
 export async function logCommand(name: string, player: Player, args?: string): Promise<void> {
   const sendersDisc = await player.GetIdentifier("discord");
-
-  if (args) {
-    await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
-      username: "Chat Logs", embeds: [{
-        color: EmbedColours.Green,
-        title: "__Chat Command__",
-        description: `A player has sent a chat message.\n\n**Command**: ${name}\n**Args**: ${args}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
-        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-      }]
-    }));
-  } else {
-    await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
-      username: "Chat Logs", embeds: [{
-        color: EmbedColours.Green,
-        title: "__Chat Command__",
-        description: `A player has sent a chat message.\n\n**Command**: ${name}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
-        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-      }]
-    }));
+  const staffLog = new StaffLog(player.id, StaffLogs.Chat, `Used a chat command (${name})`);
+  const savedLog = await staffLog.save();
+  if (savedLog) {
+    server.staffLogManager.Add(staffLog);
+    if (args) {
+      await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
+        username: "Chat Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Chat Command__",
+          description: `A player has sent a chat message.\n\n**Command**: ${name}\n**Args**: ${args}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]
+      }));
+    } else {
+      await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
+        username: "Chat Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Chat Command__",
+          description: `A player has used a chat command.\n\n**Command**: ${name}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]
+      }));
+    }
   }
 }
