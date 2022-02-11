@@ -33,6 +33,7 @@ export class ChatManager {
 
         if (registeredCommands.filter(cmd => cmd.name == command).length <= 0) {
           Error("Chat Manager", `Command (/${command}) doesn't exist!`)
+          await player.TriggerEvent(Events.sendSystemMessage, new Message(`Command (/${command}) doesn't exist!`, SystemTypes.Error));
           emitNet(Events.receiveServerCB, src, false, data);
           return;
         } else {
