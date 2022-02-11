@@ -1,6 +1,7 @@
 export enum NuiMessages {
   SetupChat = "SETUP_CHAT",
   AddSuggestion = "ADD_SUGGESTION",
-  ToggleChat = "TOGGLE_CHAT",
-  SendMessage = "SEND_MESSAGE"
+  OpenChat = "OPEN_CHAT",
+  SendMessage = "SEND_MESSAGE",
+  ToggleChat = "TOGGLE_CHAT"
 }

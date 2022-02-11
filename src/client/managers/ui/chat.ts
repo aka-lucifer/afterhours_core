@@ -1,20 +1,22 @@
-import { Client } from "../../client";
-import { RegisterNuiCallback } from "../../utils";
+import {Client} from "../../client";
+import {RegisterNuiCallback} from "../../utils";
 
-import { ServerCallback } from "../../models/serverCallback";
+import {ServerCallback} from "../../models/serverCallback";
 
 import {Message} from "../../../shared/models/ui/chat/message";
 import {NuiCallbacks} from "../../../shared/enums/ui/chat/nuiCallbacks";
 import {NuiMessages} from "../../../shared/enums/ui/chat/nuiMessages";
 import {Events} from "../../../shared/enums/events";
 import {Ranks} from "../../../shared/enums/ranks";
-import { Callbacks } from "../../../shared/enums/callbacks";
+import {Callbacks} from "../../../shared/enums/callbacks";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
 import {ChatTypes} from "../../../shared/enums/ui/chat/types";
+import {ChatStates} from "../../enums/ui/chat/chatStates";
 
 export class ChatManager {
   private client: Client;
-  private chatTypes: string[] = ["local", "global"];
+  private chatTypes: string[] = [];
+  private chatState: ChatStates = ChatStates.Closed;
   
   constructor (client) {
     this.client = client;
@@ -41,48 +43,81 @@ export class ChatManager {
     });
     
     RegisterNuiCallback(NuiCallbacks.SendMessage, (data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.sendMessage, {message: data.message, type: data.type}, (cbData, passedData) => {
-        // console.log("RETURNED MSG CB", cbData, passedData);
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.sendMessage, {message: data.message, type: data.type}, (cbData) => {
+        // console.log("RETURNED MSG CB", cbData);
         SetNuiFocus(!cbData, !cbData)
         cb(cbData)
+        if (!cbData) this.chatState = ChatStates.Closed;
       }));
     });
   }
 
   private registerKeybinds(): void {
     // Chat Input Toggling
-    RegisterKeyMapping("toggle_chat", "Toggles chat input", "keyboard", "T");
+    RegisterKeyMapping("open_chat", "Opens the chat", "keyboard", "T");
+    RegisterCommand("open_chat", () => {
+      if (!IsPauseMenuActive()) {
+        if (this.chatState != ChatStates.Hidden && this.chatState != ChatStates.Disabled) {
+          this.chatState = ChatStates.Open;
+          SetNuiFocus(true, true);
+          SendNuiMessage(JSON.stringify({
+            event: NuiMessages.OpenChat,
+            data: {
+              toggle: true
+            }
+          }))
+        } else {
+          console.log("Chat is hidden or disabled!");
+        }
+      }
+    }, false);
+
+    // Chat Visibility Toggling
+    RegisterKeyMapping("toggle_chat", "Toggles chat", "keyboard", "insert");
     RegisterCommand("toggle_chat", () => {
       if (!IsPauseMenuActive()) {
-        SetNuiFocus(true, true);
-        SendNuiMessage(JSON.stringify({
-          event: NuiMessages.ToggleChat,
-          data: {
-            toggle: true
-          }
-        }))
+        if (this.chatState != ChatStates.Hidden) {
+          this.chatState = ChatStates.Hidden;
+          console.log("CHAT HIDDEN!");
+          SendNuiMessage(JSON.stringify({
+            event: NuiMessages.ToggleChat,
+            data: {
+              state: false
+            }
+          }))
+        } else {
+          this.chatState = ChatStates.Closed;
+          console.log("CHAT SHOWING!");
+          SendNuiMessage(JSON.stringify({
+            event: NuiMessages.ToggleChat,
+            data: {
+              state: true
+            }
+          }))
+        }
       }
     }, false);
   }
 
   public setup(): void {
-    const chatTypes = [];
-    Object.keys(ChatTypes).forEach((type, index) => {
-      const chatType = parseInt(type);
-      if (!isNaN(chatType)) {
-        const stringType = ChatTypes[chatType].toLowerCase();
-        if (stringType != "system" && stringType != "admin") {
-          chatTypes.push(stringType);
+    if (this.chatTypes.length <= 0) {
+      Object.keys(ChatTypes).forEach(type => {
+        const chatType = parseInt(type);
+        if (!isNaN(chatType)) {
+          const stringType = ChatTypes[chatType].toLowerCase();
+          if (stringType != "system" && stringType != "admin") {
+            this.chatTypes.push(stringType);
+          }
         }
-      }
-    });
+      });
 
-    if (this.client.player.Rank >= Ranks.Admin) chatTypes.push("admin");
+      if (this.client.player.Rank >= Ranks.Admin) this.chatTypes.push("admin");
+    }
 
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.SetupChat,
       data: {
-        types: chatTypes
+        types: this.chatTypes
       }
     }))
   }
