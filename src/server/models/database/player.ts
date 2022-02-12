@@ -29,6 +29,7 @@ export class Player {
   public identifiers: Record<string, string>;
   public ping: number;
   public playtime: number;
+  public formattedPlaytime: string;
   private joinTime: string;
   private whitelisted: boolean = false;
 
@@ -223,6 +224,16 @@ export class Player {
 
   public async Whitelisted(): Promise<boolean> {
     return this.whitelisted;
+  }
+
+  public RefreshPing(): void {
+    this.ping = GetPlayerPing(this.handle);
+  }
+
+  public async CurrentPlaytime(): Promise<number> {
+    const currTime = await Utils.GetTimestamp();
+    const currentPlaytime = (new Date(currTime).getTime() / 1000) - (new Date(this.joinTime).getTime() / 1000);
+    return this.playtime + currentPlaytime;
   }
 
   public Position(): Vector3 {

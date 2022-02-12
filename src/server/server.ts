@@ -28,7 +28,8 @@ import sharedConfig from "../configs/shared.json";
 import {Callbacks} from "../shared/enums/callbacks";
 import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
-import {SystemTypes} from "../shared/enums/ui/chat/types";
+import {SystemTypes} from "../shared/enums/ui/types";
+import {Playtime} from "./models/database/playtime";
 
 export class Server {
   // Debug Data
@@ -61,6 +62,7 @@ export class Server {
     onNet(Events.resourceStart, this.EVENT_resourceStarted.bind(this));
     onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
     onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
+    onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
   }
 
   // Get Requests
@@ -330,6 +332,18 @@ export class Server {
         }]
       }));
     }
+  }
+
+  private async EVENT_refreshPlayers(): Promise<void> {
+    const player = await this.playerManager.GetPlayer(source);
+    const svPlayers = this.playerManager.GetPlayers;
+    for (let a = 0; a < svPlayers.length; a++) {
+      svPlayers[a].RefreshPing();
+      const currPlaytime = await svPlayers[a].CurrentPlaytime();
+      svPlayers[a].formattedPlaytime = await new Playtime(currPlaytime).FormatTime();
+    }
+
+    await player.TriggerEvent(Events.receivePlayers, this.maxPlayers, Object.assign({}, svPlayers));
   }
 }
 

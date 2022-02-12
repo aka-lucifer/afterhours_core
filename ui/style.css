@@ -4,23 +4,32 @@
   src: url('./assets/fonts/PT-Sans-Bold.ttf');
 }
 
-/* ROOT */
-:root {
-  /* Vars */
-  --header-font-size: 90px;
+@font-face {
+  font-family: 'Tanseek';
+  src: url('./assets/fonts/scoreboard/tanseek-modern-pro-arabic-bold.ttf');
+}
 
-  /* Colors */
+@font-face {
+  font-family: 'Inter-Thin';
+  src: url('./assets/fonts/scoreboard/Inter-Thin.ttf');
+}
+
+@font-face {
+  font-family: 'Inter-Light';
+  src: url('./assets/fonts/scoreboard/Inter-Light.ttf');
+}
+
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('./assets/fonts/scoreboard/Inter-Regular.ttf');
+}
+
+:root {
+
+  /* Colours */
   --white: white;
-  --black: #000000;
-  --background: rgba(25, 25, 25, 0.8);
-  --darkBackground: #1e1e1e;
-  --green: rgba(33, 165, 23, 0.6);
-  --background: #353535;
-  --text: rgba(255, 255, 255, 0.85);
-  --headerGreen: #4caf50;
-  --headerRed: #d42727;
+  --logoGradient: linear-gradient(90deg, rgba(74,10,124,1) 39%, rgba(56,167,244,1) 88%);
   --notificationBG: rgba(17, 17, 17, 0.8);
-  --notificationGreen: #51bd7d;
 }
 
 html {
@@ -35,7 +44,7 @@ body {
   padding: 0;
 }
 
-#Astrid_Chat {
+#HUD {
   width: 100%;
   height: 100%;
 
@@ -45,6 +54,245 @@ body {
   background-color: transparent !important;
 }
 
+/* SCOREBOARD */
+#scoreboard_container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  font-family: Verdana;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#scoreboard {
+  position: absolute;
+  height: 40%;
+  width: 500px;
+  padding: 10px;
+  padding: 10px;
+  font-family: "Tanseek";
+}
+
+#scoreboard_header {
+  text-align: center;
+  background: var(--logoGradient);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  padding: 5px;
+  color: white;
+  font-size: 2.3em;
+}
+
+#scoreboard_body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0px;
+}
+
+.player_header {
+  display: flex;
+  width: 100%;
+  color: white;
+  font-size: 1.8em;
+  color: var(--white);
+  background-color: rgba(0, 0, 0, 0.9);
+  height: 40px;
+}
+
+.player_header .id_header {
+  width: 25%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-style: solid;
+  border-width: 1px;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-color: var(--white);
+}
+
+.player_header .name_header {
+  width: 50%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-style: solid;
+  border-width: 1px;
+  border-top: 0;
+  border-color: var(--white);
+}
+
+.player_header .playtime_header {
+  width: 50%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-style: solid;
+  border-width: 1px;
+  border-top: 0;
+  border-color: var(--white);
+}
+
+.player_header .ping_header {
+  width: 25%;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-style: solid;
+  border-width: 1px;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 1px;
+}
+
+#scoreboard_players {
+  height: 100%;
+  min-height: 400px;
+  background-color: rgba(0, 0, 0, 0.9);
+  font-size: 20px;
+}
+
+#scoreboard_players::-webkit-scrollbar {
+  display: none;
+}
+
+#scoreboard_animation {
+  position: absolute;
+  width: 500px;
+  height: 100%;
+  min-height: 440px;
+  background-color: rgba(0, 0, 0, 0.0);
+}
+
+.fadeIn {
+  animation-name: fade-in;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+.fadeOut {
+  animation-name: fade-out;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-in {
+  from {
+    background-color: rgba(0, 0, 0, 0.0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 1.0);
+  }
+}
+
+@keyframes fade-out {
+  from {
+    background-color: rgba(0, 0, 0, 1.0);
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.0);
+  }
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  color: white;
+}
+
+.player_data {
+  display: flex;
+  font-family: "Inter-Regular";
+  font-size: 0.7em;
+}
+
+.player .id {
+  height: 40px;
+  width: 25%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.player .name {
+  height: 40px;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-style: solid;
+  border-width: 1px;
+  border-top: 0;
+  border-bottom: 0;
+  border-color: var(--white);
+}
+
+.player .playtime {
+  height: 40px;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  border-style: solid;
+  border-width: 1px;
+  border-top: 0;
+  border-bottom: 0;
+  border-color: var(--white);
+}
+
+.player .ping {
+  height: 40px;
+  width: 25%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.player .buttons {
+  display: none;
+}
+
+.lowPing {
+  color: limegreen;
+}
+
+.goodPing {
+  color: yellow;
+}
+
+.decentPing {
+  color: orange;
+}
+
+.badPing {
+  color: red;
+}
+
+.player_buttons {
+  display: block;
+  width: 100%;
+}
+
+#scoreboard_pages {
+  background: var(--logoGradient);
+  padding: 5px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  text-align: center;
+  color: white;
+  font-size: 1.8em;
+}
+
+/* CHAT */
 /* Chat Messages */
 #Chat-Messages {
   position: absolute;

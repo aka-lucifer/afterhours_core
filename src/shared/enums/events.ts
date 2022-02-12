@@ -33,6 +33,9 @@ export enum Events {
   receiveClientCB = "astrid:server:receiveClientCB",
   logDeath = "astrid:server:logDeath",
 
+  // (Scoreboard Client)
+  requestPlayers = "astrid:client:requestPlayers",
+
   // (Chat Server)
   sendMessage = "astrid:server:sendMessage",
 
@@ -41,6 +44,9 @@ export enum Events {
   playerLoaded = "astrid:client:playerLoaded",
   receiveServerCB = "astrid:client:recieveServerCB",
   clearWorldVehs = "astrid:client:clearWorldVehs",
+
+  // (Scoreboard Client)
+  receivePlayers = "astrid:client:receivePlayers",
 
   // (Chat Client)
   sendClientMessage = "astrid:client:sendClientMessage",

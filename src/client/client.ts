@@ -5,6 +5,7 @@ import { Player } from "./models/player";
 import { RichPresence } from "./managers/richPresence";
 import { ServerCallbackManager } from "./managers/serverCallbacks";
 import { ChatManager } from "./managers/ui/chat";
+import { Scoreboard } from "./managers/ui/scoreboard";
 import { CuffingStuff } from "./cuffing";
 
 import Config from "../configs/client.json";
@@ -28,8 +29,14 @@ export class Client {
 
   // Managers
   private richPresence: RichPresence;
+
+  // Callbacks
   public serverCallbackManager: ServerCallbackManager;
+
+  // UI
   private chatManager: ChatManager;
+  private scoreboard: Scoreboard;
+
   private cuffing: CuffingStuff;
 
   constructor() {
@@ -70,9 +77,10 @@ export class Client {
     this.richPresence = new RichPresence(client);
     this.serverCallbackManager = new ServerCallbackManager(client);
     
-    // Chat
+    // UI
     this.chatManager = new ChatManager(client);
     this.chatManager.init();
+    this.scoreboard = new Scoreboard(client);
 
     this.cuffing = new CuffingStuff();
     Inform(sharedConfig.serverName, "Successfully Loaded!");

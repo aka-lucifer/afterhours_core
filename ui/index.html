@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <title>Astrid Chat</title>
+    <title>Astrid UI</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -30,7 +30,66 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <v-app id="Astrid_Chat">
+    <v-app id="HUD">
+      <div id="scoreboard_container" v-show="displaying">
+        <div id="scoreboard">
+          <div id="scoreboard_header">
+            Astrid Network | {{ currentPlayers }}/{{ maxPlayers }} Players
+            <!-- <br> -->
+            <!-- [{{ connectedPlayers.length }} / {{ maxPlayers }}] Players -->
+          </div>
+          <div id="scoreboard_body">
+            <div class="player_header">
+              <div class="id_header">
+                ID
+              </div>
+              <div class="name_header">
+                Name
+              </div>
+              <div class="playtime_header">
+                Playtime
+              </div>
+              <div class="ping_header">
+                Ping
+              </div>
+            </div>
+            <div id="scoreboard_players">
+              <div class="player" v-for="(player, playerIndex) in connectedPlayers" v-if="playerIndex >= (selectedPage * maxPerPage) - maxPerPage && playerIndex <= (selectedPage * maxPerPage)">
+                <div class="player_data">
+                  <div class="id">
+                    {{ player.handle }}
+                  </div>
+                  <div class="name">
+                    {{ player.name }}
+                  </div>
+                  <div class="playtime">
+                    {{ player.formattedPlaytime }}
+                  </div>
+                  <div class="ping">
+                    <span :class="{
+                      'lowPing': player.ping <= 40,
+                      'goodPing': player.ping <= 80 && player.ping > 40,
+                      'decentPing': player.ping < 140 && player.ping > 80,
+                      'badPing': player.ping >= 140
+                    }">
+                      {{ player.ping }}
+                    </span>
+                    ms
+                  </div>
+                </div>
+                <div class="buttons">
+                  <button>Copy Identifiers</button>
+                </div>  
+              </div>
+            </div>
+            <div id="scoreboard_animation"></div>
+            <div id="scoreboard_pages">
+              Page {{ selectedPage }} / {{ pageCount }}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div id="Chat-Messages">
         <div v-for="(message, index) in chatMessages">
           <div v-if="message.type == 'system'">

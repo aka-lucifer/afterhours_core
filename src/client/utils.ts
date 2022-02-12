@@ -133,35 +133,6 @@ export function DisplayHelp(helpMessage: string, beepSound: boolean = false): vo
 	EndTextCommandDisplayHelp(0, false, beepSound, -1)
 }
 
-// Use https://wiki.rage.mp/index.php?title=Fonts_and_Colors for font examples
-export function Draw3DText(position: Vector3, colour: Colour, text: string, font: Font, rescaleUponDistance: boolean = true, textScale: number = 1.0, dropShadow: boolean = false) {
-    const camPosition = GetGameplayCamCoord()
-    const dist = Dist(new Vector3(camPosition[0], camPosition[1], camPosition[2]), position, true);
-    let scale = (1 / dist) * 20;
-    const fov = (1 / GetGameplayCamFov()) * 100;
-    scale = scale * fov;
-    if (rescaleUponDistance) {
-      SetTextScale(textScale * scale, textScale * scale);
-    } else {
-      SetTextScale(textScale, textScale);
-    }
-    SetTextFont(Number(font));
-    SetTextProportional(true);
-    SetTextColour(colour.r, colour.g, colour.b, colour.a);
-    if (dropShadow)
-    {
-      SetTextDropshadow(1, 1, 1, 1, 255);
-      SetTextDropShadow();
-    }
-    SetTextOutline();
-    SetTextEntry("STRING");
-    SetTextCentre(true);
-    AddTextComponentString(text);
-    SetDrawOrigin(position.x, position.y, position.z, 0);
-    DrawText(0, 0);
-    ClearDrawOrigin();
-}
-
 /**
  * 
  * @param numberData The number array
@@ -252,4 +223,32 @@ export async function closestPed(): Promise<[Ped, number]> {
 export function RegisterNuiCallback(callbackName: string, callback: CallableFunction): void {
   RegisterNuiCallbackType(callbackName); // register the type
   on(`__cfx_nui:${callbackName}`, callback);
+}
+
+export function Draw3DText(position: Vector3, colour: { r: number, g: number, b: number, a: number }, text: string, font: Font, rescaleUponDistance: boolean = true, textScale: number = 1.0, dropShadow: boolean = false) {
+  const camPosition = GetGameplayCamCoord()
+  const dist = Dist(new Vector3(camPosition[0], camPosition[1], camPosition[2]), position, true);
+  let scale = (1 / dist) * 20;
+  const fov = (1 / GetGameplayCamFov()) * 100;
+  scale = scale * fov;
+  if (rescaleUponDistance) {
+    SetTextScale(textScale * scale, textScale * scale);
+  } else {
+    SetTextScale(textScale, textScale);
+  }
+  SetTextFont(Number(font));
+  SetTextProportional(true);
+  SetTextColour(colour.r, colour.g, colour.b, colour.a);
+  if (dropShadow)
+  {
+    SetTextDropshadow(1, 1, 1, 1, 255);
+    SetTextDropShadow();
+  }
+  SetTextOutline();
+  SetTextEntry("STRING");
+  SetTextCentre(true);
+  AddTextComponentString(text);
+  SetDrawOrigin(position.x, position.y, position.z, 0);
+  DrawText(0, 0);
+  ClearDrawOrigin();
 }
