@@ -1,9 +1,26 @@
-const Chat = new Vue({
-  el: "#Astrid_Chat",
+const HUD = new Vue({
+  el: "#HUD",
   vuetify: new Vuetify(),
   data: {
-    // Important Data
+    // Important 
     resource: "astrid_core",
+
+    // [SCOREBOARD]
+    displaying: false,
+
+    // Server Data
+    currentPlayers: 0,
+    maxPlayers: 32,
+
+    // Page Data
+    selectedPage: 1,
+    maxPerPage: 10,
+    animating: false,
+
+    // Players
+    connectedPlayers: [],
+
+    // [CHAT]
     chatToggled: true,
 
     // Chat Types
@@ -27,7 +44,45 @@ const Chat = new Vue({
     suggestions: []
   },
   methods: {
-    Setup(data) {
+    // Notification
+    Notification(data) {
+      new Notify(data);
+    },
+
+    // SCOREBOARD
+    DisplayScoreboard(data) {
+      this.connectedPlayers = data.players || [];
+      this.currentPlayers = Object.keys(this.connectedPlayers).length;
+      this.maxPlayers = data.maxPlayers || 32;
+      this.displaying = true;
+    },
+
+    CloseScoreboard() {
+      this.displaying = false;
+      this.connectedPlayers = [];
+      this.pageCount = 1;
+      this.maxPlayers = 0;
+    },
+
+    ChangePage(data) {
+      if (this.animating || this.pageCount === 1) { return; }
+        const element = document.getElementById("scoreboard_animation");
+        element.className = "fadeIn";
+        this.animating = true;
+        setTimeout(() => {
+          this.selectedPage = this.selectedPage + data.value;
+          if (this.selectedPage > this.pageCount) {
+            this.selectedPage = 1;
+          } else if (this.selectedPage < 1) {
+            this.selectedPage = this.pageCount;
+          }
+          element.className = "fadeOut";
+          this.animating = false;
+      }, 500);
+    },
+
+    // CHAT
+    SetupChat(data) {
       if (data.types) {
         this.chatTypes = data.types;
       }
@@ -38,7 +93,7 @@ const Chat = new Vue({
       this.suggestions.push(data);
     },
     
-    Open(data) {
+    OpenChat(data) {
       setTimeout(() => {
         if (data.toggle) {
           // Clear close timeout if exists
@@ -71,7 +126,7 @@ const Chat = new Vue({
       }, 0);
     },
 
-    Close() {
+    CloseChat() {
       if (this.showInput) this.showInput = false;
       clearTimeout(this.focusTimer);
 
@@ -112,7 +167,7 @@ const Chat = new Vue({
             this.sentMessages.push(this.chatMessage);
             this.cycledMessage = this.sentMessages.length;
             this.chatMessage = "";
-            this.Close();
+            this.CloseChat();
           }
         });
       }
@@ -168,6 +223,10 @@ const Chat = new Vue({
   },
 
   computed: {
+    pageCount: function() {
+      return Math.ceil(Object.keys(this.connectedPlayers).length / 10);
+    },
+
     currentSuggestions() {
       if (this.chatMessage === "" || this.chatMessage == null) {
         return [];
@@ -207,10 +266,18 @@ const Chat = new Vue({
   },
 
   mounted() {
-    // Events
-    RegisterEvent("SETUP_CHAT", this.Setup);
+    // Notification
+    RegisterEvent("CREATE_NOTIFICATION", this.Notification);
+
+    // SCOREBOARD EVENTS
+    RegisterEvent("OPEN_SCOREBOARD", this.DisplayScoreboard);
+    RegisterEvent("CLOSE_SCOREBOARD", this.CloseScoreboard);
+    RegisterEvent("CHANGE_PAGE", this.ChangePage);
+
+    // CHAT EVENTS
+    RegisterEvent("SETUP_CHAT", this.SetupChat);
     RegisterEvent("ADD_SUGGESTION", this.AddSuggestion);
-    RegisterEvent("OPEN_CHAT", this.Open);
+    RegisterEvent("OPEN_CHAT", this.OpenChat);
     RegisterEvent("SEND_MESSAGE", this.NewMsg);
     RegisterEvent("TOGGLE_CHAT", this.Toggle);
     RegisterEvent("CLEAR_CHAT", this.Clear);
@@ -219,31 +286,31 @@ const Chat = new Vue({
     window.addEventListener("keydown", function(event) {
       switch(event.key) {
         case "Escape": // Close UI
-          Chat.Close();
+          HUD.CloseChat();
           break;
 
         case "Alt": // Change Mode
-          Chat.CycleMode();
+          HUD.CycleMode();
           break;
 
         case "Enter": // Send Message
-          Chat.SendMessage();
+          HUD.SendMessage();
           break;
 
         case "ArrowUp":
-          if (Chat.$refs.input === document.activeElement && Chat.sentMessages.length > 0) { // If chat input is focused and you've sent message/s
-            if ((Chat.cycledMessage - 1) >= 0) {
-              Chat.cycledMessage--;
-              Chat.chatMessage = Chat.sentMessages[Chat.cycledMessage];
+          if (HUD.$refs.input === document.activeElement && HUD.sentMessages.length > 0) { // If chat input is focused and you've sent message/s
+            if ((HUD.cycledMessage - 1) >= 0) {
+              HUD.cycledMessage--;
+              HUD.chatMessage = HUD.sentMessages[HUD.cycledMessage];
             }
           }
           break;
         
         case "ArrowDown":
-          if (Chat.$refs.input === document.activeElement && Chat.sentMessages.length > 0) { // If chat input is focused and you've sent message/s
-            if (Chat.cycledMessage < Chat.sentMessages.length) {
-              Chat.cycledMessage++;
-              Chat.chatMessage = Chat.sentMessages[Chat.cycledMessage];
+          if (HUD.$refs.input === document.activeElement && HUD.sentMessages.length > 0) { // If chat input is focused and you've sent message/s
+            if (HUD.cycledMessage < HUD.sentMessages.length) {
+              HUD.cycledMessage++;
+              HUD.chatMessage = HUD.sentMessages[HUD.cycledMessage];
             }
           }
           break;

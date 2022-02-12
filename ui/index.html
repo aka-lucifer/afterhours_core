@@ -19,9 +19,16 @@
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="./libraries/css/all.css" />
+    <link rel="stylesheet" href="./libraries/css/all.min.css" />
 
     <!-- Vuetify -->
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+
+    <!-- Toastr (Notifications) -->
+    <link href="./libraries/css/toastr.css" rel="stylesheet">
+
+    <!-- Simply Notify -->
+    <link href="./libraries/css/simple-notify.min.css" rel="stylesheet">
     
     <!-- Material -->
     <link rel="stylesheet" href="./libraries/css/material.css">
@@ -31,6 +38,8 @@
   </head>
   <body>
     <v-app id="HUD">
+
+      <!-- Scoreboard -->
       <div id="scoreboard_container" v-show="displaying">
         <div id="scoreboard">
           <div id="scoreboard_header">
@@ -90,6 +99,7 @@
         </div>
       </div>
 
+      <!-- Chat -->
       <div id="Chat-Messages">
         <div v-for="(message, index) in chatMessages">
           <div v-if="message.type == 'system'">
@@ -152,10 +162,16 @@
     <!-- Vutify & Vue.JS -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-    <script src="./libraries/js/vue-snotify.min.js"></script>
+    
+    <!-- FontAwesome -->
+    <script src="./libraries/js/all.js"></script>
+    <script src="./libraries/js/all.min.js"></script>
 
     <!-- JQuery -->
     <script src="./libraries/js/jquery.min.js"></script>
+
+    <!-- Simply Notify -->
+    <script src="./libraries/js/simple-notify.min.js"></script>
 
     <!-- Default -->
     <script src="events.js"></script>

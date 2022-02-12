@@ -1,4 +1,7 @@
 export enum NuiMessages {
+  // Notifications
+  CreateNotification = "CREATE_NOTIFICATION",
+
   // Scoreboard
   OpenScoreboard = "OPEN_SCOREBOARD",
   ChangePage = "CHANGE_PAGE",

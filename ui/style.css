@@ -1,7 +1,17 @@
 /* FONTS */
 @font-face {
+  font-family: 'PT-Sans';
+  src: url('./assets/fonts/PT-Sans.ttf');
+}
+
+@font-face {
   font-family: 'PT-Sans-Bold';
   src: url('./assets/fonts/PT-Sans-Bold.ttf');
+}
+
+@font-face {
+  font-family: 'PT-Sans-Caption';
+  src: url('./assets/fonts/PT-Sans-Caption.ttf');
 }
 
 @font-face {

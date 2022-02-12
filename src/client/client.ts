@@ -1,21 +1,23 @@
-import { World, Game, Vector3, VehicleSeat} from "fivem-js"
+import {Game, Vector3, VehicleSeat, World} from "fivem-js"
 
-import { Player } from "./models/player";
+import {Player} from "./models/player";
 
-import { RichPresence } from "./managers/richPresence";
-import { ServerCallbackManager } from "./managers/serverCallbacks";
-import { ChatManager } from "./managers/ui/chat";
-import { Scoreboard } from "./managers/ui/scoreboard";
-import { CuffingStuff } from "./cuffing";
+import {RichPresence} from "./managers/richPresence";
+import {ServerCallbackManager} from "./managers/serverCallbacks";
+import {ChatManager} from "./managers/ui/chat";
+import {Scoreboard} from "./managers/ui/scoreboard";
+import {CuffingStuff} from "./cuffing";
 
 import Config from "../configs/client.json";
 import {closestPed, Inform} from "./utils";
 
-import { Events } from "../shared/enums/events";
+import {Events} from "../shared/enums/events";
 import {Callbacks} from "../shared/enums/callbacks";
 import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
 import {GameEvents} from "../shared/enums/gameEvents";
+import {Notification} from "./models/ui/notification";
+import {NotificationTypes} from "./enums/ui/notifications/types";
 
 let takingScreenshot = false;
 
@@ -52,11 +54,6 @@ export class Client {
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
-
-    RegisterCommand("cuff", async() => {
-      const [ped, distance] = await closestPed();
-      this.cuffing.init(ped.Handle);
-    }, false);
   }
 
   // Get Requests
@@ -95,6 +92,21 @@ export class Client {
     RegisterCommand("tpm", () => {
       Game.PlayerPed.Position = new Vector3(1649.11, 3237.66, 40.49);
       Game.PlayerPed.Heading = 280.32;
+    }, false);
+
+    RegisterCommand("cuff", async() => {
+      const [ped, distance] = await closestPed();
+      this.cuffing.init(ped.Handle);
+    }, false);
+
+    RegisterCommand("notification", async() => {
+      const notification = new Notification("Jew Town", "Wanna buy insurance?", NotificationTypes.Success, false, `<i class="fa-solid fa-hanukiah"></i>`, 3000, () => {
+        console.log("START!");
+      }, () => {
+        console.log("FINISH!");
+      });
+
+      await notification.send();
     }, false);
   }
 
