@@ -1,1 +1,16 @@
 node_modules/
+.idea/vcs.xml
+*.xml
+dist/server/main.js
+.idea/vcs.xml
+src/server/server.ts
+.idea/astrid-core.iml
+dist/*
+.gitignore
+notes.txt
+yarn.lock
+.idea/.gitignore
+src/server/models/webhook/discord/dev_info.txt
+ui_ideas/*
+dist/client/main.js
+dist/server/main.js

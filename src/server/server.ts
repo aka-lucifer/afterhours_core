@@ -30,6 +30,7 @@ import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
+import {KickManager} from "./managers/database/kicks";
 
 export class Server {
   // Debug Data
@@ -39,6 +40,7 @@ export class Server {
 
   // Player Control
   public banManager: BanManager;
+  public kickManager: KickManager;
   public playerManager: PlayerManager;
   public connectionsManager: ConnectionsManager;
 
@@ -82,6 +84,7 @@ export class Server {
   private async initialize(): Promise<void> {
     // Player Controller
     this.banManager = new BanManager(server);
+    this.kickManager = new KickManager(server);
     this.playerManager = new PlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server, this.playerManager);
 
@@ -101,6 +104,8 @@ export class Server {
     // Run Manager Methods
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
     this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
+
+    await this.kickManager.loadKicks(); // Load all bans from the DB, into the ban manager
 
     await this.staffLogManager.loadLogs(); // Loads all the server logs
 
@@ -259,8 +264,8 @@ export class Server {
       Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
 
       // Send player data to client
+      emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
       setTimeout(() => { // Need a 0ms timeout otherwise the suggestions are sent over before the chat manager is initialized
-        emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
         this.commandManager.createChatSuggestions(player);
       }, 500);
 

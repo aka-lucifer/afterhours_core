@@ -14,6 +14,7 @@ import { Callbacks } from "../../../shared/enums/callbacks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json";
 import {Ban} from "../../models/database/ban";
+import {Kick} from "../../models/database/kick";
 
 export class ChatManager {
   private server: Server;
@@ -150,6 +151,17 @@ export class ChatManager {
         ban.Banner = player;
         await ban.save();
         ban.drop();
+      }
+    }, Ranks.Admin);
+
+    new Command("kick", "Kick player", [{name: "server_id", help: "Players server ID"}], true, async(source: string, args: any) => {
+      const player = await this.server.playerManager.GetPlayer(source);
+      if (args[0]) {
+        const kickedPlayer = await this.server.playerManager.GetPlayer(args[0]);
+        const kick = new Kick(kickedPlayer.Id,"Testing kick", player.Id);
+        kick.Kicker = player;
+        await kick.save();
+        kick.drop();
       }
     }, Ranks.Admin);
   }
