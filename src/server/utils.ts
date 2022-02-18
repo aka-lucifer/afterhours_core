@@ -145,7 +145,7 @@ export async function HexadecimalToDec(hexadecimal: any): Promise<string> {
     if(c) r.unshift(c);
     return r.join('');
   }
-
+  
   let dec = '0';
   hexadecimal.split('').forEach(function(chr) {
     const n = parseInt(chr, 16);
@@ -191,4 +191,13 @@ export async function logCommand(name: string, player: Player, args?: string): P
       }));
     }
   }
+}
+
+/**
+ *
+ * @param i Integer to add zero to
+ */
+export function addZero(i): string {
+  if (i < 10) {i = "0" + i}
+  return i;
 }

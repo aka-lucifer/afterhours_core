@@ -51,7 +51,7 @@ export class BanManager {
 
   public Add(banData: Ban): number {
     const addedData = this.bannedPlayers.push(banData);
-    if (this.server.IsDebugging) Log("Ban Manager (Add)", JSON.stringify((banData)));
+    if (this.server.IsDebugging) Log("Ban Manager | Added", `(Id: ${banData.Id} | Player Id: ${banData.PlayerId} | Reason: ${banData.Reason} | Until: ${banData.IssuedUntil.toUTCString()}`);
     return addedData;
   }
 

@@ -205,12 +205,12 @@ export class Server {
     });
 
     global.exports("anticheatBan", async(playerId: number, hardwareId: string, reason: string, takeScreenshot: boolean, issuedBy?: number) => {
-      console.log(playerId, hardwareId, reason, issuedBy);
+      // console.log(playerId, hardwareId, reason, issuedBy);
 
       const player = await this.playerManager.GetPlayerFromId(playerId);
       if (player) {
         this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.GetHandle, {}, async (cbData, passedData) => {
-          console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+          // console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
           const ban = new Ban(playerId, hardwareId, reason, issuedBy);
           ban.Logger = LogTypes.Anticheat;
 

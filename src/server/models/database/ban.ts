@@ -7,7 +7,7 @@ import * as Database from "../../managers/database/database";
 import {LogTypes} from "../../enums/logTypes";
 import {BanStates} from "../../enums/database/bans";
 
-import {Error} from "../../utils";
+import {addZero, Error} from "../../utils";
 
 import {Ranks} from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
@@ -106,13 +106,15 @@ export class Ban {
     if (this.hardwareId == undefined) this.hardwareId = "3:5789056eef77a45102ba83c183e84a0bfa7e9ea5a122352da1ada9fd366d6d07";
     if (this.issuedBy == undefined) this.issuedBy = this.playerId;
 
+    const bannedUntil = `${this.issuedUntil.getFullYear()}-${addZero(this.issuedUntil.getMonth() + 1)}-${addZero(this.issuedUntil.getDate())} ${addZero(this.issuedUntil.getHours())}:${addZero(this.issuedUntil.getMinutes())}:${addZero(this.issuedUntil.getSeconds())}`;
+
     const inserted = await Database.SendQuery("INSERT INTO `player_bans` (`player_id`, `hardware_id`, `reason`, `ban_state`, `issued_by`, `issued_until`) VALUES (:playerId, :hardwareId, :banReason, :banState, :issuedBy, :issuedUntil)", {
       playerId: this.playerId,
       hardwareId: this.hardwareId,
       banReason: this.banReason,
       banState: this.state,
       issuedBy: this.issuedBy,
-      issuedUntil: this.issuedUntil
+      issuedUntil: bannedUntil
     });
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
