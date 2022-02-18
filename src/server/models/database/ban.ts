@@ -61,6 +61,9 @@ export class Ban {
   public set Id(newId: number) {
     this.id = newId;
   }
+  public get PlayerId(): number {
+    return this.playerId;
+  }
 
   public get Reason(): string {
     return this.banReason;
