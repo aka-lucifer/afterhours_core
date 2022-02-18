@@ -12,10 +12,11 @@ import Config from "../configs/client.json";
 import {closestPed, Inform} from "./utils";
 
 import {Events} from "../shared/enums/events";
+import {GameEvents} from "../shared/enums/gameEvents";
+import {LXEvents} from "../shared/enums/lxEvents";
 import {Callbacks} from "../shared/enums/callbacks";
 import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
-import {GameEvents} from "../shared/enums/gameEvents";
 import {Notification} from "./models/ui/notification";
 import {NotificationTypes} from "./enums/ui/notifications/types";
 
@@ -51,6 +52,8 @@ export class Client {
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
     onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
+    // onNet(LXEvents.PedDied, this.EVENT_pedDied.bind(this));
+    onNet(LXEvents.Gunshot, this.EVENT_gunFired.bind(this));
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
@@ -129,6 +132,36 @@ export class Client {
       vehicle.delete();
       vehicle.markAsNoLongerNeeded();
     });
+  }
+
+  private EVENT_pedDied(damagedEntity: number, attackingEntity: number, weaponHash: number, isMelee: boolean): void {
+    console.log("STEP 1");
+    if (IsPedAPlayer(damagedEntity) && damagedEntity == Game.PlayerPed.Handle) {
+      console.log("STEP 2");
+      if (IsPedAPlayer(attackingEntity)) {
+        console.log("STEP 3");
+        emitNet(Events.logDeath, {
+          type: GetEntityType(attackingEntity),
+          inVeh: IsPedInAnyVehicle(attackingEntity, false) && GetPedInVehicleSeat(GetVehiclePedIsIn(attackingEntity, false), VehicleSeat.Driver),
+          weapon: weaponHash,
+          attacker: GetPlayerServerId(NetworkGetPlayerIndexFromPed(attackingEntity))
+        });
+        console.log("STEP 4");
+      } else {
+        console.log("STEP 5");
+        if (attackingEntity == -1) {
+          console.log("STEP 6");
+          emitNet(Events.logDeath, {
+            attacker: attackingEntity
+          });
+          console.log("STEP 7");
+        }
+      }
+    }
+  }
+
+  private EVENT_gunFired(shootersNet: number): void {
+    Inform("LX Event (Gunshot)", `${shootersNet} fired their weapon!`);
   }
 
   private EVENT_gameEvent(eventName: string, eventArgs: any[]): void {
