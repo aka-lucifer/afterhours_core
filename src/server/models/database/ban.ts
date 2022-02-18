@@ -232,7 +232,7 @@ export class Ban {
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Automatically Unbanned__",
-              description: `A players ban has expired on the server.\n**Ban ID**: ${this.id}\n**Username**: ${playerData.data[0].name}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[bannerData.data[0].rank]}] - ${bannerData.data[0].name}\n**Banners Discord**: <@${bannerData.data[0].discord}>`,
+              description: `A players ban has expired on the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${playerData.data[0].name}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[bannerData.data[0].rank]}] - ${bannerData.data[0].name}\n**Banners Discord**: <@${bannerData.data[0].discord}>`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));
