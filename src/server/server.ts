@@ -262,7 +262,7 @@ export class Server {
       setTimeout(() => { // Need a 0ms timeout otherwise the suggestions are sent over before the chat manager is initialized
         emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
         this.commandManager.createChatSuggestions(player);
-      }, 0);
+      }, 500);
 
       const discord = await player.GetIdentifier("discord");
 
