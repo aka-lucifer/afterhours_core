@@ -17,15 +17,6 @@ import {Events} from "../../../shared/enums/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
 
-/***
- *
- * @param playerId The players DB ID to ban
- * @param hwid The players hardware ID
- * @param reason The ban reason
- * @param issuedBy Who issued the ban, if it's system, this should be the bannee's player ID
- * @param issuedUntil Ban date, leave blank for permanent
- */
-
 export class Ban {
   private id: number;
   private playerId: number;
