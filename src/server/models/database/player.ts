@@ -288,6 +288,8 @@ export class Player {
   }
 
   public async Disconnect(disconnectReason: string): Promise<boolean> { // Handles updating your disconnection timestamp and your total playtime
+    if (disconnectReason.includes("banned")) disconnectReason = "Banned";
+
     const leaveTime = await Utils.GetTimestamp();
     const updatedDisconnection = await Database.SendQuery("UPDATE `players` SET `playtime` = :newPlaytime, `last_disconnection` = :newDisconnection WHERE `identifier` = :identifier", {
       identifier: this.license,

@@ -28,7 +28,9 @@ const HUD = new Vue({
     currentType: 0,
 
     // Chat Messages
-    chatMessages: [],
+    chatMessages: [
+
+    ],
     closeTimeout: null,
 
     // Chat Input
@@ -160,6 +162,24 @@ const HUD = new Vue({
       }
     },
 
+    ColorizeMsg(str) {
+      let s = `<span class="message">` + (str.replace(/\^([0-9])/g, (str, color) => `</span><span class="color-${color}">`)) + "</span>";
+
+      const styleDict = {
+        '*': 'font-weight: bold;',
+        '_': 'text-decoration: underline;',
+        '~': 'text-decoration: line-through;',
+        '=': 'text-decoration: underline line-through;',
+        'r': 'text-decoration: none;font-weight: normal;',
+      };
+
+      const styleRegex = /\^(\_|\*|\=|\~|\/|r)(.*?)(?=$|\^r|<\/em>)/;
+      while (s.match(styleRegex)) { //Any better solution would be appreciated :P
+        s = s.replace(styleRegex, (str, style, inner) => `<em style="${styleDict[style]}">${inner}</em>`)
+      }
+      return s.replace(/<span[^>]*><\/span[^>]*>/g, '');
+    },
+
     SendMessage() {
       if (this.chatMessage.length > 0 && this.chatMessage[0] !== " ") { // If chat message has content and isn't a space
         this.Post("SEND_MESSAGE", {message: this.chatMessage, type: this.currentType}, (callbackData) => {
@@ -174,6 +194,7 @@ const HUD = new Vue({
     },
 
     NewMsg(data) {
+      if (data.type === "system") data.contents = this.ColorizeMsg(data.contents);
       this.chatMessages.push(data);
 
       if (this.chatToggled) {

@@ -9,10 +9,11 @@ import {Command} from "../../models/ui/chat/command";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { Events } from "../../../shared/enums/events";
 import { Ranks } from "../../../shared/enums/ranks";
-import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/chat/types";
+import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/types";
 import { Callbacks } from "../../../shared/enums/callbacks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json";
+import {Ban} from "../../models/database/ban";
 
 export class ChatManager {
   private server: Server;
@@ -119,7 +120,7 @@ export class ChatManager {
     new Command("clearchat", "Clears all of the chats messages", [], false, async(source: string) => {
       const player = await this.server.playerManager.GetPlayer(source);
       emitNet(Events.clearChat, -1);
-      emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been cleared by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement), player.GetName);
+      emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been cleared by ^3[${Ranks[player.GetRank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
     }, Ranks.Admin);
 
     new Command("freezechat", "Freezes the chat", [], false, async(source: string) => {
@@ -127,9 +128,28 @@ export class ChatManager {
       this.chatFrozen = !this.chatFrozen;
       emitNet(Events.freezeChat, -1, this.chatFrozen);
       if (this.chatFrozen) {
-        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been frozen by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement), player.GetName);
+        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been frozen by ^3[${Ranks[player.GetRank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
       } else {
-        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been unfrozen by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement), player.GetName);
+        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been unfrozen by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement));
+      }
+    }, Ranks.Admin);
+
+    new Command("id", "Logs your server ID into the server console", [], false, async(source: string) => {
+      console.log("id", source);
+    }, Ranks.Admin);
+
+    new Command("ban", "Freezes the chat", [{name: "server_id", help: "Players server ID"}], true, async(source: string, args: any) => {
+      const player = await this.server.playerManager.GetPlayer(source);
+      if (args[0]) {
+        const banDate = new Date();
+        banDate.setFullYear(2022, 1, 18);
+        banDate.setHours(21, 15, 0);
+
+        const banningPlayer = await this.server.playerManager.GetPlayer(args[0]);
+        const ban = new Ban(banningPlayer.Id, banningPlayer.HardwareId, "Testing ban", player.Id, banDate);
+        ban.Banner = player;
+        await ban.save();
+        ban.drop();
       }
     }, Ranks.Admin);
   }
