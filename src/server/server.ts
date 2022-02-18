@@ -163,6 +163,12 @@ export class Server {
     new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
       emitNet(Events.clearWorldVehs, -1);
     }, Ranks.Admin);
+
+    RegisterCommand("trustscore", async(source: string) => {
+      const player = await this.playerManager.GetPlayer("1");
+
+      console.log(`Trustscore: ${await player.getTrustscore()}`);
+    }, false);
   }
   private registerExports(): void {
     global.exports("getRanks", async() => {

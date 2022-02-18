@@ -2,6 +2,7 @@ import axios, { AxiosError} from "axios";
 import { Vector3 } from "fivem-js";
 
 import { Playtime } from "./playtime";
+import {Ban} from "./ban";
 import * as Utils from "../../utils";
 
 import * as Database from "../../managers/database/database"
@@ -29,6 +30,7 @@ export class Player {
   public identifiers: Record<string, string>;
   public ping: number;
   public playtime: number;
+  public trustscore: number;
   public formattedPlaytime: string;
   private joinTime: string;
   private whitelisted: boolean = false;
@@ -127,6 +129,7 @@ export class Player {
         this.hardwareId = results.data[0].hardware_id;
         this.rank = results.data[0].rank;
         this.playtime = results.data[0].playtime;
+        this.trustscore = await this.getTrustscore();
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
       }
@@ -264,6 +267,24 @@ export class Player {
     }
 
     return avatarUrl;
+  }
+
+  public async getTrustscore(): Promise<number> {
+    let currTrustscore = serverConfig.trustscore.default;
+    const svBans = server.banManager.GetBans;
+
+    svBans.forEach((ban: Ban, index) => {
+      if (ban.PlayerId == this.id) {
+        // console.log(`Ban (Id: ${ban.Id} | Reason: ${ban.Reason}) is yours!`);
+        currTrustscore = currTrustscore - serverConfig.trustscore.banRemoval;
+      }
+    });
+
+    if (currTrustscore > 100) currTrustscore = 100;
+
+    // console.log("Final Trustscore", currTrustscore);
+
+    return currTrustscore;
   }
 
   public async Disconnect(disconnectReason: string): Promise<boolean> { // Handles updating your disconnection timestamp and your total playtime
