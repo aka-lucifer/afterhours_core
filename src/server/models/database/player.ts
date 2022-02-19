@@ -320,6 +320,16 @@ export class Player {
     return currTrustscore;
   }
 
+  public async isBanned(): Promise<[boolean, Ban]> {
+    const [banned, banData] = await server.banManager.playerBanned(this);
+
+    if (banned) {
+      return [banned, banData];
+    }
+
+    return [false, null];
+  }
+
   public async Disconnect(disconnectReason: string): Promise<boolean> { // Handles updating your disconnection timestamp and your total playtime
     if (disconnectReason.includes("banned")) disconnectReason = "Banned";
 
