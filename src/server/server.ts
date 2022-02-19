@@ -32,8 +32,6 @@ import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
-import {Kick} from "./models/database/kick";
-import {Warning} from "./models/database/warning";
 
 export class Server {
   // Debug Data
@@ -170,12 +168,6 @@ export class Server {
     new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
       emitNet(Events.clearWorldVehs, -1);
     }, Ranks.Admin);
-
-    RegisterCommand("trustscore", async(source: string) => {
-      const player = await this.playerManager.GetPlayer("1");
-
-      console.log(`Trustscore: ${await player.getTrustscore()}`);
-    }, false);
   }
   private registerExports(): void {
     global.exports("getRanks", async() => {
@@ -201,8 +193,13 @@ export class Server {
       return await this.playerManager.GetPlayer(source);
     });
 
+    global.exports("isBanned", async(source: string) => {
+      const player = await this.playerManager.GetPlayer(source);
+      return await player.isBanned();
+    });
+
     global.exports("banPlayer", async(playerId: number, hardwareId: string, reason: string, issuedBy?: number) => {
-      console.log(playerId, hardwareId, reason, issuedBy);
+      // console.log(playerId, hardwareId, reason, issuedBy);
       const ban = new Ban(playerId, hardwareId, reason, issuedBy);
       if (issuedBy != undefined) {
         ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
