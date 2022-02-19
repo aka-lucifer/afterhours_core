@@ -35,7 +35,7 @@ export class ChatManager {
       const message = new Message(data.message, data.type);
 
       if (server.IsDebugging) Inform("Message Sent", JSON.stringify(message));
-      if (message.content.includes("/")) { // If it's a command
+      if (message.content[0] == "/") { // If it's a command
         const args = String(message.content).replace("/", "").split(" "); // All of the arguments of the message
         const command = args[0].toLowerCase();
         const registeredCommands = this.server.commandManager.Commands;
