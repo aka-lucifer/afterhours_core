@@ -5,7 +5,6 @@ import WebhookMessage from "../webhook/discord/webhookMessage";
 import * as Database from "../../managers/database/database";
 
 import {LogTypes} from "../../enums/logTypes";
-import {BanStates} from "../../enums/database/bans";
 
 import {addZero, Error, Inform} from "../../utils";
 
@@ -29,11 +28,11 @@ export class Kick {
   private kicker: Player;
   private issuedOn: Date;
 
-  constructor(playerId: number, reason: string, issuedBy: number) {
+  constructor(playerId: number, reason: string, issuedBy?: number) {
     this.playerId = playerId;
     this.kickReason = reason;
 
-    if (issuedBy < 0) {
+    if (issuedBy < 0 || issuedBy === undefined || issuedBy == this.playerId) {
       this.systemKick = true;
     } else {
       this.kickedBy = issuedBy;
@@ -52,7 +51,7 @@ export class Kick {
   }
 
   public get PlayerId(): number {
-    return this.player.Id
+    return this.playerId;
   }
 
   public get Kicker(): Player {
@@ -76,7 +75,7 @@ export class Kick {
     const inserted = await Database.SendQuery("INSERT INTO `player_kicks` (`player_id`, `reason`, `issued_by`) VALUES (:id, :reason, :issuedBy)", {
       id: this.playerId,
       reason: this.kickReason,
-      issuedBy: !this.systemKick ? this.kickedBy : -1
+      issuedBy: !this.systemKick ? this.kickedBy : this.playerId
     });
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
