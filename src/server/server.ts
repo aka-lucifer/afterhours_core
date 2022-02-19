@@ -5,6 +5,8 @@ import {ClientCallback} from "./models/clientCallback";
 
 // Player Control
 import {BanManager} from "./managers/database/bans";
+import {KickManager} from "./managers/database/kicks";
+import {WarnManager} from "./managers/database/warnings";
 import {PlayerManager} from "./managers/players";
 import {ConnectionsManager} from "./managers/connections";
 // Client Callbacks
@@ -30,7 +32,8 @@ import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
-import {KickManager} from "./managers/database/kicks";
+import {Kick} from "./models/database/kick";
+import {Warning} from "./models/database/warning";
 
 export class Server {
   // Debug Data
@@ -41,6 +44,7 @@ export class Server {
   // Player Control
   public banManager: BanManager;
   public kickManager: KickManager;
+  public warnManager: WarnManager;
   public playerManager: PlayerManager;
   public connectionsManager: ConnectionsManager;
 
@@ -85,6 +89,7 @@ export class Server {
     // Player Controller
     this.banManager = new BanManager(server);
     this.kickManager = new KickManager(server);
+    this.warnManager = new WarnManager(server);
     this.playerManager = new PlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server, this.playerManager);
 
@@ -105,7 +110,9 @@ export class Server {
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
     this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
 
-    await this.kickManager.loadKicks(); // Load all bans from the DB, into the ban manager
+    await this.kickManager.loadKicks(); // Load all kicks from the DB, into the kick manager
+
+    await this.warnManager.loadWarnings(); // Load all warnings from the DB, into the warn manager
 
     await this.staffLogManager.loadLogs(); // Loads all the server logs
 
@@ -116,11 +123,6 @@ export class Server {
   }
 
   private registerCommands(): void {
-    RegisterCommand("test_chat", async(source: string) => {
-      const player = await this.playerManager.GetPlayer(source);
-      await player.TriggerEvent(Events.sendSystemMessage, new Message("im a fat bitch!", SystemTypes.Me), player.GetName);
-    }, false);
-
     new Command("veh", "Spawns you inside a specified vehicle.", [{
       name: "vehicleModel",
       help: "The spawn name of the vehicle, you're wanting to spawn."
@@ -313,24 +315,28 @@ export class Server {
     const player = await this.playerManager.GetPlayer(src);
 
     if (data.attacker != -1) {
-      const killer = await this.playerManager.GetPlayer(data.attacker);
-      const weaponData = sharedConfig.weapons[data.weapon];
+      try {
+        const killer = await this.playerManager.GetPlayer(data.attacker);
+        const weaponData = sharedConfig.weapons[data.weapon];
 
-      if (!data.inVeh) {
-        const killDistance = Dist(player.Position(), killer.Position(), false);
-        emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+        if (!data.inVeh) {
+          const killDistance = Dist(player.Position(), killer.Position(), false);
+          emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+        }
+
+        const victimsDisc = await player.GetIdentifier("discord");
+        const killersDisc = await killer.GetIdentifier("discord");
+        await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
+          username: "Kill Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__Player Killed__",
+            description: `A player has been killed.\n\n**Victim**: ${player.GetName}\n**Killer**: ${killer.GetName}\n**Weapon**: ${weaponData.label}\n**Cause**: ${Capitalize(weaponData.reason)}\n**Victims Discord**: ${victimsDisc != "Unknown" ? `<@${victimsDisc}>` : victimsDisc}\n**Killers Discord**: ${killersDisc != "Unknown" ? `<@${killersDisc}>` : killersDisc}`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]
+        }));
+      } catch (error) {
+        console.log(`Error logging kill | Code: ${error}`, "Weapon: ", data.weapon);
       }
-
-      const victimsDisc = await player.GetIdentifier("discord");
-      const killersDisc = await killer.GetIdentifier("discord");
-      await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
-        username: "Kill Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Player Killed__",
-          description: `A player has been killed.\n\n**Victim**: ${player.GetName}\n**Killer**: ${killer.GetName}\n**Weapon**: ${weaponData.label}\n**Cause**: ${Capitalize(weaponData.reason)}\n**Victims Discord**: ${victimsDisc != "Unknown" ? `<@${victimsDisc}>` : victimsDisc}\n**Killers Discord**: ${killersDisc != "Unknown" ? `<@${killersDisc}>` : killersDisc}`,
-          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-        }]
-      }));
     } else {
       const playersDisc = await player.GetIdentifier("discord");
 

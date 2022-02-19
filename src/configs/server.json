@@ -3,10 +3,18 @@
     "whitelist": true,
     "trustscore": {
       "default": 75,
+      "playtimeDivider": 14000,
       "warningRemoval": 3,
       "kickRemoval": 6,
       "banRemoval": 10,
       "commendAddition": 2
+    },
+    "warningActers": {
+      "kick": {
+        "start": 3,
+        "end": 5
+      },
+      "ban": 5
     },
     "discordLogs": {
         "urls": {
