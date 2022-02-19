@@ -1,4 +1,4 @@
-import {Server} from "../../server";
+import {server, Server} from "../../server";
 import { Dist, Log, Inform, Error, NumToVector3 } from "../../utils";
 import {LogTypes} from "../../enums/logTypes";
 
@@ -12,13 +12,18 @@ import { Ranks } from "../../../shared/enums/ranks";
 import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/types";
 import { Callbacks } from "../../../shared/enums/callbacks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
+import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
 import {Ban} from "../../models/database/ban";
 import {Kick} from "../../models/database/kick";
+import {Warning} from "../../models/database/warning";
 
 export class ChatManager {
   private server: Server;
   private chatFrozen: boolean = false;
+  private playerWarnings: any[] = [];
+  private blacklistedWords: string[] = serverConfig.bannedContent.words;
+  private blacklistedLinks: string[] = serverConfig.bannedContent.links;
 
   constructor(server: Server) {
     this.server = server;
@@ -69,6 +74,110 @@ export class ChatManager {
           }
         }
       } else {
+        // Log chat into DB table
+        const chatLog = new ChatLog(player, message);
+        await chatLog.save();
+
+        // Message blacklist checker (doesn't run if you're snr admin or above)
+        if (player.GetRank < Ranks.SeniorAdmin) {
+          // Chat message blacklist checker
+          const wordIndex = this.blacklistedWords.findIndex(word => {
+            if (message.content.includes(word)) {
+              return true;
+            }
+          });
+
+          const linkIndex = this.blacklistedLinks.findIndex(link => {
+            if (message.content.includes(link)) {
+              return true;
+            }
+          });
+
+          // Blacklisted word detection
+          if (wordIndex != -1) {
+            // Define warnings
+            if (this.playerWarnings[player.Id] === undefined) {
+              this.playerWarnings[player.Id] = 1;
+            } else {
+              this.playerWarnings[player.Id]++;
+            }
+
+            console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
+
+            // Allow chat input
+            emitNet(Events.receiveServerCB, src, true, data);
+
+            // Warning Processor
+            if (this.playerWarnings[player.Id] >= 3) {
+              const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings", player.Id);
+              kick.Kicker = player;
+              await kick.save();
+              kick.drop();
+              return;
+            } else {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have recieved a warning for sending a chat message containing blacklisted contents ^3(${this.blacklistedWords[wordIndex]})`, SystemTypes.Admin));
+            }
+
+            // Log your warning to discord
+            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Blacklisted Content", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Blacklisted Chat Message__",
+                description: `A player has sent a chat message containing blacklisted contents.\n\n**Username**: ${player.GetName}\n**Content**: ${this.blacklistedWords[wordIndex]}\n**Message**: ${message.content}\n**Detected By**: System`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+
+            return;
+          }
+
+          // Blacklisted link detection
+
+          if (linkIndex != -1) {
+            // Define warnings
+            if (this.playerWarnings[player.Id] === undefined) {
+              this.playerWarnings[player.Id] = 1;
+            } else {
+              this.playerWarnings[player.Id]++;
+            }
+
+            console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
+
+            // Allow chat input
+            emitNet(Events.receiveServerCB, src, true, data);
+
+            // Warning Processor
+            if (this.playerWarnings[player.Id] >= 3) {
+              const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings", player.Id);
+              kick.Kicker = player;
+              await kick.save();
+              kick.drop();
+              return;
+            } else {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have recieved a warning for sending a chat message containing blacklisted contents ^3(${this.blacklistedLinks[linkIndex]})`, SystemTypes.Admin));
+            }
+
+            // Log your warning to discord
+            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Blacklisted Content", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Blacklisted Chat Message__",
+                description: `A player has sent a chat message containing blacklisted contents.\n\n**Username**: ${player.GetName}\n**Content**: ${this.blacklistedLinks[linkIndex]}\n**Message**: ${message.content}\n**Detected By**: System`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+
+            return;
+          }
+        }
+
+        // Send chat messages
         const connectedPlayers = this.server.playerManager.GetPlayers;
 
         if (message.type == ChatTypes.Admin) {
@@ -100,11 +209,6 @@ export class ChatManager {
           emitNet(Events.sendClientMessage, -1, message, player.GetName);
           emitNet(Events.receiveServerCB, src, true, data);
         }
-
-        // do blacklist check in here
-
-        const chatLog = new ChatLog(player, message);
-        await chatLog.save();
 
         const sendersDisc = await player.GetIdentifier("discord");
         await this.server.logManager.Send(LogTypes.Chat, new WebhookMessage({username: "Chat Logs", embeds: [{
