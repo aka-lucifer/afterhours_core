@@ -22,7 +22,12 @@
             "killURL": "https://discord.com/api/webhooks/941462568348823573/1B9uY-Cx8q5v6B0oRtAXbL5Cuk8AgbqgWdtwBtk1L5z8DHi1BX9trWHBMIdYs6KHRHPr",
             "chatURL": "https://discord.com/api/webhooks/939578616189157397/z-YgoqeIdu_O0eOXLFi8MUloV9pNVe0F56_frsIYlFtgBsV9kwYD2CSDUOvE1AbDRT7m",
             "actionURL": "https://discord.com/api/webhooks/937429667567251526/Ea6B-cFiBAKr_W3lY1JDM184f7S8WbP_m6DMB30YchL8uKUzCbJc857hP8ztoNAzV2s0",
-            "anticheatURL": "https://discord.com/api/webhooks/938225013969002497/hdbFIDn-oqKNYyTCoWouEQpj-9apI-JavVUiO1jIfjd8gLa3xcpkxnxxIXeijxxqD97w"
+            "anticheatURL": "https://discord.com/api/webhooks/938225013969002497/hdbFIDn-oqKNYyTCoWouEQpj-9apI-JavVUiO1jIfjd8gLa3xcpkxnxxIXeijxxqD97w",
+            "commendURL": "https://discord.com/api/webhooks/944681275975954432/6jCSIW0hpgzPxXfebM0sQrAEoQwqWh5Al_qiJyU5faZ5UmRietUObSPIwQqsZA49chy7"
+        },
+        "axiosData": {
+          "guildId": "934499164979593226",
+          "botToken": "ODAxNDQwODIyMjM1MTAzMjUy.YAgt7g.X3joLLfuqhyGYLpHHg8hDKW9pbM"
         },
         "footerLogo": "https://i.imgur.com/RYvyA1o.png"
     },

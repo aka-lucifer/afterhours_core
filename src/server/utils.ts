@@ -1,3 +1,4 @@
+import axios, { AxiosError} from "axios";
 import {Vector3} from "fivem-js";
 
 import {server} from "./server";
@@ -9,8 +10,10 @@ import {StaffLog} from "./models/database/staffLog";
 import {EmbedColours} from "../shared/enums/embedColours";
 import {Ranks} from "../shared/enums/ranks";
 import sharedConfig from "../configs/shared.json";
+import serverConfig from "../configs/server.json"
 import {Player} from "./models/database/player";
 import {StaffLogs} from "./enums/database/staffLogs";
+import {ErrorCodes} from "../shared/enums/errors";
 
 /**
  * @param reference Title for organisation logs
@@ -200,4 +203,27 @@ export async function logCommand(name: string, player: Player, args?: string): P
 export function addZero(i): string {
   if (i < 10) {i = "0" + i}
   return i;
+}
+
+/**
+ *
+ * @param player Player to check if they are in the servers discord or not
+ */
+export async function inDiscord(player: Player): Promise<boolean> {
+  const svGuild = serverConfig.discordLogs.axiosData.guildId;
+  const myDiscord = await player.GetIdentifier("discord");
+
+  try {
+    const result = await axios.get(`https://discord.com/api/v8/guilds/${svGuild}/members/${myDiscord}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bot ${serverConfig.discordLogs.axiosData.botToken}`
+      }
+    });
+
+    if (result.data) return true;
+  } catch (error) {
+    Error("(inDiscord) Utils Method", `[${player.Id}] - ${player.GetName} | Error Code: ${ErrorCodes.NotInDiscord}`);
+    return false;
+  }
 }

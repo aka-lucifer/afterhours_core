@@ -3,5 +3,6 @@ export enum LogTypes {
   Kill,
   Chat,
   Action,
-  Anticheat
+  Anticheat,
+  Commend
 }

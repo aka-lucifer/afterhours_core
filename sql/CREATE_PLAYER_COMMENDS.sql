@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `player_commendations` (
+CREATE TABLE IF NOT EXISTS `player_commends` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `player_id` int(11) NOT NULL,
   `reason` longtext NOT NULL,
