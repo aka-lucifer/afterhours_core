@@ -14,7 +14,7 @@ export class KickManager {
   }
 
   // Get Requests
-  public get GetBans(): Kick[] {
+  public get GetKicks(): Kick[] {
     return this.kickedPlayers;
   }
 
@@ -31,11 +31,11 @@ export class KickManager {
 
   public Add(kickData: Kick): number {
     const addedData = this.kickedPlayers.push(kickData);
-    if (this.server.IsDebugging) Log("Kick Manager | Added", `(Id: ${kickData.Id} | Player Id: ${kickData.PlayerId} | Reason: ${kickData.Reason} | Kickers Id: ${kickData.Kicker.Id})`);
+    if (this.server.IsDebugging) Log("Kick Manager | Added", `(Id: ${kickData.Id} | Player Id: ${kickData.PlayerId} | Reason: ${kickData.Reason} | Kickers Id: ${!kickData.systemKick ? kickData.Kicker.Id : "System"})`);
     return addedData;
   }
 
-  public async GetBan(kickId: number): Promise<Kick> {
+  public async GetKick(kickId: number): Promise<Kick> {
     const kickIndex = this.kickedPlayers.findIndex(kick => kick.Id == kickId);
     if (kickIndex != -1) {
       return this.kickedPlayers[kickIndex];
