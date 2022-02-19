@@ -19,6 +19,7 @@ import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json"
 import {Delay, NumToVector3} from "../../utils";
 import {Kick} from "./kick";
+import {Warning} from "./warning";
 
 export class Player {
   public id: number;
@@ -274,9 +275,12 @@ export class Player {
     let currTrustscore = serverConfig.trustscore.default;
     const svBans = server.banManager.GetBans;
     const svKicks = server.kickManager.GetKicks;
+    const svWarnings = server.warnManager.GetWarnings;
+    const myCommends = await Database.SendQuery("SELECT * FROM `player_commends` WHERE `player_id` = :playerId", {
+      playerId: this.Id
+    });
 
     const playtimeAddition = Math.floor(this.playtime / serverConfig.trustscore.playtimeDivider);
-    // console.log("add value", this.playtime, playtimeAddition);
 
     // console.log(`Added (${playtimeAddition}) to your trustscore, due to your playtime | From (${currTrustscore}) -> To (${currTrustscore + playtimeAddition})\n`)
     currTrustscore = currTrustscore + playtimeAddition;
@@ -295,6 +299,18 @@ export class Player {
         currTrustscore = currTrustscore - serverConfig.trustscore.kickRemoval;
       }
     });
+
+    svWarnings.forEach((warn: Warning, index) => {
+      if (warn.PlayerId == this.id) {
+        // console.log(`Warning (Id: ${warn.Id} | Reason: ${warn.Reason}) is yours!\nWarning Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.warningRemoval})\n`);
+        currTrustscore = currTrustscore - serverConfig.trustscore.warningRemoval;
+      }
+    });
+
+    for (let i = 0; i < myCommends.data.length; i++) {
+      // console.log(`Commend (Id: ${myCommends.data[i].id} | Reason: ${myCommends.data[i].reason})\nCommend Addition - From (${currTrustscore}) -> To (${currTrustscore + serverConfig.trustscore.commendAddition})\n`);
+      currTrustscore = currTrustscore + serverConfig.trustscore.commendAddition;
+    }
 
     if (currTrustscore > 100) currTrustscore = 100;
     if (currTrustscore < 0) currTrustscore = 0;
