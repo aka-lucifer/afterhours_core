@@ -71,6 +71,10 @@ export class Ban {
     this.state = newState;
   }
 
+  public get IssuedBy(): number | string {
+    return this.issuedBy;
+  }
+
   public get IssuedUntil(): Date {
     return this.issuedUntil;
   }

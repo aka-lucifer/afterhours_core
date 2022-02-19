@@ -12,6 +12,7 @@ import {Ranks} from "../../shared/enums/ranks";
 import { Log, Error, Inform, Delay } from "../utils";
 import * as sharedConfig from "../../configs/shared.json";
 import {Ban} from "../models/database/ban";
+import {BanStates} from "../enums/database/bans";
 
 const adaptiveCards = global.exports['adaptiveCards'];
 
@@ -36,31 +37,31 @@ export class ConnectionsManager {
       await Delay(200);
 
       if (playerExists) { // If your DB entry exists
-        const [isBanned, banData] = await this.server.banManager.playerBanned(player);
+        const [isBanned, banData] = await player.isBanned();
         if (isBanned) {
-          if (player.GetRank < Ranks.Management) {
-            if (banData.issued_by != player.id) {
+          if (player.GetRank < Ranks.Management && banData.State == BanStates.Active) {
+            if (banData.IssuedBy != player.id) {
               const results = await Database.SendQuery("SELECT `name`, `rank` FROM `players` WHERE `player_id` = :playerId", {
-                playerId: banData.issued_by
+                playerId: banData.IssuedBy
               });
 
               if (results.data.length > 0) {
-                const banDate = new Date(banData.issued_until);
+                const banDate = new Date(banData.IssuedUntil);
                 if (banDate.getFullYear() < 2099) {
-                  deferrals.done(`\n \n [${sharedConfig.serverName}]: You were banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.id}\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
+                  deferrals.done(`\n \n [${sharedConfig.serverName}]: You were banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.Id}\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.Reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
                 } else {
-                  deferrals.done(`\n \n [${sharedConfig.serverName}]: You were permanently banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.id}\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.reason}.`);
+                  deferrals.done(`\n \n [${sharedConfig.serverName}]: You were permanently banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.Id}\n\nBy: [${Ranks[results.data[0].rank]}] - ${results.data[0].name}\n\nReason: ${banData.Reason}.`);
                 }
                 return;
               } else {
                 deferrals.done(`[${sharedConfig.serverName}]: There was an issue checking your data, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoBannerFound}.`)
               }
             } else {
-              const banDate = new Date(banData.issued_until);
+              const banDate = new Date(banData.IssuedUntil);
               if (banDate.getFullYear() < 2099) {
-                deferrals.done(`\n \n [${sharedConfig.serverName}]: You were banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.id}\n\nBy: System\n\nReason: ${banData.reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
+                deferrals.done(`\n \n [${sharedConfig.serverName}]: You were banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.Id}\n\nBy: System\n\nReason: ${banData.Reason}\n\nUnban Date: ${banDate.toUTCString()}.`);
               } else {
-                deferrals.done(`[${sharedConfig.serverName}]: You were permanently banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.id}\n\nBy: System\n\nReason: ${banData.reason}.`);
+                deferrals.done(`[${sharedConfig.serverName}]: You were permanently banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.Id}\n\nBy: System\n\nReason: ${banData.Reason}.`);
               }
             }
           }

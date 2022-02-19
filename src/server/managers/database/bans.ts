@@ -62,13 +62,11 @@ export class BanManager {
     }
   }
 
-  public async playerBanned(player: Player): Promise<[boolean, Record<string, any>]> {
-    const results = await Database.SendQuery("SELECT `id`, `reason`, `issued_by`, `issued_until` FROM `player_bans` WHERE `player_id` = :playerId", {
-      playerId: player.id
-    });
+  public async playerBanned(player: Player): Promise<[boolean, Ban]> {
+    const banIndex = this.bannedPlayers.findIndex(ban => ban.PlayerId == player.Id && ban.State == BanStates.Active);
 
-    if (results.data.length > 0) {
-      return [true, results.data[0]];
+    if (banIndex != -1) {
+      return [true, this.bannedPlayers[banIndex]];
     }
 
     return [false, null];
