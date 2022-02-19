@@ -18,6 +18,7 @@ import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json"
 import {Delay, NumToVector3} from "../../utils";
+import {Kick} from "./kick";
 
 export class Player {
   public id: number;
@@ -272,15 +273,31 @@ export class Player {
   public async getTrustscore(): Promise<number> {
     let currTrustscore = serverConfig.trustscore.default;
     const svBans = server.banManager.GetBans;
+    const svKicks = server.kickManager.GetKicks;
+
+    const playtimeAddition = Math.floor(this.playtime / serverConfig.trustscore.playtimeDivider);
+    // console.log("add value", this.playtime, playtimeAddition);
+
+    // console.log(`Added (${playtimeAddition}) to your trustscore, due to your playtime | From (${currTrustscore}) -> To (${currTrustscore + playtimeAddition})\n`)
+    currTrustscore = currTrustscore + playtimeAddition;
+    if (currTrustscore > 100) currTrustscore = 100;
 
     svBans.forEach((ban: Ban, index) => {
       if (ban.PlayerId == this.id) {
-        // console.log(`Ban (Id: ${ban.Id} | Reason: ${ban.Reason}) is yours!`);
+        // console.log(`Ban (Id: ${ban.Id} | Reason: ${ban.Reason}) is yours!\nBan Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.banRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.banRemoval;
       }
     });
 
+    svKicks.forEach((kick: Kick, index) => {
+      if (kick.PlayerId == this.id) {
+        // console.log(`Kick (Id: ${kick.Id} | Reason: ${kick.Reason}) is yours!\nKick Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.kickRemoval})\n`);
+        currTrustscore = currTrustscore - serverConfig.trustscore.kickRemoval;
+      }
+    });
+
     if (currTrustscore > 100) currTrustscore = 100;
+    if (currTrustscore < 0) currTrustscore = 0;
 
     // console.log("Final Trustscore", currTrustscore);
 
