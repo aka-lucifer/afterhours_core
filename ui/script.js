@@ -8,42 +8,47 @@ const HUD = new Vue({
     // [SCOREBOARD]
     displaying: false,
 
-    // Server Data
+    // [SCOREBOARD] - Server Data
     currentPlayers: 0,
     maxPlayers: 32,
 
-    // Page Data
+    // [SCOREBOARD] - Page Data
     selectedPage: 1,
     maxPerPage: 10,
     animating: false,
 
-    // Players
+    // [SCOREBOARD] - Players
     connectedPlayers: [],
 
     // [CHAT]
     chatToggled: true,
 
-    // Chat Types
+    // [CHAT] - Chat Types
     chatTypes: ["local", "global"],
     currentType: 0,
 
-    // Chat Messages
-    chatMessages: [
-
-    ],
+    // [CHAT] - Chat Messages
+    chatMessages: [],
     closeTimeout: null,
 
-    // Chat Input
+    // [CHAT] - Input
     chatMessage: "",
     showInput: false,
     focusTimer: 0,
 
-    // Message Cycler
+    // [CHAT] - Prev Message Cycler
     sentMessages: [],
     cycledMessage: 0,
 
-    // Suggestions
-    suggestions: []
+    // [CHAT] - Suggestions
+    suggestions: [],
+
+    // [WARNINGS]
+    displayWarnings: false,
+    warningSearch: "",
+
+    // [WARNINGS] - Server Data
+    issuedWarnings: []
   },
   methods: {
     // Notification
@@ -182,12 +187,13 @@ const HUD = new Vue({
 
     SendMessage() {
       if (this.chatMessage.length > 0 && this.chatMessage[0] !== " ") { // If chat message has content and isn't a space
+        this.CloseChat();
         this.Post("SEND_MESSAGE", {message: this.chatMessage, type: this.currentType}, (callbackData) => {
           if (callbackData) {
             this.sentMessages.push(this.chatMessage);
             this.cycledMessage = this.sentMessages.length;
             this.chatMessage = "";
-            this.CloseChat();
+            // this.CloseChat();
           }
         });
       }
@@ -240,6 +246,25 @@ const HUD = new Vue({
 
     Clear() {
       this.chatMessages = []
+    },
+
+    DisplayWarnings(data) {
+      this.issuedWarnings = data.warnings;
+      this.issuedWarnings.sort(function compare(a, b) {
+        const dateA = new Date(a.issuedOn);
+        const dateB = new Date(b.issuedOn);
+        return dateA - dateB;
+      });
+
+      this.displayWarnings = true;
+    },
+
+    CloseWarnings() {
+      this.Post("CLOSE_WARNINGS", JSON.stringify({}), (callback) => {
+        if (callback === "UNFOCUSED") {
+          this.displayWarnings = false;
+        }
+      });
     }
   },
 
@@ -284,6 +309,15 @@ const HUD = new Vue({
       });
       return currentSuggestions;
     },
+
+    searchWarnings() {
+      if (this.chatMessage !== "" || this.chatMessage != null) {
+        return this.issuedWarnings.filter(warning => {
+          if (warning.reason.toLowerCase().search(this.warningSearch.toLowerCase()) !== -1 || warning.issuedBy.toLowerCase().search(this.warningSearch.toLowerCase()) !== -1 || warning.issuedOn.toLowerCase().search(this.warningSearch.toLowerCase()) !== -1)
+          return warning;
+        })
+      }
+    }
   },
 
   mounted() {
@@ -303,11 +337,18 @@ const HUD = new Vue({
     RegisterEvent("TOGGLE_CHAT", this.Toggle);
     RegisterEvent("CLEAR_CHAT", this.Clear);
 
+    // Warning Events
+    RegisterEvent("OPEN_WARNINGS", this.DisplayWarnings);
+
     // Key Presses
     window.addEventListener("keydown", function(event) {
       switch(event.key) {
         case "Escape": // Close UI
-          HUD.CloseChat();
+          if ($("#Chat-Input").is(":visible")) {
+            HUD.CloseChat();
+          } else if ($("#warnings_container").is(":visible")) {
+            HUD.CloseWarnings();
+          }
           break;
 
         case "Alt": // Change Mode

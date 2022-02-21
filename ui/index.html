@@ -106,11 +106,11 @@
             <div id="Chat-Message" class="killLog" v-if="message.notificationType == 'kill'">(Global): {{ message.contents }}</div>
             <div id="Chat-Message" class="interaction" v-if="message.notificationType == 'interaction'">{{ message.contents }}</div>
             <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'">{{ message.contents }}</div>
-            <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: {{ message.contents }}</div>
+            <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): {{ message.contents }}</div>
-            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">*{{ message.sender}} {{ message.contents }}*</div>
+            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">*{{ message.sender}} <span v-html="message.contents"></span>*</div>
           </div>
 
           <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
@@ -154,6 +154,54 @@
         </span>
         <input ref="input" type="text" v-model="chatMessage" style="padding: 5px; color: white; width: 90%; outline: none;" placeholder="Enter chat message...">
         <span style="float: right; padding: 10px;"><v-icon color="white">mdi-arrow-right-bold</v-icon></span>
+      </div>
+
+      <!-- Warnings -->
+      <div id="warnings_container" v-show="displayWarnings">
+        <div id="warnings_header" style="text-decoration: underline;">
+          Received Warnings
+        </div>
+
+        <div id="warnings_body">
+          <input class="warning_search" v-model="warningSearch" type="text" placeholder="Search Warnings...">
+          <div class="warning_header">
+            <div class="id_header">
+              ID
+            </div>
+            <div class="issued_by_header">
+              Issued By
+            </div>
+            <div class="reason_header">
+              Reason
+            </div>
+            <div class="issued_on_header">
+              Issued On
+            </div>
+          </div>
+
+          <div id="issued_warnings">
+            <div class="issued_warning" v-for="(warning, warningIndex) in searchWarnings" v-if="searchWarnings.length > 0">
+              <div class="warning_data">
+                <div class="id">
+                  {{ warning.id }}
+                </div>
+                <div class="issued_by">
+                  <div>{{ warning.issuedBy }}</div>
+                </div>
+                <div class="reason">
+                  {{ warning.reason }}
+                </div>
+                <div class="issued_on">
+                  {{ warning.issuedOn }}
+                </div>
+              </div>
+              <div v-if="(warningIndex + 1) < issuedWarnings.length" style="border-bottom: 1px solid white;"></div>
+            </div>
+            <h3 v-if="searchWarnings.length == 0" style="color: white; text-align: center; font-weight: bold;"><br>
+              No results found!
+            </h3>
+          </div>
+        </div>
       </div>
     </v-app>
 

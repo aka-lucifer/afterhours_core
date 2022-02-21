@@ -58,6 +58,10 @@ export class Warning {
     return this.playerId;
   }
 
+  public get WarnedBy(): number {
+    return this.warnedBy;
+  }
+
   public get Warner(): Player {
     return this.warner;
   }
@@ -68,6 +72,10 @@ export class Warning {
 
   public get Reason(): string {
     return this.warnReason;
+  }
+
+  public get IssuedOn(): Date {
+    return this.issuedOn;
   }
 
   public set IssuedOn(dateIssued: Date) {
@@ -120,7 +128,7 @@ export class Warning {
       await this.send();
 
       const warnings = await server.warnManager.getPlayerWarnings(this.playerId);
-      if (warnings.length >= serverConfig.warningActers.kick.start && warnings.length <= serverConfig.warningActers.kick.end) { // If you have 3, 4 or 5 warnings, kick you
+      if (warnings.length >= serverConfig.warningActers.kick.start && warnings.length <= serverConfig.warningActers.kick.end) { // If you have 3, 4 or 5 warnings.ts, kick you
         const kick = new Kick(this.playerId, this.warnReason, this.systemWarning ? this.playerId : this.warnedBy);
         if (!this.systemWarning) kick.Kicker = this.warner;
         await kick.save();

@@ -33,11 +33,15 @@ export enum Events {
   receiveClientCB = "astrid:server:receiveClientCB",
   logDeath = "astrid:server:logDeath",
 
-  // (Scoreboard Client)
-  requestPlayers = "astrid:client:requestPlayers",
+  // (Scoreboard Server)
+  requestPlayers = "astrid:server:requestPlayers",
 
   // (Chat Server)
   sendMessage = "astrid:server:sendMessage",
+  createCommand = "astrid:createCommand:createCommand",
+
+  // (Warnings Server)
+  requestWarnings = "astrid:server:requestWarnings",
 
   // Astrid Client Events
   serverStarted = "astrid:client:serverStarted",
@@ -54,5 +58,8 @@ export enum Events {
   addSuggestion = "astrid:client:addSuggestion",
   removeSuggestion = "astrid:client:removeSuggestion",
   clearChat = "astrid:client:clearChat",
-  freezeChat = "astrid:client:freezeChat"
+  freezeChat = "astrid:client:freezeChat",
+
+  // (Warnings Client)
+  receiveWarnings = "astrid:server:receiveWarnings"
 }

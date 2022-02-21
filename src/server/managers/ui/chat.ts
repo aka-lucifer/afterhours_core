@@ -17,6 +17,7 @@ import sharedConfig from "../../../configs/shared.json";
 import {Ban} from "../../models/database/ban";
 import {Kick} from "../../models/database/kick";
 import {Warning} from "../../models/database/warning";
+import {FormattedWarning} from "../../../client/models/ui/warning";
 
 export class ChatManager {
   private server: Server;
@@ -62,8 +63,8 @@ export class ChatManager {
                     emitNet(Events.receiveServerCB, src, false, data);
                   }
                 } else {
-                  registeredCommands[a].callback(player.GetHandle, args);
                   emitNet(Events.receiveServerCB, src, true, data);
+                  registeredCommands[a].callback(player.GetHandle, args);
                 }
               } else {
                 Error("Chat Manager", "Access Denied!");
@@ -95,7 +96,7 @@ export class ChatManager {
 
           // Blacklisted word detection
           if (wordIndex != -1) {
-            // Define warnings
+            // Define warnings.ts
             if (this.playerWarnings[player.Id] === undefined) {
               this.playerWarnings[player.Id] = 1;
             } else {
@@ -109,7 +110,7 @@ export class ChatManager {
 
             // Warning Processor
             if (this.playerWarnings[player.Id] >= 3) {
-              const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings", player.Id);
+              const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings.ts", player.Id);
               kick.Kicker = player;
               await kick.save();
               kick.drop();
@@ -137,7 +138,7 @@ export class ChatManager {
           // Blacklisted link detection
 
           if (linkIndex != -1) {
-            // Define warnings
+            // Define warnings.ts
             if (this.playerWarnings[player.Id] === undefined) {
               this.playerWarnings[player.Id] = 1;
             } else {
@@ -151,7 +152,7 @@ export class ChatManager {
 
             // Warning Processor
             if (this.playerWarnings[player.Id] >= 3) {
-              const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings", player.Id);
+              const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings.ts", player.Id);
               kick.Kicker = player;
               await kick.save();
               kick.drop();
@@ -268,5 +269,32 @@ export class ChatManager {
         kick.drop();
       }
     }, Ranks.Admin);
+
+    new Command("warnings", "Get all of your warnings", [], false, async(source: string) => {
+      const receivedWarnings: FormattedWarning[] = [];
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const warnings = await this.server.warnManager.getPlayerWarnings(player.Id);
+
+      for (let i = 0; i < warnings.length; i++) {
+        if (!warnings[i].systemWarning) {
+          const player = await this.server.playerManager.getPlayerFromId(warnings[i].WarnedBy);
+          receivedWarnings.push({
+            id: warnings[i].Id,
+            issuedBy: `[${Ranks[player.GetRank]}] - ${player.GetName}`,
+            reason: warnings[i].Reason,
+            issuedOn: warnings[i].IssuedOn.toUTCString()
+          });
+        } else {
+          receivedWarnings.push({
+            id: warnings[i].Id,
+            issuedBy: "System",
+            reason: warnings[i].Reason,
+            issuedOn: warnings[i].IssuedOn.toUTCString()
+          });
+        }
+      }
+
+      await player.TriggerEvent(Events.receiveWarnings, receivedWarnings);
+    }, Ranks.User);
   }
 }

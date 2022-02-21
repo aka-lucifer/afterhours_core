@@ -1,11 +1,19 @@
 import {Game, Vector3, VehicleSeat, World} from "fivem-js"
 
 import {Player} from "./models/player";
+import {Notification} from "./models/ui/notification";
+import {NotificationTypes} from "./enums/ui/notifications/types";
 
+// Server Data
 import {RichPresence} from "./managers/richPresence";
 import {ServerCallbackManager} from "./managers/serverCallbacks";
+
+// UI
 import {ChatManager} from "./managers/ui/chat";
 import {Scoreboard} from "./managers/ui/scoreboard";
+import {Warnings} from "./managers/ui/warnings";
+
+// Jobs
 import {CuffingStuff} from "./cuffing";
 
 import Config from "../configs/client.json";
@@ -17,8 +25,6 @@ import {LXEvents} from "../shared/enums/lxEvents";
 import {Callbacks} from "../shared/enums/callbacks";
 import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
-import {Notification} from "./models/ui/notification";
-import {NotificationTypes} from "./enums/ui/notifications/types";
 
 let takingScreenshot = false;
 
@@ -39,6 +45,7 @@ export class Client {
   // UI
   private chatManager: ChatManager;
   private scoreboard: Scoreboard;
+  private warnings: Warnings;
 
   private cuffing: CuffingStuff;
 
@@ -81,6 +88,7 @@ export class Client {
     this.chatManager = new ChatManager(client);
     this.chatManager.init();
     this.scoreboard = new Scoreboard(client);
+    this.warnings = new Warnings(client);
 
     this.cuffing = new CuffingStuff();
     Inform(sharedConfig.serverName, "Successfully Loaded!");

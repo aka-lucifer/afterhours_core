@@ -13,5 +13,8 @@ export enum NuiMessages {
   OpenChat = "OPEN_CHAT",
   SendMessage = "SEND_MESSAGE",
   ToggleChat = "TOGGLE_CHAT",
-  ClearChat = "CLEAR_CHAT"
+  ClearChat = "CLEAR_CHAT",
+
+  // Warnings
+  OpenWarnings = "OPEN_WARNINGS"
 }

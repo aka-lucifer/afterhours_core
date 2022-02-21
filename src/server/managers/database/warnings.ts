@@ -1,9 +1,12 @@
-import {Warning} from "../../models/database/warning";
-
 import * as Database from "./database";
 import {Server} from "../../server"
 
+import {Warning} from "../../models/database/warning";
+
 import {Log} from "../../utils"
+import {Events} from "../../../shared/enums/events";
+import {Ranks} from "../../../shared/enums/ranks";
+import {FormattedWarning} from "../../../client/models/ui/warning";
 
 export class WarnManager {
   public server: Server;
@@ -11,6 +14,9 @@ export class WarnManager {
 
   constructor(server: Server) {
     this.server = server;
+
+    // Events
+    onNet(Events.requestWarnings, this.EVENT_requestWarnings.bind(this));
   }
 
   // Get Requests
@@ -28,7 +34,7 @@ export class WarnManager {
       this.playerWarnings.push(warning);
     }
 
-    console.log("All Player Warnings", this.playerWarnings);
+    // console.log("All Player Warnings", this.playerWarnings);
   }
 
   public Add(warnData: Warning): number {
@@ -54,5 +60,33 @@ export class WarnManager {
     }
 
     return playerWarnings;
+  }
+
+  // Events
+  private async EVENT_requestWarnings(): Promise<void> {
+    const receivedWarnings: FormattedWarning[] = [];
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const warnings = await this.getPlayerWarnings(player.Id);
+
+    for (let i = 0; i < warnings.length; i++) {
+      if (!warnings[i].systemWarning) {
+        const player = await this.server.playerManager.getPlayerFromId(warnings[i].WarnedBy);
+        receivedWarnings.push({
+          id: warnings[i].Id,
+          issuedBy: `[${Ranks[player.GetRank]}] - ${player.GetName}`,
+          reason: warnings[i].Reason,
+          issuedOn: warnings[i].IssuedOn.toUTCString()
+        });
+      } else {
+        receivedWarnings.push({
+          id: warnings[i].Id,
+          issuedBy: "System",
+          reason: warnings[i].Reason,
+          issuedOn: warnings[i].IssuedOn.toUTCString()
+        });
+      }
+    }
+
+    await player.TriggerEvent(Events.receiveWarnings, receivedWarnings);
   }
 }
