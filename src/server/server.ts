@@ -32,6 +32,7 @@ import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
+import {PlayerManager} from "./managers/database/players";
 
 export class Server {
   // Debug Data
@@ -43,6 +44,7 @@ export class Server {
   public banManager: BanManager;
   public kickManager: KickManager;
   public warnManager: WarnManager;
+  public playerManager: PlayerManager;
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
 
@@ -88,6 +90,8 @@ export class Server {
     this.banManager = new BanManager(server);
     this.kickManager = new KickManager(server);
     this.warnManager = new WarnManager(server);
+    this.playerManager = new PlayerManager(server);
+    await this.playerManager.init();
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
 
@@ -110,7 +114,7 @@ export class Server {
 
     await this.kickManager.loadKicks(); // Load all kicks from the DB, into the kick manager
 
-    await this.warnManager.loadWarnings(); // Load all warnings from the DB, into the warn manager
+    await this.warnManager.loadWarnings(); // Load all warnings.ts from the DB, into the warn manager
 
     await this.staffLogManager.loadLogs(); // Loads all the server logs
 
