@@ -16,8 +16,8 @@ import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
 import {Ban} from "../../models/database/ban";
 import {Kick} from "../../models/database/kick";
-import {Warning} from "../../models/database/warning";
 import {FormattedWarning} from "../../../client/models/ui/warning";
+import {FormattedCommend} from "../../../client/models/ui/commend";
 
 export class ChatManager {
   private server: Server;
@@ -270,7 +270,7 @@ export class ChatManager {
       }
     }, Ranks.Admin);
 
-    new Command("warnings", "Get all of your warnings", [], false, async(source: string) => {
+    new Command("warnings", "Display all of your warnings", [], false, async(source: string) => {
       const receivedWarnings: FormattedWarning[] = [];
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       const warnings = await this.server.warnManager.getPlayerWarnings(player.Id);
@@ -295,6 +295,24 @@ export class ChatManager {
       }
 
       await player.TriggerEvent(Events.receiveWarnings, receivedWarnings);
+    }, Ranks.User);
+
+    new Command("commends", "Display all of your commends", [], false, async(source: string) => {
+      const receivedCommends: FormattedCommend[] = [];
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const commends = await this.server.commendManager.getPlayerCommends(player.Id);
+
+      for (let i = 0; i < commends.length; i++) {
+        const player = await this.server.playerManager.getPlayerFromId(commends[i].IssuedBy);
+        receivedCommends.push({
+          id: commends[i].Id,
+          issuedBy: `[${Ranks[player.GetRank]}] - ${player.GetName}`,
+          reason: commends[i].Reason,
+          issuedOn: commends[i].IssuedOn.toUTCString()
+        });
+      }
+
+      await player.TriggerEvent(Events.receiveCommends, receivedCommends);
     }, Ranks.User);
   }
 }

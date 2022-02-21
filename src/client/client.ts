@@ -12,6 +12,7 @@ import {ServerCallbackManager} from "./managers/serverCallbacks";
 import {ChatManager} from "./managers/ui/chat";
 import {Scoreboard} from "./managers/ui/scoreboard";
 import {Warnings} from "./managers/ui/warnings";
+import {Commends} from "./managers/ui/commends";
 
 // Jobs
 import {CuffingStuff} from "./cuffing";
@@ -46,6 +47,7 @@ export class Client {
   private chatManager: ChatManager;
   private scoreboard: Scoreboard;
   private warnings: Warnings;
+  private commends: Commends;
 
   private cuffing: CuffingStuff;
 
@@ -89,6 +91,7 @@ export class Client {
     this.chatManager.init();
     this.scoreboard = new Scoreboard(client);
     this.warnings = new Warnings(client);
+    this.commends = new Commends(client);
 
     this.cuffing = new CuffingStuff();
     Inform(sharedConfig.serverName, "Successfully Loaded!");
@@ -130,7 +133,6 @@ export class Client {
 
   private EVENT_playerLoaded(player: any): void {
     this.player = new Player(player);
-    console.log("Event Triggered (playerLoaded)", this.player);
     this.chatManager.setup();
   }
 
@@ -143,26 +145,19 @@ export class Client {
   }
 
   private EVENT_pedDied(damagedEntity: number, attackingEntity: number, weaponHash: number, isMelee: boolean): void {
-    console.log("STEP 1");
     if (IsPedAPlayer(damagedEntity) && damagedEntity == Game.PlayerPed.Handle) {
-      console.log("STEP 2");
       if (IsPedAPlayer(attackingEntity)) {
-        console.log("STEP 3");
         emitNet(Events.logDeath, {
           type: GetEntityType(attackingEntity),
           inVeh: IsPedInAnyVehicle(attackingEntity, false) && GetPedInVehicleSeat(GetVehiclePedIsIn(attackingEntity, false), VehicleSeat.Driver),
           weapon: weaponHash,
           attacker: GetPlayerServerId(NetworkGetPlayerIndexFromPed(attackingEntity))
         });
-        console.log("STEP 4");
       } else {
-        console.log("STEP 5");
         if (attackingEntity == -1) {
-          console.log("STEP 6");
           emitNet(Events.logDeath, {
             attacker: attackingEntity
           });
-          console.log("STEP 7");
         }
       }
     }

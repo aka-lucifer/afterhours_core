@@ -18,16 +18,19 @@ import {LogTypes} from "../../enums/logTypes";
 
 export class Commend {
   private id: number;
-  private readonly receiver: Player;
+  private readonly receiver: number;
   private readonly reason: string;
-  private readonly issuedBy: Player;
+  private readonly issuedBy: number;
+  public readonly issuedOn: Date;
 
-  constructor(receiver: Player, reason: string, issuedBy: Player) {
+  constructor(id: number, receiver: number, reason: string, issuedBy: number, issuedOn: Date) {
+    this.id = id;
     this.receiver = receiver;
     this.reason = reason;
     this.issuedBy = issuedBy;
+    this.issuedOn = issuedOn;
 
-    // Inform("Commend Class", `Defined Commend Class Data: ${JSON.stringify((this))}`);
+    Inform("Commend Class", `Defined Commend Class Data: ${JSON.stringify((this))}`);
   }
 
   // Getters & Setters Requests
@@ -35,46 +38,53 @@ export class Commend {
     return this.id;
   }
 
-  public get Receiver(): Player {
+  public get Receiver(): number {
     return this.receiver;
-  }
-
-  public get IssuedBy(): Player {
-    return this.issuedBy;
   }
 
   public get Reason(): string {
     return this.reason;
   }
 
+  public get IssuedBy(): number {
+    return this.issuedBy;
+  }
+
+  public get IssuedOn(): Date {
+    return this.issuedOn;
+  }
+
   // Methods
   public async save(): Promise<boolean> {
     const inserted = await Database.SendQuery("INSERT INTO `player_commends` (`player_id`, `reason`, `issued_by`) VALUES (:id, :reason, :issuedBy)", {
-      id: this.receiver.Id,
+      id: this.receiver,
       reason: this.reason,
-      issuedBy: this.issuedBy.Id
+      issuedBy: this.issuedBy
     });
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
-      const inDisc = await inDiscord(this.receiver);
+      const myPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.receiver);
+      const issuersPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.issuedBy);
+
+      const inDisc = await inDiscord(myPlayer);
       let receiver: string;
 
       if (inDisc) {
-        const commendeesDiscord = await this.receiver.GetIdentifier("discord");
+        const commendeesDiscord = await myPlayer.GetIdentifier("discord");
         receiver = `<@${commendeesDiscord}>`;
       } else {
-        receiver = `[${Ranks[this.receiver.GetRank]}] - ${this.receiver.GetName}`;
+        receiver = `[${Ranks[myPlayer.GetRank]}] - ${myPlayer.GetName}`;
       }
 
-      let commendersDiscord = await this.issuedBy.GetIdentifier("discord");
+      let commendersDiscord = await issuersPlayer.GetIdentifier("discord");
       commendersDiscord = commendersDiscord != "Unknown" ? `<@${commendersDiscord}>` : commendersDiscord
 
       await server.logManager.Send(LogTypes.Commend, new WebhookMessage({
         username: "Commend Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Player Commended__",
-          description: `A player has received a commendation.\n\n**Commend ID**: #${this.id}\n**Commended**: ${receiver}\n**Reason**: ${this.reason}\n**Commended By**: [${Ranks[this.issuedBy.GetRank]}] - ${this.issuedBy.GetName}\n**Commenders Discord**: ${commendersDiscord}`,
+          description: `A player has received a commendation.\n\n**Commend ID**: #${this.id}\n**Commended**: ${receiver}\n**Reason**: ${this.reason}\n**Commended By**: [${Ranks[myPlayer.GetRank]}] - ${myPlayer.GetName}\n**Commenders Discord**: ${commendersDiscord}`,
           footer: {
             text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
             icon_url: sharedConfig.serverLogo
@@ -82,7 +92,7 @@ export class Commend {
         }]
       }));
 
-      emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.receiver.GetName} ^0has received a commend from ^3[${Ranks[this.issuedBy.GetRank]}] - ^3${this.issuedBy.GetName}^0, for ^3${this.reason}`, SystemTypes.Admin));
+      emitNet(Events.sendSystemMessage, -1, new Message(`^3${myPlayer.GetName} ^0has received a commend from ^3[${Ranks[myPlayer.GetRank]}] - ^3${myPlayer.GetName}^0, for ^3${this.reason}`, SystemTypes.Admin));
       return true
     }
 

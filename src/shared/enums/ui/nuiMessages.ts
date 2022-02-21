@@ -16,5 +16,8 @@ export enum NuiMessages {
   ClearChat = "CLEAR_CHAT",
 
   // Warnings
-  OpenWarnings = "OPEN_WARNINGS"
+  OpenWarnings = "OPEN_WARNINGS",
+
+  // Commends
+  OpenCommends = "OPEN_COMMENDS"
 }

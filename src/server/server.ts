@@ -7,6 +7,7 @@ import {ClientCallback} from "./models/clientCallback";
 import {BanManager} from "./managers/database/bans";
 import {KickManager} from "./managers/database/kicks";
 import {WarnManager} from "./managers/database/warnings";
+import {CommendManager} from "./managers/database/commends";
 import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
 // Client Callbacks
@@ -44,6 +45,7 @@ export class Server {
   public banManager: BanManager;
   public kickManager: KickManager;
   public warnManager: WarnManager;
+  public commendManager: CommendManager;
   public playerManager: PlayerManager;
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
@@ -90,8 +92,8 @@ export class Server {
     this.banManager = new BanManager(server);
     this.kickManager = new KickManager(server);
     this.warnManager = new WarnManager(server);
+    this.commendManager = new CommendManager(server);
     this.playerManager = new PlayerManager(server);
-    await this.playerManager.init();
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
 
@@ -106,7 +108,6 @@ export class Server {
     // Chat
     this.commandManager = new CommandManager(server);
     this.chatManager = new ChatManager(server);
-    this.chatManager.init();
 
     // Run Manager Methods
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
@@ -114,9 +115,15 @@ export class Server {
 
     await this.kickManager.loadKicks(); // Load all kicks from the DB, into the kick manager
 
-    await this.warnManager.loadWarnings(); // Load all warnings.ts from the DB, into the warn manager
+    await this.warnManager.loadWarnings(); // Load all warnings from the DB, into the warn manager
+
+    await this.commendManager.loadCommends(); // Load all warnings from the DB, into the warn manager
+
+    await this.playerManager.init(); // Load all players from the DB, into the player manager
 
     await this.staffLogManager.loadLogs(); // Loads all the server logs
+
+    this.chatManager.init(); // Register all commands
 
     this.registerCommands();
     this.registerExports();

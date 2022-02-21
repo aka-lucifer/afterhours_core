@@ -1,37 +1,37 @@
 import {Client} from "../../client";
 
-import {FormattedWarning} from "../../models/ui/warning";
+import {FormattedCommend} from "../../models/ui/commend";
 
 import {Events} from "../../../shared/enums/events";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import {RegisterNuiCallback} from "../../utils";
 
-export class Warnings {
+export class Commends {
   private client: Client;
-  private warnings: FormattedWarning[] = [];
+  private commends: FormattedCommend[] = [];
 
   constructor(client: Client) {
     this.client = client;
 
     // Events
-    onNet(Events.receiveWarnings, this.EVENT_receiveWarnings.bind(this));
+    onNet(Events.receiveCommends, this.EVENT_receiveCommends.bind(this));
 
     // Nui Callbacks
-    RegisterNuiCallback("CLOSE_WARNINGS", (data, cb) => {
+    RegisterNuiCallback("CLOSE_COMMENDS", (data, cb) => {
       SetNuiFocus(false, false);
       cb("UNFOCUSED");
     });
   }
 
   // Events
-  private async EVENT_receiveWarnings(myWarnings: FormattedWarning[]): Promise<void> {
-    this.warnings = myWarnings;
+  private async EVENT_receiveCommends(myCommends: FormattedCommend[]): Promise<void> {
+    this.commends = myCommends;
 
     SetNuiFocus(true, true);
     SendNuiMessage(JSON.stringify({
-      event: NuiMessages.OpenWarnings,
+      event: NuiMessages.OpenCommends,
       data: {
-        warnings: this.warnings
+        commends: this.commends
       }
     }))
   }

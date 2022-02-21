@@ -203,6 +203,54 @@
           </div>
         </div>
       </div>
+
+      <!-- Commends -->
+      <div id="commends_container" v-show="displayCommends">
+        <div id="commends_header" style="text-decoration: underline;">
+          Received Commends
+        </div>
+
+        <div id="commends_body">
+          <input class="commend_search" v-model="commendSearch" type="text" placeholder="Search Commends...">
+          <div class="commend_header">
+            <div class="id_header">
+              ID
+            </div>
+            <div class="issued_by_header">
+              Issued By
+            </div>
+            <div class="reason_header">
+              Reason
+            </div>
+            <div class="issued_on_header">
+              Issued On
+            </div>
+          </div>
+
+          <div id="issued_commends">
+            <div class="issued_commend" v-for="(commend, commendIndex) in searchCommends" v-if="searchCommends.length > 0">
+              <div class="commend_data">
+                <div class="id">
+                  {{ commend.id }}
+                </div>
+                <div class="issued_by">
+                  <div>{{ commend.issuedBy }}</div>
+                </div>
+                <div class="reason">
+                  {{ commend.reason }}
+                </div>
+                <div class="issued_on">
+                  {{ commend.issuedOn }}
+                </div>
+              </div>
+              <div v-if="(commendIndex + 1) < searchCommends.length" style="border-bottom: 1px solid white;"></div>
+            </div>
+            <h3 v-if="searchCommends.length == 0" style="color: white; text-align: center; font-weight: bold;"><br>
+              No results found!
+            </h3>
+          </div>
+        </div>
+      </div>
     </v-app>
 
     <!-- Axios -->

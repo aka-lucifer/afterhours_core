@@ -48,7 +48,14 @@ const HUD = new Vue({
     warningSearch: "",
 
     // [WARNINGS] - Server Data
-    issuedWarnings: []
+    issuedWarnings: [],
+
+    // [COMMENDS]
+    displayCommends: false,
+    commendSearch: "",
+
+    // [COMMENDS] - Server Data
+    issuedCommends: []
   },
   methods: {
     // Notification
@@ -265,6 +272,25 @@ const HUD = new Vue({
           this.displayWarnings = false;
         }
       });
+    },
+
+    DisplayCommends(data) {
+      this.issuedCommends = data.commends;
+      this.issuedCommends.sort(function compare(a, b) {
+        const dateA = new Date(a.issuedOn);
+        const dateB = new Date(b.issuedOn);
+        return dateA - dateB;
+      });
+
+      this.displayCommends = true;
+    },
+
+    CloseCommends() {
+      this.Post("CLOSE_COMMENDS", JSON.stringify({}), (callback) => {
+        if (callback === "UNFOCUSED") {
+          this.displayCommends = false;
+        }
+      });
     }
   },
 
@@ -311,10 +337,19 @@ const HUD = new Vue({
     },
 
     searchWarnings() {
-      if (this.chatMessage !== "" || this.chatMessage != null) {
+      if (this.warningSearch !== "" || this.warningSearch != null) {
         return this.issuedWarnings.filter(warning => {
           if (warning.reason.toLowerCase().search(this.warningSearch.toLowerCase()) !== -1 || warning.issuedBy.toLowerCase().search(this.warningSearch.toLowerCase()) !== -1 || warning.issuedOn.toLowerCase().search(this.warningSearch.toLowerCase()) !== -1)
           return warning;
+        })
+      }
+    },
+
+    searchCommends() {
+      if (this.commendSearch !== "" || this.commendSearch != null) {
+        return this.issuedCommends.filter(commend => {
+          if (commend.reason.toLowerCase().search(this.commendSearch.toLowerCase()) !== -1 || commend.issuedBy.toLowerCase().search(this.commendSearch.toLowerCase()) !== -1 || commend.issuedOn.toLowerCase().search(this.commendSearch.toLowerCase()) !== -1)
+          return commend;
         })
       }
     }
@@ -340,6 +375,9 @@ const HUD = new Vue({
     // Warning Events
     RegisterEvent("OPEN_WARNINGS", this.DisplayWarnings);
 
+    // Commend Events
+    RegisterEvent("OPEN_COMMENDS", this.DisplayCommends);
+
     // Key Presses
     window.addEventListener("keydown", function(event) {
       switch(event.key) {
@@ -348,6 +386,8 @@ const HUD = new Vue({
             HUD.CloseChat();
           } else if ($("#warnings_container").is(":visible")) {
             HUD.CloseWarnings();
+          } else if ($("#commends_container").is(":visible")) {
+            HUD.CloseCommends();
           }
           break;
 

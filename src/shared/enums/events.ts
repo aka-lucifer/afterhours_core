@@ -43,6 +43,9 @@ export enum Events {
   // (Warnings Server)
   requestWarnings = "astrid:server:requestWarnings",
 
+  // (Commends Server)
+  requestCommends = "astrid:server:requestCommends",
+
   // Astrid Client Events
   serverStarted = "astrid:client:serverStarted",
   playerLoaded = "astrid:client:playerLoaded",
@@ -61,5 +64,8 @@ export enum Events {
   freezeChat = "astrid:client:freezeChat",
 
   // (Warnings Client)
-  receiveWarnings = "astrid:server:receiveWarnings"
+  receiveWarnings = "astrid:client:receiveWarnings",
+
+  // (Commends Client)
+  receiveCommends = "astrid:client:receiveCommends"
 }
