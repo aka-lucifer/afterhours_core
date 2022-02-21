@@ -1,5 +1,8 @@
-import {Player} from "./player";
 import { server } from "../../server";
+
+import {Player} from "./player";
+import {Kick} from "./kick";
+import {Ban} from "./ban";
 
 import WebhookMessage from "../webhook/discord/webhookMessage";
 import * as Database from "../../managers/database/database";
@@ -16,10 +19,6 @@ import * as serverConfig from "../../../configs/server.json"
 import {Events} from "../../../shared/enums/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
-import {Kick} from "./kick";
-import {Ban} from "./ban";
-
-// (when someone recieves a new warning, if it's between 3-5, kick them from the server, if it's more ban them for 3 days), make a number method in the warn manager to get a players warn count.
 
 export class Warning {
   private id: number;
@@ -38,14 +37,12 @@ export class Warning {
     this.warnReason = reason;
 
     if (issuedBy < 0 || issuedBy === undefined || issuedBy == this.playerId) {
-      console.log("system warning!");
       this.systemWarning = true;
     } else {
-      console.log("player warning");
       this.warnedBy = issuedBy;
     }
 
-    Inform("Warning Class", `Defined Warning Class Data: ${JSON.stringify((this))}`);
+    // Inform("Warning Class", `Defined Warning Class Data: ${JSON.stringify((this))}`);
   }
 
   // Getters & Setters Requests
@@ -110,7 +107,7 @@ export class Warning {
           username: "Warning Logs", embeds: [{
             color: EmbedColours.Red,
             title: "__Player Warning__",
-            description: `A player has received a warning.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.warnReason}\n**Kicked By**: System`,
+            description: `A player has received a warning.\n\n**Warning ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.warnReason}\n**Warned By**: System`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
               icon_url: sharedConfig.serverLogo
@@ -123,14 +120,14 @@ export class Warning {
       await this.send();
 
       const warnings = await server.warnManager.getPlayerWarnings(this.playerId);
-      if (warnings >= serverConfig.warningActers.kick.start && warnings <= serverConfig.warningActers.kick.end) { // If you have 3, 4 or 5 warnings, kick you
+      if (warnings.length >= serverConfig.warningActers.kick.start && warnings.length <= serverConfig.warningActers.kick.end) { // If you have 3, 4 or 5 warnings, kick you
         const kick = new Kick(this.playerId, this.warnReason, this.systemWarning ? this.playerId : this.warnedBy);
         if (!this.systemWarning) kick.Kicker = this.warner;
         await kick.save();
         kick.drop();
       }
 
-      if (warnings > serverConfig.warningActers.ban) {
+      if (warnings.length > serverConfig.warningActers.ban) {
         const banDate = new Date();
         banDate.setDate(banDate.getDate() + 3);
 

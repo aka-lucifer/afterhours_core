@@ -44,14 +44,14 @@ export class WarnManager {
     }
   }
 
-  public async getPlayerWarnings(playerId: number): Promise<number> {
-    let playerWarnings = 0;
+  public async getPlayerWarnings(playerId: number): Promise<Warning[]> {
+    const playerWarnings = [];
 
-    this.playerWarnings.forEach((warning: Warning, index) => {
-      if (warning.PlayerId == playerId) {
-        playerWarnings++;
+    for (let i = 0; i < this.playerWarnings.length; i++) {
+      if (this.playerWarnings[i].PlayerId == playerId) {
+        playerWarnings.push(this.playerWarnings[i]);
       }
-    })
+    }
 
     return playerWarnings;
   }
