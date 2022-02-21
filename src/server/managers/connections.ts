@@ -1,8 +1,5 @@
 import { Player  } from "../models/database/player";
-
 import * as Database from "./database/database";
-import { PlayerManager } from "./players";
-
 
 import { Events } from "../../shared/enums/events";
 import { Server } from "../server";
@@ -18,12 +15,10 @@ const adaptiveCards = global.exports['adaptiveCards'];
 
 export class ConnectionsManager {
   private server: Server;
-  private playerManager: PlayerManager;
   public disconnectedPlayers: any[] = [];
   
-  constructor(server: Server, playerManager: PlayerManager) {
+  constructor(server: Server) {
     this.server = server;
-    this.playerManager = playerManager;
 
     // Events
     on(Events.playerConnecting, async(name, setKickReason, deferrals) => {
@@ -73,7 +68,7 @@ export class ConnectionsManager {
           const ban = new Ban(player.id, player.HardwareId, "We've detected you using the XSS exploit", player.id);
           await ban.save();
           deferrals.done(`[${sharedConfig.serverName}]: You've been permanently banned from ${sharedConfig.serverName}.\nBan Id: #${ban.Id}\nBy: System\nReason: ${ban.Reason}`);
-          await this.playerManager.Remove(player.handle);
+          await server.connectedPlayerManager.Remove(player.handle);
           return;
         }
 
@@ -114,17 +109,17 @@ export class ConnectionsManager {
           Inform("Whitelist Check", "Not whitelisted!");
           deferrals.done(`[${sharedConfig.serverName}]: Whitelist Active!`);
         } else {
-          this.playerManager.Add(player);
+          server.connectedPlayerManager.Add(player);
           this.displayAdaptiveCard(player, deferrals);
         }
       } else {
-        this.playerManager.Add(player);
+        server.connectedPlayerManager.Add(player);
         this.displayAdaptiveCard(player, deferrals);
       }
     });
 
     on(Events.playerDisconnected, async(reason: string) => {
-      await playerManager.Disconnect(source, reason);
+      await server.connectedPlayerManager.Disconnect(source, reason);
     });
   }
 

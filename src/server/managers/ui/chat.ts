@@ -31,7 +31,7 @@ export class ChatManager {
     // Callbacks
     onNet(Callbacks.sendMessage, async(data: Record<string, any>) => {
       const src = source;
-      const player = await this.server.playerManager.GetPlayer(src);
+      const player = await this.server.connectedPlayerManager.GetPlayer(src);
       const message = new Message(data.message, data.type);
 
       if (server.IsDebugging) Inform("Message Sent", JSON.stringify(message));
@@ -178,7 +178,7 @@ export class ChatManager {
         }
 
         // Send chat messages
-        const connectedPlayers = this.server.playerManager.GetPlayers;
+        const connectedPlayers = this.server.connectedPlayerManager.GetPlayers;
 
         if (message.type == ChatTypes.Admin) {
           for (let i = 0; i < connectedPlayers.length; i++) {
@@ -223,13 +223,13 @@ export class ChatManager {
 
   public init(): void {
     new Command("clearchat", "Clears all of the chats messages", [], false, async(source: string) => {
-      const player = await this.server.playerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
       emitNet(Events.clearChat, -1);
       emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been cleared by ^3[${Ranks[player.GetRank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
     }, Ranks.Admin);
 
     new Command("freezechat", "Freezes the chat", [], false, async(source: string) => {
-      const player = await this.server.playerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
       this.chatFrozen = !this.chatFrozen;
       emitNet(Events.freezeChat, -1, this.chatFrozen);
       if (this.chatFrozen) {
@@ -244,13 +244,13 @@ export class ChatManager {
     }, Ranks.Admin);
 
     new Command("ban", "Freezes the chat", [{name: "server_id", help: "Players server ID"}], true, async(source: string, args: any) => {
-      const player = await this.server.playerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (args[0]) {
         const banDate = new Date();
         banDate.setFullYear(2022, 1, 18);
         banDate.setHours(21, 15, 0);
 
-        const banningPlayer = await this.server.playerManager.GetPlayer(args[0]);
+        const banningPlayer = await this.server.connectedPlayerManager.GetPlayer(args[0]);
         const ban = new Ban(banningPlayer.Id, banningPlayer.HardwareId, "Testing ban", player.Id, banDate);
         ban.Banner = player;
         await ban.save();
@@ -259,9 +259,9 @@ export class ChatManager {
     }, Ranks.Admin);
 
     new Command("kick", "Kick player", [{name: "server_id", help: "Players server ID"}], true, async(source: string, args: any) => {
-      const player = await this.server.playerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (args[0]) {
-        const kickedPlayer = await this.server.playerManager.GetPlayer(args[0]);
+        const kickedPlayer = await this.server.connectedPlayerManager.GetPlayer(args[0]);
         const kick = new Kick(kickedPlayer.Id,"Testing kick", player.Id);
         kick.Kicker = player;
         await kick.save();

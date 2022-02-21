@@ -116,7 +116,7 @@ export class Ban {
     });
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
-      const svPlayers = server.playerManager.GetPlayers;
+      const svPlayers = server.connectedPlayerManager.GetPlayers;
       const playerIndex = svPlayers.findIndex(player => player.HardwareId == this.hardwareId);
       if (playerIndex != -1) {
         this.player = svPlayers[playerIndex];

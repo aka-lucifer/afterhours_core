@@ -2,7 +2,7 @@ import { Server } from "../server";
 import { Player } from "../models/database/player";
 import {Inform, Log} from "../utils";
 
-export class PlayerManager {
+export class ConnectedPlayerManager {
   public server: Server;
   private connectedPlayers: any[] = [];
   

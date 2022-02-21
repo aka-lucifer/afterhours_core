@@ -7,7 +7,7 @@ import {ClientCallback} from "./models/clientCallback";
 import {BanManager} from "./managers/database/bans";
 import {KickManager} from "./managers/database/kicks";
 import {WarnManager} from "./managers/database/warnings";
-import {PlayerManager} from "./managers/players";
+import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
 // Client Callbacks
 import {ClientCallbackManager} from "./managers/clientCallbacks";
@@ -43,7 +43,7 @@ export class Server {
   public banManager: BanManager;
   public kickManager: KickManager;
   public warnManager: WarnManager;
-  public playerManager: PlayerManager;
+  public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
 
   // Client Callbacks
@@ -88,8 +88,8 @@ export class Server {
     this.banManager = new BanManager(server);
     this.kickManager = new KickManager(server);
     this.warnManager = new WarnManager(server);
-    this.playerManager = new PlayerManager(server);
-    this.connectionsManager = new ConnectionsManager(server, this.playerManager);
+    this.connectedPlayerManager = new ConnectedPlayerManager(server);
+    this.connectionsManager = new ConnectionsManager(server);
 
     // Client Callbacks
     this.clientCallbackManager = new ClientCallbackManager(server);
@@ -126,7 +126,7 @@ export class Server {
       help: "The spawn name of the vehicle, you're wanting to spawn."
     }], true, async (source: string, args: any[]) => {
       if (args[0]) {
-        const player = await this.playerManager.GetPlayer(source);
+        const player = await this.connectedPlayerManager.GetPlayer(source);
         const vehModel = String(args[0]);
         const myPed = GetPlayerPed(source);
         const myPosition = GetEntityCoords(myPed);
@@ -155,7 +155,7 @@ export class Server {
     }, Ranks.Admin);
 
     new Command("me", "Returns your server ID.", [{name: "content", help: "The content of your /me message."}], true, async (source: string, args: any[]) => {
-      const player = await this.playerManager.GetPlayer(source);
+      const player = await this.connectedPlayerManager.GetPlayer(source);
       const messageContents = args.join(" ");
       if (messageContents.length > 0) {
         await player.TriggerEvent(Events.sendSystemMessage, new Message(messageContents, SystemTypes.Me), player.GetName);
@@ -190,11 +190,11 @@ export class Server {
     });
 
     global.exports("getPlayer", async(source: string) => {
-      return await this.playerManager.GetPlayer(source);
+      return await this.connectedPlayerManager.GetPlayer(source);
     });
 
     global.exports("isBanned", async(source: string) => {
-      const player = await this.playerManager.GetPlayer(source);
+      const player = await this.connectedPlayerManager.GetPlayer(source);
       return await player.isBanned();
     });
 
@@ -202,7 +202,7 @@ export class Server {
       // console.log(playerId, hardwareId, reason, issuedBy);
       const ban = new Ban(playerId, hardwareId, reason, issuedBy);
       if (issuedBy != undefined) {
-        ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
+        ban.Banner = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
       }
       await ban.save();
       ban.drop();
@@ -211,7 +211,7 @@ export class Server {
     global.exports("anticheatBan", async(playerId: number, hardwareId: string, reason: string, takeScreenshot: boolean, issuedBy?: number) => {
       // console.log(playerId, hardwareId, reason, issuedBy);
 
-      const player = await this.playerManager.GetPlayerFromId(playerId);
+      const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
       if (player) {
         this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.GetHandle, {}, async (cbData, passedData) => {
           // console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
@@ -221,7 +221,7 @@ export class Server {
           if (passedData.url) ban.URL = passedData.url;
           if (takeScreenshot) ban.Screenshot = takeScreenshot;
           if (issuedBy != undefined) {
-            ban.Banner = await this.playerManager.GetPlayerFromId(issuedBy);
+            ban.Banner = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
           }
 
           await ban.save();
@@ -250,13 +250,13 @@ export class Server {
     let loadedPlayer;
 
     if (!restarted) { // If joined, get our old id and update our data in player manager to new server ID
-      await this.playerManager.Update(src, oldId.toString())
-      player = await this.playerManager.GetPlayer(src);
+      await this.connectedPlayerManager.Update(src, oldId.toString())
+      player = await this.connectedPlayerManager.GetPlayer(src);
       loadedPlayer = await player.Load();
     } else { // If restarted resource
       player = new Player(src);
       loadedPlayer = await player.Load();
-      this.playerManager.Add(player);
+      this.connectedPlayerManager.Add(player);
     }
 
     if (loadedPlayer) {
@@ -309,11 +309,11 @@ export class Server {
 
   private async EVENT_playerKilled(data: Record<string, any>): Promise<void> {
     const src = source;
-    const player = await this.playerManager.GetPlayer(src);
+    const player = await this.connectedPlayerManager.GetPlayer(src);
 
     if (data.attacker != -1) {
       try {
-        const killer = await this.playerManager.GetPlayer(data.attacker);
+        const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
         const weaponData = sharedConfig.weapons[data.weapon];
 
         if (!data.inVeh) {
@@ -349,8 +349,8 @@ export class Server {
   }
 
   private async EVENT_refreshPlayers(): Promise<void> {
-    const player = await this.playerManager.GetPlayer(source);
-    const svPlayers = this.playerManager.GetPlayers;
+    const player = await this.connectedPlayerManager.GetPlayer(source);
+    const svPlayers = this.connectedPlayerManager.GetPlayers;
     for (let a = 0; a < svPlayers.length; a++) {
       svPlayers[a].RefreshPing();
       const currPlaytime = await svPlayers[a].CurrentPlaytime();

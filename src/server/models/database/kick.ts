@@ -80,7 +80,7 @@ export class Kick {
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
-      this.player = await server.playerManager.GetPlayerFromId(this.playerId);
+      this.player = await server.connectedPlayerManager.GetPlayerFromId(this.playerId);
 
       if (!this.systemKick) {
         const kickersDiscord = await this.kicker.GetIdentifier("discord");

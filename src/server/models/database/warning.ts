@@ -86,7 +86,7 @@ export class Warning {
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
-      this.player = await server.playerManager.GetPlayerFromId(this.playerId);
+      this.player = await server.connectedPlayerManager.GetPlayerFromId(this.playerId);
 
       if (!this.systemWarning) {
         const warnersDiscord = await this.warner.GetIdentifier("discord");
@@ -145,7 +145,7 @@ export class Warning {
   public async send(): Promise<void> {
     if (!this.systemWarning) {
       await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3[${Ranks[this.warner.GetRank]}] - ^3${this.warner.GetName}, ^0for ^3${this.warnReason}`, SystemTypes.Admin))
-      const svPlayers = server.playerManager.GetPlayers;
+      const svPlayers = server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < svPlayers.length; i++) {
         if (svPlayers[i].GetHandle != this.player.GetHandle) {
@@ -154,7 +154,7 @@ export class Warning {
       }
     } else {
       await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3System, ^0for ^3${this.warnReason}`, SystemTypes.Admin))
-      const svPlayers = server.playerManager.GetPlayers;
+      const svPlayers = server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < svPlayers.length; i++) {
         if (svPlayers[i].GetHandle != this.player.GetHandle) {
