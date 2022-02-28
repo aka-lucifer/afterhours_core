@@ -5,6 +5,32 @@ const HUD = new Vue({
     // Important 
     resource: "astrid_core",
 
+    // [SPAWN INFO]
+    // IMPORTANT
+    spawnActive: false,
+    keybindSearch: "",
+    commandSearch: "",
+
+    currentAOP: null,
+    players: {
+      current: null,
+      max: null,
+      percent: null,
+      bestPlayer: null
+    },
+    bestPlayer: null,
+
+    serverKeybinds: [],
+    serverCommands: [],
+    serverRules: [],
+    pages: [
+      {icon: "home", label: "home"},
+      {icon: "keyboard", label: "keybinds"},
+      {icon: "forum", label: "commands"},
+      {icon: "book", label: "rules"}
+    ],
+    currentPage: 0,
+
     // [SCOREBOARD]
     displaying: false,
 
@@ -58,6 +84,24 @@ const HUD = new Vue({
     issuedCommends: []
   },
   methods: {
+    // Spawn UI
+    SetupSpawn(data) {
+      this.currentAOP = data.aop || "Sandy Shores";
+      this.players.current = data.players.current || 40;
+      this.players.max = data.players.max || 64
+      this.players.percent = (this.players.current / this.players.max) * 100;
+      this.players.bestPlayer = data.players.bestPlayer || "akaLucifer - 0d 0h 0m";
+      this.serverKeybinds = data.keybinds || [];
+      this.serverCommands = data.commands || [];
+      this.serverRules = data.rules || [];
+      this.spawnActive = true;
+    },
+
+    CloseSpawner() {
+      this.spawnActive = false;
+      this.Post("CLOSE_SPAWNER");
+    },
+
     // Notification
     Notification(data) {
       new Notify(data);
@@ -196,11 +240,11 @@ const HUD = new Vue({
       if (this.chatMessage.length > 0 && this.chatMessage[0] !== " ") { // If chat message has content and isn't a space
         this.CloseChat();
         this.Post("SEND_MESSAGE", {message: this.chatMessage, type: this.currentType}, (callbackData) => {
+          this.chatMessage = "";
+          console.log("cb", callbackData)
           if (callbackData) {
             this.sentMessages.push(this.chatMessage);
             this.cycledMessage = this.sentMessages.length;
-            this.chatMessage = "";
-            // this.CloseChat();
           }
         });
       }
@@ -291,6 +335,10 @@ const HUD = new Vue({
           this.displayCommends = false;
         }
       });
+    },
+
+    SetCompass(data) {
+      $(".mapdirections").css("transform", `rotate(${data.rotation}deg)`);
     }
   },
 
@@ -336,6 +384,24 @@ const HUD = new Vue({
       return currentSuggestions;
     },
 
+    searchKeybinds() {
+      if (this.keybindSearch !== "" || this.keybindSearch != null) {
+        return this.serverKeybinds.filter(keybind => {
+          if (keybind.description.toLowerCase().search(this.keybindSearch.toLowerCase()) !== -1)
+          return keybind;
+        })
+      }
+    },
+
+    searchCommands() {
+      if (this.commandSearch !== "" || this.commandSearch != null) {
+        return this.serverCommands.filter(command => {
+          if (command.name.toLowerCase().search(this.commandSearch.toLowerCase()) !== -1 || command.description.toLowerCase().search(this.commandSearch.toLowerCase()) !== -1)
+          return command;
+        })
+      }
+    },
+
     searchWarnings() {
       if (this.warningSearch !== "" || this.warningSearch != null) {
         return this.issuedWarnings.filter(warning => {
@@ -356,6 +422,9 @@ const HUD = new Vue({
   },
 
   mounted() {
+    // Spawner UI
+    RegisterEvent("OPEN_SPAWNER", this.SetupSpawn);
+
     // Notification
     RegisterEvent("CREATE_NOTIFICATION", this.Notification);
 
@@ -377,6 +446,13 @@ const HUD = new Vue({
 
     // Commend Events
     RegisterEvent("OPEN_COMMENDS", this.DisplayCommends);
+
+    // HUD Events
+    RegisterEvent("SET_COMPASS", this.SetCompass);
+
+    setTimeout(() => {
+      $(".mapdirections").css("transform", "rotate(0deg)");
+    }, 1000);
 
     // Key Presses
     window.addEventListener("keydown", function(event) {
@@ -401,6 +477,7 @@ const HUD = new Vue({
 
         case "ArrowUp":
           if (HUD.$refs.input === document.activeElement && HUD.sentMessages.length > 0) { // If chat input is focused and you've sent message/s
+            console.log(HUD.cycledMessage, HUD.cycledMessage - 1, HUD.sentMessages);
             if ((HUD.cycledMessage - 1) >= 0) {
               HUD.cycledMessage--;
               HUD.chatMessage = HUD.sentMessages[HUD.cycledMessage];

@@ -9,16 +9,19 @@ import {RichPresence} from "./managers/richPresence";
 import {ServerCallbackManager} from "./managers/serverCallbacks";
 
 // UI
+import {Spawner} from "./managers/ui/spawner";
 import {ChatManager} from "./managers/ui/chat";
 import {Scoreboard} from "./managers/ui/scoreboard";
 import {Warnings} from "./managers/ui/warnings";
 import {Commends} from "./managers/ui/commends";
 
 // Jobs
-import {CuffingStuff} from "./cuffing";
+// (Police)
+import {CuffingStuff} from "./managers/jobs/police/cuffing";
+import {HelicamManager} from "./managers/jobs/police/helicam";
 
 import Config from "../configs/client.json";
-import {closestPed, Inform} from "./utils";
+import {closestPed, Delay, Inform} from "./utils";
 
 import {Events} from "../shared/enums/events";
 import {GameEvents} from "../shared/enums/gameEvents";
@@ -44,12 +47,16 @@ export class Client {
   public serverCallbackManager: ServerCallbackManager;
 
   // UI
+  private spawner: Spawner;
   private chatManager: ChatManager;
   private scoreboard: Scoreboard;
   private warnings: Warnings;
   private commends: Commends;
 
+  // Jobs
+  // (Police)
   private cuffing: CuffingStuff;
+  private helicam: HelicamManager;
 
   constructor() {
     this.debugging = Config.debug;
@@ -87,13 +94,17 @@ export class Client {
     this.serverCallbackManager = new ServerCallbackManager(client);
     
     // UI
+    this.spawner = new Spawner(client);
     this.chatManager = new ChatManager(client);
     this.chatManager.init();
     this.scoreboard = new Scoreboard(client);
     this.warnings = new Warnings(client);
     this.commends = new Commends(client);
 
+    // Jobs
+    // (Police)
     this.cuffing = new CuffingStuff();
+    this.helicam = new HelicamManager(client);
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
     RegisterCommand("pistol", () => {
@@ -101,6 +112,40 @@ export class Client {
       if (currWeapon == Weapons.Pistol) {
         console.log(`Pistol Data: ${JSON.stringify(sharedConfig.weapons[currWeapon])}`)
       }
+    }, false);
+
+    RegisterCommand("compass", () => {
+      const directions: number[] = [
+        0,
+        45,
+        90,
+        135,
+        180,
+        225,
+        270,
+        315,
+        360
+      ]
+      
+      setTick(async() => {
+        const direction = Game.PlayerPed.Heading;
+
+        // for (let i = 0; i < directions.length; i++) {
+        //   if (Math.abs(direction - directions[i])) {
+        //     direction = directions[i];
+        //     break;
+        //   }
+        // }
+
+        
+        SendNuiMessage(JSON.stringify({
+          event: "SET_COMPASS",
+          data: {
+            rotation: direction
+          }
+        }))
+        await Delay(0)
+      });
     }, false);
 
     RegisterCommand("tpm", () => {
@@ -131,8 +176,9 @@ export class Client {
     }
   }
 
-  private EVENT_playerLoaded(player: any): void {
+  private EVENT_playerLoaded(player: any, spawnInfo: Record<string, any>): void {
     this.player = new Player(player);
+    this.spawner.start(spawnInfo);
     this.chatManager.setup();
   }
 

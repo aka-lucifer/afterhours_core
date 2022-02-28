@@ -138,8 +138,14 @@ export class Server {
     }], true, async (source: string, args: any[]) => {
       if (args[0]) {
         const player = await this.connectedPlayerManager.GetPlayer(source);
-        const vehModel = String(args[0]);
         const myPed = GetPlayerPed(source);
+        const currVeh = GetVehiclePedIsIn(myPed, false)
+
+        if (currVeh != 0) {
+          DeleteEntity(currVeh);
+        }
+
+        const vehModel = String(args[0]);
         const myPosition = GetEntityCoords(myPed);
         const vehicle = CreateVehicle(await GetHash(vehModel), myPosition[0], myPosition[1], myPosition[2], GetEntityHeading(myPed), true, false);
         SetPedIntoVehicle(myPed, vehicle, -1);
@@ -158,12 +164,12 @@ export class Server {
         const loaded = await player.Load();
         if (loaded) {
           DeleteEntity(currVeh);
-          await logCommand("/delveh", player);
+          await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle Deleted", SystemTypes.Success));
           Error("Del Veh Cmd", "Vehicle Deleted");
-          // player.TriggerEvent(Events.systemMessage, SystemMessages.Action, "Vehicle Deleted.")
+          await logCommand("/delveh", player);
         }
       }
-    }, Ranks.Admin);
+    }, Ranks.User);
 
     new Command("me", "Returns your server ID.", [{name: "content", help: "The content of your /me message."}], true, async (source: string, args: any[]) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
@@ -274,7 +280,7 @@ export class Server {
       Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
 
       // Send player data to client
-      emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player));
+      emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player), {current: this.connectedPlayerManager.GetPlayers.length, max: this.GetMaxPlayers, bestPlayer: await this.playerManager.getBestPlayer()});
       setTimeout(() => { // Need a 0ms timeout otherwise the suggestions are sent over before the chat manager is initialized
         this.commandManager.createChatSuggestions(player);
       }, 500);

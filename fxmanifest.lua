@@ -17,6 +17,7 @@ files {
 	"ui/assets/fonts/*.ttf",
 	"ui/assets/fonts/scoreboard/*.ttf",
 	"ui/assets/fonts/*.otf",
+	"ui/assets/img/*.png",
 	"ui/index.html",
 	"ui/*.js",
 	"ui/style.css"

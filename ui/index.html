@@ -7,15 +7,13 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato&family=Montserrat:wght@500&family=Quicksand&display=swap" rel="stylesheet">
     
     <!--Google Icon Font -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,500i,700,700i" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" rel="stylesheet">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="./libraries/css/all.css" />
@@ -23,9 +21,6 @@
 
     <!-- Vuetify -->
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-
-    <!-- Toastr (Notifications) -->
-    <link href="./libraries/css/toastr.css" rel="stylesheet">
 
     <!-- Simply Notify -->
     <link href="./libraries/css/simple-notify.min.css" rel="stylesheet">
@@ -38,6 +33,142 @@
   </head>
   <body>
     <v-app id="HUD">
+
+      <!-- Compass (MAYBE) -->
+      <!-- <div id="compass_container"> -->
+        <!-- <div id="compass"></div>   -->
+        <!-- <div class="outline">
+          <div class="mapdirections"></div>
+          <div class="mapbordercircle"></div>
+        </div> -->
+      <!-- </div> -->
+
+      <div id="Spawn_Container" v-show="spawnActive">
+        <div id="Spawn_Header">
+          <div id="ServerInfo">
+            <div id="Card_Header">Server Info</div>
+            <div id="Card_Body">
+              <!-- <h1>Lorem Ipsum</h1> -->
+              <v-progress-circular :rotate="-90" :size="120" :width="10" :value="players.percent" color="success">
+                <div id="progress-text">
+                  <span style="display: block; text-align: center; color: white; font-size: 2em; font-family: 'PT-Sans-Bold';">
+                    {{ players.current }} 
+                  </span>
+                  <span style="display: block; color: white; font-size: 1em;">
+                    out of {{ players.max }}
+                  </span>
+                </div>
+              </v-progress-circular>
+            </div>
+            <div id="Card_Footer">Current AOP - {{ currentAOP }}</div>
+          </div>
+
+          <div id="Server_Banner"></div>
+
+          <div id="BestPlayer">
+            <div id="Card_Header">Best Player</div>
+            <div id="Card_Footer">{{ players.bestPlayer }}</div>
+          </div>
+        </div>
+
+        <div id="Spawn_Body">
+          <div v-if="pages[currentPage].label == 'home'">
+            <div id="Middle_Card" :class="{'middleOther': pages[currentPage].label != 'rules', 'middleRules': pages[currentPage].label == 'rules'}">
+              <div id="Middle_Card_Header">Change Log</div>
+              <div id="Middle_Card_Body">
+                <div id="Changelog_Contents">
+                  <div style="text-align: center; font-weight: bold; font-size: 2em; text-decoration: underline; color: white;">PRE ALPHA</div><br>
+
+                  <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Additions</h2><br>
+                  <ul style="margin-left: 25px; font-size: 1em; color: white;">
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                    <li>Empty fat CUNT</li>
+                  </ul><br>
+
+                  <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Bug Fixes</h2><br>
+                  <ul style="margin-left: 25px; font-size: 1em; color: white;">
+                      <li>Empty fat CUNT</li>
+                      <li>Empty fat CUNT</li>
+                      <li>Empty fat CUNT</li>
+                  </ul><br>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-else-if="pages[currentPage].label == 'keybinds'">
+            <div id="Middle_Card" :class="{'middleOther': pages[currentPage].label != 'rules', 'middleRules': pages[currentPage].label == 'rules'}">
+              <div id="Middle_Card_Header">Keybinds</div>
+              <div id="Middle_Card_Body">
+                <input id="KeybindSearch" v-model="keybindSearch" type="text" placeholder="Search Keybinds...">
+                <div id="Keybinds_Contents">
+                  <div v-for="(keybind, index) in searchKeybinds">
+                    <div id="Keybind_Card" class="cardShadow">
+                      <span style="font-size: 2em;"><kbd>{{ keybind.key }}</kbd></span><span style="margin-top: 15px; margin-left: 10px; font-family: PT-Sans-Bold;">{{ keybind.description }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-else-if="pages[currentPage].label == 'commands'">
+            <div id="Middle_Card" :class="{'middleOther': pages[currentPage].label != 'rules', 'middleRules': pages[currentPage].label == 'rules'}">
+              <div id="Middle_Card_Header">Commands</div>
+              <div id="Middle_Card_Body">
+                <input id="KeybindSearch" v-model="commandSearch" type="text" placeholder="Search Commands...">
+                <div id="Keybinds_Contents">
+                  <div v-for="(command, index) in searchCommands">
+                    <div id="Keybind_Card" class="cardShadow">
+                      <span style="font-weight: bold; font-size: 1.2em;"><kbd>/{{ command.name }}</kbd> {{ command.description }}</span>
+                      <!-- <h2>/{{ command.name }}</h2><br> -->
+                      <!-- <h4>{{ command.description }}</h4> -->
+                      <!-- {{ command.name }} | {{ command.description }} -->
+                      <!-- <span style="font-size: 2em;"><kbd>{{ keybind.key }}</kbd></span><span style="margin-top: 15px; margin-left: 10px; font-family: PT-Sans-Bold;">{{ keybind.description }}</span> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-else-if="pages[currentPage].label == 'rules'">
+            <div id="Middle_Card" :class="{'middleOther': pages[currentPage].label != 'rules', 'middleRules': pages[currentPage].label == 'rules'}">
+              <div id="Middle_Card_Header">Rules</div>
+              <div id="Middle_Card_Body">
+                <div id="Rules_Contents">
+                  <div v-for="(rule, index) in serverRules" style="line-height: 2.5;" :key="rule.title">
+                    <div class="ruleTitle">{{ index + 1 }}) {{ rule.title }}:</div>
+                    <div class="ruleDescription">{{ rule.description }}</div>
+                  </div>
+                </div><br>
+                <button id="Spawn_Btn" @click="CloseSpawner()"><span style="font-family: 'PT-Sans-Bold'; font-size: 1.4em;">Spawn</span><br><span style="font-family: 'Inter-Thin'; font-size: 1em;">I accept these rules</span></button>
+              </div>
+            </div>
+          </div>
+          
+          <div id="Page_Selector">
+            <v-tabs v-model="currentPage" vertical background-color="transparent" color="white" :hide-slider="true">
+              <v-tab v-for="page in pages" :key="page.icon" style="border-left: 0" :ripple="false">
+                <v-icon left>{{ page.icon }}</v-icon>
+                {{ page.label }}
+              </v-tab>
+            </v-tabs>
+          </div>
+        </div>
+      </div>
 
       <!-- Scoreboard -->
       <div id="scoreboard_container" v-show="displaying">
@@ -107,6 +238,7 @@
             <div id="Chat-Message" class="interaction" v-if="message.notificationType == 'interaction'">{{ message.contents }}</div>
             <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'">{{ message.contents }}</div>
             <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: <span v-html="message.contents"></span></div>
+            <div id="Chat-Message" class="successMsg" v-if="message.notificationType == 'success'">[System Success]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): {{ message.contents }}</div>

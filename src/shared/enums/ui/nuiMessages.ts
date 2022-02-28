@@ -1,4 +1,7 @@
 export enum NuiMessages {
+  // Spawn UI
+  OpenSpawner = "OPEN_SPAWNER",
+  
   // Notifications
   CreateNotification = "CREATE_NOTIFICATION",
 
