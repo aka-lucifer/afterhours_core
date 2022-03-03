@@ -51,6 +51,7 @@ export enum Events {
   playerLoaded = "astrid:client:playerLoaded",
   receiveServerCB = "astrid:client:recieveServerCB",
   clearWorldVehs = "astrid:client:clearWorldVehs",
+  syncTime = "astrid:client:syncTime",
 
   // (Scoreboard Client)
   receivePlayers = "astrid:client:receivePlayers",
