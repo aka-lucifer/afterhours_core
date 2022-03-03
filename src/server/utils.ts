@@ -115,7 +115,7 @@ export function Delay(ms : number) : Promise<void> {
  * @param max The maximum number to start at
  * @returns: A random number between the minimum and maximum number
  */
-export function RandomBetween(min: number, max: number): number {
+export function randomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 

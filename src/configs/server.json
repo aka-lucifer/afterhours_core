@@ -115,5 +115,23 @@
         "discord.gg",
         "discord"
       ]
+    },
+    "syncing": {
+      "weather": {
+
+      },
+      "time": {
+        "starter": {
+          "hour": {
+            "minimum": 6,
+            "maxium": 22
+          },
+          "time": {
+            "minimum": 10,
+            "maxium": 45
+          }
+        },
+        "secondInterval": 15000
+      }
     }
 }
