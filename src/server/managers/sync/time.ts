@@ -7,6 +7,7 @@ import {Command} from "../../models/ui/chat/command";
 import {Ranks} from "../../../shared/enums/ranks";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
+import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 
 export class TimeManager {
   private server: Server;
@@ -29,13 +30,13 @@ export class TimeManager {
 
   // Methods
   public setFrozen(newState: boolean): void {
-    this.timeFrozen = true;
-    GlobalState.timeFrozen = true;
+    this.timeFrozen = newState;
+    GlobalState.timeFrozen = newState;
   }
 
   public setChanging(newState: boolean): void {
-    this.timeChanging = true;
-    GlobalState.timeChanging = true;
+    this.timeChanging = newState;
+    GlobalState.timeChanging = newState;
   }
 
   public async set(): Promise<void> {
@@ -116,6 +117,17 @@ export class TimeManager {
         }
       } else {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("Server time is already changing!", SystemTypes.Error));
+      }
+    }, Ranks.Admin);
+
+    new Command("freezetime", "Set the time to morning", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      this.setFrozen(!this.timeFrozen);
+      emitNet(Events.freezeTime, -1);
+      if (this.timeFrozen) {
+        await player.Notify("Sync Manager", "You've frozen time!", NotificationTypes.Success);
+      } else {
+        await player.Notify("Sync Manager", "You've unfrozen time!", NotificationTypes.Success);
       }
     }, Ranks.Admin);
   }

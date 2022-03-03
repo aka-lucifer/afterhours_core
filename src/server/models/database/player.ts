@@ -20,6 +20,8 @@ import sharedConfig from "../../../configs/shared.json"
 import {Delay, NumToVector3} from "../../utils";
 import {Kick} from "./kick";
 import {Warning} from "./warning";
+import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
+import {Notification} from "../ui/notification";
 
 export class Player {
   public id: number;
@@ -354,5 +356,10 @@ export class Player {
       }
       return true;
     }
+  }
+
+  public async Notify(title: string, description: string, type: NotificationTypes, timer?: number, progressBar?: boolean) {
+    const notification = new Notification(this, title, description, type, timer, progressBar);
+    await notification.send();
   }
 }
