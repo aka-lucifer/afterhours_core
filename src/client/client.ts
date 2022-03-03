@@ -8,6 +8,9 @@ import {NotificationTypes} from "./enums/ui/notifications/types";
 import {RichPresence} from "./managers/richPresence";
 import {ServerCallbackManager} from "./managers/serverCallbacks";
 
+// Syncing
+import {TimeManager} from "./managers/sync/time";
+
 // UI
 import {Spawner} from "./managers/ui/spawner";
 import {ChatManager} from "./managers/ui/chat";
@@ -33,6 +36,7 @@ import {Weapons} from "../shared/enums/weapons";
 let takingScreenshot = false;
 
 export class Client {
+// Server Data
   private debugging: boolean;
   private initialSpawn: boolean;
   private richPresenceData: Record<string, any>;
@@ -42,6 +46,9 @@ export class Client {
 
   // Managers
   private richPresence: RichPresence;
+
+  // Syncing
+  private timeManager: TimeManager;
 
   // Callbacks
   public serverCallbackManager: ServerCallbackManager;
@@ -90,9 +97,13 @@ export class Client {
 
   // Methods
   public initialize(): void {
+    // Server Data
     this.richPresence = new RichPresence(client);
     this.serverCallbackManager = new ServerCallbackManager(client);
-    
+
+    // Syncing
+    this.timeManager = new TimeManager(client);
+
     // UI
     this.spawner = new Spawner(client);
     this.chatManager = new ChatManager(client);
