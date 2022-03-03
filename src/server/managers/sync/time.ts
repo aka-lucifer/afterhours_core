@@ -2,6 +2,9 @@ import {Server} from "../../server";
 
 import serverConfig from "../../../configs/server.json";
 import {addZero, randomBetween} from "../../utils";
+import {Events} from "../../../shared/enums/events";
+import {Command} from "../../models/ui/chat/command";
+import {Ranks} from "../../../shared/enums/ranks";
 
 export class TimeManager {
   private server: Server;
@@ -17,6 +20,7 @@ export class TimeManager {
 
   constructor(server: Server) {
     this.server = server;
+    GlobalState.timeFrozen = false;
   }
 
   // Methods
@@ -25,7 +29,9 @@ export class TimeManager {
     this.minute = randomBetween(serverConfig.syncing.time.starter.time.minimum, serverConfig.syncing.time.starter.time.maxium);
     this.setFormattedTime();
 
-    console.log(`Time: ${GlobalState.time}`);
+    setTimeout(() => { // have to do this as we have to wait pass startup (syncs to all connected clients)
+      emitNet(Events.syncTime, -1, this.hour, this.minute);
+    }, 250);
   }
 
   public setFormattedTime(): void {
@@ -34,22 +40,22 @@ export class TimeManager {
   }
 
   public startTime(): void {
-    this.timeInterval = setInterval(() => {
+    this.timeInterval = setInterval(() => { // 21,600 seconds (6 hours | 1,440 times) - Is a full day
       const tempTime = GlobalState.time;
       if (!this.timeFrozen) {
-        this.minute = this.minute + 1;
+        this.minute++;
         if (this.minute > 60) {
-          this.hour = this.hour + 1;
-
+          this.hour++;
           if (this.hour >= 24) {
             this.hour = 0;
           }
-
           this.minute = 0;
         }
+
         this.setFormattedTime();
 
-        console.log(`Old Time: ${tempTime} | New Time: ${this.time}`, this.hour, this.minute)
+        console.log(`Old Time: ${tempTime} | New Time: ${this.time}`, this.hour, this.minute);
+        emitNet(Events.syncTime, -1, this.hour, this.minute);
       }
     }, serverConfig.syncing.time.secondInterval);
   }
