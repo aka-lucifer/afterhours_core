@@ -10,6 +10,8 @@ import {WarnManager} from "./managers/database/warnings";
 import {CommendManager} from "./managers/database/commends";
 import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
+// Syncing
+import {TimeManager} from "./managers/sync/time";
 // Client Callbacks
 import {ClientCallbackManager} from "./managers/clientCallbacks";
 import * as Database from "./managers/database/database"
@@ -49,6 +51,9 @@ export class Server {
   public playerManager: PlayerManager;
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
+
+// Syncing
+  private timeManager: TimeManager;
 
   // Client Callbacks
   private clientCallbackManager: ClientCallbackManager;
@@ -97,6 +102,9 @@ export class Server {
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
 
+    // Syncing
+    this.timeManager = new TimeManager(server);
+
     // Client Callbacks
     this.clientCallbackManager = new ClientCallbackManager(server);
 
@@ -125,8 +133,8 @@ export class Server {
 
     this.chatManager.init(); // Register all commands
 
-    this.registerCommands();
-    this.registerExports();
+    await this.timeManager.set();
+    this.timeManager.startTime();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
