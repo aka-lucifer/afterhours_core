@@ -1,4 +1,4 @@
-import {NotificationTypes} from "../../enums/ui/notifications/types";
+import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import {Delay} from "../../utils";
 
@@ -54,7 +54,7 @@ export class Notification {
         autotimeout: this.timer,
         type: this.type,
         customIcon: this.icon,
-        progressBar: this.progressBar,
+        progress: this.progressBar,
         position: "top left",
         showCloseButton: false
       }
