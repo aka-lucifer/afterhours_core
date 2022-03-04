@@ -140,6 +140,11 @@
       "PICKUP_WEAPON_VINTAGEPISTOL",
       "PICKUP_WEAPON_WRENCH",
       "PICKUP_WEAPON_RAYCARBINE"
+    ],
+    "mloPedClearers": [
+      {"mlo": "sandy_pd", "y": 3689.603515625, "x": 1852.0992431640626, "z": 34.2669486999511, "radius": 100.0},
+      {"mlo": "sandy_medical", "y": 3681.920654296875, "x": 1831.1829833984376, "z": 34.2700309753418, "radius": 100.0},
+      {"mlo": "paleto_pd", "y": 6005.78955078125, "x": -442.7646179199219, "z": 31.71639251708984, "radius": 100.0}
     ]
   },
   "heli": {

@@ -34,6 +34,7 @@ export class WorldManager {
       this.disableVehRewards(myPed);
       this.disableHealthRecharge(myPed);
       this.disableWorldTraffic(myPed);
+      this.wipeInteriors();
 
       await Delay(500);
     });
@@ -101,5 +102,13 @@ export class WorldManager {
     SetVehicleModelIsSuppressed(GetHash("ambulance"), true);
     SetVehicleModelIsSuppressed(GetHash("frogger"), true);
     SetIgnoreLowPriorityShockingEvents(ped.Handle, true);
+  }
+
+  // Disable Interior Peds
+  private wipeInteriors(): void {
+    const mlos = clientConfig.world.mloPedClearers;
+    for (let i = 0; i < mlos.length; i++) {
+      ClearAreaOfPeds(mlos[i].x, mlos[i].y, mlos[i].z, mlos[i].radius, 1);
+    }
   }
 }
