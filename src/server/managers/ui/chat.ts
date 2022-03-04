@@ -10,7 +10,7 @@ import { Message } from "../../../shared/models/ui/chat/message";
 import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/types";
-import { Callbacks } from "../../../shared/enums/callbacks";
+import { Callbacks } from "../../../shared/enums/events/callbacks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";

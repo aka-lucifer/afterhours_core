@@ -29,7 +29,7 @@ import {closestPed, Delay, Inform} from "./utils";
 import {Events} from "../shared/enums/events/events";
 import {GameEvents} from "../shared/enums/events/gameEvents";
 import {LXEvents} from "../shared/enums/events/lxEvents";
-import {Callbacks} from "../shared/enums/callbacks";
+import {Callbacks} from "../shared/enums/events/callbacks";
 import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";

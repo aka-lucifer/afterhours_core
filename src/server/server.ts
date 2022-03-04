@@ -30,7 +30,7 @@ import {Events} from "../shared/enums/events/events";
 import {Ranks} from "../shared/enums/ranks";
 import {EmbedColours} from "../shared/enums/embedColours";
 import sharedConfig from "../configs/shared.json";
-import {Callbacks} from "../shared/enums/callbacks";
+import {Callbacks} from "../shared/enums/events/callbacks";
 import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/types";

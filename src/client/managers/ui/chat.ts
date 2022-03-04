@@ -8,7 +8,7 @@ import {NuiCallbacks} from "../../../shared/enums/ui/nuiCallbacks";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
-import {Callbacks} from "../../../shared/enums/callbacks";
+import {Callbacks} from "../../../shared/enums/events/callbacks";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
 import {ChatTypes} from "../../../shared/enums/ui/types";
 import {ChatStates} from "../../enums/ui/chat/chatStates";
