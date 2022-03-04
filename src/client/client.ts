@@ -10,6 +10,7 @@ import {ServerCallbackManager} from "./managers/serverCallbacks";
 
 // Syncing
 import {TimeManager} from "./managers/sync/time";
+import {WeatherManager} from "./managers/sync/weather";
 
 // UI
 import {Spawner} from "./managers/ui/spawner";
@@ -50,6 +51,7 @@ export class Client {
 
   // Syncing
   private timeManager: TimeManager;
+  private weatherManager: WeatherManager;
 
   // Callbacks
   public serverCallbackManager: ServerCallbackManager;
@@ -122,6 +124,7 @@ export class Client {
 
     // Syncing
     this.timeManager = new TimeManager(client);
+    this.weatherManager = new WeatherManager(client);
 
     // UI
     this.spawner = new Spawner(client);

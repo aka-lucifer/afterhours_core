@@ -227,3 +227,32 @@ export async function inDiscord(player: Player): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ *
+ * @param passedEnums Enum to get a randomized entry from
+ */
+export function randomEnum(passedEnums: any): Promise<string | number> {
+  const index = Math.floor(Math.random() * Object.keys(passedEnums).length);
+  return passedEnums[Object.keys(passedEnums)[index]];
+}
+
+/**
+ *
+ * @param passedEnums Enum to get a randomized entry from
+ */
+export async function enumMatches(passedEnums: any, enumValue: string | number): Promise<[undefined, boolean]> {
+  let value;
+  let matches = false;
+  const enumArray = Object.keys(passedEnums);
+
+  for (let i = 0; i < enumArray.length; i++) {
+    if (passedEnums[enumArray[i]] == enumValue) {
+      value = enumArray[i];
+      matches = true;
+      break;
+    }
+  }
+
+  return [value, matches];
+}

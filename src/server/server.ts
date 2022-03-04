@@ -12,6 +12,7 @@ import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
 // Syncing
 import {TimeManager} from "./managers/sync/time";
+import {WeatherManager} from "./managers/sync/weather";
 // Client Callbacks
 import {ClientCallbackManager} from "./managers/clientCallbacks";
 import * as Database from "./managers/database/database"
@@ -52,8 +53,9 @@ export class Server {
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
 
-// Syncing
+  // Syncing
   private timeManager: TimeManager;
+  private weatherManager: WeatherManager;
 
   // Client Callbacks
   private clientCallbackManager: ClientCallbackManager;
@@ -104,6 +106,7 @@ export class Server {
 
     // Syncing
     this.timeManager = new TimeManager(server);
+    this.weatherManager = new WeatherManager(server);
 
     // Client Callbacks
     this.clientCallbackManager = new ClientCallbackManager(server);
@@ -136,8 +139,10 @@ export class Server {
     this.registerCommands();
     this.registerExports();
 
-    await this.timeManager.set();
+    await this.timeManager.init();
     this.timeManager.startTime();
+
+    await this.weatherManager.init();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
@@ -292,7 +297,8 @@ export class Server {
 
       // Sync data to players client
       await player.TriggerEvent(Events.playerLoaded, Object.assign({}, player), {current: this.connectedPlayerManager.GetPlayers.length, max: this.GetMaxPlayers, bestPlayer: await this.playerManager.getBestPlayer()});
-      await this.timeManager.syncTime(player);
+      await this.timeManager.sync(player);
+      await this.weatherManager.sync(player);
 
       setTimeout(() => { // Need a 0ms timeout otherwise the suggestions are sent over before the chat manager is initialized
         this.commandManager.createChatSuggestions(player);

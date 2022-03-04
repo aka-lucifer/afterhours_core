@@ -54,6 +54,7 @@ export enum Events {
   notify = "astrid:client:notify",
   syncTime = "astrid:client:syncTime",
   freezeTime = "astrid:client:freezeTime",
+  syncWeather = "astrid:client:syncWeather",
 
   // (Scoreboard Client)
   receivePlayers = "astrid:client:receivePlayers",
