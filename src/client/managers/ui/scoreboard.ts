@@ -3,7 +3,7 @@ import { Vector3, Font } from "fivem-js";
 import {Client} from "../../client";
 import {Draw3DText} from "../../utils";
 
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 
 

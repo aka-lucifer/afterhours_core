@@ -13,7 +13,7 @@ import WebhookMessage from "../webhook/discord/webhookMessage";
 import serverConfig from "../../../configs/server.json";
 import { server } from "../../server";
 
-import { Events } from "../../../shared/enums/events";
+import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json"

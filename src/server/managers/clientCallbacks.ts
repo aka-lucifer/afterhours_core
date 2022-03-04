@@ -2,7 +2,7 @@ import { ClientCallback } from "../models/clientCallback";
 
 import { Server } from "../server";
 
-import {Events} from "../../shared/enums/events";
+import {Events} from "../../shared/enums/events/events";
 
 export class ClientCallbackManager {
 

@@ -3,7 +3,7 @@ import {Server} from "../../server";
 import {Command} from "../../models/ui/chat/command";
 import {Player} from "../../models/database/player";
 
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
 
 export class CommandManager {

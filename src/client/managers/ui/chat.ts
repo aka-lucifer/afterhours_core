@@ -4,13 +4,13 @@ import {RegisterNuiCallback} from "../../utils";
 import {ServerCallback} from "../../models/serverCallback";
 
 import {Message} from "../../../shared/models/ui/chat/message";
-import {NuiCallbacks} from "../../../shared/enums/ui/chat/nuiCallbacks";
-import {NuiMessages} from "../../../shared/enums/ui/chat/nuiMessages";
-import {Events} from "../../../shared/enums/events";
+import {NuiCallbacks} from "../../../shared/enums/ui/nuiCallbacks";
+import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
+import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
 import {Callbacks} from "../../../shared/enums/callbacks";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
-import {ChatTypes} from "../../../shared/enums/ui/chat/types";
+import {ChatTypes} from "../../../shared/enums/ui/types";
 import {ChatStates} from "../../enums/ui/chat/chatStates";
 
 export class ChatManager {
@@ -45,9 +45,10 @@ export class ChatManager {
     });
     
     RegisterNuiCallback(NuiCallbacks.SendMessage, (data, cb) => {
+      SetNuiFocus(false, false);
       this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.sendMessage, {message: data.message, type: data.type}, (cbData) => {
         // console.log("RETURNED MSG CB", cbData);
-        SetNuiFocus(!cbData, !cbData)
+        // SetNuiFocus(!cbData, !cbData);
         cb(cbData)
         if (!cbData) this.chatState = ChatStates.Closed;
       }));
@@ -61,7 +62,7 @@ export class ChatManager {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {
           if (this.client.player.Rank >= Ranks.Admin) {
-            console.log("CAN OPEN CHAT EVEN IF ITS DISABLED AS YOUR STAFF");
+            // console.log("CAN OPEN CHAT EVEN IF ITS DISABLED AS YOUR STAFF");
             this.chatState = ChatStates.Open;
             SetNuiFocus(true, true);
             SendNuiMessage(JSON.stringify({
@@ -81,12 +82,13 @@ export class ChatManager {
                 }
               }))
             } else {
-              console.log("CANT OPEN CHAT AS ITS DISABLED BY STAFF!");
+              // console.log("CANT OPEN CHAT AS ITS DISABLED BY STAFF!");
             }
           }
-        } else {
-          console.log("CANT OPEN CHAT AS ITS HIDDEN!");
         }
+        // else {
+          // console.log("CANT OPEN CHAT AS ITS HIDDEN!");
+        // }
       }
     }, false);
 
@@ -96,7 +98,7 @@ export class ChatManager {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {
           this.chatState = ChatStates.Hidden;
-          console.log("CHAT HIDDEN!");
+          // console.log("CHAT HIDDEN!");
           SendNuiMessage(JSON.stringify({
             event: NuiMessages.ToggleChat,
             data: {
@@ -105,7 +107,7 @@ export class ChatManager {
           }))
         } else {
           this.chatState = ChatStates.Closed;
-          console.log("CHAT SHOWING!");
+          // console.log("CHAT SHOWING!");
           SendNuiMessage(JSON.stringify({
             event: NuiMessages.ToggleChat,
             data: {
@@ -142,8 +144,8 @@ export class ChatManager {
 
   // Events
   private EVENT_addSuggestion(suggestion: Suggestion): void {
-    console.log("Add Suggestion", suggestion)
-    console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.commandParams}`));
+    // console.log("Add Suggestion", suggestion)
+    // console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.commandParams}`));
     setTimeout(() => {
       SendNuiMessage(JSON.stringify({
         event: NuiMessages.AddSuggestion,

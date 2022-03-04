@@ -13,7 +13,7 @@ import {Ranks} from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import {ErrorCodes} from "../../../shared/enums/errors";
 import * as sharedConfig from "../../../configs/shared.json"
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
 

@@ -1,7 +1,7 @@
 import {Client} from "../../client";
 import {Delay} from "../../utils";
 
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 
 export class TimeManager {
   private client: Client;

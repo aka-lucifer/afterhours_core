@@ -1,7 +1,7 @@
 import { Player  } from "../models/database/player";
 import * as Database from "./database/database";
 
-import { Events } from "../../shared/enums/events";
+import { Events } from "../../shared/enums/events/events";
 import { Server } from "../server";
 import {ErrorCodes} from "../../shared/enums/errors";
 import {Ranks} from "../../shared/enums/ranks";

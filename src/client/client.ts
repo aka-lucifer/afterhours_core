@@ -26,9 +26,9 @@ import {HelicamManager} from "./managers/jobs/police/helicam";
 import Config from "../configs/client.json";
 import {closestPed, Delay, Inform} from "./utils";
 
-import {Events} from "../shared/enums/events";
-import {GameEvents} from "../shared/enums/gameEvents";
-import {LXEvents} from "../shared/enums/lxEvents";
+import {Events} from "../shared/enums/events/events";
+import {GameEvents} from "../shared/enums/events/gameEvents";
+import {LXEvents} from "../shared/enums/events/lxEvents";
 import {Callbacks} from "../shared/enums/callbacks";
 import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";

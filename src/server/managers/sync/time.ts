@@ -2,7 +2,7 @@ import {Server} from "../../server";
 
 import serverConfig from "../../../configs/server.json";
 import {addZero, randomBetween} from "../../utils";
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 import {Command} from "../../models/ui/chat/command";
 import {Ranks} from "../../../shared/enums/ranks";
 import {Message} from "../../../shared/models/ui/chat/message";

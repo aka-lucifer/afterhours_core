@@ -7,7 +7,7 @@ import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 import {Command} from "../../models/ui/chat/command";
 
 import { Message } from "../../../shared/models/ui/chat/message";
-import { Events } from "../../../shared/enums/events";
+import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/types";
 import { Callbacks } from "../../../shared/enums/callbacks";

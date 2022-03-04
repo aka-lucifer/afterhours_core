@@ -2,7 +2,7 @@ import {Client} from "../../client";
 
 import {FormattedCommend} from "../../models/ui/commend";
 
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import {RegisterNuiCallback} from "../../utils";
 

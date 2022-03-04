@@ -10,7 +10,7 @@ import {EmbedColours} from "../../../shared/enums/embedColours";
 import {ErrorCodes} from "../../../shared/enums/errors";
 import * as sharedConfig from "../../../configs/shared.json"
 import * as serverConfig from "../../../configs/server.json"
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
 import {Inform, inDiscord} from "../../utils";
@@ -30,7 +30,7 @@ export class Commend {
     this.issuedBy = issuedBy;
     this.issuedOn = issuedOn;
 
-    Inform("Commend Class", `Defined Commend Class Data: ${JSON.stringify((this))}`);
+    // Inform("Commend Class", `Defined Commend Class Data: ${JSON.stringify((this))}`);
   }
 
   // Getters & Setters Requests

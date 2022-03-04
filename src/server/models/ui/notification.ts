@@ -1,7 +1,7 @@
 import {Player} from "../database/player";
 
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
-import {Events} from "../../../shared/enums/events";
+import {Events} from "../../../shared/enums/events/events";
 
 export class Notification {
   private player: Player;

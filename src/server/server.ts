@@ -26,7 +26,7 @@ import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
 import {Capitalize, Dist, Error, GetHash, Inform, Log, logCommand} from "./utils";
 
-import {Events} from "../shared/enums/events";
+import {Events} from "../shared/enums/events/events";
 import {Ranks} from "../shared/enums/ranks";
 import {EmbedColours} from "../shared/enums/embedColours";
 import sharedConfig from "../configs/shared.json";
