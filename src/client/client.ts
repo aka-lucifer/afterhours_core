@@ -9,6 +9,7 @@ import {RichPresence} from "./managers/richPresence";
 import {ServerCallbackManager} from "./managers/serverCallbacks";
 
 // Syncing
+import {WorldManager} from "./managers/sync/world";
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
 
@@ -24,7 +25,6 @@ import {Commends} from "./managers/ui/commends";
 import {CuffingStuff} from "./managers/jobs/police/cuffing";
 import {HelicamManager} from "./managers/jobs/police/helicam";
 
-import Config from "../configs/client.json";
 import {closestPed, Delay, Inform} from "./utils";
 
 import {Events} from "../shared/enums/events/events";
@@ -34,6 +34,7 @@ import {Callbacks} from "../shared/enums/events/callbacks";
 import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
+import clientConfig from "../configs/client.json";
 
 let takingScreenshot = false;
 
@@ -50,6 +51,7 @@ export class Client {
   private richPresence: RichPresence;
 
   // Syncing
+  private worldManager: WorldManager;
   private timeManager: TimeManager;
   private weatherManager: WeatherManager;
 
@@ -69,8 +71,8 @@ export class Client {
   private helicam: HelicamManager;
 
   constructor() {
-    this.debugging = Config.debug;
-    this.richPresenceData = Config.richPresence;
+    this.debugging = clientConfig.debug;
+    this.richPresenceData = clientConfig.richPresence;
     this.initialSpawn = true;
     
     // Events
@@ -80,24 +82,7 @@ export class Client {
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
     // onNet(LXEvents.PedDied, this.EVENT_pedDied.bind(this));
     onNet(LXEvents.Gunshot, this.EVENT_gunFired.bind(this));
-    onNet(Events.notify, (title: string, description: string, type: NotificationTypes, timer: number, progressBar: boolean) => {
-      SendNuiMessage(JSON.stringify({
-        event: NuiMessages.CreateNotification,
-        data: {
-          title: title,
-          text: description,
-          status: type,
-          effect: "slide",
-          speed: 300,
-          autoclose: true,
-          autotimeout: timer,
-          type: 2,
-          position: "top left",
-          progress: progressBar,
-          showCloseButton: false
-        }
-      }));
-    });
+    onNet(Events.notify, this.EVENT_notify.bind(this));
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
@@ -117,12 +102,13 @@ export class Client {
   }
 
   // Methods
-  public initialize(): void {
+  public async initialize(): Promise<void> {
     // Server Data
     this.richPresence = new RichPresence(client);
     this.serverCallbackManager = new ServerCallbackManager(client);
 
     // Syncing
+    this.worldManager = new WorldManager(client);
     this.timeManager = new TimeManager(client);
     this.weatherManager = new WeatherManager(client);
 
@@ -138,6 +124,10 @@ export class Client {
     // (Police)
     this.cuffing = new CuffingStuff();
     this.helicam = new HelicamManager(client);
+
+    // Manager Initializes
+    await this.worldManager.init();
+
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
     RegisterCommand("pistol", () => {
@@ -209,7 +199,8 @@ export class Client {
     }
   }
 
-  private EVENT_playerLoaded(player: any, spawnInfo: Record<string, any>): void {
+  private async EVENT_playerLoaded(player: any, spawnInfo: Record<string, any>): Promise<void> {
+    await this.initialize()
     this.player = new Player(player);
     // this.spawner.start(spawnInfo);
     this.chatManager.setup();
@@ -242,10 +233,6 @@ export class Client {
     }
   }
 
-  private EVENT_gunFired(shootersNet: number): void {
-    Inform("LX Event (Gunshot)", `${shootersNet} fired their weapon!`);
-  }
-
   private EVENT_gameEvent(eventName: string, eventArgs: any[]): void {
     if (eventName == GameEvents.entityDamaged) {
       const damagedEntity = eventArgs[0];
@@ -273,6 +260,29 @@ export class Client {
     }
   }
 
+  private EVENT_gunFired(shootersNet: number): void {
+    Inform("LX Event (Gunshot)", `${shootersNet} fired their weapon!`);
+  }
+
+  private EVENT_notify(title: string, description: string, type: NotificationTypes, timer: number, progressBar: boolean): void {
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.CreateNotification,
+      data: {
+        title: title,
+        text: description,
+        status: type,
+        effect: "slide",
+        speed: 300,
+        autoclose: true,
+        autotimeout: timer,
+        type: 2,
+        position: "top left",
+        progress: progressBar,
+        showCloseButton: false
+      }
+    }));
+  }
+
   // Callbacks
   private CALLBACK_screenshot(data): void { // Screenshot Client CB
     if (!takingScreenshot) {
@@ -293,4 +303,3 @@ export class Client {
 }
 
 const client = new Client();
-client.initialize();
