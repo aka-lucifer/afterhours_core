@@ -1,8 +1,7 @@
 import {Client} from "../../client";
+import {Delay} from "../../utils";
 
 import {Events} from "../../../shared/enums/events";
-import serverConfig from "../../../configs/server.json";
-import {Delay} from "../../utils";
 
 export class TimeManager {
   private client: Client;
@@ -20,10 +19,7 @@ export class TimeManager {
   // Methods
   public setupTime(): void {
     this.timeTick = setTick(async() => {
-      if (!GlobalState.timeFrozen) {
-        NetworkOverrideClockTime(this.hour, this.minute, 0);
-      }
-
+      NetworkOverrideClockTime(this.hour, this.minute, 0);
       await Delay(1000);
     });
   }

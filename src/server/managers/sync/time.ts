@@ -8,6 +8,7 @@ import {Ranks} from "../../../shared/enums/ranks";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
+import {Player} from "../../models/database/player";
 
 export class TimeManager {
   private server: Server;
@@ -29,12 +30,12 @@ export class TimeManager {
   }
 
   // Methods
-  public setFrozen(newState: boolean): void {
+  private setFrozen(newState: boolean): void {
     this.timeFrozen = newState;
     GlobalState.timeFrozen = newState;
   }
 
-  public setChanging(newState: boolean): void {
+  private setChanging(newState: boolean): void {
     this.timeChanging = newState;
     GlobalState.timeChanging = newState;
   }
@@ -48,6 +49,10 @@ export class TimeManager {
       emitNet(Events.syncTime, -1, this.hour, this.minute);
     }, 250);
 
+    this.registerCommands();
+  }
+
+  private registerCommands(): void {
     new Command("night", "Set the time to night", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (!this.timeChanging) {
@@ -132,15 +137,16 @@ export class TimeManager {
     }, Ranks.Admin);
   }
 
-  public setFormattedTime(): void {
+  private setFormattedTime(): void {
     GlobalState.time = `${addZero(this.hour)}:${addZero(this.minute)}`;
     this.time = GlobalState.time;
   }
 
   public startTime(): void {
     this.timeInterval = setInterval(() => { // 21,600 seconds (6 hours | 1,440 times) - Is a full day
-      const tempTime = GlobalState.time;
       if (!this.timeFrozen) {
+        const tempTime = GlobalState.time;
+
         this.minute++;
         if (this.minute > 60) {
           this.hour++;
@@ -156,5 +162,9 @@ export class TimeManager {
         emitNet(Events.syncTime, -1, this.hour, this.minute);
       }
     }, serverConfig.syncing.time.secondInterval);
+  }
+
+  public async syncTime(player: Player): Promise<void> {
+    await player.TriggerEvent(Events.syncTime, this.hour, this.minute);
   }
 }

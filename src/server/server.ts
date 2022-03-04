@@ -133,6 +133,9 @@ export class Server {
 
     this.chatManager.init(); // Register all commands
 
+    this.registerCommands();
+    this.registerExports();
+
     await this.timeManager.set();
     this.timeManager.startTime();
 
@@ -287,8 +290,10 @@ export class Server {
     if (loadedPlayer) {
       Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
 
-      // Send player data to client
-      emitNet(Events.playerLoaded, player.GetHandle, Object.assign({}, player), {current: this.connectedPlayerManager.GetPlayers.length, max: this.GetMaxPlayers, bestPlayer: await this.playerManager.getBestPlayer()});
+      // Sync data to players client
+      await player.TriggerEvent(Events.playerLoaded, Object.assign({}, player), {current: this.connectedPlayerManager.GetPlayers.length, max: this.GetMaxPlayers, bestPlayer: await this.playerManager.getBestPlayer()});
+      await this.timeManager.syncTime(player);
+
       setTimeout(() => { // Need a 0ms timeout otherwise the suggestions are sent over before the chat manager is initialized
         this.commandManager.createChatSuggestions(player);
       }, 500);
