@@ -2,7 +2,7 @@ import {Game, Vector3, VehicleSeat, World} from "fivem-js"
 
 import {Player} from "./models/player";
 import {Notification} from "./models/ui/notification";
-import {NotificationTypes} from "./enums/ui/notifications/types";
+import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 
 // Server Data
 import {RichPresence} from "./managers/richPresence";
@@ -32,6 +32,7 @@ import {LXEvents} from "../shared/enums/lxEvents";
 import {Callbacks} from "../shared/enums/callbacks";
 import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
+import {NuiMessages} from "../shared/enums/ui/nuiMessages";
 
 let takingScreenshot = false;
 
@@ -77,6 +78,24 @@ export class Client {
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
     // onNet(LXEvents.PedDied, this.EVENT_pedDied.bind(this));
     onNet(LXEvents.Gunshot, this.EVENT_gunFired.bind(this));
+    onNet(Events.notify, (title: string, description: string, type: NotificationTypes, timer: number, progressBar: boolean) => {
+      SendNuiMessage(JSON.stringify({
+        event: NuiMessages.CreateNotification,
+        data: {
+          title: title,
+          text: description,
+          status: type,
+          effect: "slide",
+          speed: 300,
+          autoclose: true,
+          autotimeout: timer,
+          type: 2,
+          position: "top left",
+          progress: progressBar,
+          showCloseButton: false
+        }
+      }));
+    });
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
@@ -169,7 +188,7 @@ export class Client {
       this.cuffing.init(ped.Handle);
     }, false);
 
-    RegisterCommand("notification", async() => {
+    RegisterCommand("notification_client", async() => {
       const notification = new Notification("Jew Town", "Wanna buy insurance?", NotificationTypes.Success, false, `<i class="fa-solid fa-hanukiah"></i>`, 3000, () => {
         console.log("START!");
       }, () => {
@@ -189,7 +208,7 @@ export class Client {
 
   private EVENT_playerLoaded(player: any, spawnInfo: Record<string, any>): void {
     this.player = new Player(player);
-    this.spawner.start(spawnInfo);
+    // this.spawner.start(spawnInfo);
     this.chatManager.setup();
   }
 
