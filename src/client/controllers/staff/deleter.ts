@@ -93,6 +93,7 @@ export class Deleter {
       if (this.toggled) {
         if (this.holding && this.heldEntity != undefined) {
           this.heldEntity.detach();
+          SetEntityAlpha(this.heldEntity.Handle, 255, 0);
           const temp = this.heldEntity;
           this.stop();
           ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
