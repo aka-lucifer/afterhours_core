@@ -75,20 +75,14 @@ export class Deleter {
   }
 
   private shootEntity(): void {
-    console.log("STEP 1!");
     if (this.client.player.Rank >= Ranks.Admin) {
-      console.log("STEP 2", this.toggled);
       if (this.toggled) {
-        console.log("STEP 3!");
-        console.log("SHOT!");
-        this.heldEntity.detach();
-        const temp = this.heldEntity;
-        this.stop();
-        console.log("temp", temp);
-
-        const [forwardX, forwardY, forwardZ] = GetEntityForwardVector(temp.Handle);
-        // ApplyForceToEntity(temp.Handle, 3, 0, 1000, 0, 0, 0, 0, 0, false, true, true, false, true);
-        ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
+        if (this.holding && this.heldEntity != undefined) {
+          this.heldEntity.detach();
+          const temp = this.heldEntity;
+          this.stop();
+          ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
+        }
       }
     }
   }
