@@ -2,9 +2,9 @@ import {Client} from "../../client";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
-
-import {Game, InputMode, Control, Entity, Bone, Prop, Vector3} from "fivem-js";
 import {Weapons} from "../../../shared/enums/weapons";
+
+import {Game, Entity, Bone, Prop} from "fivem-js";
 import {Delay} from "../../utils";
 
 export class Deleter {
@@ -58,8 +58,22 @@ export class Deleter {
                 this.heldEntity = new Entity(foundEntity);
                 const dist = myPos.distance(this.heldEntity.Position);
 
-                SetEntityAlpha(this.heldEntity.Handle, 200, 0);
-                AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
+                if (!NetworkGetEntityIsNetworked(this.heldEntity.Handle)) {
+                  let attempt = 0;
+
+                  while (!NetworkGetEntityIsNetworked(this.heldEntity.Handle) && attempt < 50) {
+                    NetworkRegisterEntityAsNetworked(this.heldEntity.Handle);
+                    attempt++;
+
+                    await Delay(0);
+                  }
+                }
+
+                const hasControl = this.requestControlOfEntity(this.heldEntity);
+                if (hasControl) {
+                  SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+                  AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
+                }
               }
             } else {
               this.heldEntity.detach();
@@ -75,7 +89,7 @@ export class Deleter {
   }
 
   private shootEntity(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Management) {
       if (this.toggled) {
         if (this.holding && this.heldEntity != undefined) {
           this.heldEntity.detach();
@@ -117,7 +131,7 @@ export class Deleter {
     }
   }
 
-  private deleteEntity(): void {
+  private async deleteEntity(): Promise<void> {
     if (this.client.player.Rank >= Ranks.Admin) {
       if (this.toggled) {
         if (this.holding && this.heldEntity !== undefined) {
@@ -126,6 +140,8 @@ export class Deleter {
             while (!NetworkHasControlOfEntity(this.heldEntity.Handle) && attempt < 50 && this.heldEntity.exists()) {
               NetworkRequestControlOfEntity(this.heldEntity.Handle);
               attempt++;
+
+              await Delay(0);
             }
 
             if (this.heldEntity.exists() && NetworkHasControlOfEntity(this.heldEntity.Handle)) {
@@ -151,5 +167,40 @@ export class Deleter {
   private stop(): void {
     this.heldEntity = null;
     this.holding = false;
+  }
+
+  private async requestControlOfId(id: number): Promise<boolean> {
+    let attempt = 0;
+    while (!NetworkHasControlOfNetworkId(id) && attempt < 50) {
+      NetworkRequestControlOfNetworkId(id);
+      attempt++;
+
+      await Delay(0);
+    }
+
+    return NetworkHasControlOfNetworkId(id);
+  }
+
+  private async requestControlOfEntity(entity: Entity): Promise<boolean> {
+    if (NetworkGetEntityIsNetworked(entity.Handle)) {
+      let attempt = 0;
+
+      while (!NetworkHasControlOfEntity(entity.Handle) && attempt < 50 && entity.exists()) {
+        NetworkRequestControlOfEntity(entity.Handle);
+        attempt++;
+
+        await Delay(0);
+      }
+
+      const id = NetworkGetNetworkIdFromEntity(entity.Handle);
+      const hasControl = await this.requestControlOfId(id);
+      if (hasControl) {
+        SetEntityAsMissionEntity(entity.Handle, true, true);
+        SetNetworkIdCanMigrate(id, true);
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 }
