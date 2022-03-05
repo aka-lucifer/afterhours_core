@@ -68,7 +68,11 @@ export class WorldManager {
     SetCanAttackFriendly(ped.Handle, true, true);
     SetPedSuffersCriticalHits(ped.Handle,false);
     NetworkSetFriendlyFireOption(true);
+    if (IsPedBeingStunned(ped.Handle, 0)) {
+      SetPedMinGroundTimeForStungun(ped.Handle, clientConfig.world.stunTimer * 1000);
+    }
   }
+
 
   // Police Vehicle Rewards
   private disableVehRewards(ped: Ped): void {
