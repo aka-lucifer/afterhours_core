@@ -201,6 +201,10 @@ export class Server {
     new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
       emitNet(Events.clearWorldVehs, -1);
     }, Ranks.Admin);
+
+    new Command("deleter", "Clear the vehicles in the area", [], false, (source: string) => {
+      emitNet(Events.adminGun, source);
+    }, Ranks.Admin);
   }
   private registerExports(): void {
     global.exports("getRanks", async() => {
