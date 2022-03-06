@@ -69,6 +69,9 @@ const HUD = new Vue({
     // [CHAT] - Suggestions
     suggestions: [],
 
+    // [CHAT] - Autofill
+    usedAutofill: false,
+
     // [WARNINGS]
     displayWarnings: false,
     warningSearch: "",
@@ -241,6 +244,8 @@ const HUD = new Vue({
         this.CloseChat();
         this.Post("SEND_MESSAGE", {message: this.chatMessage, type: this.currentType}, (callbackData) => {
           this.chatMessage = "";
+          // this.sentMessages.push(this.chatMessage);
+          // this.cycledMessage = this.sentMessages.length;
           console.log("cb", callbackData)
           if (callbackData) {
             this.sentMessages.push(this.chatMessage);
@@ -467,7 +472,7 @@ const HUD = new Vue({
           }
           break;
 
-        case "Alt": // Change Mode
+        case "ContextMenu": // Change Mode
           HUD.CycleMode();
           break;
 
@@ -477,7 +482,6 @@ const HUD = new Vue({
 
         case "ArrowUp":
           if (HUD.$refs.input === document.activeElement && HUD.sentMessages.length > 0) { // If chat input is focused and you've sent message/s
-            console.log(HUD.cycledMessage, HUD.cycledMessage - 1, HUD.sentMessages);
             if ((HUD.cycledMessage - 1) >= 0) {
               HUD.cycledMessage--;
               HUD.chatMessage = HUD.sentMessages[HUD.cycledMessage];
@@ -492,6 +496,22 @@ const HUD = new Vue({
               HUD.chatMessage = HUD.sentMessages[HUD.cycledMessage];
             }
           }
+          break;
+
+        case "Tab":
+          for (let i = 0; i < HUD.suggestions.length; i++) {
+            if (HUD.suggestions[i].name.startsWith(HUD.chatMessage)) {
+              const suggestionSplitted = HUD.suggestions[i].name.split(" ");
+              const messageSplitted = HUD.chatMessage.split(" ");
+
+              if (!HUD.usedAutofill) {
+                HUD.usedAutofill = true;
+                HUD.chatMessage = HUD.suggestions[i].name;
+                HUD.usedAutofill = false;
+                break;
+              }
+            }
+          } 
           break;
       }
     });
