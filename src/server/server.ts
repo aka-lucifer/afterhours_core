@@ -3,23 +3,30 @@ import {Ban} from "./models/database/ban";
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
 import {ClientCallback} from "./models/clientCallback";
 
-// Player Control
+// [Managers] Server Data
+import { StaffManager } from "./managers/staff";
+
+// [Managers] Player Control
 import {BanManager} from "./managers/database/bans";
 import {KickManager} from "./managers/database/kicks";
 import {WarnManager} from "./managers/database/warnings";
 import {CommendManager} from "./managers/database/commends";
 import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
-// Syncing
+
+// [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
-// Client Callbacks
+
+// [Managers] Client Callbacks
 import {ClientCallbackManager} from "./managers/clientCallbacks";
 import * as Database from "./managers/database/database"
-// Logging
+
+// [Managers] Logging
 import {StaffLogManager} from "./managers/database/staffLogs";
 import {LogManager} from "./managers/logging";
-// Chat
+
+// [Managers] Chat
 import {ChatManager} from "./managers/ui/chat";
 import {CommandManager} from "./managers/ui/command";
 
@@ -44,7 +51,10 @@ export class Server {
   private readonly serverWhitelisted: boolean;
   private readonly maxPlayers: number;
 
-  // Player Control
+  // [Managers] Server Data
+  public staffManager: StaffManager;
+
+  // [Managers] Player Control
   public banManager: BanManager;
   public kickManager: KickManager;
   public warnManager: WarnManager;
@@ -53,18 +63,18 @@ export class Server {
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
 
-  // Syncing
+  // [Managers] Syncing
   private timeManager: TimeManager;
   private weatherManager: WeatherManager;
 
-  // Client Callbacks
+  // [Managers] Client Callbacks
   private clientCallbackManager: ClientCallbackManager;
 
-  // Logging
+  // [Managers] Logging
   public staffLogManager: StaffLogManager;
   public logManager: LogManager;
 
-  // Chat
+  // [Managers] Chat
   public commandManager: CommandManager;
   public chatManager: ChatManager;
 
@@ -95,7 +105,10 @@ export class Server {
 
   // Methods
   private async initialize(): Promise<void> {
-    // Player Controller
+    // [Managers] Server Data
+    this.staffManager = new StaffManager(server);
+
+    // [Managers] Player Controller
     this.banManager = new BanManager(server);
     this.kickManager = new KickManager(server);
     this.warnManager = new WarnManager(server);
@@ -104,23 +117,25 @@ export class Server {
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
 
-    // Syncing
+    // [Managers] Syncing
     this.timeManager = new TimeManager(server);
     this.weatherManager = new WeatherManager(server);
 
-    // Client Callbacks
+    // [Managers] Client Callbacks
     this.clientCallbackManager = new ClientCallbackManager(server);
 
-    // Logging
+    // [Managers] Logging
     this.staffLogManager = new StaffLogManager(server);
 
     this.logManager = new LogManager(server);
 
-    // Chat
+    // [Managers] Chat
     this.commandManager = new CommandManager(server);
     this.chatManager = new ChatManager(server);
 
     // Run Manager Methods
+    this.staffManager.init();
+
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
     this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
 

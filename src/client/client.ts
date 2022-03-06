@@ -4,23 +4,29 @@ import {Player} from "./models/player";
 import {Notification} from "./models/ui/notification";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 
-// Server Data
+// [Managers] Client Data
 import {RichPresence} from "./managers/richPresence";
-import {ServerCallbackManager} from "./managers/serverCallbacks";
+import {StaffManager} from "./managers/staff";
 
-// Syncing
+// [Managers] Syncing
 import {WorldManager} from "./managers/sync/world";
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
 
-// UI
+// [Managers] Callbacks
+import {ServerCallbackManager} from "./managers/serverCallbacks";
+
+// [Managers] UI
 import {Spawner} from "./managers/ui/spawner";
 import {ChatManager} from "./managers/ui/chat";
 import {Scoreboard} from "./managers/ui/scoreboard";
 import {Warnings} from "./managers/ui/warnings";
 import {Commends} from "./managers/ui/commends";
 
-// Jobs
+// [Controllers] Staff
+import {Deleter} from "./controllers/staff/deleter";
+
+// [Managers] Jobs
 // (Police)
 import {CuffingStuff} from "./managers/jobs/police/cuffing";
 import {HelicamManager} from "./managers/jobs/police/helicam";
@@ -35,6 +41,7 @@ import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
 import clientConfig from "../configs/client.json";
+import {Ranks} from "../shared/enums/ranks";
 
 let takingScreenshot = false;
 
@@ -42,30 +49,32 @@ export class Client {
 // Server Data
   private debugging: boolean;
   private initialSpawn: boolean;
+
   private richPresenceData: Record<string, any>;
 
   // Player Data
   public player: Player;
 
-  // Managers
+  // [Managers]
   private richPresence: RichPresence;
+  private staffManager: StaffManager;
 
-  // Syncing
+  // [Managers] Syncing
   private worldManager: WorldManager;
   private timeManager: TimeManager;
   private weatherManager: WeatherManager;
 
-  // Callbacks
+  // [Managers] Callbacks
   public serverCallbackManager: ServerCallbackManager;
 
-  // UI
+  // [Managers] UI
   private spawner: Spawner;
   private chatManager: ChatManager;
   private scoreboard: Scoreboard;
   private warnings: Warnings;
   private commends: Commends;
 
-  // Jobs
+  // [Managers] Jobs
   // (Police)
   private cuffing: CuffingStuff;
   private helicam: HelicamManager;
@@ -103,16 +112,19 @@ export class Client {
 
   // Methods
   public async initialize(): Promise<void> {
-    // Server Data
+    // [Managers] Server Data
     this.richPresence = new RichPresence(client);
-    this.serverCallbackManager = new ServerCallbackManager(client);
+    this.staffManager = new StaffManager(client);
 
-    // Syncing
+    // [Managers] Syncing
     this.worldManager = new WorldManager(client);
     this.timeManager = new TimeManager(client);
     this.weatherManager = new WeatherManager(client);
 
-    // UI
+    // [Managers] Callbacks
+    this.serverCallbackManager = new ServerCallbackManager(client);
+
+    // [Managers] UI
     this.spawner = new Spawner(client);
     this.chatManager = new ChatManager(client);
     this.chatManager.init();
@@ -120,36 +132,21 @@ export class Client {
     this.warnings = new Warnings(client);
     this.commends = new Commends(client);
 
-    // Jobs
+    // [Managers] Jobs
     // (Police)
     this.cuffing = new CuffingStuff();
     this.helicam = new HelicamManager(client);
-
-    // Manager Initializes
-    await this.worldManager.init();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
     RegisterCommand("pistol", () => {
       const currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-      if (currWeapon == Weapons.Pistol) {
+      if (currWeapon == Weapons.BerettaM9) {
         console.log(`Pistol Data: ${JSON.stringify(sharedConfig.weapons[currWeapon])}`)
       }
     }, false);
 
     RegisterCommand("compass", () => {
-      const directions: number[] = [
-        0,
-        45,
-        90,
-        135,
-        180,
-        225,
-        270,
-        315,
-        360
-      ]
-      
       setTick(async() => {
         const direction = Game.PlayerPed.Heading;
 
@@ -181,15 +178,15 @@ export class Client {
       this.cuffing.init(ped.Handle);
     }, false);
 
-    RegisterCommand("notification_client", async() => {
-      const notification = new Notification("Jew Town", "Wanna buy insurance?", NotificationTypes.Success, false, `<i class="fa-solid fa-hanukiah"></i>`, 3000, () => {
-        console.log("START!");
-      }, () => {
-        console.log("FINISH!");
-      });
+    // RegisterCommand("notification_client", async() => {
+    //   const notification = new Notification("Jew Town", "Wanna buy insurance?", NotificationTypes.Success, false, `<i class="fa-solid fa-hanukiah"></i>`, 3000, () => {
+    //     console.log("START!");
+    //   }, () => {
+    //     console.log("FINISH!");
+    //   });
 
-      await notification.send();
-    }, false);
+    //   await notification.send();
+    // }, false);
   }
 
   // Events
@@ -202,6 +199,11 @@ export class Client {
   private async EVENT_playerLoaded(player: any, spawnInfo: Record<string, any>): Promise<void> {
     await this.initialize()
     this.player = new Player(player);
+
+
+    // Manager Inits
+    await this.staffManager.init();
+    await this.worldManager.init();
     // this.spawner.start(spawnInfo);
     this.chatManager.setup();
   }
