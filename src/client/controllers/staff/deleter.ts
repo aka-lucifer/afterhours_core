@@ -13,7 +13,6 @@ import { NotificationTypes } from "../../../shared/enums/ui/notifications/types"
 
 export class Deleter {
   private client: Client;
-  private toggled: boolean = false;
   private heldEntity: Entity | Vehicle | Ped;
   private holding: boolean = false;
   private controlTick: number = undefined;
@@ -23,8 +22,6 @@ export class Deleter {
 
     if (this.client.player.Rank >= Ranks.Admin) {
       // Events
-      onNet(Events.adminGun, this.EVENT_adminGun.bind(this));
-
       // (Players)
       onNet(Events.setHeldEntity, this.EVENT_setHeldEntity.bind(this));
       onNet(Events.unsetHeldEntity, this.EVENT_unHeldEntity.bind(this));
@@ -51,81 +48,79 @@ export class Deleter {
   // Methods
   private async attachEntity(): Promise<void> {
     if (this.client.player.Rank >= Ranks.Admin) {
-      if (this.toggled) {
-        const myPed = Game.PlayerPed;
+      const myPed = Game.PlayerPed;
 
-        if (GetSelectedPedWeapon(myPed.Handle) == Weapons.Deleter) {
-          if (IsPlayerFreeAiming(Game.Player.Handle)) {
-            if (!this.holding) { // If no entity is held
-              let [bool, foundEntity] = GetEntityPlayerIsFreeAimingAt(Game.Player.Handle);
-              bool = false;
+      if (GetSelectedPedWeapon(myPed.Handle) == Weapons.Deleter) {
+        if (IsPlayerFreeAiming(Game.Player.Handle)) {
+          if (!this.holding) { // If no entity is held
+            let [bool, foundEntity] = GetEntityPlayerIsFreeAimingAt(Game.Player.Handle);
+            bool = false;
 
-              if (foundEntity > 0) {
-                const exists = clientConfig.controllers.deleter.propBlacklist.find(entity =>  GetHash(entity) == GetEntityModel(foundEntity));
-                if (!exists) {
-                  const isPlayer = ((GetEntityType(foundEntity) == 1) && IsPedAPlayer(foundEntity));
-                  if (!isPlayer) {
-                    this.holding = true;
-  
-                    if (IsEntityAPed(foundEntity)) {
-                      if (IsPedInAnyVehicle(foundEntity, false)) {
-                        foundEntity = GetVehiclePedIsIn(foundEntity, false);
-                      }
+            if (foundEntity > 0) {
+              const exists = clientConfig.controllers.deleter.propBlacklist.find(entity =>  GetHash(entity) == GetEntityModel(foundEntity));
+              if (!exists) {
+                const isPlayer = ((GetEntityType(foundEntity) == 1) && IsPedAPlayer(foundEntity));
+                if (!isPlayer) {
+                  this.holding = true;
+
+                  if (IsEntityAPed(foundEntity)) {
+                    if (IsPedInAnyVehicle(foundEntity, false)) {
+                      foundEntity = GetVehiclePedIsIn(foundEntity, false);
                     }
-  
-                    const myPos = myPed.Position;
-                    this.heldEntity = new Entity(foundEntity);
-                    const dist = myPos.distance(this.heldEntity.Position);
-  
-                    if (!NetworkGetEntityIsNetworked(this.heldEntity.Handle)) {
-                      let attempt = 0;
-  
-                      while (!NetworkGetEntityIsNetworked(this.heldEntity.Handle) && attempt < 50) {
-                        NetworkRegisterEntityAsNetworked(this.heldEntity.Handle);
-                        attempt++;
-  
-                        await Delay(0);
-                      }
+                  }
+
+                  const myPos = myPed.Position;
+                  this.heldEntity = new Entity(foundEntity);
+                  const dist = myPos.distance(this.heldEntity.Position);
+
+                  if (!NetworkGetEntityIsNetworked(this.heldEntity.Handle)) {
+                    let attempt = 0;
+
+                    while (!NetworkGetEntityIsNetworked(this.heldEntity.Handle) && attempt < 50) {
+                      NetworkRegisterEntityAsNetworked(this.heldEntity.Handle);
+                      attempt++;
+
+                      await Delay(0);
                     }
-  
-                    const hasControl = this.requestControlOfEntity(this.heldEntity);
-                    if (hasControl) {
-                      SetEntityAlpha(this.heldEntity.Handle, 200, 0);
-                      AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
-                    }
-                  } else {
-                    emitNet(Events.gravityPlayer, GetPlayerServerId(NetworkGetPlayerIndexFromPed(foundEntity)));
+                  }
+
+                  const hasControl = this.requestControlOfEntity(this.heldEntity);
+                  if (hasControl) {
+                    SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+                    AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
                   }
                 } else {
-                  const notify = new Notification("Gravity Gun", "You can't pickup this entity", NotificationTypes.Error);
-                  await notify.send();
+                  emitNet(Events.gravityPlayer, GetPlayerServerId(NetworkGetPlayerIndexFromPed(foundEntity)));
                 }
-              }
-            } else {
-              let isPlayer;
-
-              if (GetEntityType(this.heldEntity.Handle) == 1) {
-                if (IsPedAPlayer(this.heldEntity.Handle)) {
-                  isPlayer = true;
-                }
-              } else if (GetEntityType(this.heldEntity.Handle) == 2) {
-                const driver = GetPedInVehicleSeat(this.heldEntity.Handle, VehicleSeat.Driver);
-                if (IsPedAPlayer(driver)) {
-                  this.heldEntity = new Ped(driver);
-                  isPlayer = true;
-                }
-              }
-
-              if (!isPlayer) {
-                this.heldEntity.detach();
-                new Prop(this.heldEntity.Handle).placeOnGround();
-                SetEntityAlpha(this.heldEntity.Handle, 255, 0);
-                this.heldEntity = undefined;
-                this.holding = false;
               } else {
-                this.holding = false;
-                emitNet(Events.ungravityPlayer, GetPlayerServerId(NetworkGetPlayerIndexFromPed(this.heldEntity.Handle)));
+                const notify = new Notification("Gravity Gun", "You can't pickup this entity", NotificationTypes.Error);
+                await notify.send();
               }
+            }
+          } else {
+            let isPlayer;
+
+            if (GetEntityType(this.heldEntity.Handle) == 1) {
+              if (IsPedAPlayer(this.heldEntity.Handle)) {
+                isPlayer = true;
+              }
+            } else if (GetEntityType(this.heldEntity.Handle) == 2) {
+              const driver = GetPedInVehicleSeat(this.heldEntity.Handle, VehicleSeat.Driver);
+              if (IsPedAPlayer(driver)) {
+                this.heldEntity = new Ped(driver);
+                isPlayer = true;
+              }
+            }
+
+            if (!isPlayer) {
+              this.heldEntity.detach();
+              new Prop(this.heldEntity.Handle).placeOnGround();
+              SetEntityAlpha(this.heldEntity.Handle, 255, 0);
+              this.heldEntity = undefined;
+              this.holding = false;
+            } else {
+              this.holding = false;
+              emitNet(Events.ungravityPlayer, GetPlayerServerId(NetworkGetPlayerIndexFromPed(this.heldEntity.Handle)));
             }
           }
         }
@@ -135,31 +130,29 @@ export class Deleter {
 
   private shootEntity(): void {
     if (this.client.player.Rank >= Ranks.SeniorAdmin) {
-      if (this.toggled) {
-        if (this.holding && this.heldEntity != undefined) {
-          let isPlayer;
+      if (this.holding && this.heldEntity != undefined) {
+        let isPlayer;
 
-          if (GetEntityType(this.heldEntity.Handle) == 1) {
-            if (IsPedAPlayer(this.heldEntity.Handle)) {
-              isPlayer = true;
-            }
-          } else if (GetEntityType(this.heldEntity.Handle) == 2) {
-            const driver = GetPedInVehicleSeat(this.heldEntity.Handle, VehicleSeat.Driver);
-            if (IsPedAPlayer(driver)) {
-              this.heldEntity = new Ped(driver);
-              isPlayer = true;
-            }
+        if (GetEntityType(this.heldEntity.Handle) == 1) {
+          if (IsPedAPlayer(this.heldEntity.Handle)) {
+            isPlayer = true;
           }
+        } else if (GetEntityType(this.heldEntity.Handle) == 2) {
+          const driver = GetPedInVehicleSeat(this.heldEntity.Handle, VehicleSeat.Driver);
+          if (IsPedAPlayer(driver)) {
+            this.heldEntity = new Ped(driver);
+            isPlayer = true;
+          }
+        }
 
-          if (!isPlayer) {
-            this.heldEntity.detach();
-            SetEntityAlpha(this.heldEntity.Handle, 255, 0);
-            const temp = this.heldEntity;
-            this.stop();
-            ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
-          } else {
-            emitNet(Events.shootEntity, GetPlayerServerId(NetworkGetPlayerIndexFromPed(this.heldEntity.Handle)));
-          }
+        if (!isPlayer) {
+          this.heldEntity.detach();
+          SetEntityAlpha(this.heldEntity.Handle, 255, 0);
+          const temp = this.heldEntity;
+          this.stop();
+          ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
+        } else {
+          emitNet(Events.shootEntity, GetPlayerServerId(NetworkGetPlayerIndexFromPed(this.heldEntity.Handle)));
         }
       }
     }
@@ -167,56 +160,50 @@ export class Deleter {
 
   private scrollForward(): void {
     if (this.client.player.Rank >= Ranks.Admin) {
-      if (this.toggled) {
-        if (this.holding && this.heldEntity != undefined) {
-          const myPed = Game.PlayerPed;
-          const myPos = myPed.Position;
-          const dist = myPos.distance(this.heldEntity.Position);
+      if (this.holding && this.heldEntity != undefined) {
+        const myPed = Game.PlayerPed;
+        const myPos = myPed.Position;
+        const dist = myPos.distance(this.heldEntity.Position);
 
-          SetEntityAlpha(this.heldEntity.Handle, 200, 0);
-          AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist + 0.5, 0.0, 0.0, -78.5, 0.0, 0.0, true, true, false, true, 0, true);
-        }
+        SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+        AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist + 0.5, 0.0, 0.0, -78.5, 0.0, 0.0, true, true, false, true, 0, true);
       }
     }
   }
 
   private scrollBackward(): void {
     if (this.client.player.Rank >= Ranks.Admin) {
-      if (this.toggled) {
-        if (this.holding && this.heldEntity != undefined) {
-          const myPed = Game.PlayerPed;
-          const myPos = myPed.Position;
-          const dist = myPos.distance(this.heldEntity.Position);
+      if (this.holding && this.heldEntity != undefined) {
+        const myPed = Game.PlayerPed;
+        const myPos = myPed.Position;
+        const dist = myPos.distance(this.heldEntity.Position);
 
-          SetEntityAlpha(this.heldEntity.Handle, 200, 0);
-          AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist - 0.5, 0.0, 0.0, -70.5, 0.0, 0.0, true, true, false, true, 0, true);
-        }
+        SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+        AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist - 0.5, 0.0, 0.0, -70.5, 0.0, 0.0, true, true, false, true, 0, true);
       }
     }
   }
 
   private async deleteEntity(): Promise<void> {
     if (this.client.player.Rank >= Ranks.Admin) {
-      if (this.toggled) {
-        if (this.holding && this.heldEntity !== undefined) {
-          if (NetworkGetEntityIsNetworked(this.heldEntity.Handle)) {
-            let attempt = 0;
-            while (!NetworkHasControlOfEntity(this.heldEntity.Handle) && attempt < 50 && this.heldEntity.exists()) {
-              NetworkRequestControlOfEntity(this.heldEntity.Handle);
-              attempt++;
+      if (this.holding && this.heldEntity !== undefined) {
+        if (NetworkGetEntityIsNetworked(this.heldEntity.Handle)) {
+          let attempt = 0;
+          while (!NetworkHasControlOfEntity(this.heldEntity.Handle) && attempt < 50 && this.heldEntity.exists()) {
+            NetworkRequestControlOfEntity(this.heldEntity.Handle);
+            attempt++;
 
-              await Delay(0);
-            }
+            await Delay(0);
+          }
 
-            if (this.heldEntity.exists() && NetworkHasControlOfEntity(this.heldEntity.Handle)) {
-              SetEntityAsMissionEntity(this.heldEntity.Handle, false, true);
-              this.heldEntity.delete();
-              this.stop();
-            }
-          } else {
+          if (this.heldEntity.exists() && NetworkHasControlOfEntity(this.heldEntity.Handle)) {
+            SetEntityAsMissionEntity(this.heldEntity.Handle, false, true);
             this.heldEntity.delete();
             this.stop();
           }
+        } else {
+          this.heldEntity.delete();
+          this.stop();
         }
       }
     }
@@ -263,12 +250,6 @@ export class Deleter {
   }
 
   // Events
-  private EVENT_adminGun(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
-      this.toggled = !this.toggled;
-    }
-  }
-
   private EVENT_setHeldEntity(heldEntity: any): void {
     const heldPed = new Ped(GetPlayerPed(GetPlayerFromServerId(heldEntity.handle)));
     if (heldPed.CurrentVehicle) {
