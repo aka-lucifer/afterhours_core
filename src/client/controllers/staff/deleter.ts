@@ -45,8 +45,6 @@ export class Deleter {
       RegisterCommand("scroll_attached_entity_forward", this.scrollForward.bind(this), false);
       RegisterCommand("scroll_attached_entity_backward", this.scrollBackward.bind(this), false);
       RegisterCommand("delete_attached_entity", this.deleteEntity.bind(this), false);
-
-      this.EVENT_adminGun();
     }
   }
 
@@ -136,7 +134,7 @@ export class Deleter {
   }
 
   private shootEntity(): void {
-    if (this.client.player.Rank >= Ranks.Management) {
+    if (this.client.player.Rank >= Ranks.SeniorAdmin) {
       if (this.toggled) {
         if (this.holding && this.heldEntity != undefined) {
           let isPlayer;
