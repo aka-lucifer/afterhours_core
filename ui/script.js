@@ -47,10 +47,10 @@ const HUD = new Vue({
     connectedPlayers: [],
 
     // [CHAT]
-    chatToggled: true,
+    chatToggled: true, // Chat Visibility (INSERT)
 
     // [CHAT] - Chat Types
-    chatTypes: ["local", "global"],
+    chatTypes: ["local", "global", "admin"],
     currentType: 0,
 
     // [CHAT] - Chat Messages
@@ -59,7 +59,7 @@ const HUD = new Vue({
 
     // [CHAT] - Input
     chatMessage: "",
-    showInput: false,
+    showInput: true,
     focusTimer: 0,
 
     // [CHAT] - Prev Message Cycler
@@ -213,11 +213,19 @@ const HUD = new Vue({
       this.Post("CLOSE_CHAT");
     },
 
-    CycleMode() {
-      if (this.currentType >= this.chatTypes.length - 1) {
-        this.currentType = 0;
-      } else {
-        this.currentType++;
+    CycleMode(direction) {
+      if (direction == "right") {
+        if ((this.currentType + 1) > (this.chatTypes.length - 1)) {
+          this.currentType = 0;
+        } else {
+          this.currentType++;
+        }
+      } else if (direction == "left") {
+        if ((this.currentType - 1) < 0) {
+          this.currentType = this.chatTypes.length - 1;
+        } else {
+          this.currentType--;
+        }
       }
     },
 
@@ -459,25 +467,37 @@ const HUD = new Vue({
       $(".mapdirections").css("transform", "rotate(0deg)");
     }, 1000);
 
+    // Mouse Scrolling
+    window.addEventListener("wheel", function(event) {
+      if (event.deltaY < 0) { // Increase Chat Mode
+        if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
+          HUD.CycleMode("right");
+        }
+      } else if (event.deltaY > 0) { // Decrease Chat Mode
+        if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
+          HUD.CycleMode("left");
+        }
+      }
+    });
+
     // Key Presses
     window.addEventListener("keydown", function(event) {
+      console.log("Key Down", event.key, event.keyCode)
       switch(event.key) {
         case "Escape": // Close UI
           if ($("#Chat-Input").is(":visible")) {
             HUD.CloseChat();
-          } else if ($("#warnings_container").is(":visible")) {
+          } else if ($("#warnings_container").is(":visible") && HUD.$refs.input === document.activeElement) {
             HUD.CloseWarnings();
-          } else if ($("#commends_container").is(":visible")) {
+          } else if ($("#commends_container").is(":visible") && HUD.$refs.input === document.activeElement) {
             HUD.CloseCommends();
           }
           break;
 
-        case "ContextMenu": // Change Mode
-          HUD.CycleMode();
-          break;
-
         case "Enter": // Send Message
-          HUD.SendMessage();
+          if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
+            HUD.SendMessage();
+          }
           break;
 
         case "ArrowUp":
@@ -499,19 +519,21 @@ const HUD = new Vue({
           break;
 
         case "Tab":
-          for (let i = 0; i < HUD.suggestions.length; i++) {
-            if (HUD.suggestions[i].name.startsWith(HUD.chatMessage)) {
-              const suggestionSplitted = HUD.suggestions[i].name.split(" ");
-              const messageSplitted = HUD.chatMessage.split(" ");
+          if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
+            for (let i = 0; i < HUD.suggestions.length; i++) {
+              if (HUD.suggestions[i].name.startsWith(HUD.chatMessage)) {
+                const suggestionSplitted = HUD.suggestions[i].name.split(" ");
+                const messageSplitted = HUD.chatMessage.split(" ");
 
-              if (!HUD.usedAutofill) {
-                HUD.usedAutofill = true;
-                HUD.chatMessage = HUD.suggestions[i].name;
-                HUD.usedAutofill = false;
-                break;
+                if (!HUD.usedAutofill) {
+                  HUD.usedAutofill = true;
+                  HUD.chatMessage = HUD.suggestions[i].name;
+                  HUD.usedAutofill = false;
+                  break;
+                }
               }
             }
-          } 
+          }
           break;
       }
     });
