@@ -131,15 +131,19 @@ export class ChatManager {
         }
       });
 
-      if (this.client.player.Rank >= Ranks.Admin) this.chatTypes.push("admin");
+      if (this.client.player.Rank >= Ranks.Admin) {
+        this.chatTypes.push("admin");
+      }
     }
 
-    SendNuiMessage(JSON.stringify({
-      event: NuiMessages.SetupChat,
-      data: {
-        types: this.chatTypes
-      }
-    }))
+    setTimeout(() => { // Wait until UI processor of resource has loaded
+      SendNuiMessage(JSON.stringify({
+        event: NuiMessages.SetupChat,
+        data: {
+          types: this.chatTypes
+        }
+      }))
+    }, 250);
   }
 
   // Events
