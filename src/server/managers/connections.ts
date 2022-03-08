@@ -109,11 +109,9 @@ export class ConnectionsManager {
           Inform("Whitelist Check", "Not whitelisted!");
           deferrals.done(`[${sharedConfig.serverName}]: Whitelist Active!`);
         } else {
-          server.connectedPlayerManager.Add(player);
           this.displayAdaptiveCard(player, deferrals);
         }
       } else {
-        server.connectedPlayerManager.Add(player);
         this.displayAdaptiveCard(player, deferrals);
       }
     });
@@ -272,8 +270,10 @@ export class ConnectionsManager {
           rank: Ranks[player.GetRank],
           playtime: await player.GetPlaytime.FormatTime(),
           avatar:  player.steamAvatar,
-        })
+        });
+
         deferrals.done();
+        this.server.connectedPlayerManager.Add(player);
       }
     });
   }
