@@ -2,6 +2,7 @@ import {Player} from "./models/database/player";
 import {Ban} from "./models/database/ban";
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
 import {ClientCallback} from "./models/clientCallback";
+import {Character} from "./models/database/character";
 
 // [Managers] Server Data
 import { StaffManager } from "./managers/staff";
@@ -13,6 +14,7 @@ import {WarnManager} from "./managers/database/warnings";
 import {CommendManager} from "./managers/database/commends";
 import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
+import {CharacterManager} from "./managers/characters";
 
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
@@ -32,7 +34,7 @@ import {CommandManager} from "./managers/ui/command";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
-import {Capitalize, Dist, Error, GetHash, Inform, Log, logCommand} from "./utils";
+import {Capitalize, Delay, Dist, Error, GetHash, Inform, Log, logCommand} from "./utils";
 
 import {Events} from "../shared/enums/events/events";
 import {Ranks} from "../shared/enums/ranks";
@@ -44,6 +46,7 @@ import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
 import {PlayerManager} from "./managers/database/players";
+import { ErrorCodes } from "../shared/enums/errors";
 
 export class Server {
   // Debug Data
@@ -62,6 +65,7 @@ export class Server {
   public playerManager: PlayerManager;
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
+  public characterManager: CharacterManager;
 
   // [Managers] Syncing
   private timeManager: TimeManager;
@@ -116,6 +120,7 @@ export class Server {
     this.playerManager = new PlayerManager(server);
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
+    this.characterManager = new CharacterManager(server);
 
     // [Managers] Syncing
     this.timeManager = new TimeManager(server);
@@ -164,9 +169,9 @@ export class Server {
 
   private registerCommands(): void {
     new Command("veh", "Spawns you inside a specified vehicle.", [{
-      name: "vehicleModel",
-      help: "The spawn name of the vehicle, you're wanting to spawn."
-    }], true, async (source: string, args: any[]) => {
+        name: "vehicleModel",
+        help: "The spawn name of the vehicle, you're wanting to spawn."
+      }], true, async (source: string, args: any[]) => {
       if (args[0]) {
         const player = await this.connectedPlayerManager.GetPlayer(source);
         const myPed = GetPlayerPed(source);
@@ -202,7 +207,7 @@ export class Server {
       }
     }, Ranks.User);
 
-    new Command("me", "Returns your server ID.", [{name: "content", help: "The content of your /me message."}], true, async (source: string, args: any[]) => {
+    new Command("me", "Returns your server ID.", [{name: "content", help: "The content of your /me message."}], true, async(source: string, args: any[]) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
       const messageContents = args.join(" ");
       if (messageContents.length > 0) {
@@ -217,10 +222,12 @@ export class Server {
       emitNet(Events.clearWorldVehs, -1);
     }, Ranks.Admin);
 
-    new Command("deleter", "Clear the vehicles in the area", [], false, (source: string) => {
-      emitNet(Events.adminGun, source);
-    }, Ranks.Admin);
+    new Command("characters", "Change your current logged in character", [], false, async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      await player.TriggerEvent(Events.displayCharacters);
+    }, Ranks.User);
   }
+
   private registerExports(): void {
     global.exports("getRanks", async() => {
       const ranks: Record<string, any> = {};
@@ -319,8 +326,13 @@ export class Server {
       await this.timeManager.sync(player);
       await this.weatherManager.sync(player);
 
-      setTimeout(() => { // Need a 0ms timeout otherwise the suggestions are sent over before the chat manager is initialized
+      setTimeout(async() => { //  // Need a 0ms timeout otherwise the suggestions are sent over before the NUI is loaded
         this.commandManager.createChatSuggestions(player);
+        
+        const loadedChars = await player.getCharacters();
+        if (loadedChars) {
+          await player.TriggerEvent(Events.setupCharacters, player.characters);
+        }
       }, 500);
 
       const discord = await player.GetIdentifier("discord");
@@ -367,10 +379,13 @@ export class Server {
     const player = await this.connectedPlayerManager.GetPlayer(src);
 
     if (data.attacker != -1) {
-      try {
-        const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
-        const weaponData = sharedConfig.weapons[data.weapon];
+      const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
+      const weaponData = sharedConfig.weapons[data.weapon];
 
+      console.log(weaponData);
+
+      if (weaponData !== undefined) {
+        console.log("DEFINED!");
         if (!data.inVeh) {
           const killDistance = Dist(player.Position(), killer.Position(), false);
           emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
@@ -386,8 +401,16 @@ export class Server {
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
           }]
         }));
-      } catch (error) {
-        console.log(`Error logging kill | Code: ${error}`, "Weapon: ", data.weapon);
+      } else {
+        console.log("OOPSIE!");
+        await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
+          username: "Kill Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__Player Killed__",
+            description: `Weapon not found (${data.weapon}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]
+        }));
       }
     } else {
       const playersDisc = await player.GetIdentifier("discord");
@@ -406,6 +429,7 @@ export class Server {
   private async EVENT_refreshPlayers(): Promise<void> {
     const player = await this.connectedPlayerManager.GetPlayer(source);
     const svPlayers = this.connectedPlayerManager.GetPlayers;
+
     for (let a = 0; a < svPlayers.length; a++) {
       svPlayers[a].RefreshPing();
       const currPlaytime = await svPlayers[a].CurrentPlaytime();

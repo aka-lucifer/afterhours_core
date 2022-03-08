@@ -7,7 +7,7 @@ export class Player {
   public rank: number;
   public ped: Ped;
 
-  constructor(playerData: Player) {
+  constructor(playerData: Record<string, any>) {
     this.id = playerData.id;
     this.handle = Game.Player.Handle;
     this.name = playerData.name;

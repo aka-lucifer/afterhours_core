@@ -34,6 +34,88 @@
   <body>
     <v-app id="HUD">
 
+      <div id="Characters_Container" v-show="showCharacters">
+        <div id="Characters_Header">
+          <div class="headerImage"></div>
+          <div class="headerText">Character Menu</div>
+        </div>
+
+        <div id="Characters_Body">
+          <div id="Body_Card">
+            <div id="Body_Card_Header">
+              <div id="bodyHeaderIcon"><v-icon color="white" size="40">mdi-account-multiple-plus</v-icon></div>
+              <div id="bodyHeaderText">Your Characters</div>
+            </div>
+
+            <div id="Body_Card_Characters">
+              <div id="Characters" v-for="(character, index) in characters" :key="character.id">
+                <div class="character" @click="selectCharacter(index)" @mouseover="showCharacter(index)" @mouseleave="hideCharacter()">{{ character.firstName }} {{ character.lastName }} - {{ character.nationality }} ({{ character.age }})</div><br>
+              </div>
+            </div>
+
+            <div id="Character_Buttons_Container" v-if="Object.keys(selectedCharacter).length > 0">
+              <div id="Character_Buttons">
+                <v-tooltip top>
+                  <template #activator="data">
+                    <v-btn class="mx-2" small fab dark color="success" v-on="data.on" @click=""><v-icon dark>mdi-pencil</v-icon></v-btn>
+                  </template>
+                  <span>Create Character</span>
+                </v-tooltip>
+
+                <v-tooltip top>
+                  <template #activator="data">
+                    <v-btn class="mx-2" small fab dark color="primary" v-on="data.on" @click=""><v-icon dark>mdi-account-edit</v-icon></v-btn>
+                  </template>
+                  <span>Edit Character</span>
+                </v-tooltip>
+                
+                <v-tooltip top>
+                  <template #activator="data">
+                    <v-btn class="mx-2" small fab dark color="error" v-on="data.on" @click=""><v-icon dark>mdi-close</v-icon></v-btn>
+                  </template>
+                  <span>Delete Character</span>
+                </v-tooltip>
+              </div>
+                
+              <v-tooltip top>
+                <template #activator="data">
+                  <v-btn class="spawn" small fab dark color="dark" v-on="data.on" @click="spawnCharacter()"><v-icon dark>mdi-account-check</v-icon></v-btn>
+                </template>
+                <span>Spawn</span>
+              </v-tooltip>
+            </div>
+
+            <div id="Character_Buttons_Container_Single" v-else>
+              <div id="Character_Buttons">
+                <v-tooltip top>
+                  <template #activator="data">
+                    <v-btn class="mx-2" small fab dark color="success" v-on="data.on" @click=""><v-icon dark>mdi-pencil</v-icon></v-btn>
+                  </template>
+                  <span>Create Character</span>
+                </v-tooltip>
+              </div>
+            </div>
+          </div>
+
+          <v-card id="Character_Card" dark hover elevation="1" outlined v-show="hoveringCharacter">
+            <v-card-title>
+              <h2 style="font-family: 'PT-Sans';">{{ hoveredCharacter.firstName }} {{ hoveredCharacter.lastName }} | {{ hoveredCharacter.id }}</h2>
+            </v-card-title>
+            
+            <v-card-text>
+              <span style="font-family: 'PT-Sans-Caption';"><b>DOB</b>: {{ hoveredCharacter.dob }}</span><br>
+              <span style="font-family: 'PT-Sans-Caption';"><b>Age</b>: {{ hoveredCharacter.age }}</span><br>
+              <div v-if="hoveredCharacter.gender == 0"><span style="font-family: 'PT-Sans-Caption';"><b>Gender</b>: Male</span><br></div>
+              <div v-if="hoveredCharacter.gender == 1"><span style="font-family: 'PT-Sans-Caption';"><b>Gender</b>: Female</span><br></div>
+              <span style="font-family: 'PT-Sans-Caption';"><b>Nationality</b>: {{ hoveredCharacter.nationality }}</span><br>
+              <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName != 'none' && hoveredCharacter.jobName != 'Civilian'"><b>Job</b>: {{ hoveredCharacter.jobName }}</span><br>
+              <!-- <span style="font-family: 'PT-Sans-Caption';"><b>Phone</b>: {{ hoveredCharacter.phone }}</span><br> -->
+              <span style="font-family: 'PT-Sans-Caption';"><b>Backstory</b>: {{ hoveredCharacter.backstory }}</span><br>
+            </v-card-text>
+          </v-card>
+        </div>
+      </div>
+
       <!-- Compass (MAYBE) -->
       <!-- <div id="compass_container"> -->
         <!-- <div id="compass"></div>   -->

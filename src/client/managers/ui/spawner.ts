@@ -5,6 +5,7 @@ import clientConfig from "../../../configs/client.json";
 
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
+import { Events } from "../../../shared/enums/events/events";
 
 export class Spawner {
   private client: Client;
@@ -20,7 +21,7 @@ export class Spawner {
     RegisterNuiCallback(NuiCallbacks.CloseSpawner, async(data, cb) => {
       SetNuiFocus(false, false);
       console.log("TP TO AOP & THEN DISPLAY CHAR UI HERE IF NO CHARACTERS");
-      // DO spawn logic here!;
+      this.client.characters.EVENT_displayCharacters();
       cb("ok");
     });
   }

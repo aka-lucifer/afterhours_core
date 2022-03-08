@@ -71,10 +71,11 @@ export class ConnectedPlayerManager {
       }
 
       if (player) {
-        await player.Disconnect(disconnectReason)
+        await this.server.characterManager.Disconnect(player.GetHandle);
+        await player.Disconnect(disconnectReason);
       }
       this.connectedPlayers.splice(playerIndex, 1);
-      Inform("Player Manager", `${tempData} | Removed from player manager!\n\nPlayer Manager Contents Now: ${JSON.stringify(this.GetPlayers)}`);
+      Inform("Player Manager", `${tempData} | Removed from player manager!`);
     }
   }
 

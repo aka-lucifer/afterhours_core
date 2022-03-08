@@ -1,4 +1,4 @@
-import {Game, Vector3, VehicleSeat, World} from "fivem-js"
+import {Game, Vector3, VehicleSeat, World, Model} from "fivem-js"
 
 import {Player} from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -18,6 +18,7 @@ import {ServerCallbackManager} from "./managers/serverCallbacks";
 
 // [Managers] UI
 import {Spawner} from "./managers/ui/spawner";
+import {Characters} from "./managers/ui/characters";
 import {ChatManager} from "./managers/ui/chat";
 import {Scoreboard} from "./managers/ui/scoreboard";
 import {Warnings} from "./managers/ui/warnings";
@@ -69,6 +70,7 @@ export class Client {
 
   // [Managers] UI
   private spawner: Spawner;
+  public characters: Characters;
   private chatManager: ChatManager;
   private scoreboard: Scoreboard;
   private warnings: Warnings;
@@ -126,6 +128,7 @@ export class Client {
 
     // [Managers] UI
     this.spawner = new Spawner(client);
+    this.characters = new Characters(client);
     this.chatManager = new ChatManager(client);
     this.chatManager.init();
     this.scoreboard = new Scoreboard(client);
@@ -204,7 +207,7 @@ export class Client {
     // Manager Inits
     await this.staffManager.init();
     await this.worldManager.init();
-    // this.spawner.start(spawnInfo);
+    this.spawner.start(spawnInfo);
     this.chatManager.setup();
   }
 

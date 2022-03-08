@@ -32,6 +32,11 @@ export enum Events {
   getPlayer = "astrid:server:getPlayer",
   receiveClientCB = "astrid:server:receiveClientCB",
   logDeath = "astrid:server:logDeath",
+  
+  // Astrid Server (Gravity Gun)
+  gravityPlayer = "astrid:server:gravityPlayer",
+  ungravityPlayer = "astrid:server:ungravityPlayer",
+  shootEntity = "astrid:shootEntity:shootEntity",
 
   // (Scoreboard Server)
   requestPlayers = "astrid:server:requestPlayers",
@@ -55,7 +60,18 @@ export enum Events {
   syncTime = "astrid:client:syncTime",
   freezeTime = "astrid:client:freezeTime",
   syncWeather = "astrid:client:syncWeather",
+
+  // Astrid Client (Characters)
+  setupCharacters = "astrid:client:setupCharacters",
+  displayCharacters = "astrid:client:displayCharacters",
+  
+  // Astrid Client (Gravity Gun)
   adminGun = "astrid:client:adminGun",
+  setHeldEntity = "astrid:client:setHeldEntity",
+  unsetHeldEntity = "astrid:unsetHeldEntity:unsetHeldEntity",
+  holdPlayer = "astrid:client:holdPlayer",
+  releasePlayer = "astrid:client:releasePlayer",
+  getGravitied = "astrid:getGravitied:getGravitied",
 
   // (Scoreboard Client)
   receivePlayers = "astrid:client:receivePlayers",

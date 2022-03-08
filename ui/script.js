@@ -31,6 +31,14 @@ const HUD = new Vue({
     ],
     currentPage: 0,
 
+    // [CHARACTERS]
+    showCharacters: false,
+    characters: [],
+
+    hoveringCharacter: false,
+    hoveredCharacter: {},
+    selectedCharacter: {},
+
     // [SCOREBOARD]
     displaying: false,
 
@@ -50,7 +58,7 @@ const HUD = new Vue({
     chatToggled: true, // Chat Visibility (INSERT)
 
     // [CHAT] - Chat Types
-    chatTypes: ["local", "global", "admin"],
+    chatTypes: [],
     currentType: 0,
 
     // [CHAT] - Chat Messages
@@ -59,7 +67,7 @@ const HUD = new Vue({
 
     // [CHAT] - Input
     chatMessage: "",
-    showInput: true,
+    showInput: false,
     focusTimer: 0,
 
     // [CHAT] - Prev Message Cycler
@@ -103,6 +111,40 @@ const HUD = new Vue({
     CloseSpawner() {
       this.spawnActive = false;
       this.Post("CLOSE_SPAWNER");
+    },
+
+    // CHARACTERS
+    setupCharacters(data) {
+      this.characters = data.characters;
+    },
+
+    displayCharcaters() {
+      this.showCharacters = true;
+    },
+
+    showCharacter(charIndex) {
+      this.hoveredCharacter = this.characters[charIndex];
+      if (!this.hoveringCharacter) this.hoveringCharacter = true;
+
+      // console.log("hovered char is", JSON.stringify(this.hoveredCharacter));
+    },
+
+    hideCharacter() {
+      // console.log("hide");
+      if (this.hoveringCharacter) this.hoveringCharacter = false;
+    },
+
+    selectCharacter(charIndex) {
+      this.selectedCharacter = this.characters[charIndex];
+    },
+
+    spawnCharacter() {
+      this.Post("SELECT_CHARACTER", {characterId: this.selectedCharacter.id}, (callbackData) => {
+        // console.log("NUI CB", JSON.stringify(callbackData));
+        if (callbackData) {
+          this.showCharacters = false;
+        }
+      });
     },
 
     // Notification
@@ -438,6 +480,10 @@ const HUD = new Vue({
     // Spawner UI
     RegisterEvent("OPEN_SPAWNER", this.SetupSpawn);
 
+    // Characters
+    RegisterEvent("SETUP_CHARACTERS", this.setupCharacters);
+    RegisterEvent("DISPLAY_CHARACTERS", this.displayCharcaters);
+
     // Notification
     RegisterEvent("CREATE_NOTIFICATION", this.Notification);
 
@@ -482,7 +528,6 @@ const HUD = new Vue({
 
     // Key Presses
     window.addEventListener("keydown", function(event) {
-      console.log("Key Down", event.key, event.keyCode)
       switch(event.key) {
         case "Escape": // Close UI
           if ($("#Chat-Input").is(":visible")) {

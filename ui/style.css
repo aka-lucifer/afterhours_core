@@ -42,7 +42,8 @@
   --cardGradient: linear-gradient(45deg, rgba(74,10,124,1) 39%, rgba(56,167,244,1) 88%);
   --notificationBG: rgba(17, 17, 17, 0.8);
   --darkBlueBG: #101727;
-  --googleGray: rgb(241, 243, 244)
+  --googleGray: rgb(241, 243, 244);
+  --charactersHeaderShadow: 0px 4px 6px rgba(0, 0, 0, 1);
 }
 
 /* Chat Colours */
@@ -81,12 +82,283 @@ body {
   background-color: transparent !important;
 }
 
+/* Characters */
+#Characters_Container {
+  position: absolute;
+  
+  width: 97%;
+  height: 95%;
+
+  top: 50%;
+  left: 45%;
+  transform: translate(-45%, -50%);
+  z-index: 5;
+}
+
+/* [CHARACTERS] Header */
+#Characters_Header {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 15%;
+
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+
+  user-select: none;
+
+  background: var(--cardGradient) !important;
+}
+
+.headerImage {
+  position: absolute;
+  display: flex;
+
+  left: 10%;
+
+  width: 10em;
+  height: 100%;
+
+  /* background-color: red; */
+  
+  background-image: url("assets/img/3d_logo.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.headerText {
+  position: absolute;
+  display: flex;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  margin-bottom: 0.3em;  
+
+  text-transform: uppercase;
+
+  color: white;
+  font-family: "Inter-Light";
+  font-size: 5em;
+  font-weight: bolder;
+  letter-spacing: .07em;
+  text-shadow: var(--charactersHeaderShadow);
+}
+
+/* background-color: var(--notificationBG) !important; */
+
+/* [CHARACTERS] BODY */
+#Characters_Body {
+  position: relative;
+
+  width: 100%;
+  height: 85%;
+
+  background-color: var(--notificationBG) !important;
+}
+
+#Body_Card {
+  position: relative;
+
+  top: 45%;
+  left: 2%;
+  transform: translate(-2%, -45%);
+
+  width: 25%;
+  height: 93%;
+  
+  border-radius: 15px;
+
+  background: var(--cardGradient) !important;
+}
+
+/* [CHARACTERS] BODY HEADER */
+#Body_Card_Header {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  
+  padding: 5px;
+
+  width: 100%;
+  height: fit-content;
+  
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: var(--charactersHeaderShadow);
+
+  user-select: none;
+}
+
+#bodyHeaderIcon {
+  position: absolute;
+  display: flex;
+
+  top: 30%;
+  left: 15%;
+  transform: translate(-15%, -30%);
+}
+
+#bodyHeaderText {
+  position: relative;
+  display: flex;
+
+  /* margin-bottom: 0.5em; */
+  top: 0%;
+  left: 10%;
+  transform: translate(-10%, 0%);
+  
+  color: white;
+  font-family: "Inter-Light";
+  font-size: 1.5em;
+  font-weight: bolder;
+  letter-spacing: .1em;
+}
+
+
+#Body_Card_Characters {
+  position: relative;
+
+  top: 3%;
+  left: 50%;
+  transform: translate(-50%, -3%);
+
+  width: 90%;
+  height: 75%;
+  max-height: 75%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  /* background-color: #aa00ff; */
+}
+
+#Body_Card_Characters::-webkit-scrollbar {
+  width: 5px;
+}
+
+#Body_Card_Characters::-webkit-scrollbar-thumb {
+  background: white !important;
+}
+
+#Characters {
+  text-align: center;
+}
+
+.character {
+  left: 47%;
+  transform: translateX(47%);
+
+  width: fit-content;
+  padding: 10px;
+  
+  color: white;
+  text-shadow: -1px -1px 2px #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  
+  font-family: "Inter-Light";
+  font-weight: bolder;
+  font-size: 1.2em;
+
+  user-select: none;
+}
+
+.selectedCharacter {
+  left: 47%;
+  transform: translateX(47%);
+
+  width: fit-content;
+  padding: 10px;
+  
+  background-color: var(--notificationBG);
+  color: white;
+  text-shadow: -1px -1px 2px #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  
+  font-family: "Inter-Light";
+  font-weight: bolder;
+  font-size: 1.2em;
+  
+  border: 1px solid white;
+  border-radius: 5px;
+
+  user-select: none;
+}
+
+.character:hover {
+  background-color: var(--notificationBG);
+  color: white;
+  
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
+#Character_Buttons_Container {
+  position: relative;
+
+  top: 3.5%;
+  left: 50%;
+  transform: translate(-50%, -3.5%);
+
+  width: 90%;
+  padding: 5px;
+}
+
+#Character_Buttons_Container_Single {
+  position: relative;
+
+  top: 7%;
+  left: 50%;
+  transform: translate(-50%, -7%);
+
+  width: 90%;
+  padding: 5px;
+}
+
+#Character_Buttons {
+  position: relative;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+  
+  margin: 5px;
+}
+
+.v-btn.spawn {
+  position: relative;
+  
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, 15%);
+}
+
+#Character_Card {
+  position: absolute;
+
+  /* Position */
+  top: 10%;
+  left: 35%;
+  transform: translate(-35%, -10%);
+
+  width: 20%;
+  max-height: 80%;
+  overflow-y: hidden;
+  border-radius: 15px;
+}
+
 /* Spawn Info */
 #Spawn_Container {
   position: absolute;
   width: 100%;
   height: 100%;
   background-color: var(--darkBlueBG) !important;
+  z-index: 6;
 }
 
 #Spawn_Header {
