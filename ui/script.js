@@ -155,6 +155,7 @@ const HUD = new Vue({
     },
 
     displayCharcaters() {
+      this.resetCharacters();
       this.showCharacters = true;
     },
 
@@ -181,6 +182,12 @@ const HUD = new Vue({
           this.showCharacters = false;
         }
       });
+    },
+
+    resetCharacters() {
+      this.selectedCharacter = {};
+      this.hoveredCharacter = {};
+      this.hoveringCharacter = false;
     },
 
     // Notification
