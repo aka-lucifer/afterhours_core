@@ -58,9 +58,6 @@ export class WorldManager {
 
     // Police Vehicle Rewards
     DisablePlayerVehicleRewards(ped.Handle);
-
-    // Disable Ambient Sirens
-    DistantCopCarSirens(false);
   }
 
   // Disable PVP
@@ -72,7 +69,6 @@ export class WorldManager {
       SetPedMinGroundTimeForStungun(ped.Handle, clientConfig.world.stunTimer * 1000);
     }
   }
-
 
   // Police Vehicle Rewards
   private disableVehRewards(ped: Ped): void {
@@ -114,5 +110,22 @@ export class WorldManager {
     for (let i = 0; i < mlos.length; i++) {
       ClearAreaOfPeds(mlos[i].x, mlos[i].y, mlos[i].z, mlos[i].radius, 1);
     }
+  }
+
+  // Disable Ambients
+  private disableAmbients(): void {
+    // Disable Ambient Sirens
+    DistantCopCarSirens(false);
+
+    // Disable ambient trains
+    DeleteAllTrains();
+    
+    // Disable train (on track) spawning
+    for (let i = 0; i < 15; i++) {
+      SwitchTrainTrack(i, false);
+    }
+
+    // Disable spawning of trains
+    SetRandomTrains(false);
   }
 }
