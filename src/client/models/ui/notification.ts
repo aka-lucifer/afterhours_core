@@ -12,12 +12,12 @@ export class Notification {
   private readonly speed: number = 300;
 
   // Closing
-  private autoclose: boolean = false;
+  private autoclose: boolean = true;
   private timer: number = 3000;
 
   private readonly type: number = 2;
 
-  private progressBar: boolean = false;
+  private progress: boolean = false;
 
   private icon: string;
 
@@ -26,19 +26,16 @@ export class Notification {
   private timeout: NodeJS.Timeout = undefined;
   private finish:CallableFunction;
 
-  constructor(header: string, body: string, type: NotificationTypes, progressBar: boolean, icon?: string, timer?: number, start?: CallableFunction, finish?: CallableFunction) {
+  constructor(header: string, body: string, type: NotificationTypes, timer?: number, progressBar?: boolean, start?: CallableFunction, finish?: CallableFunction, icon?: string) {
     this.header = header;
     this.body = body;
     this.status = type;
-    this.progressBar = progressBar;
-    this.icon = icon;
-
-    if (timer) {
-      this.autoclose = true;
-      this.timer = timer;
-      this.start = start;
-      this.finish = finish;
-    }
+    
+    if (timer) this.timer = timer;
+    if (progressBar) this.progress = progressBar;
+    if (start) this.start = start;
+    if (finish) this.finish = finish;
+    if (icon) this.icon = icon;
   }
 
   public async send(): Promise<void> {
@@ -48,23 +45,22 @@ export class Notification {
         title: this.header,
         text: this.body,
         status: this.status,
-        effect: this.effect,
-        speed: this.speed,
-        autoclose: this.autoclose,
+        effect: "slide",
+        speed: 300,
+        autoclose: true,
         autotimeout: this.timer,
-        type: this.type,
-        customIcon: this.icon,
-        progress: this.progressBar,
+        type: 2,
         position: "top left",
+        progress: this.progress,
         showCloseButton: false
       }
     }));
     await Delay(0);
 
-    this.start();
+    if (this.start) this.start();
     this.timeout = setTimeout(() => {
       console.log(`TIMEOUT OF (${this.timer}) is finished!`);
-      this.finish();
+      if (this.finish) this.finish();
     }, this.timer);
   }
 }
