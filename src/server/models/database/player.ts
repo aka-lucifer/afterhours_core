@@ -3,6 +3,7 @@ import { Vector3 } from "fivem-js";
 
 import { Playtime } from "./playtime";
 import {Ban} from "./ban";
+import { Job } from "../jobs/job";
 import * as Utils from "../../utils";
 
 import * as Database from "../../managers/database/database"
@@ -22,6 +23,8 @@ import {Kick} from "./kick";
 import {Warning} from "./warning";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {Notification} from "../ui/notification";
+import { Character } from "./character";
+import { Departments } from "../../../shared/enums/jobs/departments";
 
 export class Player {
   public id: number;
@@ -38,6 +41,7 @@ export class Player {
   public formattedPlaytime: string;
   private joinTime: string;
   private whitelisted: boolean = false;
+  public characters: any[];
 
   constructor(handle: string) {
     this.hardwareId = GetPlayerToken(handle, 0) || "Unknown";
@@ -332,6 +336,50 @@ export class Player {
     return [false, null];
   }
 
+  public async Notify(title: string, description: string, type: NotificationTypes, timer?: number, progressBar?: boolean) {
+    const notification = new Notification(this, title, description, type, timer, progressBar);
+    await notification.send();
+  }
+
+  public async getCharacters(): Promise<boolean> {
+    const characters = [];
+
+    const charData = await Database.SendQuery("SELECT * FROM `player_characters` WHERE `player_id` = :playerId LIMIT 1", {
+      playerId: this.id
+    });
+
+    if (charData.data.length > 0) {
+      for (let i = 0; i < charData.data.length; i++) {
+        const character = new Character(this.id);
+        const jobData = JSON.parse(charData.data[i].job);
+        const job = new Job(jobData.name, jobData.label, jobData.isBoss, jobData.rank, jobData.callsign, jobData.status, jobData.department);
+
+        const formatted = await character.format({
+          id: charData.data[i].id,
+          firstName: charData.data[i].first_name,
+          lastName: charData.data[i].last_name,
+          nationality: charData.data[i].nationality,
+          backstory: charData.data[i].backstory,
+          dob: charData.data[i].dob,
+          isFemale: (charData.data[i].gender == 1),
+          phone: charData.data[i].phone,
+          job: job,
+          createdAt: new Date(charData.data[i].created_at),
+          lastUpdated: new Date(charData.data[i].last_updated),
+        });
+
+        if (formatted) {
+          characters.push(character);
+          this.characters = characters;
+        }
+      }
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public async Disconnect(disconnectReason: string): Promise<boolean> { // Handles updating your disconnection timestamp and your total playtime
     if (disconnectReason.includes("banned")) disconnectReason = "Banned";
 
@@ -356,10 +404,5 @@ export class Player {
       }
       return true;
     }
-  }
-
-  public async Notify(title: string, description: string, type: NotificationTypes, timer?: number, progressBar?: boolean) {
-    const notification = new Notification(this, title, description, type, timer, progressBar);
-    await notification.send();
   }
 }
