@@ -52,6 +52,7 @@ export class Server {
   // Debug Data
   private readonly debugMode: boolean;
   private readonly serverWhitelisted: boolean;
+  private developmentMode: boolean;
   private readonly maxPlayers: number;
 
   // [Managers] Server Data
@@ -85,6 +86,7 @@ export class Server {
   constructor() {
     this.debugMode = serverConfig.debug;
     this.serverWhitelisted = serverConfig.whitelist;
+    this.developmentMode = (GetConvar('development_server', 'false') === "true");
     this.maxPlayers = GetConvarInt("sv_maxclients", 32);
 
     // Events
@@ -101,6 +103,10 @@ export class Server {
 
   public get Whitelisted(): boolean {
     return this.serverWhitelisted;
+  }
+
+  public get Developing(): boolean {
+    return this.developmentMode;
   }
 
   public get GetMaxPlayers(): number {
@@ -226,6 +232,11 @@ export class Server {
       const player = await this.connectedPlayerManager.GetPlayer(source);
       await player.TriggerEvent(Events.displayCharacters);
     }, Ranks.User);
+
+    new Command("dev", "Toggle development mode", [], false, async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      await player.TriggerEvent(Events.developmentMode);
+    }, Ranks.Developer);
   }
 
   private registerExports(): void {
