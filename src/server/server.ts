@@ -233,9 +233,16 @@ export class Server {
       await player.TriggerEvent(Events.displayCharacters);
     }, Ranks.User);
 
+    // Dev mode commands
+    RegisterCommand("dev", () => {
+      this.developmentMode = !this.developmentMode;
+      SetConvar("development_server", this.developmentMode.toString());
+    }, false);
+
     new Command("dev", "Toggle development mode", [], false, async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
-      await player.TriggerEvent(Events.developmentMode);
+      this.developmentMode = !this.developmentMode;
+      SetConvar("development_server", this.developmentMode.toString());
+      emitNet(Events.developmentMode, -1, this.developmentMode);
     }, Ranks.Developer);
   }
 
@@ -333,7 +340,7 @@ export class Server {
       Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
 
       // Sync data to players client
-      await player.TriggerEvent(Events.playerLoaded, Object.assign({}, player), {current: this.connectedPlayerManager.GetPlayers.length, max: this.GetMaxPlayers, bestPlayer: await this.playerManager.getBestPlayer()});
+      await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player), {current: this.connectedPlayerManager.GetPlayers.length, max: this.GetMaxPlayers, bestPlayer: await this.playerManager.getBestPlayer()});
       await this.timeManager.sync(player);
       await this.weatherManager.sync(player);
 
@@ -367,19 +374,19 @@ export class Server {
             this.connectionsManager.disconnectedPlayers.splice(rejoined, 1);
           } else {
             await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
-                color: EmbedColours.Green,
-                title: "__Player Connected__",
-                description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
-                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-              }]}));
-          }
-        } else {
-          await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
               color: EmbedColours.Green,
               title: "__Player Connected__",
               description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]}));
+          }
+        } else {
+          await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__Player Connected__",
+            description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]}));
         }
       }
     }

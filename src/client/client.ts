@@ -47,10 +47,10 @@ import {Ranks} from "../shared/enums/ranks";
 let takingScreenshot = false;
 
 export class Client {
-// Server Data
+// Client Data
   private debugging: boolean;
   private initialSpawn: boolean;
-
+  private developmentMode: boolean = false;
   private richPresenceData: Record<string, any>;
 
   // Player Data
@@ -83,12 +83,14 @@ export class Client {
 
   constructor() {
     this.debugging = clientConfig.debug;
+    this.developmentMode = (GetConvar('development_server', 'false') === "true");
     this.richPresenceData = clientConfig.richPresence;
     this.initialSpawn = true;
     
     // Events
     on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
+    onNet(Events.developmentMode, this.EVENT_developmentMode.bind(this));
     onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
     // onNet(LXEvents.PedDied, this.EVENT_pedDied.bind(this));
@@ -102,6 +104,10 @@ export class Client {
   // Get Requests
   public get IsDebugging(): boolean {
     return this.debugging;
+  }
+
+  public get Developing(): boolean {
+    return this.developmentMode;
   }
 
   public get Discord(): Record<string, any> {
@@ -207,8 +213,19 @@ export class Client {
     // Manager Inits
     await this.staffManager.init();
     await this.worldManager.init();
-    this.spawner.start(spawnInfo);
+    if (!this.Developing) {
+      this.spawner.start(spawnInfo);
+    } else {
+      setTimeout(() => {
+        this.characters.EVENT_displayCharacters();
+      }, 500);
+    }
+
     this.chatManager.setup();
+  }
+
+  private EVENT_developmentMode(newState: boolean): void {
+    this.developmentMode = newState;
   }
 
   private EVENT_clearVehs(): void {
