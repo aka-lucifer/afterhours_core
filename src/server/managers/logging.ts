@@ -6,8 +6,9 @@ import WebhookMessage from "../models/webhook/discord/webhookMessage";
 import RateLimitInfo from "../models/webhook/discord/rateLimitInfo";
 
 import {Server} from "../server";
-import {Delay} from "../utils";
+import {Delay, Error} from "../utils";
 import serverConfig from "../../configs/server.json"
+import { ErrorCodes } from "../../shared/enums/errors";
 
 export class LogManager {
   private server: Server;
@@ -48,9 +49,11 @@ export class LogManager {
 
         await Delay(rateLimitInfo.retryAfter);
         return await this.Send(type, message);
-      }
 
-      throw axiosError;
+        throw axiosError;
+      } else if (response?.status == StatusCodes.FORBIDDEN || response?.status == StatusCodes.NOT_FOUND) {
+        Error("Webhook Send Method", `Error posting content to webhook!\nError Code: ${ErrorCodes.DiscordDown}`);
+      }
     }
   }
 }
