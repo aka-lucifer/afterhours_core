@@ -49,7 +49,7 @@
 
             <div id="Body_Card_Characters">
               <div id="Characters" v-for="(character, index) in characters" :key="character.id">
-                <div class="character" @click="selectCharacter(index)" @mouseover="showCharacter(index)" @mouseleave="hideCharacter()">{{ character.firstName }} {{ character.lastName }} - {{ character.nationality }} ({{ character.age }})</div><br>
+                <div id="character" @click="selectCharacter(index)" @mouseover="showCharacter(index)" @mouseleave="hideCharacter()">{{ character.firstName }} {{ character.lastName }} - {{ character.nationality }} ({{ character.age }})</div><br>
               </div>
             </div>
 
@@ -97,7 +97,7 @@
             </div>
           </div>
 
-          <v-card id="Character_Card" dark hover elevation="1" outlined v-show="hoveringCharacter">
+          <v-card id="Character_Card" dark hover elevation="1" outlined v-show="hoveringCharacter || Object.keys(selectedCharacter).length > 0">
             <v-card-title>
               <h2 style="font-family: 'PT-Sans';">{{ hoveredCharacter.firstName }} {{ hoveredCharacter.lastName }} | {{ hoveredCharacter.id }}</h2>
             </v-card-title>

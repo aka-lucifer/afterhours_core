@@ -252,7 +252,7 @@ body {
   text-align: center;
 }
 
-.character {
+#character {
   left: 47%;
   transform: translateX(47%);
 
@@ -270,27 +270,10 @@ body {
 }
 
 .selectedCharacter {
-  left: 47%;
-  transform: translateX(47%);
-
-  width: fit-content;
-  padding: 10px;
-  
-  background-color: var(--notificationBG);
-  color: white;
-  text-shadow: -1px -1px 2px #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  
-  font-family: "Inter-Light";
-  font-weight: bolder;
-  font-size: 1.2em;
-  
-  border: 1px solid white;
-  border-radius: 5px;
-
-  user-select: none;
+  text-decoration: underline;
 }
 
-.character:hover {
+#character:hover {
   background-color: var(--notificationBG);
   color: white;
   
@@ -347,9 +330,17 @@ body {
   transform: translate(-35%, -10%);
 
   width: 20%;
-  max-height: 80%;
-  overflow-y: hidden;
+  max-height: 50%;
+  overflow-y: scroll;
   border-radius: 15px;
+}
+
+#Character_Card::-webkit-scrollbar {
+  width: 5px;
+}
+
+#Character_Card::-webkit-scrollbar-thumb {
+  background: white !important;
 }
 
 /* Spawn Info */
