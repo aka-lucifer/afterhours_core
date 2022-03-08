@@ -18,11 +18,11 @@ export class WeatherManager {
   // Methods
   public setupTime(): void {
     this.weatherTick = setTick(async() => {
-      if (GlobalState.weatherChanging) {
-        console.log("SLOWLY CHANGING TO", this.weather);
-        SetWeatherTypeOverTime(this.weather, 15);
-        await Delay(15000);
-      }
+      // if (GlobalState.weatherChanging) {
+      //   console.log("SLOWLY CHANGING TO", this.weather);
+      //   SetWeatherTypeOverTime(this.weather, 15);
+      //   await Delay(15000);
+      // }
 
       ClearOverrideWeather()
       ClearWeatherTypePersist()
