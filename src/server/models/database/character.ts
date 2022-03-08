@@ -5,6 +5,7 @@ import { Job } from "../jobs/job";
 import * as Database from "../../managers/database/database"
 import { Departments } from "../../../shared/enums/jobs/departments";
 import { PoliceRanks } from "../../../shared/enums/jobs/ranks";
+import { Gender } from "../../../shared/enums/characters";
 
 export class Character {
   private id: number;
@@ -43,12 +44,40 @@ export class Character {
     return `${this.firstName} ${this.lastName}`;
   }
 
+  public get Nationality(): string {
+    return this.nationality;
+  }
+
   public get Age(): number {
     return this.age;
   }
 
+  public get Gender(): string {
+    let value;
+
+    if (!this.isFemale) {
+      value = 0;
+    } else {
+      value = 1;
+    }
+
+    return Gender[value];
+  }
+
   public get Phone(): string {
     return this.phone
+  }
+
+  public get Job(): Job {
+    return this.job;
+  }
+
+  public get CreatedAt(): string {
+    return this.createdAt.toUTCString();
+  }
+
+  public get LastEdited(): string {
+    return this.lastUpdated.toUTCString();
   }
 
   // Methods
