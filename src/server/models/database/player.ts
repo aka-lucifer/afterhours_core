@@ -23,7 +23,7 @@ import {Kick} from "./kick";
 import {Warning} from "./warning";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {Notification} from "../ui/notification";
-import { Character } from "./character";
+import { Character, Metadata } from "./character";
 import { Departments } from "../../../shared/enums/jobs/departments";
 
 export class Player {
@@ -352,7 +352,10 @@ export class Player {
       for (let i = 0; i < charData.data.length; i++) {
         const character = new Character(this.id);
         const jobData = JSON.parse(charData.data[i].job);
+        const metaData = JSON.parse(charData.data[i].job);
+
         const job = new Job(jobData.name, jobData.label, jobData.isBoss, jobData.rank, jobData.callsign, jobData.status, jobData.department);
+        const metadata = new Metadata(metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.licenses, metaData.mugshot, metaData.jailData, metaData.criminalRecord);
 
         const formatted = await character.format({
           id: charData.data[i].id,
@@ -364,6 +367,7 @@ export class Player {
           isFemale: (charData.data[i].gender == 1),
           phone: charData.data[i].phone,
           job: job,
+          metadata: metadata,
           createdAt: new Date(charData.data[i].created_at),
           lastUpdated: new Date(charData.data[i].last_updated),
         });

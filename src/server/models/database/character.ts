@@ -20,6 +20,7 @@ export class Character {
   private isFemale: boolean;
   private phone: string;
   private job: Job;
+  private metadata: Metadata;
   private createdAt: Date;
   private lastUpdated: Date;
 
@@ -72,6 +73,10 @@ export class Character {
     return this.job;
   }
 
+  public get Metadata(): Metadata {
+    return this.metadata;
+  }
+
   public get CreatedAt(): string {
     return this.createdAt.toUTCString();
   }
@@ -88,6 +93,9 @@ export class Character {
     });
 
     if (charData.data.length > 0) {
+      const jobData = JSON.parse(charData.data[0].job);
+      const metaData = JSON.parse(charData.data[0].metadata);
+
       this.id = charData.data[0].id;
       this.firstName = charData.data[0].first_name;
       this.lastName = charData.data[0].last_name;
@@ -97,19 +105,20 @@ export class Character {
       this.age = this.formatAge(this.dob);
       this.isFemale = (charData.data[0].gender == 1);
       this.phone = this.formatPhone(charData.data[0].phone);
-
-      const jobData = JSON.parse(charData.data[0].job);
       this.job = new Job(jobData.name, jobData.label, jobData.isBoss, jobData.rank, jobData.callsign, jobData.status, jobData.department);
+      this.metadata = new Metadata(metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.licenses, metaData.mugshot, metaData.jailData, metaData.criminalRecord);
       // console.log("Rank", PoliceRanks[jobData.rank]);
       this.createdAt = new Date(charData.data[0].created_at);
       this.lastUpdated = new Date(charData.data[0].last_updated);
+
+      console.log("Character Data!", this);
       return true;
     } else {
       return false;
     }
   }
 
-  public async format(character?: CharInfo): Promise<boolean> {
+  public async format(character?: Info): Promise<boolean> {
     this.id = character?.id;
     this.firstName = character?.firstName;
     this.lastName = character?.lastName;
@@ -151,7 +160,45 @@ export class Character {
   }
 }
 
-interface CharInfo {
+export class Metadata {
+  private fingerprint: string;
+  private bloodtype: string;
+  private isDead: boolean;
+  private isCuffed: boolean;
+  private licenses: Licenses;
+  private mugshot: string;
+  private jail: JailData;
+  private criminalRecord: CriminalRecord;
+
+  constructor(finger: string, blood: string, dead: boolean, cuffed: boolean, licenses: Licenses, mugshot: string, jail: JailData, record: CriminalRecord) {
+    this.fingerprint = finger;
+    this.bloodtype = blood;
+    this.isDead = dead;
+    this.isCuffed = cuffed;
+    this.licenses = licenses;
+    this.mugshot = mugshot;
+    this.jail = jail;
+    this.criminalRecord = record;
+  }
+}
+
+interface Licenses {
+  driver: boolean;
+  weapon: boolean;
+  flight?: boolean;
+}
+
+interface JailData {
+  inside: boolean;
+  reason: string;
+  length: number;
+}
+
+interface CriminalRecord {
+  hasRecord: false
+}
+
+interface Info {
   id: number;
   firstName: string;
   lastName: string;
@@ -162,6 +209,7 @@ interface CharInfo {
   isFemale: boolean;
   phone?: string;
   job: Job;
+  metadata: Metadata;
   createdAt: Date;
   lastUpdated: Date;
 }
