@@ -52,7 +52,7 @@ export class ChatManager {
   
           for (let a = 0; a < registeredCommands.length; a++) {
             if (command == registeredCommands[a].name) {
-              if (player.GetRank >= registeredCommands[a].permission) {
+              if (player.Rank >= registeredCommands[a].permission) {
                 if (registeredCommands[a].argsRequired) {
                   if (Object.keys(registeredCommands[a].args).length > 0 && args.length >= Object.keys(registeredCommands[a].args).length) {
                     registeredCommands[a].callback(player.GetHandle, args);
@@ -80,7 +80,7 @@ export class ChatManager {
         await chatLog.save();
 
         // Message blacklist checker (doesn't run if you're snr admin or above)
-        if (player.GetRank < Ranks.SeniorAdmin) {
+        if (player.Rank < Ranks.SeniorAdmin) {
           // Chat message blacklist checker
           const wordIndex = this.blacklistedWords.findIndex(word => {
             if (message.content.includes(word)) {
@@ -186,7 +186,7 @@ export class ChatManager {
             const otherPlayer = connectedPlayers[i];
             // console.log(`[${otherPlayer.GetHandle}: ${JSON.stringify(otherPlayer)}`);
 
-            if (otherPlayer.GetRank >= Ranks.Admin) {
+            if (otherPlayer.Rank >= Ranks.Admin) {
               await connectedPlayers[i].TriggerEvent(Events.sendClientMessage, message, player.GetName);
             }
           }
@@ -215,7 +215,7 @@ export class ChatManager {
         await this.server.logManager.Send(LogTypes.Chat, new WebhookMessage({username: "Chat Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__Chat Message__",
-            description: `A player has sent a chat message.\n\n**Message**: ${message.content}\n**Type**: ${ChatTypes[message.type]}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+            description: `A player has sent a chat message.\n\n**Message**: ${message.content}\n**Type**: ${ChatTypes[message.type]}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }
@@ -226,7 +226,7 @@ export class ChatManager {
     new Command("clearchat", "Clears all of the chats messages", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       emitNet(Events.clearChat, -1);
-      emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been cleared by ^3[${Ranks[player.GetRank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
+      emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been cleared by ^3[${Ranks[player.Rank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
     }, Ranks.Admin);
 
     new Command("freezechat", "Freezes the chat", [], false, async(source: string) => {
@@ -234,9 +234,9 @@ export class ChatManager {
       this.chatFrozen = !this.chatFrozen;
       emitNet(Events.freezeChat, -1, this.chatFrozen);
       if (this.chatFrozen) {
-        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been frozen by ^3[${Ranks[player.GetRank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
+        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been frozen by ^3[${Ranks[player.Rank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
       } else {
-        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been unfrozen by [${Ranks[player.GetRank]}] - ${player.GetName}!`, SystemTypes.Announcement));
+        emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been unfrozen by [${Ranks[player.Rank]}] - ${player.GetName}!`, SystemTypes.Announcement));
       }
     }, Ranks.Admin);
 
@@ -280,7 +280,7 @@ export class ChatManager {
           const player = await this.server.playerManager.getPlayerFromId(warnings[i].WarnedBy);
           receivedWarnings.push({
             id: warnings[i].Id,
-            issuedBy: `[${Ranks[player.GetRank]}] - ${player.GetName}`,
+            issuedBy: `[${Ranks[player.Rank]}] - ${player.GetName}`,
             reason: warnings[i].Reason,
             issuedOn: warnings[i].IssuedOn.toUTCString()
           });
@@ -306,7 +306,7 @@ export class ChatManager {
         const player = await this.server.playerManager.getPlayerFromId(commends[i].IssuedBy);
         receivedCommends.push({
           id: commends[i].Id,
-          issuedBy: `[${Ranks[player.GetRank]}] - ${player.GetName}`,
+          issuedBy: `[${Ranks[player.Rank]}] - ${player.GetName}`,
           reason: commends[i].Reason,
           issuedOn: commends[i].IssuedOn.toUTCString()
         });

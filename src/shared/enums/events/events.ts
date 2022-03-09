@@ -56,6 +56,7 @@ export enum Events {
   playerLoaded = "astrid:client:playerLoaded",
   receiveServerCB = "astrid:client:recieveServerCB",
   developmentMode = "astrid:client:developmentMode",
+  teleportToMarker = "astrid:client:teleportToMarker",
   clearWorldVehs = "astrid:client:clearWorldVehs",
   notify = "astrid:client:notify",
   syncTime = "astrid:client:syncTime",

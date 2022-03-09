@@ -81,6 +81,7 @@ export class Kick {
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
       this.player = await server.connectedPlayerManager.GetPlayerFromId(this.playerId);
+      await this.player.getTrustscore(); // Refresh the players trustscore
 
       if (!this.systemKick) {
         const kickersDiscord = await this.kicker.GetIdentifier("discord");
@@ -89,7 +90,7 @@ export class Kick {
           username: "Kick Logs", embeds: [{
             color: EmbedColours.Red,
             title: "__Player Kicked__",
-            description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: [${Ranks[this.kicker.GetRank]}] - ${this.kicker.GetName}\n**Kickers Discord**: ${kickersDiscord != "Unknown" ? `<@${kickersDiscord}>` : kickersDiscord}`,
+            description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: [${Ranks[this.kicker.Rank]}] - ${this.kicker.GetName}\n**Kickers Discord**: ${kickersDiscord != "Unknown" ? `<@${kickersDiscord}>` : kickersDiscord}`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
               icon_url: sharedConfig.serverLogo
@@ -111,6 +112,7 @@ export class Kick {
       }
 
       server.kickManager.Add(this);
+      await this.player.getTrustscore(); // Refresh the players trustscore
       return true
     }
 
@@ -119,8 +121,8 @@ export class Kick {
 
   public drop(): void {
     if (!this.systemKick) {
-      emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.kicker.GetRank]}] - ^3${this.kicker.GetName} ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
-      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: [${Ranks[this.kicker.GetRank]}] - ${this.kicker.GetName}\n__Reason__: ${this.kickReason}`);
+      emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.kicker.Rank]}] - ^3${this.kicker.GetName} ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
+      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: [${Ranks[this.kicker.Rank]}] - ${this.kicker.GetName}\n__Reason__: ${this.kickReason}`);
     } else {
       emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
       DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: System\n__Reason__: ${this.kickReason}`);

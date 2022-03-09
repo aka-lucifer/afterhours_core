@@ -70,7 +70,7 @@ export class TimeManager {
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Time Changed__",
-          description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       } else {
@@ -174,7 +174,7 @@ export class TimeManager {
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Time Frozen__",
-          description: `The time has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The time has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       } else {
@@ -184,7 +184,7 @@ export class TimeManager {
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Time Unfrozen__",
-          description: `The time has been unfrozen.\n\n**Unfrozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The time has been unfrozen.\n\n**Unfrozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }

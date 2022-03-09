@@ -103,7 +103,7 @@ export class Warning {
           username: "Warning Logs", embeds: [{
             color: EmbedColours.Red,
             title: "__Player Warning__",
-            description: `A player has received a warning.\n\n**Warning ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.warnReason}\n**Warned By**: [${Ranks[this.warner.GetRank]}] - ${this.warner.GetName}\n**Warners Discord**: ${warnersDiscord != "Unknown" ? `<@${warnersDiscord}>` : warnersDiscord}`,
+            description: `A player has received a warning.\n\n**Warning ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.warnReason}\n**Warned By**: [${Ranks[this.warner.Rank]}] - ${this.warner.GetName}\n**Warners Discord**: ${warnersDiscord != "Unknown" ? `<@${warnersDiscord}>` : warnersDiscord}`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
               icon_url: sharedConfig.serverLogo
@@ -125,6 +125,7 @@ export class Warning {
       }
 
       server.warnManager.Add(this);
+      await this.player.getTrustscore(); // Refresh the players trustscore
       await this.send();
 
       const warnings = await server.warnManager.getPlayerWarnings(this.playerId);
@@ -152,12 +153,12 @@ export class Warning {
 
   public async send(): Promise<void> {
     if (!this.systemWarning) {
-      await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3[${Ranks[this.warner.GetRank]}] - ^3${this.warner.GetName}, ^0for ^3${this.warnReason}`, SystemTypes.Admin))
+      await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3[${Ranks[this.warner.Rank]}] - ^3${this.warner.GetName}, ^0for ^3${this.warnReason}`, SystemTypes.Admin))
       const svPlayers = server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < svPlayers.length; i++) {
         if (svPlayers[i].GetHandle != this.player.GetHandle) {
-          await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`^3${this.player.GetName} ^0has received a warning from ^3[${Ranks[this.warner.GetRank]}] - ^3${this.warner.GetName}`, SystemTypes.Admin));
+          await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`^3${this.player.GetName} ^0has received a warning from ^3[${Ranks[this.warner.Rank]}] - ^3${this.warner.GetName}`, SystemTypes.Admin));
         }
       }
     } else {

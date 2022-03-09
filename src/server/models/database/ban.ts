@@ -132,7 +132,7 @@ export class Ban {
                 image: {
                   url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
                 },
-                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}\n**Unban Date**: ${this.issuedUntil.toUTCString()}`,
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.Rank]}] - ${this.banner.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}\n**Unban Date**: ${this.issuedUntil.toUTCString()}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
@@ -156,7 +156,7 @@ export class Ban {
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Banned__",
-                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}`,
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.banner.Rank]}] - ${this.banner.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
@@ -176,6 +176,7 @@ export class Ban {
         }
 
         server.banManager.Add(this);
+        await this.player.getTrustscore(); // Refresh the players trustscore
         return true;
       } else {
         Error("Ban Class", "There was an issue finding the player from their hardware ID!");
@@ -188,18 +189,18 @@ export class Ban {
   public drop(): void {
     if (this.issuedBy != this.playerId) {
       if (this.issuedUntil.getFullYear() < 2099) {
-        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.GetRank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
-        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were temporarily banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}\n__Expires__: ${this.issuedUntil.toUTCString()}`);
+        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.Rank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
+        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were temporarily banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.Rank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}\n__Expires__: ${this.issuedUntil.toUTCString()}`);
       } else {
-        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.GetRank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
-        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were permanently banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.GetRank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}`);
+        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.Rank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
+        DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were permanently banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: [${Ranks[this.banner.Rank]}] - ${this.banner.GetName}\n__Reason__: ${this.banReason}`);
       }
     } else {
       if (this.issuedUntil.getFullYear() < 2099) {
-        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.GetRank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
+        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.Rank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
         DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were temporarily banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: System\n__Reason__: ${this.banReason}\n__Expires__: ${this.issuedUntil.toUTCString()}`);
       } else {
-        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.GetRank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
+        emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.banner.Rank]}] - ^3${this.banner.GetName} ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
         DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were permanently banned from ${sharedConfig.serverName}.\n__Ban Id__: #${this.id}\n__By__: System\n__Reason__: ${this.banReason}`);
       }
     }

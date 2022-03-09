@@ -144,5 +144,8 @@
           }
         }
       }
+    },
+    "rankCycling": {
+      "interval": 20
     }
 }

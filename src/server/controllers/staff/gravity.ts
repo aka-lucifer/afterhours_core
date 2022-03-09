@@ -19,7 +19,7 @@ export class Gravity {
   private async EVENT_gravityPlayer(playersNet: number): Promise<void> {
     const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
     if (myPlayer) {
-      if (myPlayer.GetRank >= Ranks.Admin) {
+      if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
         myPlayer.TriggerEvent(Events.setHeldEntity, Object.assign({}, holdingPlayer));
         holdingPlayer.TriggerEvent(Events.holdPlayer, Object.assign({}, myPlayer));
@@ -32,7 +32,7 @@ export class Gravity {
   private async EVENT_ungravityPlayer(playersNet: number): Promise<void> {
     const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
     if (myPlayer) {
-      if (myPlayer.GetRank >= Ranks.Admin) {
+      if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
         holdingPlayer.TriggerEvent(Events.releasePlayer);
         myPlayer.TriggerEvent(Events.unsetHeldEntity);
@@ -45,7 +45,7 @@ export class Gravity {
   private async EVENT_shootEntity(playersNet: number): Promise<void> {
     const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
     if (myPlayer) {
-      if (myPlayer.GetRank >= Ranks.Admin) {
+      if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
         holdingPlayer.TriggerEvent(Events.getGravitied);
         myPlayer.TriggerEvent(Events.unsetHeldEntity);

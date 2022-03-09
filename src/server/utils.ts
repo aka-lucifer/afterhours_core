@@ -179,7 +179,7 @@ export async function logCommand(name: string, player: Player, args?: string): P
         username: "Chat Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Chat Command__",
-          description: `A player has sent a chat message.\n\n**Command**: ${name}\n**Args**: ${args}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+          description: `A player has sent a chat message.\n\n**Command**: ${name}\n**Args**: ${args}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]
       }));
@@ -188,7 +188,7 @@ export async function logCommand(name: string, player: Player, args?: string): P
         username: "Chat Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Chat Command__",
-          description: `A player has used a chat command.\n\n**Command**: ${name}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+          description: `A player has used a chat command.\n\n**Command**: ${name}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]
       }));

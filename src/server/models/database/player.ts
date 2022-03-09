@@ -69,8 +69,12 @@ export class Player {
     return this.name;
   }
   
-  public get GetRank(): number {
+  public get Rank(): number {
     return this.rank;
+  }
+
+  public set Rank(newRank: number) {
+    this.rank = newRank;
   }
 
   public get Identifiers(): Record<string, string> {
@@ -83,6 +87,10 @@ export class Player {
 
   public get GetPlaytime(): Playtime {
     return new Playtime(this.playtime);
+  }
+
+  public get Trustscore(): number {
+    return this.trustscore;
   }
 
   // Set Requests
@@ -235,6 +243,17 @@ export class Player {
 
   public async Whitelisted(): Promise<boolean> {
     return this.whitelisted;
+  }
+
+  public async UpdateRank(newRank: number): Promise<boolean> {
+    this.rank = newRank;
+
+    const updated = await Database.SendQuery("UPDATE `players` SET `rank` = :newRank WHERE `id` = :id", {
+      newRank: newRank,
+      id: this.id
+    });
+    
+    return updated.data.length > 0;
   }
 
   public RefreshPing(): void {

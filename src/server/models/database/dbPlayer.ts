@@ -30,7 +30,7 @@ export class DBPlayer {
     return this.name;
   }
 
-  public get GetRank(): number {
+  public get Rank(): number {
     return this.rank;
   }
 }

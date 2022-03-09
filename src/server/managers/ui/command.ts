@@ -26,7 +26,7 @@ export class CommandManager {
 
   public createChatSuggestions(player: Player): void {
     this.registeredCommands.forEach((command, index) => {
-      if (player.GetRank >= command.permission) {
+      if (player.Rank >= command.permission) {
         command.argsRequired ? player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
       }
     });

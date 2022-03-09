@@ -1,6 +1,10 @@
 import { Server } from "../server";
+import {Error, Inform, Log} from "../utils";
+
 import { Player } from "../models/database/player";
-import {Inform, Log} from "../utils";
+
+import {Ranks} from "../../shared/enums/ranks";
+import serverConfig from "../../configs/server.json";
 
 export class ConnectedPlayerManager {
   public server: Server;
@@ -8,6 +12,8 @@ export class ConnectedPlayerManager {
   
   constructor(server: Server) {
     this.server = server;
+
+    this.processRanks();
   }
 
   // Get Requests
@@ -16,6 +22,21 @@ export class ConnectedPlayerManager {
   }
 
   // Methods
+  private processRanks(): void {
+    setInterval(async() => {
+      for (let i = 0; i < this.connectedPlayers.length; i++) {
+        if (this.connectedPlayers[i].Rank < Ranks.Honorable && this.connectedPlayers[i].Trustscore >= 90) {
+          const updatedRank = this.connectedPlayers[i].UpdateRank(Ranks.Honorable);
+          if (updatedRank) {
+            Inform("Player Manager", "Successfully updated players rank to Honorable");
+          } else {
+            Error("Player Manager", `There was an issue updating [${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}'s rank to Honorable!`);
+          }
+        }
+      }
+    }, serverConfig.rankCycling.interval);
+  }
+
   public Add(player: Player): number {
     const addedData = this.connectedPlayers.push(player);
     if (this.server.IsDebugging) Log("Player Manager (Add)", `[${player.GetHandle}]: ${player.GetName}`);

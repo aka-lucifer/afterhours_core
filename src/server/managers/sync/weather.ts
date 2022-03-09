@@ -64,7 +64,7 @@ export class WeatherManager {
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Weather Changing__",
-          description: `The weather has changed.\n\n**Weather**: ${Capitalize(newWeather.toLowerCase())}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The weather has changed.\n\n**Weather**: ${Capitalize(newWeather.toLowerCase())}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       } else {
@@ -141,7 +141,7 @@ export class WeatherManager {
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Weather Frozen__",
-          description: `The weather has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The weather has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       } else {
@@ -151,7 +151,7 @@ export class WeatherManager {
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Weather Unfrozen__",
-          description: `The weather has been unfrozen.\n\n**Unfrozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The weather has been unfrozen.\n\n**Unfrozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }

@@ -34,7 +34,7 @@ export class ConnectionsManager {
       if (playerExists) { // If your DB entry exists
         const [isBanned, banData] = await player.isBanned();
         if (isBanned) {
-          if (player.GetRank < Ranks.Management && banData.State == BanStates.Active) {
+          if (player.Rank < Ranks.Management && banData.State == BanStates.Active) {
             if (banData.IssuedBy != player.id) {
               const results = await Database.SendQuery("SELECT `name`, `rank` FROM `players` WHERE `player_id` = :playerId", {
                 playerId: banData.IssuedBy
@@ -64,7 +64,7 @@ export class ConnectionsManager {
 
         deferrals.update(`[${sharedConfig.serverName}]: We're checking your name...`);
 
-        if (player.GetRank < Ranks.Management && player.GetName.includes("<") || player.GetName.includes(">")) {
+        if (player.Rank < Ranks.Management && player.GetName.includes("<") || player.GetName.includes(">")) {
           const ban = new Ban(player.id, player.HardwareId, "We've detected you using the XSS exploit", player.id);
           await ban.save();
           deferrals.done(`[${sharedConfig.serverName}]: You've been permanently banned from ${sharedConfig.serverName}.\nBan Id: #${ban.Id}\nBy: System\nReason: ${ban.Reason}`);
@@ -267,7 +267,7 @@ export class ConnectionsManager {
         deferrals.handover({
           id: player.id,
           name: player.GetName,
-          rank: Ranks[player.GetRank],
+          rank: Ranks[player.Rank],
           playtime: await player.GetPlaytime.FormatTime(),
           avatar:  player.steamAvatar,
         });
