@@ -53,7 +53,7 @@ export class ConnectedPlayerManager {
           }
         }
       }
-    }, 2500);
+    }, serverConfig.rankCycling.interval);
   }
 
   public Add(player: Player): number {
