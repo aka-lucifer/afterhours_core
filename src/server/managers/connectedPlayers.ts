@@ -38,7 +38,7 @@ export class ConnectedPlayerManager {
             const updatedRank = this.connectedPlayers[i].UpdateRank(Ranks.Honorable);
             if (updatedRank) {
               await this.connectedPlayers[i].Notify("Rank", "Your rank has been updated to Honorable, due to 2 days playtime & an outstanding trustscore.", NotificationTypes.Success);
-              Inform("Player Manager", "Successfully updated players rank to Honorable");
+              Inform("Player Manager", `Successfully updated player ([${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}) rank to Honorable`);
               
               const playersDisc = await this.connectedPlayers[i].GetIdentifier("discord");
               await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Rank Logs", embeds: [{
@@ -53,7 +53,7 @@ export class ConnectedPlayerManager {
           }
         }
       }
-    }, serverConfig.rankCycling.interval);
+    }, serverConfig.rankCycling.interval * 1000);
   }
 
   public Add(player: Player): number {
