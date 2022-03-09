@@ -147,6 +147,13 @@
       {"mlo": "paleto_pd", "y": 6005.78955078125, "x": -442.7646179199219, "z": 31.71639251708984, "radius": 100.0}
     ]
   },
+  "controllers": {
+      "deleter": {
+          "propBlacklist": [
+              "stt_prop_track_slowdown_t1"
+          ]
+      }
+  },
   "heli": {
         "streets": {
             "Los Santos Fwy": [

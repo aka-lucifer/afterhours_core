@@ -545,6 +545,11 @@
       "name": "WEAPON_RUN_OVER_BY_CAR",
       "label": "Car",
       "reason": "flattened"
+    },
+    "148160082": {
+      "name": "WEAPON_COUGAR",
+      "label": "Cougar",
+      "reason": "mauled"
     }
   }
 }
