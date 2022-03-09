@@ -253,8 +253,6 @@ export class Player {
       newRank: newRank,
       id: this.id
     });
-
-    console.log(updated);
     
     return updated.data.length > 0;
   }
