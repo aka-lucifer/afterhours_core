@@ -61,17 +61,17 @@ export class WeatherManager {
 
       if (changedBy !== undefined) {
         const changersDisc = await changedBy.GetIdentifier("discord");
-        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Weather Changing__",
-          description: `The weather has been changed.\n\n**Weather**: ${Capitalize(newWeather.toLowerCase())}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The weather has changed.\n\n**Weather**: ${Capitalize(newWeather.toLowerCase())}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       } else {
-        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Weather Changing__",
-          description: `The weather has been changed.\n\n**Weather**: ${Capitalize(newWeather.toLowerCase())}\n**Changed By**: Console`,
+          description: `The weather has changed.\n\n**Weather**: ${Capitalize(newWeather.toLowerCase())}\n**Changed By**: Console`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }
@@ -136,8 +136,24 @@ export class WeatherManager {
       this.setFrozen(!this.weatherFrozen);
       if (this.weatherFrozen) {
         await player.Notify("Sync Manager", "You've frozen weather!", NotificationTypes.Success);
+
+        const changersDisc = await player.GetIdentifier("discord");
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Weather Frozen__",
+          description: `The weather has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
       } else {
         await player.Notify("Sync Manager", "You've unfrozen weather!", NotificationTypes.Success);
+
+        const changersDisc = await player.GetIdentifier("discord");
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Weather Unfrozen__",
+          description: `The weather has been unfrozen.\n\n**Unfrozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
       }
     }, Ranks.Admin);
 
@@ -170,10 +186,10 @@ export class WeatherManager {
               Error("Weather Manager", "You have entered a number, not a weather type!");
             }
           } else {
-            Inform("Weather Manager", "You can't change the server's weather, as the weather is frozen!");
+            Error("Weather Manager", "You can't change the server's weather, as the weather is frozen!");
           }
         } else {
-          Inform("Weather Manager", "Server weather is already changing!");
+          Error("Weather Manager", "Server weather is already changing!");
         }
       }
     }, false);
@@ -183,8 +199,22 @@ export class WeatherManager {
         this.setFrozen(!this.weatherFrozen);
         if (this.weatherFrozen) {
           Inform("Weather Manager", `Weather frozen`);
+
+          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__Weather Frozen__",
+            description: `The weather has been frozen.\n\n**Frozen By**: Console`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]}));
         } else {
           Inform("Weather Manager", `Weather unfrozen`);
+
+          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__Weather Unfrozen__",
+            description: `The weather has been unfrozen.\n\n**Unfrozen By**: Console`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]}));
         }
       }
     }, false);

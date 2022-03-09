@@ -1,6 +1,6 @@
 import {Server} from "../../server";
 
-import {addZero, Capitalize, randomBetween} from "../../utils";
+import {addZero, Capitalize, Error, Inform, randomBetween} from "../../utils";
 
 import {Player} from "../../models/database/player";
 import {Command} from "../../models/ui/chat/command";
@@ -67,17 +67,17 @@ export class TimeManager {
 
       if (changedBy !== undefined) {
         const changersDisc = await changedBy.GetIdentifier("discord");
-        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Time Changed__",
-          description: `The time has been changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       } else {
-        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Time Changed__",
-          description: `The time has been changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: Console`,
+          description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: Console`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }
@@ -88,8 +88,6 @@ export class TimeManager {
       emitNet(Events.syncTime, -1, this.hour, this.minute);
       this.setChanging(false);
     }
-
-
   }
 
   private registerCommands(): void {
@@ -171,10 +169,133 @@ export class TimeManager {
       emitNet(Events.freezeTime, -1);
       if (this.timeFrozen) {
         await player.Notify("Sync Manager", "You've frozen time!", NotificationTypes.Success);
+
+        const changersDisc = await player.GetIdentifier("discord");
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Time Frozen__",
+          description: `The time has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
       } else {
         await player.Notify("Sync Manager", "You've unfrozen time!", NotificationTypes.Success);
+
+        const changersDisc = await player.GetIdentifier("discord");
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Time Unfrozen__",
+          description: `The time has been unfrozen.\n\n**Unfrozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
       }
     }, Ranks.Admin);
+
+    // RCON Commands
+    RegisterCommand("morning", async(source: string) => {
+      if (parseInt(source) <= 0) {
+        if (!this.timeChanging) {
+          if (!this.timeFrozen) {
+            this.setChanging(true);
+      
+            emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to morning in 15 seconds.`, SystemTypes.Success));
+            Inform("Time Manager", `Changing time to ${addZero(serverConfig.syncing.time.commands.morning.hour)}: ${addZero(serverConfig.syncing.time.commands.morning.minute)}`);
+            await this.changeTime(serverConfig.syncing.time.commands.morning.hour, serverConfig.syncing.time.commands.morning.minute, true);
+          } else {
+            Error("Time Manager", "You can't change server time, as the time is frozen!");
+          }
+        } else {
+          Error("Time Manager", "Server time is already changing!");
+        }
+      }
+    }, false);
+    
+    RegisterCommand("day", async(source: string) => {
+      if (parseInt(source) <= 0) {
+        if (!this.timeChanging) {
+          if (!this.timeFrozen) {
+            this.setChanging(true);
+      
+            emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to day in 15 seconds.`, SystemTypes.Success));
+            Inform("Time Manager", `Changing time to ${addZero(serverConfig.syncing.time.commands.day.hour)}: ${addZero(serverConfig.syncing.time.commands.day.minute)}`);
+            await this.changeTime(serverConfig.syncing.time.commands.day.hour, serverConfig.syncing.time.commands.day.minute, true);
+          } else {
+            Error("Time Manager", "You can't change server time, as the time is frozen!");
+          }
+        } else {
+          Error("Time Manager", "Server time is already changing!");
+        }
+      }
+    }, false);
+    
+    RegisterCommand("night", async(source: string) => {
+      if (parseInt(source) <= 0) {
+        if (!this.timeChanging) {
+          if (!this.timeFrozen) {
+            this.setChanging(true);
+      
+            emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to night in 15 seconds.`, SystemTypes.Success));
+            Inform("Time Manager", `Changing time to ${addZero(serverConfig.syncing.time.commands.night.hour)}: ${addZero(serverConfig.syncing.time.commands.night.minute)}`);
+            await this.changeTime(serverConfig.syncing.time.commands.night.hour, serverConfig.syncing.time.commands.night.minute, true);
+          } else {
+            Error("Time Manager", "You can't change server time, as the time is frozen!");
+          }
+        } else {
+          Error("Time Manager", "Server time is already changing!");
+        }
+      }
+    }, false);
+    
+    RegisterCommand("time", async(source: string, args: any[]) => {
+      if (parseInt(source) <= 0) {
+        if (!this.timeChanging) {
+          if (!this.timeFrozen) {
+            if (!isNaN(args[0])) {
+              if (!isNaN(args[1])) {
+                this.setChanging(true);
+                
+                emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to (${addZero(args[0])}:${addZero(args[1])}) in 15 seconds.`, SystemTypes.Success));
+                Inform("Time Manager", `Changing time to ${addZero(args[0])}:${addZero(args[1])}`);
+                await this.changeTime(args[0], args[1], true);
+              } else {
+                Error("Time Manager", "Minute argument entered isn't a number!");
+              }
+            } else {
+              Error("Time Manager", "Hour argument entered isn't a number!");
+            }
+          } else {
+            Error("Time Manager", "You can't change server time, as the time is frozen!");
+          }
+        } else {
+          Error("Time Manager", "Server time is already changing!");
+        }
+      }
+    }, false);
+
+    RegisterCommand("freezetime", async(source: string) => {
+      if (parseInt(source) <= 0) {
+        this.setFrozen(!this.timeFrozen);
+        emitNet(Events.freezeTime, -1);
+        if (this.timeFrozen) {
+          Inform("Time Manager", `Time frozen`);
+
+          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__Time Frozen__",
+            description: `The time has been frozen.\n\n**Frozen By**: Console`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]}));
+        } else {
+          Inform("Time Manager", `Time unfrozen`);
+
+          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__Time Unfrozen__",
+            description: `The time has been unfrozen.\n\n**Unfrozen By**: Console`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]}));
+        }
+      }
+    }, false);
   }
 
   private setFormattedTime(): void {
