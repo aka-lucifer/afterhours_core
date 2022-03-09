@@ -233,19 +233,24 @@ export class Server {
       await player.TriggerEvent(Events.displayCharacters);
     }, Ranks.User);
 
-    // Dev mode commands
-    RegisterCommand("dev", () => {
-      this.developmentMode = !this.developmentMode;
-      SetConvar("development_server", this.developmentMode.toString());
-      Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
-    }, false);
-
     new Command("dev", "Toggle development mode", [], false, async(source: string) => {
       this.developmentMode = !this.developmentMode;
       SetConvar("development_server", this.developmentMode.toString());
       emitNet(Events.developmentMode, -1, this.developmentMode);
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, Ranks.Developer);
+
+    new Command("tpm", "Teleport to your waypoint", [], false, async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      await player.TriggerEvent(Events.teleportToMarker)
+    }, Ranks.Admin);
+
+    // RCON Commands
+    RegisterCommand("dev", () => {
+      this.developmentMode = !this.developmentMode;
+      SetConvar("development_server", this.developmentMode.toString());
+      Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
+    }, false);
   }
 
   private registerExports(): void {
@@ -431,7 +436,7 @@ export class Server {
           username: "Kill Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__Player Killed__",
-            description: `Weapon not found (${data.weapon}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!`,
+            description: `Weapon not found (${JSON.stringify(data, null, 4)}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
           }]
         }));
