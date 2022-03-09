@@ -172,7 +172,7 @@ export class TimeManager {
 
         const changersDisc = await player.GetIdentifier("discord");
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
-          color: EmbedColours.Green,
+          color: EmbedColours.Red,
           title: "__Time Frozen__",
           description: `The time has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
@@ -279,7 +279,7 @@ export class TimeManager {
           Inform("Time Manager", `Time frozen`);
 
           await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
-            color: EmbedColours.Green,
+            color: EmbedColours.Red,
             title: "__Time Frozen__",
             description: `The time has been frozen.\n\n**Frozen By**: Console`,
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}

@@ -139,7 +139,7 @@ export class WeatherManager {
 
         const changersDisc = await player.GetIdentifier("discord");
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
-          color: EmbedColours.Green,
+          color: EmbedColours.Red,
           title: "__Weather Frozen__",
           description: `The weather has been frozen.\n\n**Frozen By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
@@ -201,7 +201,7 @@ export class WeatherManager {
           Inform("Weather Manager", `Weather frozen`);
 
           await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Weather Logs", embeds: [{
-            color: EmbedColours.Green,
+            color: EmbedColours.Red,
             title: "__Weather Frozen__",
             description: `The weather has been frozen.\n\n**Frozen By**: Console`,
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
