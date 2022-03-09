@@ -216,6 +216,7 @@ export class Player {
         this.rank = playerData.data[0].rank;
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
+        this.trustscore = await this.getTrustscore();
         this.joinTime = playerData.data[0].last_connection;
         return true;
       }
@@ -248,10 +249,12 @@ export class Player {
   public async UpdateRank(newRank: number): Promise<boolean> {
     this.rank = newRank;
 
-    const updated = await Database.SendQuery("UPDATE `players` SET `rank` = :newRank WHERE `id` = :id", {
+    const updated = await Database.SendQuery("UPDATE `players` SET `rank` = :newRank WHERE `player_id` = :id", {
       newRank: newRank,
       id: this.id
     });
+
+    console.log(updated);
     
     return updated.data.length > 0;
   }
