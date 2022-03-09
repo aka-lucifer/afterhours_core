@@ -272,6 +272,10 @@ export class Server {
       return await this.connectedPlayerManager.GetPlayer(source);
     });
 
+    global.exports("getCharacter", async(source: string) => {
+      return await this.characterManager.Get(source);
+    });
+
     global.exports("isBanned", async(source: string) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
       return await player.isBanned();
