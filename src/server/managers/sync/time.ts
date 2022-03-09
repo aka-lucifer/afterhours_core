@@ -1,14 +1,22 @@
 import {Server} from "../../server";
 
-import serverConfig from "../../../configs/server.json";
-import {addZero, randomBetween} from "../../utils";
-import {Events} from "../../../shared/enums/events/events";
+import {addZero, Capitalize, randomBetween} from "../../utils";
+
+import {Player} from "../../models/database/player";
 import {Command} from "../../models/ui/chat/command";
+import WebhookMessage from "../../models/webhook/discord/webhookMessage";
+
+import { LogTypes } from "../../enums/logTypes";
+
+import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
-import {Player} from "../../models/database/player";
+import { EmbedColours } from "../../../shared/enums/embedColours";
+
+import serverConfig from "../../../configs/server.json";
+import sharedConfig from "../../../configs/shared.json";
 
 export class TimeManager {
   private server: Server;
@@ -47,21 +55,52 @@ export class TimeManager {
     this.registerCommands();
   }
 
+  private async changeTime(hour: number, minute: number, overTime: boolean, changedBy?: Player): Promise<void> {
+    if (overTime) {
+      setTimeout(() => {
+        this.hour = hour;
+        this.minute = minute;
+        this.setFormattedTime();
+        emitNet(Events.syncTime, -1, this.hour, this.minute);
+        this.setChanging(false);
+      }, serverConfig.syncing.time.secondInterval);
+
+      if (changedBy !== undefined) {
+        const changersDisc = await changedBy.GetIdentifier("discord");
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Time Changed__",
+          description: `The time has been changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.GetRank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
+      } else {
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Time Changed__",
+          description: `The time has been changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: Console`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
+      }
+    } else {
+      this.hour = hour;
+      this.minute = minute;
+      this.setFormattedTime();
+      emitNet(Events.syncTime, -1, this.hour, this.minute);
+      this.setChanging(false);
+    }
+
+
+  }
+
   private registerCommands(): void {
-    new Command("night", "Set the time to night", [], false, async(source: string) => {
+    new Command("morning", "Set the time to morning", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (!this.timeChanging) {
         if (!this.timeFrozen) {
           this.setChanging(true);
 
-          emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to night in 15 seconds.`, SystemTypes.Success));
-          setTimeout(() => {
-            this.hour = serverConfig.syncing.time.commands.night.hour;
-            this.minute = serverConfig.syncing.time.commands.night.minute;
-            this.setFormattedTime();
-            emitNet(Events.syncTime, -1, this.hour, this.minute);
-            this.setChanging(false);
-          }, serverConfig.syncing.time.secondInterval);
+          emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to morning in 15 seconds.`, SystemTypes.Success));
+          await this.changeTime(serverConfig.syncing.time.commands.morning.hour, serverConfig.syncing.time.commands.morning.minute, true, player);
         } else {
           await player.TriggerEvent(Events.sendSystemMessage, new Message("You can't change server time, as the time is frozen!", SystemTypes.Error));
         }
@@ -77,13 +116,7 @@ export class TimeManager {
           this.setChanging(true);
 
           emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to day in 15 seconds.`, SystemTypes.Success));
-          setTimeout(() => {
-            this.hour = serverConfig.syncing.time.commands.day.hour;
-            this.minute = serverConfig.syncing.time.commands.day.minute;
-            this.setFormattedTime();
-            emitNet(Events.syncTime, -1, this.hour, this.minute);
-            this.setChanging(false);
-          }, serverConfig.syncing.time.secondInterval);
+          await this.changeTime(serverConfig.syncing.time.commands.day.hour, serverConfig.syncing.time.commands.day.minute, true, player);
         } else {
           await player.TriggerEvent(Events.sendSystemMessage, new Message("You can't change server time, as the time is frozen!", SystemTypes.Error));
         }
@@ -91,21 +124,15 @@ export class TimeManager {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("Server time is already changing!", SystemTypes.Error));
       }
     }, Ranks.Admin);
-
-    new Command("morning", "Set the time to morning", [], false, async(source: string) => {
+    
+    new Command("night", "Set the time to night", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (!this.timeChanging) {
         if (!this.timeFrozen) {
           this.setChanging(true);
 
-          emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to morning in 15 seconds.`, SystemTypes.Success));
-          setTimeout(() => {
-            this.hour = serverConfig.syncing.time.commands.morning.hour;
-            this.minute = serverConfig.syncing.time.commands.morning.minute;
-            this.setFormattedTime();
-            emitNet(Events.syncTime, -1, this.hour, this.minute);
-            this.setChanging(false);
-          }, serverConfig.syncing.time.secondInterval);
+          emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to night in 15 seconds.`, SystemTypes.Success));
+          await this.changeTime(serverConfig.syncing.time.commands.night.hour, serverConfig.syncing.time.commands.night.minute, true, player);
         } else {
           await player.TriggerEvent(Events.sendSystemMessage, new Message("You can't change server time, as the time is frozen!", SystemTypes.Error));
         }
@@ -120,11 +147,10 @@ export class TimeManager {
         if (!this.timeFrozen) {
           if (!isNaN(args[0])) {
             if (!isNaN(args[1])) {
-              this.hour = parseInt(args[0]);
-              this.minute = parseInt(args[1]);
-              this.setFormattedTime();
-              emitNet(Events.syncTime, -1, this.hour, this.minute);
-              this.setChanging(false);
+              this.setChanging(true);
+              
+              emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to (${addZero(args[0])}:${addZero(args[1])}) in 15 seconds.`, SystemTypes.Success));
+              await this.changeTime(args[0], args[1], true, player);
             } else {
               await player.TriggerEvent(Events.sendSystemMessage, new Message("Minute argument entered isn't a number!", SystemTypes.Error));
             }

@@ -13,8 +13,9 @@ import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/types";
 import {Ranks} from "../../../shared/enums/ranks";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
-import serverConfig from "../../../configs/server.json";
 import { EmbedColours } from "../../../shared/enums/embedColours";
+
+import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
 
 export class WeatherManager {
