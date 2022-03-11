@@ -1,22 +1,22 @@
 {
-    "debug": true,
-    "whitelist": true,
-    "trustscore": {
-      "default": 75,
-      "playtimeDivider": 14000,
-      "warningRemoval": 3,
-      "kickRemoval": 6,
-      "banRemoval": 10,
-      "commendAddition": 2
+  "debug": true,
+  "whitelist": true,
+  "trustscore": {
+    "default": 75,
+    "playtimeDivider": 14000,
+    "warningRemoval": 3,
+    "kickRemoval": 6,
+    "banRemoval": 10,
+    "commendAddition": 2
+  },
+  "warningActers": {
+    "kick": {
+      "start": 3,
+      "end": 5
     },
-    "warningActers": {
-      "kick": {
-        "start": 3,
-        "end": 5
-      },
-      "ban": 5
-    },
-    "discordLogs": {
+    "ban": 5
+  },
+  "discordLogs": {
         "urls": {
             "connectionsURL": "https://discord.com/api/webhooks/937103967710761061/RWauR_xJqBVydEOtb9ugIEZJonR3Lgn4pg90KKTfw5IYxXSMZwjkonBUb8iTCsZm7xmm",
             "killURL": "https://discord.com/api/webhooks/941462568348823573/1B9uY-Cx8q5v6B0oRtAXbL5Cuk8AgbqgWdtwBtk1L5z8DHi1BX9trWHBMIdYs6KHRHPr",
@@ -30,8 +30,8 @@
           "botToken": "ODAxNDQwODIyMjM1MTAzMjUy.YAgt7g.X3joLLfuqhyGYLpHHg8hDKW9pbM"
         },
         "footerLogo": "https://i.imgur.com/RYvyA1o.png"
-    },
-    "bannedContent": {
+  },
+  "bannedContent": {
       "words": [
         "nigger",
         "nigga",
@@ -115,8 +115,8 @@
         "discord.gg",
         "discord"
       ]
-    },
-    "syncing": {
+  },
+  "syncing": {
       "time": {
         "starter": {
           "hour": {
@@ -144,8 +144,9 @@
           }
         }
       }
-    },
-    "rankCycling": {
-      "interval": 20
-    }
+  },
+  "rankCycling": {
+    "interval": 20
+  },
+  "maxClosestDistance": 5
 }

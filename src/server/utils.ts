@@ -256,3 +256,33 @@ export async function enumMatches(passedEnums: any, enumValue: string | number):
 
   return [value, matches];
 }
+
+export async function GetClosestPlayer(myPlayer: Player): Promise<[Player, number]> {
+  let closestPlayer;
+  let closestDistance = 1000;
+  let justStarted = true;
+  const players = server.connectedPlayerManager.GetPlayers;
+
+  for (let i = 0; i < players.length; i++) {
+    const player = players[i];
+
+    if (player.GetHandle != myPlayer.GetHandle) {
+      const pedDist = Dist(myPlayer.Position(), player.Position(), true);
+
+      if (pedDist <= serverConfig.maxClosestDistance) {
+        if (justStarted) {
+          closestPlayer = player;
+          closestDistance = pedDist;
+          justStarted = false;
+        }
+
+        if (closestDistance < pedDist) {
+          closestPlayer = player;
+          closestDistance = pedDist;
+        }
+      }
+    }
+  }
+
+  return [closestPlayer, closestDistance];
+}
