@@ -29,6 +29,7 @@ import {Commends} from "./managers/ui/commends";
 // [Controllers] Police
 import {CuffingStuff} from "./controllers/jobs/police/cuffing";
 import {HelicamManager} from "./controllers/jobs/police/helicam";
+import { Grabbing } from "./controllers/jobs/police/grabbing";
 
 
 import {closestPed, Delay, Inform, Log, NumToVector3} from "./utils";
@@ -79,9 +80,11 @@ export class Client {
   private commends: Commends;
 
   // [Managers] Jobs
-  // (Police)
+
+  // [Controllers] Police
   private cuffing: CuffingStuff;
   private helicam: HelicamManager;
+  private grabbing: Grabbing;
 
   constructor() {
     this.debugging = clientConfig.debug;
@@ -91,6 +94,7 @@ export class Client {
     
     // Events
     on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
+    on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
     onNet(Events.developmentMode, this.EVENT_developmentMode.bind(this));
     onNet(Events.teleportToMarker, this.EVENT_tpm.bind(this));
@@ -145,9 +149,11 @@ export class Client {
     this.commends = new Commends(client);
 
     // [Managers] Jobs
-    // (Police)
+
+    // [Controllers] Police
     this.cuffing = new CuffingStuff();
     this.helicam = new HelicamManager(client);
+    this.grabbing = new Grabbing();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
@@ -158,48 +164,22 @@ export class Client {
       }
     }, false);
 
-    RegisterCommand("compass", () => {
-      setTick(async() => {
-        const direction = Game.PlayerPed.Heading;
-
-        // for (let i = 0; i < directions.length; i++) {
-        //   if (Math.abs(direction - directions[i])) {
-        //     direction = directions[i];
-        //     break;
-        //   }
-        // }
-
-        
-        SendNuiMessage(JSON.stringify({
-          event: "SET_COMPASS",
-          data: {
-            rotation: direction
-          }
-        }))
-        await Delay(0)
-      });
-    }, false);
-
     RegisterCommand("cuff", async() => {
       const [ped, distance] = await closestPed();
       this.cuffing.init(ped.Handle);
     }, false);
-
-    // RegisterCommand("notification_client", async() => {
-    //   const notification = new Notification("Jew Town", "Wanna buy insurance?", NotificationTypes.Success, false, `<i class="fa-solid fa-hanukiah"></i>`, 3000, () => {
-    //     console.log("START!");
-    //   }, () => {
-    //     console.log("FINISH!");
-    //   });
-
-    //   await notification.send();
-    // }, false);
   }
 
   // Events
   private EVENT_resourceRestarted(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
       emitNet(Events.playerConnected, undefined, true);
+    }
+  }
+
+  private EVENT_resourceStop(resourceName: string): void{
+    if (resourceName == GetCurrentResourceName()) {
+      this.grabbing.stop();
     }
   }
 
@@ -211,15 +191,15 @@ export class Client {
     // Manager Inits
     await this.staffManager.init();
     await this.worldManager.init();
-    if (!this.Developing) {
-      this.spawner.start(spawnInfo);
-    } else {
-      setTimeout(() => {
-        this.characters.EVENT_displayCharacters();
-      }, 500);
-    }
+    // if (!this.Developing) {
+    //   this.spawner.start(spawnInfo);
+    // } else {
+    //   setTimeout(() => {
+    //     this.characters.EVENT_displayCharacters();
+    //   }, 500);
+    // }
 
-    this.chatManager.setup();
+    // this.chatManager.setup();
   }
 
   private EVENT_developmentMode(newState: boolean): void {
