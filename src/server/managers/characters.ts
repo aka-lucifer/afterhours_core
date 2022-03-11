@@ -161,6 +161,7 @@ export class CharacterManager {
 
       if (loadedCharacter) {
         character.Owner = player; // Make the character owned by you
+        player.Spawned = true;
         await player.TriggerEvent(Events.receiveServerCB, true, data);
         await player.Notify("Characters", `You've logged in as ${character.Name}`, NotificationTypes.Success);
         

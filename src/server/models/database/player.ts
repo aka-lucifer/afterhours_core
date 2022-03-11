@@ -42,6 +42,7 @@ export class Player {
   private joinTime: string;
   private whitelisted: boolean = false;
   public characters: any[];
+  private spawned: boolean;
 
   constructor(handle: string) {
     this.hardwareId = GetPlayerToken(handle, 0) || "Unknown";
@@ -93,7 +94,15 @@ export class Player {
     return this.trustscore;
   }
 
+  public get Spawned(): boolean {
+    return this.spawned;
+  }
+
   // Set Requests
+  public set Spawned(newValue: boolean) {
+    this.spawned = newValue;
+  }
+
   public set SetHandle(newHandle: string) {
     this.handle = newHandle;
   }

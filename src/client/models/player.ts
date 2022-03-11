@@ -6,6 +6,7 @@ export class Player {
   public name: string;
   public rank: number;
   public ped: Ped;
+  private spawned: boolean;
 
   constructor(playerData: Record<string, any>) {
     this.id = playerData.id;
@@ -26,5 +27,13 @@ export class Player {
   
   public get Rank(): number {
     return this.rank;
+  }
+
+  public get Spawned(): boolean {
+    return this.spawned;
+  }
+
+  public set Spawned(newValue: boolean) {
+    this.spawned = newValue;
   }
 }

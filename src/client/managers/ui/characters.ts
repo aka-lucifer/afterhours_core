@@ -28,6 +28,10 @@ export class Characters {
   private registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.SelectCharacter, async(data, cb) => {
       this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.selectCharacter, {characterId: data.characterId}, (cbData, passedData) => {
+        if (cbData) {
+          this.client.player.Spawned = true;
+        }
+        
         SetNuiFocus(!cbData, !cbData);
         cb(cbData);
       }));
@@ -66,6 +70,7 @@ export class Characters {
   }
 
   public EVENT_displayCharacters(): void {
+    this.client.player.Spawned = false;
     SetNuiFocus(true, true);
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.DisplayCharacter
