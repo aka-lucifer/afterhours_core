@@ -32,6 +32,12 @@ export class Characters {
         cb(cbData);
       }));
     });
+    
+    RegisterNuiCallback(NuiCallbacks.DeleteCharacter, async(data, cb) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteCharacter, {characterId: data.characterId}, (cbData, passedData) => {
+        cb(cbData)
+      }));
+    });
   }
 
   // Events

@@ -34,10 +34,14 @@ const HUD = new Vue({
     // [CHARACTERS]
     showCharacters: false,
     characters: [],
-
     hoveringCharacter: false,
     hoveredCharacter: {},
-    selectedCharacter: {},
+    selectedCharacter: undefined,
+    
+    // Char Deletion
+    showCharacterDelete: false,
+    deletedCharacter: false,
+    deleteTimeout: undefined,
 
     // [SCOREBOARD]
     displaying: false,
@@ -136,11 +140,43 @@ const HUD = new Vue({
     },
 
     selectCharacter(charIndex) {
-      this.selectedCharacter = this.characters[charIndex];
+      this.selectedCharacter = charIndex;
+    },
+
+    checkCharDeletion() {
+      this.showCharacterDelete = true;
+    },
+
+    deleteCharacter() {
+      if (this.selectedCharacter !== undefined) {
+        this.Post("DELETE_CHARACTER", {characterId: this.characters[this.selectedCharacter].id}, (callbackData) => {
+          if (callbackData) {
+            this.characters.splice(this.selectedCharacter, 1);
+            this.selectedCharacter = undefined;
+            this.showCharacterDelete = false;
+            this.deletedCharacter = true;
+
+            if (this.deleteTimeout !== undefined) {
+              this.deleteTimeout = setTimeout(() => {
+                this.deleteTimeout = undefined;
+                clearTimeout(this.deleteTimeout);
+                this.deletedCharacter = false;
+              }, 2000);
+            } else {
+              this.deleteTimeout = undefined;
+              clearTimeout(this.deleteTimeout);
+              
+              this.deleteTimeout = setTimeout(() => {
+                this.deletedCharacter = false;
+              }, 2000);
+            }
+          }
+        });
+      }
     },
 
     spawnCharacter() {
-      this.Post("SELECT_CHARACTER", {characterId: this.selectedCharacter.id}, (callbackData) => {
+      this.Post("SELECT_CHARACTER", {characterId: this.characters[this.selectedCharacter].id}, (callbackData) => {
         // console.log("NUI CB", JSON.stringify(callbackData));
         if (callbackData) {
           this.showCharacters = false;
@@ -149,7 +185,7 @@ const HUD = new Vue({
     },
 
     resetCharacters() {
-      this.selectedCharacter = {};
+      this.selectedCharacter = undefined;
       this.hoveredCharacter = {};
       this.hoveringCharacter = false;
     },
@@ -524,6 +560,7 @@ const HUD = new Vue({
     window.addEventListener("wheel", function(event) {
       if (event.deltaY < 0) { // Increase Chat Mode
         if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
+          console.log("modes", HUD.chatTypes);
           HUD.CycleMode("right");
         }
       } else if (event.deltaY > 0) { // Decrease Chat Mode

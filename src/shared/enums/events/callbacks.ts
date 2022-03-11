@@ -3,6 +3,11 @@ export enum Callbacks {
   takeScreenshot = "astrid:client:screenshot",
 
   // Astrid Server -> Client Callbacks
+
+  // Characters
   selectCharacter = "astrid:server:selectCharacter",
+  deleteCharacter = "astrid:server:deleteCharacter",
+  
+  // Chat
   sendMessage = "astrid:server:sendMessage"
 }

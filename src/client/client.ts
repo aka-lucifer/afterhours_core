@@ -189,17 +189,17 @@ export class Client {
 
 
     // Manager Inits
-    await this.staffManager.init();
+    this.staffManager.init();
     await this.worldManager.init();
-    // if (!this.Developing) {
-    //   this.spawner.start(spawnInfo);
-    // } else {
-    //   setTimeout(() => {
-    //     this.characters.EVENT_displayCharacters();
-    //   }, 500);
-    // }
+    if (!this.Developing) {
+      this.spawner.start(spawnInfo);
+    } else {
+      setTimeout(() => {
+        this.characters.EVENT_displayCharacters();
+      }, 500);
+    }
 
-    // this.chatManager.setup();
+    this.chatManager.setup();
   }
 
   private EVENT_developmentMode(newState: boolean): void {

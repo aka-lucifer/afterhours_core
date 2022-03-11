@@ -34,6 +34,7 @@
   <body>
     <v-app id="HUD">
 
+
       <div id="Characters_Container" v-show="showCharacters">
         <div id="Characters_Header">
           <div class="headerImage"></div>
@@ -48,12 +49,16 @@
             </div>
 
             <div id="Body_Card_Characters">
+              <v-alert color="red" dark icon="mdi-close" border="left" prominent v-show="deletedCharacter">
+                Character Deleted
+              </v-alert>
               <div id="Characters" v-for="(character, index) in characters" :key="character.id">
-                <div id="character" @click="selectCharacter(index)" @mouseover="showCharacter(index)" @mouseleave="hideCharacter()">{{ character.firstName }} {{ character.lastName }} - {{ character.nationality }} ({{ character.age }})</div><br>
+                <div class="character" @click="selectCharacter(index)" @mouseover="showCharacter(index)" @mouseleave="hideCharacter()">{{ character.firstName }} {{ character.lastName }} - {{ character.nationality }} ({{ character.age }})</div><br>
+                <!-- {{ character.firstName }} -->
               </div>
             </div>
 
-            <div id="Character_Buttons_Container" v-if="Object.keys(selectedCharacter).length > 0">
+            <div id="Character_Buttons_Container" v-if="this.selectedCharacter !== undefined">
               <div id="Character_Buttons">
                 <v-tooltip top>
                   <template #activator="data">
@@ -71,7 +76,7 @@
                 
                 <v-tooltip top>
                   <template #activator="data">
-                    <v-btn class="mx-2" small fab dark color="error" v-on="data.on" @click=""><v-icon dark>mdi-close</v-icon></v-btn>
+                    <v-btn class="mx-2" small fab dark color="error" v-on="data.on" @click="checkCharDeletion()"><v-icon dark>mdi-close</v-icon></v-btn>
                   </template>
                   <span>Delete Character</span>
                 </v-tooltip>
@@ -97,7 +102,7 @@
             </div>
           </div>
 
-          <v-card id="Character_Card" dark hover elevation="1" outlined v-show="hoveringCharacter || Object.keys(selectedCharacter).length > 0">
+          <v-card id="Character_Card" dark hover elevation="1" outlined v-show="hoveringCharacter || this.selectedCharacter !== undefined">
             <v-card-title>
               <h2 style="font-family: 'PT-Sans';">{{ hoveredCharacter.firstName }} {{ hoveredCharacter.lastName }} | {{ hoveredCharacter.id }}</h2>
             </v-card-title>
@@ -113,6 +118,29 @@
               <span style="font-family: 'PT-Sans-Caption';"><b>Backstory</b>: {{ hoveredCharacter.backstory }}</span><br>
             </v-card-text>
           </v-card>
+
+          <!-- <v-dialog id="Character-Creator" transition="dialog-top-transition" max-width="600" v-model="showCreator"> -->
+          <v-dialog v-model="showCharacterDelete" transition="dialog-top-transition" max-width="fit-content">
+            <template v-slot:default="dialog">
+              <v-card dark>
+                <v-card-title style="justify-content: center; color: white;">
+                  Are you sure you want to delete this character?
+                </v-card-title>
+                <v-card-text>
+                  <v-container grid-list-xs>
+                    <v-layout row>
+                      <v-flex xs6>
+                        <v-btn class="mr-4" color="red" dark block @click="showCharacterDelete = false">No Thanks</v-btn>
+                      </v-flex>
+                      <v-flex xs6>
+                          <v-btn class="mr-4" color="green" dark block @click="deleteCharacter()">Yes Delete</v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-container>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
         </div>
       </div>
 
@@ -316,14 +344,14 @@
       <div id="Chat-Messages">
         <div v-for="(message, index) in chatMessages">
           <div v-if="message.type == 'system'">
-            <div id="Chat-Message" class="killLog" v-if="message.notificationType == 'kill'">(Global): {{ message.contents }}</div>
-            <div id="Chat-Message" class="interaction" v-if="message.notificationType == 'interaction'">{{ message.contents }}</div>
-            <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'">{{ message.contents }}</div>
+            <div id="Chat-Message" class="killLog" v-if="message.notificationType == 'kill'">(Global): <span v-html="message.contents"></div>
+            <div id="Chat-Message" class="interaction" v-if="message.notificationType == 'interaction'"><span v-html="message.contents"></div>
+            <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'"><span v-html="message.contents"></div>
             <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="successMsg" v-if="message.notificationType == 'success'">[System]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
-            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): {{ message.contents }}</div>
+            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): <span v-html="message.contents"></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">*{{ message.sender}} <span v-html="message.contents"></span>*</div>
           </div>
 

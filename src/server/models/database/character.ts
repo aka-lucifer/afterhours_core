@@ -107,11 +107,8 @@ export class Character {
       this.phone = this.formatPhone(charData.data[0].phone);
       this.job = new Job(jobData.name, jobData.label, jobData.isBoss, jobData.rank, jobData.callsign, jobData.status, jobData.department);
       this.metadata = new Metadata(metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.licenses, metaData.mugshot, metaData.jailData, metaData.criminalRecord);
-      // console.log("Rank", PoliceRanks[jobData.rank]);
       this.createdAt = new Date(charData.data[0].created_at);
       this.lastUpdated = new Date(charData.data[0].last_updated);
-
-      console.log("Character Data!", this);
       return true;
     } else {
       return false;
@@ -190,8 +187,8 @@ interface Licenses {
 
 interface JailData {
   inside: boolean;
-  reason: string;
-  length: number;
+  reason?: string;
+  length?: number;
 }
 
 interface CriminalRecord {

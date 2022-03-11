@@ -249,14 +249,11 @@ body {
 }
 
 #Characters {
+  width: 100%;
   text-align: center;
 }
 
-#character {
-  left: 47%;
-  transform: translateX(47%);
-
-  width: fit-content;
+.character {
   padding: 10px;
   
   color: white;
@@ -273,7 +270,7 @@ body {
   text-decoration: underline;
 }
 
-#character:hover {
+.character:hover {
   background-color: var(--notificationBG);
   color: white;
   

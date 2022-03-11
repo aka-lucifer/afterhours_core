@@ -14,7 +14,7 @@ import WebhookMessage from "../webhook/discord/webhookMessage";
 import serverConfig from "../../../configs/server.json";
 import { server } from "../../server";
 
-import { Events } from "../../../shared/enums/events/events";
+import { Events, PoliceEvents } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 import sharedConfig from "../../../configs/shared.json"
@@ -271,7 +271,7 @@ export class Player {
     return NumToVector3(GetEntityCoords(GetPlayerPed(this.GetHandle)));
   }
 
-  public async TriggerEvent(eventName: Events, ...args: any[]): Promise<void> {
+  public async TriggerEvent(eventName: Events | PoliceEvents, ...args: any[]): Promise<void> {
     return emitNet(eventName, this.handle, ...args);
   }
 
@@ -364,7 +364,7 @@ export class Player {
   public async getCharacters(): Promise<boolean> {
     const characters = [];
 
-    const charData = await Database.SendQuery("SELECT * FROM `player_characters` WHERE `player_id` = :playerId LIMIT 1", {
+    const charData = await Database.SendQuery("SELECT * FROM `player_characters` WHERE `player_id` = :playerId", {
       playerId: this.id
     });
 
@@ -397,7 +397,6 @@ export class Player {
           this.characters = characters;
         }
       }
-
       return true;
     } else {
       return false;
