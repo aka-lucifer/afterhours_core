@@ -44,6 +44,12 @@ export class CharacterManager {
   }
 
   private registerCommands(): void {
+    new Command("characters", "Change your current logged in character", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      player.Spawned = false;
+      await player.TriggerEvent(Events.displayCharacters);
+    }, Ranks.User);
+
     new Command("me", "Send an action message locally & draws it over your head.", [{name: "content", help: "The content of your /me message."}], true, async(source: string, args: any[]) => {
       const messageContents = args.join(" ");
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
@@ -161,15 +167,17 @@ export class CharacterManager {
 
       if (loadedCharacter) {
         character.Owner = player; // Make the character owned by you
-        player.Spawned = true;
-        await player.TriggerEvent(Events.receiveServerCB, true, data);
+        player.Spawned = true; // Set us spawned in with our spawn system
+
+        await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+        await player.TriggerEvent(Events.setCharacter, Object.assign({}, character)); // Update our character on our client (char info, job, etc)
         await player.Notify("Characters", `You've logged in as ${character.Name}`, NotificationTypes.Success);
         
-        if (await this.Exists(player)) {
+        if (await this.Exists(player)) { // If one of your characters exists in the manager, remove it
           await this.Remove(player);
         }
 
-        await this.Add(character);
+        await this.Add(character); // Add your character to the manager
 
         // Log it to discord
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{

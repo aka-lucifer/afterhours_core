@@ -2,7 +2,7 @@ import {Game, Vector3, VehicleSeat, World, Model} from "fivem-js"
 
 import {Player} from "./models/player";
 import {Notification} from "./models/ui/notification";
-import {NotificationTypes} from "../shared/enums/ui/notifications/types";
+import { Character } from "./models/character";
 
 // [Managers] Client Data
 import {RichPresence} from "./managers/richPresence";
@@ -43,9 +43,10 @@ import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
 import clientConfig from "../configs/client.json";
-import {Ranks} from "../shared/enums/ranks";
 import { Message } from "../shared/models/ui/chat/message";
 import { SystemTypes } from "../shared/enums/ui/types";
+import {NotificationTypes} from "../shared/enums/ui/notifications/types";
+import { AnyAaaaRecord } from "dns";
 
 let takingScreenshot = false;
 
@@ -58,6 +59,7 @@ export class Client {
 
   // Player Data
   public player: Player;
+  public character: Character;
 
   // [Managers]
   private richPresence: RichPresence;
@@ -93,16 +95,23 @@ export class Client {
     this.initialSpawn = true;
     
     // Events
+    // (Resources)
     on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
     on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
+
+    // (Player Data)
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
+    onNet(Events.setCharacter, this.EVENT_setCharacter.bind(this));
     onNet(Events.developmentMode, this.EVENT_developmentMode.bind(this));
-    onNet(Events.teleportToMarker, this.EVENT_tpm.bind(this));
-    onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
+    
+    // (General Event Listeners)
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
-    // onNet(LXEvents.PedDied, this.EVENT_pedDied.bind(this));
     onNet(LXEvents.Gunshot, this.EVENT_gunFired.bind(this));
     onNet(Events.notify, this.EVENT_notify.bind(this));
+
+    // (General Methods)
+    onNet(Events.teleportToMarker, this.EVENT_tpm.bind(this));
+    onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
@@ -123,6 +132,14 @@ export class Client {
 
   public get Spawned(): boolean {
     return !this.initialSpawn; // Returns the opposite, as the default of initalSpawn is true.
+  }
+  
+  public get Player(): Player {
+    return this.player;
+  }
+  
+  public get Character(): Character {
+    return this.character;
   }
 
   // Methods
@@ -200,6 +217,12 @@ export class Client {
     }
 
     this.chatManager.setup();
+  }
+
+  private EVENT_setCharacter(character: any): void {
+    this.character = new Character(character);
+
+    console.log("Character Set To", this.Character);
   }
 
   private EVENT_developmentMode(newState: boolean): void {
