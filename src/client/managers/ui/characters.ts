@@ -26,6 +26,12 @@ export class Characters {
 
   // Methods
   private registerCallbacks(): void {
+    RegisterNuiCallback(NuiCallbacks.CreateCharacter, async(data, cb) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.createCharacter, {data}, (cbData, passedData) => {
+        cb(passedData.character)
+      }));
+    });
+
     RegisterNuiCallback(NuiCallbacks.SelectCharacter, async(data, cb) => {
       this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.selectCharacter, {characterId: data.characterId}, (cbData, passedData) => {
         if (cbData) {

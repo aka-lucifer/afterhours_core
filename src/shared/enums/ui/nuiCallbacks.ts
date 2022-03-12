@@ -3,6 +3,7 @@ export enum NuiCallbacks {
   CloseSpawner = "CLOSE_SPAWNER",
 
   // Characters
+  CreateCharacter = "CREATE_CHARACTER",
   SelectCharacter = "SELECT_CHARACTER",
   DeleteCharacter = "DELETE_CHARACTER",
   

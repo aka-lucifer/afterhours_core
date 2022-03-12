@@ -38,6 +38,49 @@ const HUD = new Vue({
     hoveredCharacter: {},
     selectedCharacter: undefined,
     
+    // Char Creation
+    newCharacter: {
+      firstName: "",
+      lastName: "",
+      nationality: "",
+      backstory: "",
+      dob: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      age: 0,
+      isFemale: false,
+    },
+    creatingCharacter: false,
+    creatorMenu: null,
+
+    // Char Rules
+    nameRules: [
+      (v) => !!v || "Name required",
+      (v) => (!!v && v.split(' ').length <= 1) || 'No spaces allowed',
+      (v) => !!v && v.length <= 50 || "Name must be 50 characters or less",
+      (v) => !!v && RegExp("^[a-z A-Z]+$").test(v) || "Invalid Characters",
+      (v) => !!v && v.length >= 3 || "Name must be 3 - 50 characters"
+    ],
+      
+    nationalityRules: [
+      (v) => !!v || "Nationality required",
+      (v) => !!v && v.length <= 50 || "Nationality must be 50 characters or less",
+      (v) => !!v && RegExp("^[a-z A-Z]+$").test(v) || "Invalid Characters",
+      (v) => !!v && v.length >= 3 || "Nationality must be 3 - 50 characters"
+    ],
+      
+    backstoryRules: [
+      (v) => !!v || "Backstory required",
+      (v) => !!v && v.length > 10 || "Backstory must be greater than 10 characters"
+    ],
+
+    dobRules: [
+      (v) => !!v || "You must choose have a DOB"
+    ],
+  
+    ageRules: [
+      (v) => !!v && v >= 18 || "You must be 18+ to create a character",
+      (v) => !!v && v <= 80 || "You must be less than 80 to create a character"
+    ],
+
     // Char Deletion
     showCharacterDelete: false,
     deletedCharacter: false,
@@ -119,6 +162,10 @@ const HUD = new Vue({
 
     // CHARACTERS
     setupCharacters(data) {
+      for (let i = 0; i < data.characters.length; i++) {
+        data.characters[i].job = data.characters[i].job.label;
+      }
+      
       this.characters = data.characters;
     },
 
@@ -132,6 +179,39 @@ const HUD = new Vue({
       if (!this.hoveringCharacter) this.hoveringCharacter = true;
 
       // console.log("hovered char is", JSON.stringify(this.hoveredCharacter));
+    },
+
+    startCreatingChar() {
+      this.creatingCharacter = true;
+    },
+
+    resetCharCreation() {
+      this.$refs.charCreatorForm.reset();
+      const date = new Date();
+      this.newCharacter.dob = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()}`;
+    },
+
+    createCharacter() {
+      const isFormComplete = this.$refs.charCreatorForm.validate();
+      console.log("formComplete", isFormComplete);
+      if (isFormComplete) {
+        this.Post("CREATE_CHARACTER", {
+          firstName: this.newCharacter.firstName,
+          lastName: this.newCharacter.lastName,
+          nationality: this.newCharacter.nationality,
+          backstory: this.newCharacter.backstory,
+          dob: this.newCharacter.dob,
+          gender: this.newCharacter.gender
+        }, (charData) => {
+          if (Object.keys(charData).length > 0) {
+            console.log("job", charData.job, typeof charData.job);
+            charData.job = charData.job.label;
+            this.characters.push(charData);
+            this.creatingCharacter = false;
+            this.resetCharCreation();
+          }
+        });
+      }
     },
 
     hideCharacter() {
@@ -188,6 +268,18 @@ const HUD = new Vue({
       this.selectedCharacter = undefined;
       this.hoveredCharacter = {};
       this.hoveringCharacter = false;
+    },
+    
+    formatAge(dob) {
+      const today = new Date();
+      const birthDate = new Date(dob);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age = age - 1;
+      }
+      return age;
     },
 
     // Notification
@@ -440,6 +532,14 @@ const HUD = new Vue({
     }
   },
 
+  watch: {
+    "newCharacter.dob" : (val, oldVal) => {
+      if (val != oldVal) {
+        HUD.newCharacter.age = HUD.formatAge(HUD.newCharacter.dob);
+      }
+    },
+  },
+  
   computed: {
     pageCount: function() {
       return Math.ceil(Object.keys(this.connectedPlayers).length / 10);
@@ -574,11 +674,11 @@ const HUD = new Vue({
     window.addEventListener("keydown", function(event) {
       switch(event.key) {
         case "Escape": // Close UI
-          if ($("#Chat-Input").is(":visible")) {
+          if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
             HUD.CloseChat();
-          } else if ($("#warnings_container").is(":visible") && HUD.$refs.input === document.activeElement) {
+          } else if ($("#warnings_container")) {
             HUD.CloseWarnings();
-          } else if ($("#commends_container").is(":visible") && HUD.$refs.input === document.activeElement) {
+          } else if ($("#commends_container")) {
             HUD.CloseCommends();
           }
           break;

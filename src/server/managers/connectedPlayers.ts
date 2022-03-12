@@ -111,7 +111,7 @@ export class ConnectedPlayerManager {
       }
 
       if (player) {
-        await this.server.characterManager.Disconnect(player.GetHandle);
+        await this.server.characterManager.Disconnect(player);
         await player.Disconnect(disconnectReason);
       }
       this.connectedPlayers.splice(playerIndex, 1);

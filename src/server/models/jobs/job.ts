@@ -6,20 +6,17 @@ export class Job {
   private label: string;
   private isBoss: boolean;
   private rank: number | PoliceRanks | CountyRanks | StateRanks;
-  private callsign: string = "NOT_SET";
+  private callsign;
   private status: boolean;
   private department: Departments;
 
-  constructor(name: string, label: string, isBoss: boolean, rank: number | PoliceRanks | CountyRanks | StateRanks, callsign: string, status: boolean, department?: Departments) {
+  constructor(name: string, label: string, rank?: number | PoliceRanks | CountyRanks | StateRanks, department?: Departments, isBoss?: boolean, callsign?: string, status?: boolean) {
     this.name = name;
     this.label = label;
-    this.isBoss = isBoss;
-    this.rank = rank;
-    this.callsign = callsign;
-    this.status = status;
-    
-    if (department !== undefined) {
-      this.department = department;
-    }
+    if (rank) this.rank = rank;
+    if (department) this.department = department;
+    if (isBoss) this.isBoss = isBoss;
+    if (callsign) this.callsign = callsign;
+    if (status) this.status = status;
   }
 }

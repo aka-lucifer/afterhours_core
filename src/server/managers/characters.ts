@@ -29,6 +29,7 @@ export class CharacterManager {
     this.server = server;
 
     // Callbacks
+    onNet(Callbacks.createCharacter, this.CALLBACK_createCharacter.bind(this));
     onNet(Callbacks.selectCharacter, this.CALLBACK_selectCharacter.bind(this));
     onNet(Callbacks.deleteCharacter, this.CALLBACK_deleteCharacter.bind(this));
   }
@@ -156,12 +157,31 @@ export class CharacterManager {
   }
 
   // Callbacks
+  private async CALLBACK_createCharacter(data: Record<string, any>): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+    if (player) {
+      const character = new Character(player.Id);
+      const charData = data.data;
+      
+      await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob);
+
+      data.character = Object.assign({}, character);
+      await player.TriggerEvent(Events.receiveServerCB, true, data);
+
+      await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+        color: EmbedColours.Green,
+        title: "__Character Created__",
+        description: `A player has created a new character.\n\n**Name**: ${character.Name}\n**Nationality**: ${character.Nationality}\n**Age**: ${character.Age}\n**Gender**: ${character.Gender}\n**Job**: ${JSON.stringify(character.Job, null, 4)}\n**Metadata**: ${JSON.stringify(character.Metadata, null, 4)}`,
+        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      }]}));
+    }
+  }
+
   private async CALLBACK_selectCharacter(data: Record<string, any>): Promise<void> {
-    const src = source;
-    const player = await this.server.connectedPlayerManager.GetPlayer(src);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
 
     if (data.characterId !== undefined && data.characterId > 0) {
-      const startTime = new Date();
       const character = new Character(player.Id);
       const loadedCharacter = await character.load(data.characterId)
 

@@ -340,6 +340,34 @@ body {
   background: white !important;
 }
 
+/* Char Creator Form */
+#Character-Creator {
+  position: absolute;
+
+  /* Size */
+  z-index: 999;
+}
+
+.v-dialog::-webkit-scrollbar-thumb {
+  background: white !important; 
+}
+
+.v-dialog::-webkit-scrollbar {
+  width: 5px; 
+}
+
+.v-dialog::-webkit-scrollbar-thumb {
+  background: white !important; 
+}
+
+.v-date-picker-years::-webkit-scrollbar {
+  width: 5px; 
+}
+
+.v-date-picker-years::-webkit-scrollbar-thumb {
+  background: white !important; 
+}
+
 /* Spawn Info */
 #Spawn_Container {
   position: absolute;

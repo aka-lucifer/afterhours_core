@@ -62,7 +62,7 @@
               <div id="Character_Buttons">
                 <v-tooltip top>
                   <template #activator="data">
-                    <v-btn class="mx-2" small fab dark color="success" v-on="data.on" @click=""><v-icon dark>mdi-pencil</v-icon></v-btn>
+                    <v-btn class="mx-2" small fab dark color="success" v-on="data.on" @click="startCreatingChar()"><v-icon dark>mdi-pencil</v-icon></v-btn>
                   </template>
                   <span>Create Character</span>
                 </v-tooltip>
@@ -94,7 +94,7 @@
               <div id="Character_Buttons">
                 <v-tooltip top>
                   <template #activator="data">
-                    <v-btn class="mx-2" small fab dark color="success" v-on="data.on" @click=""><v-icon dark>mdi-pencil</v-icon></v-btn>
+                    <v-btn class="mx-2" small fab dark color="success" v-on="data.on" @click="startCreatingChar()"><v-icon dark>mdi-pencil</v-icon></v-btn>
                   </template>
                   <span>Create Character</span>
                 </v-tooltip>
@@ -102,7 +102,7 @@
             </div>
           </div>
 
-          <v-card id="Character_Card" dark hover elevation="1" outlined v-show="hoveringCharacter || this.selectedCharacter !== undefined">
+          <v-card id="Character_Card" dark hover elevation="1" outlined v-show="hoveringCharacter">
             <v-card-title>
               <h2 style="font-family: 'PT-Sans';">{{ hoveredCharacter.firstName }} {{ hoveredCharacter.lastName }} | {{ hoveredCharacter.id }}</h2>
             </v-card-title>
@@ -113,13 +113,53 @@
               <div v-if="hoveredCharacter.gender == 0"><span style="font-family: 'PT-Sans-Caption';"><b>Gender</b>: Male</span><br></div>
               <div v-if="hoveredCharacter.gender == 1"><span style="font-family: 'PT-Sans-Caption';"><b>Gender</b>: Female</span><br></div>
               <span style="font-family: 'PT-Sans-Caption';"><b>Nationality</b>: {{ hoveredCharacter.nationality }}</span><br>
-              <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName != 'none' && hoveredCharacter.jobName != 'Civilian'"><b>Job</b>: {{ hoveredCharacter.jobName }}</span><br>
+              <span style="font-family: 'PT-Sans-Caption';"><b>Job</b>: {{ hoveredCharacter.job }}</span><br>
               <!-- <span style="font-family: 'PT-Sans-Caption';"><b>Phone</b>: {{ hoveredCharacter.phone }}</span><br> -->
               <span style="font-family: 'PT-Sans-Caption';"><b>Backstory</b>: {{ hoveredCharacter.backstory }}</span><br>
             </v-card-text>
           </v-card>
 
-          <!-- <v-dialog id="Character-Creator" transition="dialog-top-transition" max-width="600" v-model="showCreator"> -->
+          <!-- Character Dialogs -->
+
+          <v-dialog id="Character-Creator" transition="dialog-top-transition" max-width="600" v-model="creatingCharacter">
+            <template v-slot:default="dialog">
+              <v-card dark>
+                <v-toolbar color="success" dark><h2>New Character</h2></v-toolbar>
+
+                <v-card-text>
+                  <v-form ref="charCreatorForm" class="px-3">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="12" md="20">
+                          <br>
+                          <v-text-field v-model="newCharacter.firstName" :rules="nameRules" outlined label="First Name" append-icon="mdi-rename-box" required></v-text-field>
+                          <v-text-field v-model="newCharacter.lastName" :rules="nameRules" outlined label="Surname" append-icon="mdi-rename-box" required></v-text-field>
+                          <v-text-field v-model="newCharacter.nationality" :rules="nationalityRules" outlined label="Nationality" append-icon="mdi-map-marker" required></v-text-field>
+                          <v-textarea v-model="newCharacter.backstory" :rules="backstoryRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
+                          
+                          <v-menu ref="creatorMenu" v-model="creatorMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field v-model="newCharacter.dob" label="Date of Birth" :rules="dobRules" readonly hint="YYYY-MM-DD format" persistent-hint append-icon="mdi-calendar" v-bind="attrs" v-on="on"></v-text-field>
+                            </template>
+                            <v-date-picker id="Character-DOB" color="success" v-model="newCharacter.dob" no-title @input="creatorMenu = false" dark></v-date-picker>
+                          </v-menu><br>
+
+                          <v-text-field v-model="newCharacter.age" :rules="ageRules" outlined label="Age" readonly append-icon="mdi-account-clock"></v-text-field>
+                        </v-col>
+                        
+                        <v-col cols="12" sm="12" md="20">
+                          <v-checkbox v-model="newCharacter.isFemale" label="Female Character" color="success" :ripple=false></v-checkbox>
+                          <v-btn color="success" class="mr-4" @click="createCharacter()" :ripple=false>Create</v-btn>
+                          <v-btn color="error" class="mr-4" @click="resetCharCreation()" :ripple=false>Reset</v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
+
           <v-dialog v-model="showCharacterDelete" transition="dialog-top-transition" max-width="fit-content">
             <template v-slot:default="dialog">
               <v-card dark>

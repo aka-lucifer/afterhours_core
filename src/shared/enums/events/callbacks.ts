@@ -5,6 +5,7 @@ export enum Callbacks {
   // Astrid Server -> Client Callbacks
 
   // Characters
+  createCharacter = "astrid:server:createCharacter",
   selectCharacter = "astrid:server:selectCharacter",
   deleteCharacter = "astrid:server:deleteCharacter",
   
