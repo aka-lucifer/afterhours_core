@@ -384,7 +384,7 @@ export class Player {
         const metaData = JSON.parse(charData.data[i].job);
 
         const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.department, jobData.isBoss, jobData.callsign, jobData.status);
-        const metadata = new Metadata(metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.licenses, metaData.mugshot, metaData.jailData, metaData.criminalRecord);
+        const metadata = new Metadata(metaData.licenses, metaData.mugshot, metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.jailData, metaData.criminalRecord);
 
         const formatted = await character.format({
           id: charData.data[i].id,

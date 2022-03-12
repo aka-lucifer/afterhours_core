@@ -32,6 +32,7 @@ export class CharacterManager {
     onNet(Callbacks.createCharacter, this.CALLBACK_createCharacter.bind(this));
     onNet(Callbacks.selectCharacter, this.CALLBACK_selectCharacter.bind(this));
     onNet(Callbacks.deleteCharacter, this.CALLBACK_deleteCharacter.bind(this));
+    
   }
 
   // Get Requests
@@ -164,17 +165,21 @@ export class CharacterManager {
       const character = new Character(player.Id);
       const charData = data.data;
       
-      await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob);
+      // console.log("New Char Data", charData)
+      const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob, charData.licenses, charData.mugshot);
+      if (created) {
+        data.character = Object.assign({}, character);
+        await player.TriggerEvent(Events.receiveServerCB, true, data);
 
-      data.character = Object.assign({}, character);
-      await player.TriggerEvent(Events.receiveServerCB, true, data);
-
-      await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
-        color: EmbedColours.Green,
-        title: "__Character Created__",
-        description: `A player has created a new character.\n\n**Name**: ${character.Name}\n**Nationality**: ${character.Nationality}\n**Age**: ${character.Age}\n**Gender**: ${character.Gender}\n**Job**: ${JSON.stringify(character.Job, null, 4)}\n**Metadata**: ${JSON.stringify(character.Metadata, null, 4)}`,
-        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-      }]}));
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Character Created__",
+          description: `A player has created a new character.\n\n**Name**: ${character.Name}\n**Nationality**: ${character.Nationality}\n**Age**: ${character.Age}\n**Gender**: ${character.Gender}\n**Job**: ${JSON.stringify(character.Job, null, 4)}\n**Metadata**: ${JSON.stringify(character.Metadata, null, 4)}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
+      } else {
+        console.log("error creating character!");
+      }
     }
   }
 

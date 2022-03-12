@@ -107,7 +107,7 @@ export class Character {
       this.isFemale = (charData.data[0].gender == 1);
       this.phone = this.formatPhone(charData.data[0].phone);
       this.job = new Job(jobData.name, jobData.label, jobData.rank, jobData.department, jobData.isBoss, jobData.callsign, jobData.status);
-      this.metadata = new Metadata(metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.licenses, metaData.mugshot, metaData.jailData, metaData.criminalRecord);
+      this.metadata = new Metadata(metaData.licenses, metaData.mugshot, metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.jailData, metaData.criminalRecord);
       this.createdAt = new Date(charData.data[0].created_at);
       this.lastUpdated = new Date(charData.data[0].last_updated);
       return true;
@@ -116,7 +116,8 @@ export class Character {
     }
   }
 
-  public async create(firstName: string, lastName: string, nationality: string, backstory: string, dob: string): Promise<boolean> {
+  public async create(firstName: string, lastName: string, nationality: string, backstory: string, dob: string, licenses?: string[], mugshot?: string): Promise<boolean> {
+    console.log("create", licenses, mugshot)
     this.firstName = firstName;
     this.lastName = lastName;
     this.nationality = nationality;
@@ -125,7 +126,7 @@ export class Character {
     this.age = this.formatAge(this.dob);
     this.phone = await this.generatePhone();
     this.job = new Job("civilian", "Civilian");
-    this.metadata = new Metadata();
+    this.metadata = new Metadata(licenses, mugshot);
     await this.metadata.getMetadata();
     
     const newChar = await Database.SendQuery("INSERT INTO `player_characters` (`player_id`, `first_name`, `last_name`, `nationality`, `backstory`, `dob`, `gender`, `phone`, `job`, `metadata`) VALUES (:playerId, :firstName, :lastName, :nationality, :backstory, :dob, :gender, :phone, :job, :metadata)", {
@@ -177,7 +178,7 @@ export class Character {
       await Delay(10);
     }
     
-    console.log("FOUND FREE PHONE NUMBER", phoneNumber);
+    // console.log("FOUND FREE PHONE NUMBER", phoneNumber);
     return phoneNumber;
   }
 
@@ -225,7 +226,7 @@ export class Metadata {
   private jail: JailData;
   private criminalRecord: CriminalRecord;
 
-  constructor(finger?: string, blood?: string, dead?: boolean, cuffed?: boolean, licenses?: Licenses, mugshot?: string, jail?: JailData, record?: CriminalRecord) { 
+  constructor(licenses?: string[], mugshot?: string, finger?: string, blood?: string, dead?: boolean, cuffed?: boolean, jail?: JailData, record?: CriminalRecord) { 
     if (dead) {
       this.isDead = dead;
     } else {
@@ -236,6 +237,19 @@ export class Metadata {
       this.isCuffed = cuffed;
     } else {
       this.isCuffed = false;
+    }
+
+    if (licenses) {
+      const driverLicense = licenses.findIndex(license => license.toLowerCase() == "driver");
+      const weaponLicense = licenses.findIndex(license => license.toLowerCase() == "weapon");
+
+      const hasDriver = driverLicense !== -1;
+      const hasWeapon = weaponLicense !== -1;
+
+      this.licenses = {
+        driver: hasDriver,
+        weapon: hasWeapon
+      }
     }
 
     if (mugshot) {
@@ -286,7 +300,7 @@ export class Metadata {
       await Delay(10);
     }
     
-    console.log("FOUND FREE FINGERPRINT", fingerprint);
+    // console.log("FOUND FREE FINGERPRINT", fingerprint);
     return fingerprint;
   }
 
