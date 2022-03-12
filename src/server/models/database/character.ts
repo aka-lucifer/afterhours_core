@@ -252,7 +252,7 @@ export class Metadata {
     }
     
     if (!this.bloodtype) {
-      this.bloodtype = Bloodtypes.ABPositive;
+      this.bloodtype = await randomEnum(Bloodtypes);
     }
 
     if (!this.licenses) {
