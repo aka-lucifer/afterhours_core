@@ -1,13 +1,13 @@
 export enum PoliceRanks {
   Cadet,
   Officer,
-  Officer2,
+  Officer_Two,
   Sergeant,
   Lieutenant,
   Captain,
   Commander,
-  DeputyChief,
-  AsstChief,
+  Deputy_Chief,
+  Asst_Chief,
   Chief
 }
 
@@ -26,12 +26,12 @@ export enum CountyRanks {
 export enum StateRanks {
   Cadet,
   Trooper,
-  MasterTrooper,
-  Corporal,
+  Trooper_First_Class,
   Sergeant,
+  Master_Sergeant,
   Lieutenant,
   Captain,
-  Commander,
-  AsstCommissioner,
+  Major,
+  Lieutenant_Colonel,
   Commissioner
 }
