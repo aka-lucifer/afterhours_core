@@ -6,6 +6,7 @@ export class Job {
   private label: string;
   private isBoss: boolean;
   private rank: number | PoliceRanks | CountyRanks | StateRanks;
+  private rankLabel: string;
   private callsign;
   private status: boolean;
   private department: Departments;
@@ -18,5 +19,10 @@ export class Job {
     if (isBoss) this.isBoss = isBoss;
     if (callsign) this.callsign = callsign;
     if (status) this.status = status;
+  }
+
+  // Set Requests
+  public set RankLabel(newValue: string) {
+    this.rankLabel = newValue;
   }
 }

@@ -171,6 +171,7 @@ const HUD = new Vue({
     // CHARACTERS
     setupCharacters(data) {
       for (let i = 0; i < data.characters.length; i++) {
+        data.characters[i].jobRank = data.characters[i].job.rankLabel; // Define this first as job var is overridden below
         data.characters[i].job = data.characters[i].job.label;
       }
       
