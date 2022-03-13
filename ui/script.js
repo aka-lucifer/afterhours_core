@@ -57,7 +57,6 @@ const HUD = new Vue({
     // Char Editing
     editingCharacter: false,
     charEditorMenu: null,
-    editData: {},
 
     // Char Rules
     nameRules: [
@@ -171,8 +170,9 @@ const HUD = new Vue({
     // CHARACTERS
     setupCharacters(data) {
       for (let i = 0; i < data.characters.length; i++) {
+        data.characters[i].jobName = data.characters[i].job.name; // Define this first as job var is overridden below
+        data.characters[i].jobLabel = data.characters[i].job.label;
         data.characters[i].jobRank = data.characters[i].job.rankLabel; // Define this first as job var is overridden below
-        data.characters[i].job = data.characters[i].job.label;
       }
       
       this.characters = data.characters;
@@ -226,23 +226,29 @@ const HUD = new Vue({
 
     startEditingChar() {
       this.editingCharacter = true;
-      this.editData = this.characters[this.selectedCharacter];
+
+      const licenses = [];
+      if (this.characters[this.selectedCharacter].metadata.licenses.driver) licenses.push("Driver");
+      if (this.characters[this.selectedCharacter].metadata.licenses.weapon) licenses.push("Weapon");
+
+      this.characters[this.selectedCharacter].licenseValues = licenses;
     },
 
     editCharacter() {
       const isFormComplete = this.$refs.charEditorForm.validate();
       if (isFormComplete) {
         this.Post("EDIT_CHARACTER", {
-          characterId: this.editData.id,
-          firstName: this.editData.firstName,
-          lastName: this.editData.lastName,
-          nationality: this.editData.nationality,
-          backstory: this.editData.backstory,
-          mugshot: this.editData.mugshot
-        }, (charData) => {
-          if (charData) {
+          characterId: this.characters[this.selectedCharacter].id,
+          firstName: this.characters[this.selectedCharacter].firstName,
+          lastName: this.characters[this.selectedCharacter].lastName,
+          nationality: this.characters[this.selectedCharacter].nationality,
+          backstory: this.characters[this.selectedCharacter].backstory,
+          mugshot: this.characters[this.selectedCharacter].mugshot,
+          licenses: this.characters[this.selectedCharacter].licenseValues
+        }, (charLicenses) => {
+          if (Object.keys(charLicenses).length > 0) {
+            this.characters[this.selectedCharacter].metadata.licenses = charLicenses;
             this.editingCharacter = false;
-            this.editData = {};
           }
         });
       }

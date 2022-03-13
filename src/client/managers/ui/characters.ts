@@ -34,7 +34,9 @@ export class Characters {
 
     RegisterNuiCallback(NuiCallbacks.EditCharacter, async(data, cb) => {
       this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editCharacter, {data}, (cbData, passedData) => {
-        cb(cbData)
+        if (cbData.status) {
+          cb(cbData.licenses)
+        }
       }));
     });
 
@@ -66,6 +68,7 @@ export class Characters {
     }
 
     this.myCharacters = myChars;
+    console.log("this.myCharacters", this.myCharacters);
 
     setTimeout(() => { // Double check that NUI is loaded & send chars over to UI
       this.sendCharacters();
