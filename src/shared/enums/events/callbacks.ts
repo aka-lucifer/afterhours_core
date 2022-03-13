@@ -6,6 +6,7 @@ export enum Callbacks {
 
   // Characters
   createCharacter = "astrid:server:createCharacter",
+  editCharacter = "astrid:server:editCharacter",
   selectCharacter = "astrid:server:selectCharacter",
   deleteCharacter = "astrid:server:deleteCharacter",
   

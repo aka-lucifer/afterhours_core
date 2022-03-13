@@ -47,9 +47,17 @@ const HUD = new Vue({
       dob: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       age: 0,
       isFemale: false,
+      licenses: ["Driver", "Weapon"],
+      licenseValues: [],
+      mugshot: null
     },
     creatingCharacter: false,
-    creatorMenu: null,
+    charCreatorMenu: null,
+
+    // Char Editing
+    editingCharacter: false,
+    charEditorMenu: null,
+    editData: {},
 
     // Char Rules
     nameRules: [
@@ -193,7 +201,6 @@ const HUD = new Vue({
 
     createCharacter() {
       const isFormComplete = this.$refs.charCreatorForm.validate();
-      console.log("formComplete", isFormComplete);
       if (isFormComplete) {
         this.Post("CREATE_CHARACTER", {
           firstName: this.newCharacter.firstName,
@@ -201,14 +208,40 @@ const HUD = new Vue({
           nationality: this.newCharacter.nationality,
           backstory: this.newCharacter.backstory,
           dob: this.newCharacter.dob,
-          gender: this.newCharacter.gender
+          gender: this.newCharacter.isFemale,
+          licenses: this.newCharacter.licenseValues,
+          mugshot: this.newCharacter.mugshot
         }, (charData) => {
           if (Object.keys(charData).length > 0) {
-            console.log("job", charData.job, typeof charData.job);
+            console.log("job", JSON.stringify(charData.job), typeof charData.job);
             charData.job = charData.job.label;
             this.characters.push(charData);
             this.creatingCharacter = false;
             this.resetCharCreation();
+          }
+        });
+      }
+    },
+
+    startEditingChar() {
+      this.editingCharacter = true;
+      this.editData = this.characters[this.selectedCharacter];
+    },
+
+    editCharacter() {
+      const isFormComplete = this.$refs.charEditorForm.validate();
+      if (isFormComplete) {
+        this.Post("EDIT_CHARACTER", {
+          characterId: this.editData.id,
+          firstName: this.editData.firstName,
+          lastName: this.editData.lastName,
+          nationality: this.editData.nationality,
+          backstory: this.editData.backstory,
+          mugshot: this.editData.mugshot
+        }, (charData) => {
+          if (charData) {
+            this.editingCharacter = false;
+            this.editData = {};
           }
         });
       }
@@ -676,9 +709,9 @@ const HUD = new Vue({
         case "Escape": // Close UI
           if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
             HUD.CloseChat();
-          } else if ($("#warnings_container")) {
+          } else if ($("#warnings_container").is(":visible")) {
             HUD.CloseWarnings();
-          } else if ($("#commends_container")) {
+          } else if ($("#commends_container").is(":visible")) {
             HUD.CloseCommends();
           }
           break;

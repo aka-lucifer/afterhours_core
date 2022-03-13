@@ -4,6 +4,7 @@ export enum NuiCallbacks {
 
   // Characters
   CreateCharacter = "CREATE_CHARACTER",
+  EditCharacter = "EDIT_CHARACTER",
   SelectCharacter = "SELECT_CHARACTER",
   DeleteCharacter = "DELETE_CHARACTER",
   

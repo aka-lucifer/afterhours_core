@@ -6,16 +6,16 @@ import * as Database from "../../managers/database/database"
 import { Departments } from "../../../shared/enums/jobs/departments";
 import { PoliceRanks } from "../../../shared/enums/jobs/ranks";
 import { Bloodtypes, Gender } from "../../../shared/enums/characters";
-import { Delay, randomBetween, randomEnum } from "../../utils";
+import { Delay, GetTimestamp, randomBetween, randomEnum } from "../../utils";
 
 export class Character {
   private id: number;
   private playerId: number;
   private owner: Player;
-  private firstName: string;
-  private lastName: string;
-  private nationality: string;
-  private backstory: string;
+  public firstName: string;
+  public lastName: string;
+  public nationality: string;
+  public backstory: string;
   private dob: string;
   private age: number;
   private isFemale: boolean;
@@ -116,20 +116,20 @@ export class Character {
     }
   }
 
-  public async create(firstName: string, lastName: string, nationality: string, backstory: string, dob: string, licenses?: string[], mugshot?: string): Promise<boolean> {
-    console.log("create", licenses, mugshot)
+  public async create(firstName: string, lastName: string, nationality: string, backstory: string, dob: string, gender: boolean, licenses?: string[], mugshot?: string): Promise<boolean> {
     this.firstName = firstName;
     this.lastName = lastName;
     this.nationality = nationality;
     this.backstory = backstory;
     this.dob = dob;
     this.age = this.formatAge(this.dob);
+    this.isFemale = gender;
     this.phone = await this.generatePhone();
     this.job = new Job("civilian", "Civilian");
     this.metadata = new Metadata(licenses, mugshot);
     await this.metadata.getMetadata();
     
-    const newChar = await Database.SendQuery("INSERT INTO `player_characters` (`player_id`, `first_name`, `last_name`, `nationality`, `backstory`, `dob`, `gender`, `phone`, `job`, `metadata`) VALUES (:playerId, :firstName, :lastName, :nationality, :backstory, :dob, :gender, :phone, :job, :metadata)", {
+    const newChar = await Database.SendQuery("INSERT INTO `player_characters` (`player_id`, `first_name`, `last_name`, `nationality`, `backstory`, `dob`, `gender`, `phone`, `job`, `metadata`, `last_updated`) VALUES (:playerId, :firstName, :lastName, :nationality, :backstory, :dob, :gender, :phone, :job, :metadata, :editedTime)", {
       playerId: this.playerId,
       firstName: this.firstName,
       lastName: this.lastName,
@@ -139,16 +139,33 @@ export class Character {
       gender: this.isFemale ? 1 : 0,
       phone: this.phone,
       job: JSON.stringify(this.job),
-      metadata: JSON.stringify(this.metadata)
+      metadata: JSON.stringify(this.metadata),
+      editedTime: await GetTimestamp()
     });
     
-    console.log("NEW CHAR QUERY", newChar);
     if (newChar.meta.affectedRows > 0) {
       this.id = newChar.meta.insertId;
       return true;
     } else {
       return false;
     }
+  }
+
+  public async update(): Promise<boolean> {
+    this.lastUpdated = new Date(await GetTimestamp());
+    
+    const updatedChar = await Database.SendQuery("UPDATE `player_characters` SET `first_name` = :firstName, `last_name` = :lastName, `nationality` = :nationality, `backstory` = :backstory, `metadata` = :metadata, `last_updated` = :editedTime WHERE `id` = :id AND `player_id` = :playerId", {
+      id: this.id,
+      playerId: this.playerId,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      nationality: this.nationality,
+      backstory: this.backstory,
+      metadata: JSON.stringify(this.metadata),
+      editedTime: this.lastUpdated
+    });
+
+    return updatedChar.meta.affectedRows > 0;
   }
 
   public async format(character?: Info): Promise<boolean> {
@@ -162,6 +179,7 @@ export class Character {
     this.isFemale = character?.isFemale;
     this.phone = this.formatPhone(character?.phone);
     this.job = character?.job;
+    this.metadata = character?.metadata;
     this.createdAt = new Date(character?.createdAt);
     this.lastUpdated = new Date(character?.lastUpdated);
     return true;
@@ -226,7 +244,7 @@ export class Metadata {
   private jail: JailData;
   private criminalRecord: CriminalRecord;
 
-  constructor(licenses?: string[], mugshot?: string, finger?: string, blood?: string, dead?: boolean, cuffed?: boolean, jail?: JailData, record?: CriminalRecord) { 
+  constructor(licenses?: any, mugshot?: string, finger?: string, blood?: string, dead?: boolean, cuffed?: boolean, jail?: JailData, record?: CriminalRecord) { 
     if (dead) {
       this.isDead = dead;
     } else {
@@ -240,15 +258,19 @@ export class Metadata {
     }
 
     if (licenses) {
-      const driverLicense = licenses.findIndex(license => license.toLowerCase() == "driver");
-      const weaponLicense = licenses.findIndex(license => license.toLowerCase() == "weapon");
+      if (finger == undefined) { // If creating a new character
+        const driverLicense = licenses.findIndex(license => license.toLowerCase() == "driver");
+        const weaponLicense = licenses.findIndex(license => license.toLowerCase() == "weapon");
 
-      const hasDriver = driverLicense !== -1;
-      const hasWeapon = weaponLicense !== -1;
+        const hasDriver = driverLicense !== -1;
+        const hasWeapon = weaponLicense !== -1;
 
-      this.licenses = {
-        driver: hasDriver,
-        weapon: hasWeapon
+        this.licenses = {
+          driver: hasDriver,
+          weapon: hasWeapon
+        }
+      } else { // If loading a character from the database
+        this.licenses = licenses;
       }
     }
 
@@ -257,12 +279,33 @@ export class Metadata {
     } else {
       this.mugshot = "https://i.imgur.com/mmJcclQ.png";
     }
+
+    if (finger) {
+      this.fingerprint = finger;
+    }
+    
+    if (blood) {
+      this.bloodtype = blood;
+    }
+    
+    if (jail) {
+      this.jail = jail;
+    }
+
+    if (record) {
+      this.criminalRecord = record;
+    }
+  }
+
+  // Getters & Setters
+  public set Mugshot(newValue: string) {
+    this.mugshot = newValue;
   }
 
   // Methods
-  public async getMetadata(): Promise<void> {
+  public async getMetadata(): Promise<void> { // For getting metadata defaults when creating a character
     if (!this.fingerprint) {
-      await this.generateFingerprint();
+      this.fingerprint = await this.generateFingerprint();
     }
     
     if (!this.bloodtype) {

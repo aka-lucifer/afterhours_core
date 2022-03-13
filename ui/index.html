@@ -69,7 +69,7 @@
 
                 <v-tooltip top>
                   <template #activator="data">
-                    <v-btn class="mx-2" small fab dark color="primary" v-on="data.on" @click=""><v-icon dark>mdi-account-edit</v-icon></v-btn>
+                    <v-btn class="mx-2" small fab dark color="primary" v-on="data.on" @click="startEditingChar()"><v-icon dark>mdi-account-edit</v-icon></v-btn>
                   </template>
                   <span>Edit Character</span>
                 </v-tooltip>
@@ -120,7 +120,6 @@
           </v-card>
 
           <!-- Character Dialogs -->
-
           <v-dialog id="Character-Creator" transition="dialog-top-transition" max-width="600" v-model="creatingCharacter">
             <template v-slot:default="dialog">
               <v-card dark>
@@ -137,14 +136,26 @@
                           <v-text-field v-model="newCharacter.nationality" :rules="nationalityRules" outlined label="Nationality" append-icon="mdi-map-marker" required></v-text-field>
                           <v-textarea v-model="newCharacter.backstory" :rules="backstoryRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
                           
-                          <v-menu ref="creatorMenu" v-model="creatorMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
+                          <v-menu ref="charCreatorMenu" v-model="charCreatorMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
                             <template v-slot:activator="{ on, attrs }">
                               <v-text-field v-model="newCharacter.dob" label="Date of Birth" :rules="dobRules" readonly hint="YYYY-MM-DD format" persistent-hint append-icon="mdi-calendar" v-bind="attrs" v-on="on"></v-text-field>
                             </template>
-                            <v-date-picker id="Character-DOB" color="success" v-model="newCharacter.dob" no-title @input="creatorMenu = false" dark></v-date-picker>
+                            <v-date-picker id="Character-DOB" color="success" v-model="newCharacter.dob" no-title @input="charCreatorMenu = false" dark></v-date-picker>
                           </v-menu><br>
 
                           <v-text-field v-model="newCharacter.age" :rules="ageRules" outlined label="Age" readonly append-icon="mdi-account-clock"></v-text-field>
+                          <v-select
+                            v-model="newCharacter.licenseValues"
+                            :items="newCharacter.licenses"
+                            color="green"
+                            chips
+                            label="Licenses"
+                            multiple
+                            outlined
+                            append-icon="mdi-card-account-details"
+                          ></v-select>
+
+                          <v-text-field v-model="newCharacter.mugshot" outlined label="Mugshot Image Link" append-icon="mdi-camera"></v-text-field>
                         </v-col>
                         
                         <v-col cols="12" sm="12" md="20">
@@ -152,6 +163,35 @@
                           <v-btn color="success" class="mr-4" @click="createCharacter()" :ripple=false>Create</v-btn>
                           <v-btn color="error" class="mr-4" @click="resetCharCreation()" :ripple=false>Reset</v-btn>
                         </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
+          
+          <v-dialog id="Character-Editor" transition="dialog-top-transition" max-width="600" v-model="editingCharacter">
+            <template v-slot:default="dialog">
+              <v-card dark>
+                <v-toolbar color="success" dark><h2>Edit Character</h2></v-toolbar>
+
+                <v-card-text>
+                  <v-form ref="charEditorForm" class="px-3">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="12" md="20">
+                          <br>
+                          <v-text-field v-model="editData.firstName" :rules="nameRules" outlined label="First Name" append-icon="mdi-rename-box" required></v-text-field>
+                          <v-text-field v-model="editData.lastName" :rules="nameRules" outlined label="Surname" append-icon="mdi-rename-box" required></v-text-field>
+                          <v-text-field v-model="editData.nationality" :rules="nationalityRules" outlined label="Nationality" append-icon="mdi-map-marker" required></v-text-field>
+                          <v-textarea v-model="editData.backstory" :rules="backstoryRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
+                          <v-text-field v-model="editData.mugshot" outlined label="Mugshot Image Link" append-icon="mdi-camera"></v-text-field>
+                        </v-col>
+                        
+                        <v-flex xs6>
+                          <v-btn style="margin-left: 50%;" class="mr-4" color="success" dark block @click="editCharacter()">Edit</v-btn>
+                        </v-flex>
                       </v-row>
                     </v-container>
                   </v-form>

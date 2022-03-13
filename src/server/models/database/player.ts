@@ -381,11 +381,11 @@ export class Player {
       for (let i = 0; i < charData.data.length; i++) {
         const character = new Character(this.id);
         const jobData = JSON.parse(charData.data[i].job);
-        const metaData = JSON.parse(charData.data[i].job);
+        const metaData = JSON.parse(charData.data[i].metadata);
 
         const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.department, jobData.isBoss, jobData.callsign, jobData.status);
         const metadata = new Metadata(metaData.licenses, metaData.mugshot, metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.jailData, metaData.criminalRecord);
-
+        
         const formatted = await character.format({
           id: charData.data[i].id,
           firstName: charData.data[i].first_name,

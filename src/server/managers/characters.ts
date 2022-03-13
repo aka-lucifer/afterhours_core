@@ -30,6 +30,7 @@ export class CharacterManager {
 
     // Callbacks
     onNet(Callbacks.createCharacter, this.CALLBACK_createCharacter.bind(this));
+    onNet(Callbacks.editCharacter, this.CALLBACK_editCharacter.bind(this));
     onNet(Callbacks.selectCharacter, this.CALLBACK_selectCharacter.bind(this));
     onNet(Callbacks.deleteCharacter, this.CALLBACK_deleteCharacter.bind(this));
     
@@ -166,7 +167,7 @@ export class CharacterManager {
       const charData = data.data;
       
       // console.log("New Char Data", charData)
-      const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob, charData.licenses, charData.mugshot);
+      const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob, charData.gender, charData.licenses, charData.mugshot);
       if (created) {
         data.character = Object.assign({}, character);
         await player.TriggerEvent(Events.receiveServerCB, true, data);
@@ -179,6 +180,60 @@ export class CharacterManager {
         }]}));
       } else {
         console.log("error creating character!");
+      }
+    }
+  }
+
+  private async CALLBACK_editCharacter(data: Record<string, any>): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      const charData = data.data;
+      console.log("ONE")
+
+      if (charData.characterId !== undefined && charData.characterId > 0) {
+        console.log("two")
+        const yourCharacter = await this.Yours(charData.characterId, player);
+        console.log("three")
+
+        const character = new Character(player.Id);
+        await character.load(data.characterId);
+
+        if (yourCharacter) {
+          const character = new Character(player.Id);
+          const loadedCharacter = await character.load(charData.characterId)
+
+          if (loadedCharacter) {
+            console.log("char data!", charData);
+            character.firstName = charData.firstName;
+            character.lastName = charData.lastName;
+            character.nationality = charData.nationality;
+            character.backstory = charData.backstory;
+            if (charData.mugshot) character.Metadata.Mugshot = charData.mugshot;
+
+            const updatedData = await character.update();
+            if (updatedData) {
+              await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+                color: EmbedColours.Green,
+                title: "__Character Edited__",
+                description: `A player has logged in as a character.\n\n**Name**: ${character.Name}\n**Nationality**: ${character.Nationality}\n**Age**: ${character.Age}\n**Gender**: ${character.Gender}\n**Job**: ${JSON.stringify(character.Job, null, 4)}\n**Metadata**: ${JSON.stringify(character.Metadata, null, 4)}\n**Created At**: ${character.CreatedAt}\n**Last Edited**: ${character.LastEdited}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]}));
+            }
+          }
+        } else {
+          const ban = new Ban(player.Id, player.HardwareId, "Trying to edit someone else's character (Lua Executor)", player.Id);
+          await ban.save();
+          ban.drop();
+          
+          const discord = await player.GetIdentifier("discord");
+          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+            color: EmbedColours.Red,
+            title: "__Attempted Character Edit__",
+            description: `A player has tried to edit someone else's character.\n\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Job**: ${JSON.stringify(character.Job, null, 4)}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+          }]}));
+        }
       }
     }
   }
