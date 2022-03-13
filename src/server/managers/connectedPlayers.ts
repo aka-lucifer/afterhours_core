@@ -88,6 +88,19 @@ export class ConnectedPlayerManager {
     }
   }
 
+  public async Exists(license: string): Promise<boolean> {
+    let result = false;
+
+    for (let i = 0; i < this.connectedPlayers.length; i++) {
+      console.log("player license", await this.connectedPlayers[i].GetIdentifier("license"), license);
+      if (await this.connectedPlayers[i].GetIdentifier("license") == license) {
+        result = true;
+      }
+    }
+
+    return result;
+  }
+
   public async Disconnect(playerHandle: string, disconnectReason: string): Promise<void> {
     const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
     if (playerIndex != -1) {
