@@ -32,6 +32,10 @@ export class ConnectionsManager {
       await Delay(200);
 
       if (playerExists) { // If your DB entry exists
+        if (await this.server.connectedPlayerManager.Exists(await player.GetIdentifier("license"))) {
+          deferrals.done(`[${sharedConfig.serverName}]: There is already a player connected to the server, with this license key, buy your own account, you fucking cheapskate!`);
+        }
+
         const [isBanned, banData] = await player.isBanned();
         if (isBanned) {
           if (player.Rank < Ranks.Management && banData.State == BanStates.Active) {
