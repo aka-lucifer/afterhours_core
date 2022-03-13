@@ -188,12 +188,9 @@ export class CharacterManager {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       const charData = data.data;
-      console.log("ONE")
 
       if (charData.characterId !== undefined && charData.characterId > 0) {
-        console.log("two")
         const yourCharacter = await this.Yours(charData.characterId, player);
-        console.log("three")
 
         const character = new Character(player.Id);
         await character.load(data.characterId);
@@ -203,7 +200,6 @@ export class CharacterManager {
           const loadedCharacter = await character.load(charData.characterId)
 
           if (loadedCharacter) {
-            console.log("char data!", charData);
             character.firstName = charData.firstName;
             character.lastName = charData.lastName;
             character.nationality = charData.nationality;
