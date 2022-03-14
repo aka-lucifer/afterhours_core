@@ -144,7 +144,7 @@ export class ChatManager {
 
   private EVENT_addSuggestion(suggestion: Suggestion): void {
     console.log("Add Suggestion", suggestion.name, suggestion.description)
-    // console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.commandParams}`));
+    // console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.params}`));
     this.chatSuggestions.push(suggestion);
   }
 

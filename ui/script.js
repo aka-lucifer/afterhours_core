@@ -598,7 +598,7 @@ const HUD = new Vue({
 
             for (let i = 0; i < messageSplitted.length; i += 1) {
               if (i >= suggestionSplitted.length) {
-                return i < suggestionSplitted.length + s.commandParams.length;
+                return i < suggestionSplitted.length + s.params.length;
               }
               if (suggestionSplitted[i] !== messageSplitted[i]) {
                 return false;
@@ -612,9 +612,9 @@ const HUD = new Vue({
           // eslint-disable-next-line no-param-reassign
           s.disabled = !s.name.startsWith(this.chatMessage);
 
-          if (s.commandParams.length > 0) {
-            s.commandParams.forEach((p, index) => {
-              const wType = (index === s.commandParams.length - 1) ? "." : "\\S";
+          if (s.params.length > 0) {
+            s.params.forEach((p, index) => {
+              const wType = (index === s.params.length - 1) ? "." : "\\S";
               const regex = new RegExp(`${s.name} (?:\\w+ ){${index}}(?:${wType}*)$`, "g");
 
               // eslint-disable-next-line no-param-reassign

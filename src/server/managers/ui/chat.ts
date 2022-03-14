@@ -39,7 +39,6 @@ export class ChatManager {
       if (player.Spawned) {
         const message = new Message(data.message, data.type);
 
-        console.log("SEND MSG!");
         if (server.IsDebugging) Inform("Message Sent", JSON.stringify(message));
         if (message.content[0] == "/") { // If it's a command
           const args = String(message.content).replace("/", "").split(" "); // All of the arguments of the message
