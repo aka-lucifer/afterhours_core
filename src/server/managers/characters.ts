@@ -72,6 +72,13 @@ export class CharacterManager {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
       }
     }, Ranks.User);
+
+    // new Command("vehRegister", "Registers a vehicle to one of your chosen characters", [], false, async(source: string) => {
+    //   const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    //   if (player) {
+    //     await player.TriggerEvent(Events.)
+    //   }
+    // }, Ranks.User)
   }
 
   public async proximityMessage(type: ProximityTypes, message: Message, character: Character): Promise<boolean> {

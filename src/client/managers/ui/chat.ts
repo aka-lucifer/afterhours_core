@@ -136,6 +136,8 @@ export class ChatManager {
       }
     }
 
+    console.log("CHAT TYPES SENT", this.chatTypes);
+
     setTimeout(() => { // Wait until UI processor of resource has loaded
       SendNuiMessage(JSON.stringify({
         event: NuiMessages.SetupChat,
@@ -143,7 +145,7 @@ export class ChatManager {
           types: this.chatTypes
         }
       }))
-    }, 250);
+    }, 500);
   }
 
   // Events

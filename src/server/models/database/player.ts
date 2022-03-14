@@ -25,6 +25,7 @@ import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {Notification} from "../ui/notification";
 import { Character, Metadata } from "./character";
 import { Departments } from "../../../shared/enums/jobs/departments";
+import { getRankFromValue } from "../../../shared/utils";
 
 export class Player {
   public id: number;
@@ -385,7 +386,11 @@ export class Player {
 
         const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.department, jobData.isBoss, jobData.callsign, jobData.status);
         const metadata = new Metadata(metaData.licenses, metaData.mugshot, metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.jailData, metaData.criminalRecord);
-        
+
+        if (jobData.name != "civilian") { // Only police & fire (formats their rank from number to string)
+          job.RankLabel = await getRankFromValue(jobData.rank, jobData.department);
+        }
+
         const formatted = await character.format({
           id: charData.data[i].id,
           firstName: charData.data[i].first_name,

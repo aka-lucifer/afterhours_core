@@ -766,5 +766,10 @@ const HUD = new Vue({
           break;
       }
     });
+
+    setTimeout(() => {
+      HUD.Post("NUI_READY");
+    });
+    console.log("LOADED!");
   }
 });

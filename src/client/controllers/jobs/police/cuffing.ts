@@ -1,6 +1,6 @@
 import { Game, Ped, Vector3 } from "fivem-js";
 import { Vec3 } from "fivem-js/lib/utils/Vector3";
-import { Delay, Error, Inform, PlayAnim } from "./utils";
+import { Delay, Error, Inform, PlayAnim } from "../../../utils";
 
 enum ArrestPositionEnum {
   Back,

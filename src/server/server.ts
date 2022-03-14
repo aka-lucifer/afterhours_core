@@ -34,9 +34,9 @@ import {CommandManager} from "./managers/ui/command";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
-import {Capitalize, Delay, Dist, Error, GetHash, Inform, Log, logCommand} from "./utils";
+import {Capitalize, Delay, Dist, Error, GetClosestPlayer, GetHash, Inform, Log, logCommand} from "./utils";
 
-import {Events} from "../shared/enums/events/events";
+import {Events, PoliceEvents} from "../shared/enums/events/events";
 import {Ranks} from "../shared/enums/ranks";
 import {EmbedColours} from "../shared/enums/embedColours";
 import sharedConfig from "../configs/shared.json";
@@ -94,6 +94,8 @@ export class Server {
     onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
     onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
     onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
+
+    onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
   }
 
   // Get Requests
@@ -161,7 +163,8 @@ export class Server {
     await this.staffLogManager.loadLogs(); // Loads all the server logs
 
     this.chatManager.init(); // Register all commands
-
+    
+    this.characterManager.init();
     this.registerCommands();
     this.registerExports();
 
@@ -213,25 +216,9 @@ export class Server {
       }
     }, Ranks.User);
 
-    new Command("me", "Returns your server ID.", [{name: "content", help: "The content of your /me message."}], true, async(source: string, args: any[]) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
-      const messageContents = args.join(" ");
-      if (messageContents.length > 0) {
-        await player.TriggerEvent(Events.sendSystemMessage, new Message(messageContents, SystemTypes.Me), player.GetName);
-        await logCommand("/me", player, messageContents);
-      } else {
-        await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
-      }
-    }, Ranks.User);
-
     new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
       emitNet(Events.clearWorldVehs, -1);
     }, Ranks.Admin);
-
-    new Command("characters", "Change your current logged in character", [], false, async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
-      await player.TriggerEvent(Events.displayCharacters);
-    }, Ranks.User);
 
     new Command("dev", "Toggle development mode", [], false, async(source: string) => {
       this.developmentMode = !this.developmentMode;
@@ -251,6 +238,31 @@ export class Server {
       SetConvar("development_server", this.developmentMode.toString());
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, false);
+
+    RegisterCommand("grab", async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        const [closest, dist] = await GetClosestPlayer(player);
+        if (closest) {
+          console.log("Me", player.GetHandle, "Closest", closest.GetHandle, "Dist", dist);
+          await player.TriggerEvent(PoliceEvents.startGrabbing, closest.GetHandle);
+        }
+      }
+    }, false);
+  }
+
+  private async EVENT_grabPlayer(grabbeeId: number): Promise<void> {
+    const grabbingPlayer = await this.connectedPlayerManager.GetPlayer(source);
+    if (grabbingPlayer) {
+      if (grabbeeId) {
+        console.log("closest on grabPlayer", grabbeeId);
+        emitNet(PoliceEvents.setGrabbed, grabbeeId, grabbingPlayer.GetHandle);
+      } else {
+        console.log("closest ped isn't found!");
+      }
+    } else {
+      console.log("your ped isn't found!");
+    }
   }
 
   private registerExports(): void {
@@ -277,9 +289,9 @@ export class Server {
       return await this.connectedPlayerManager.GetPlayer(source);
     });
 
-    global.exports("getCharacter", async(source: string) => {
-      return await this.characterManager.Get(source);
-    });
+    // global.exports("getCharacter", async(source: string) => {
+    //   return await this.characterManager.Get(source);
+    // });
 
     global.exports("isBanned", async(source: string) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
@@ -375,7 +387,7 @@ export class Server {
               username: "Anticheat Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Name Change Detected__",
-                description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+                description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.Identifiers, null, 4)}`,
                 footer: {
                   text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                   icon_url: sharedConfig.serverLogo
@@ -387,7 +399,7 @@ export class Server {
             await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
               color: EmbedColours.Green,
               title: "__Player Connected__",
-              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.Identifiers, null, 4)}`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]}));
           }
@@ -395,7 +407,7 @@ export class Server {
           await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__Player Connected__",
-            description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+            description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.Identifiers, null, 4)}`,
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
           }]}));
         }
@@ -411,11 +423,8 @@ export class Server {
       const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
       const weaponData = sharedConfig.weapons[data.weapon];
 
-      console.log(weaponData);
-
       if (weaponData !== undefined) {
-        console.log("DEFINED!");
-        if (!data.inVeh) {
+        if (!data.inVeh && weaponData.type == "weapon") {
           const killDistance = Dist(player.Position(), killer.Position(), false);
           emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
         }
@@ -431,7 +440,6 @@ export class Server {
           }]
         }));
       } else {
-        console.log("OOPSIE!");
         await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
           username: "Kill Logs", embeds: [{
             color: EmbedColours.Green,

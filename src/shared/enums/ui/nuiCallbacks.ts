@@ -1,4 +1,7 @@
 export enum NuiCallbacks {
+  // Readier
+  Ready = "NUI_READY",
+  
   // Spawner
   CloseSpawner = "CLOSE_SPAWNER",
 

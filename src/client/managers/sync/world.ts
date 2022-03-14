@@ -38,8 +38,6 @@ export class WorldManager {
 
       await Delay(500);
     });
-
-    console.log("DISABLE WORLD SHIT!");
   }
 
   // Disable Wanted Level, Police Radio, Vehicle & Vehicle Rewards
