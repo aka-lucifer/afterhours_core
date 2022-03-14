@@ -34,9 +34,9 @@ import {CommandManager} from "./managers/ui/command";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
-import {Capitalize, Delay, Dist, Error, GetHash, Inform, Log, logCommand} from "./utils";
+import {Capitalize, Dist, Error, GetClosestPlayer, GetHash, Inform, Log, logCommand} from "./utils";
 
-import {Events} from "../shared/enums/events/events";
+import {Events, PoliceEvents} from "../shared/enums/events/events";
 import {Ranks} from "../shared/enums/ranks";
 import {EmbedColours} from "../shared/enums/embedColours";
 import sharedConfig from "../configs/shared.json";
@@ -94,6 +94,9 @@ export class Server {
     onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
     onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
     onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
+    
+    // Police Events
+    onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
   }
 
   // Get Requests
@@ -161,6 +164,8 @@ export class Server {
     await this.staffLogManager.loadLogs(); // Loads all the server logs
 
     this.chatManager.init(); // Register all commands
+    
+    this.characterManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
 
     this.registerCommands();
     this.registerExports();
@@ -235,6 +240,31 @@ export class Server {
       SetConvar("development_server", this.developmentMode.toString());
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, false);
+
+    RegisterCommand("grab", async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        const [closest, dist] = await GetClosestPlayer(player);
+        if (closest) {
+          console.log("Me", player.GetHandle, "Closest", closest.GetHandle, "Dist", dist);
+          await player.TriggerEvent(PoliceEvents.startGrabbing, closest.GetHandle);
+        }
+      }
+    }, false);
+  }
+
+  private async EVENT_grabPlayer(grabbeeId: number): Promise<void> {
+    const grabbingPlayer = await this.connectedPlayerManager.GetPlayer(source);
+    if (grabbingPlayer) {
+      if (grabbeeId) {
+        console.log("closest on grabPlayer", grabbeeId);
+        emitNet(PoliceEvents.setGrabbed, grabbeeId, grabbingPlayer.GetHandle);
+      } else {
+        console.log("closest ped isn't found!");
+      }
+    } else {
+      console.log("your ped isn't found!");
+    }
   }
 
   private registerExports(): void {
@@ -373,7 +403,7 @@ export class Server {
               username: "Anticheat Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Name Change Detected__",
-                description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+                description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                 footer: {
                   text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                   icon_url: sharedConfig.serverLogo
@@ -385,7 +415,7 @@ export class Server {
             await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
               color: EmbedColours.Green,
               title: "__Player Connected__",
-              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]}));
           }
@@ -393,7 +423,7 @@ export class Server {
           await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__Player Connected__",
-            description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers)}`,
+            description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
           }]}));
         }

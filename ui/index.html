@@ -451,7 +451,7 @@
                 {{s.name}}
               </span>
               <span class="param"
-                      v-for="(p, index) in s.params"
+                      v-for="(p, index) in s.commandParams"
                       :class="{ 'disabled': p.disabled }">
                 [{{p.name}}]
               </span>
@@ -462,7 +462,7 @@
                 {{s.description}}
               </template>
 
-              <template v-for="p in s.params" v-if="!p.disabled">
+              <template v-for="p in s.commandParams" v-if="!p.disabled">
                 {{p.help}}
               </template>
             </small>

@@ -595,9 +595,10 @@ const HUD = new Vue({
           if (!s.name.startsWith(this.chatMessage)) {
             const suggestionSplitted = s.name.split(" ");
             const messageSplitted = this.chatMessage.split(" ");
+
             for (let i = 0; i < messageSplitted.length; i += 1) {
               if (i >= suggestionSplitted.length) {
-                return i < suggestionSplitted.length + s.params.length;
+                return i < suggestionSplitted.length + s.commandParams.length;
               }
               if (suggestionSplitted[i] !== messageSplitted[i]) {
                 return false;

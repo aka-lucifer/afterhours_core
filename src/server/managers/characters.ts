@@ -50,7 +50,7 @@ export class CharacterManager {
     new Command("characters", "Change your current logged in character", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       player.Spawned = false;
-      await player.TriggerEvent(Events.displayCharacters);
+      await player.TriggerEvent(Events.displayCharacters, true);
     }, Ranks.User);
 
     new Command("me", "Send an action message locally & draws it over your head.", [{name: "content", help: "The content of your /me message."}], true, async(source: string, args: any[]) => {
