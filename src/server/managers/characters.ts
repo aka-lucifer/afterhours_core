@@ -49,8 +49,12 @@ export class CharacterManager {
   private registerCommands(): void {
     new Command("characters", "Change your current logged in character", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      player.Spawned = false;
-      await player.TriggerEvent(Events.displayCharacters, true);
+      if (player) {
+        if (player.Spawned) {
+          player.Spawned = false;
+          await player.TriggerEvent(Events.displayCharacters, true);
+        }
+      }
     }, Ranks.User);
 
     new Command("me", "Send an action message locally & draws it over your head.", [{name: "content", help: "The content of your /me message."}], true, async(source: string, args: any[]) => {
@@ -59,12 +63,14 @@ export class CharacterManager {
 
       if (messageContents.length > 0) {
         if (player) {
-          const character = await this.Get(player);
-          
-          if (character) {
-            const sent = await this.proximityMessage(ProximityTypes.Me, new Message(messageContents, SystemTypes.Me), character);
-            if (sent) {
-              await logCommand("/me", player, messageContents);
+          if (player.Spawned) {
+            const character = await this.Get(player);
+            
+            if (character) {
+              const sent = await this.proximityMessage(ProximityTypes.Me, new Message(messageContents, SystemTypes.Me), character);
+              if (sent) {
+                await logCommand("/me", player, messageContents);
+              }
             }
           }
         }

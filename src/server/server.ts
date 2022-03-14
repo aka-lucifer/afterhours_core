@@ -185,35 +185,43 @@ export class Server {
       }], true, async (source: string, args: any[]) => {
       if (args[0]) {
         const player = await this.connectedPlayerManager.GetPlayer(source);
-        const myPed = GetPlayerPed(source);
-        const currVeh = GetVehiclePedIsIn(myPed, false)
+        if (player) {
+          if (player.Spawned) {
+            const myPed = GetPlayerPed(source);
+            const currVeh = GetVehiclePedIsIn(myPed, false)
 
-        if (currVeh != 0) {
-          DeleteEntity(currVeh);
+            if (currVeh != 0) {
+              DeleteEntity(currVeh);
+            }
+
+            const vehModel = String(args[0]);
+            const myPosition = GetEntityCoords(myPed);
+            const vehicle = CreateVehicle(await GetHash(vehModel), myPosition[0], myPosition[1], myPosition[2], GetEntityHeading(myPed), true, false);
+            SetPedIntoVehicle(myPed, vehicle, -1);
+            SetVehicleNumberPlateText(vehicle, "Astrid");
+            await logCommand("/veh", player, "");
+          }
         }
-
-        const vehModel = String(args[0]);
-        const myPosition = GetEntityCoords(myPed);
-        const vehicle = CreateVehicle(await GetHash(vehModel), myPosition[0], myPosition[1], myPosition[2], GetEntityHeading(myPed), true, false);
-        SetPedIntoVehicle(myPed, vehicle, -1);
-        SetVehicleNumberPlateText(vehicle, "Astrid");
-        await logCommand("/veh", player, "");
       } else {
         Error("Restore Command", "No 1st argument provided!");
       }
     }, Ranks.Admin);
 
     new Command("dv", "Deletes the vehicle you're inside.", [{}], false, async (source: string) => {
-      const myPed = GetPlayerPed(source);
-      const currVeh = GetVehiclePedIsIn(myPed, false);
-      if (currVeh > 0) {
-        const player = new Player(source);
-        const loaded = await player.Load();
-        if (loaded) {
-          DeleteEntity(currVeh);
-          await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle Deleted", SystemTypes.Success));
-          Error("Del Veh Cmd", "Vehicle Deleted");
-          await logCommand("/delveh", player);
+      const player = new Player(source);
+      if (player) {
+        if (player.Spawned) {
+          const myPed = GetPlayerPed(source);
+          const currVeh = GetVehiclePedIsIn(myPed, false);
+          if (currVeh > 0) {
+            const loaded = await player.Load();
+            if (loaded) {
+              DeleteEntity(currVeh);
+              await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle Deleted", SystemTypes.Success));
+              Error("Del Veh Cmd", "Vehicle Deleted");
+              await logCommand("/delveh", player);
+            }
+          }
         }
       }
     }, Ranks.User);
@@ -231,7 +239,11 @@ export class Server {
 
     new Command("tpm", "Teleport to your waypoint", [], false, async(source: string) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
-      await player.TriggerEvent(Events.teleportToMarker)
+      if (player) {
+        if (player.Spawned) {
+          await player.TriggerEvent(Events.teleportToMarker);
+        }
+      }
     }, Ranks.Admin);
 
     // RCON Commands
@@ -244,10 +256,12 @@ export class Server {
     RegisterCommand("grab", async(source: string) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
       if (player) {
-        const [closest, dist] = await GetClosestPlayer(player);
-        if (closest) {
-          console.log("Me", player.GetHandle, "Closest", closest.GetHandle, "Dist", dist);
-          await player.TriggerEvent(PoliceEvents.startGrabbing, closest.GetHandle);
+        if (player.Spawned) {
+          const [closest, dist] = await GetClosestPlayer(player);
+          if (closest) {
+            console.log("Me", player.GetHandle, "Closest", closest.GetHandle, "Dist", dist);
+            await player.TriggerEvent(PoliceEvents.startGrabbing, closest.GetHandle);
+          }
         }
       }
     }, false);
