@@ -448,7 +448,7 @@
 
           <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
           <div id="Chat-Message" class="global" v-else-if="message.type != 'system' && chatTypes[message.type] == 'global'">(Global | OOC - {{ message.sender}}): {{message.contents}}</div>
-          <div id="Chat-Message" class="admin" v-else-if="message.type != 'system' && chatTypes[message.type] == 'admin'">(Admin - {{ message.sender}}): {{message.contents}}</div>
+          <div id="Chat-Message" class="admin" v-else-if="message.type != 'system' && chatTypes[message.type] == 'admin'">(Administration - {{ message.sender}}): {{message.contents}}</div>
         </div>
       </div>
 
