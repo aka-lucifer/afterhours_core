@@ -416,10 +416,11 @@ export class Server {
   private async EVENT_playerConnected(): Promise<void> {
     const src = source;
     let player;
+    let existed = false;
 
-    console.log(src)
     if (await this.connectedPlayerManager.Exists(src)) { // If connected to server
       player = await this.connectedPlayerManager.GetPlayer(src);
+      existed = true;
     } else { // If restarted resource
       player = new Player(src);
     }
@@ -427,6 +428,7 @@ export class Server {
     if (player) {
       const loadedPlayer = await player.Load();
       if (loadedPlayer) {
+        if (!existed) this.connectedPlayerManager.Add(player);
         Log("Connection Manager", `Player data loaded for [${player.Handle}]: ${player.GetName}`);
 
         // Sync weather & time
