@@ -205,8 +205,12 @@ export class ChatManager {
               emitNet(Events.receiveServerCB, src, sent, data);
             }
           } else {
-            emitNet(Events.sendClientMessage, -1, message, player.GetName);
-            emitNet(Events.receiveServerCB, src, true, data);
+            const character = await this.server.characterManager.Get(player);
+
+            if (character) {
+              emitNet(Events.sendClientMessage, -1, message, `${player.GetName} | ${character.Name}`);
+              emitNet(Events.receiveServerCB, src, true, data);
+            }
           }
 
           const sendersDisc = await player.GetIdentifier("discord");
