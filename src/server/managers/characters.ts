@@ -72,13 +72,6 @@ export class CharacterManager {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
       }
     }, Ranks.User);
-
-    // new Command("vehRegister", "Registers a vehicle to one of your chosen characters", [], false, async(source: string) => {
-    //   const player = await this.server.connectedPlayerManager.GetPlayer(source);
-    //   if (player) {
-    //     await player.TriggerEvent(Events.)
-    //   }
-    // }, Ranks.User)
   }
 
   public async proximityMessage(type: ProximityTypes, message: Message, character: Character): Promise<boolean> {
@@ -211,19 +204,11 @@ export class CharacterManager {
             character.lastName = charData.lastName;
             character.nationality = charData.nationality;
             character.backstory = charData.backstory;
-
             if (charData.mugshot) character.Metadata.Mugshot = charData.mugshot;
-            if (charData.licenses) character.Metadata.SetLicenses(charData.licenses)
-            
-            const cb = {
-              status: true,
-              licenses: character.Metadata.Licenses
-            }
 
             const updatedData = await character.update();
-
             if (updatedData) {
-              await player.TriggerEvent(Events.receiveServerCB, cb, data); // Update the UI to close and disable NUI focus
+              await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
               await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
                 color: EmbedColours.Green,
                 title: "__Character Edited__",

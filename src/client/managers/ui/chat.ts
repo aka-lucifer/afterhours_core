@@ -16,6 +16,7 @@ import {ChatStates} from "../../enums/ui/chat/chatStates";
 export class ChatManager {
   private client: Client;
   private chatTypes: string[] = [];
+  private chatSuggestions: Suggestion[] = [];
   private chatState: ChatStates = ChatStates.Closed;
   
   constructor (client) {
@@ -23,6 +24,7 @@ export class ChatManager {
     console.log("STARTED CHAT MANAGER!");
 
     // Events
+    onNet(Events.setTypes, this.EVENT_setTypes.bind(this));
     onNet(Events.addSuggestion, this.EVENT_addSuggestion.bind(this));
     onNet(Events.sendClientMessage, this.EVENT_newMsg.bind(this))
     onNet(Events.sendSystemMessage, this.EVENT_systemMsg.bind(this));
@@ -31,7 +33,6 @@ export class ChatManager {
   }
 
   public init(): void {
-
     // Register NUI Callbacks & Chat Keybinds
     this.registerCallbacks();
     this.registerKeybinds();
@@ -119,49 +120,32 @@ export class ChatManager {
     }, false);
   }
 
-  public setup(): void {
-    if (this.chatTypes.length <= 0) {
-      Object.keys(ChatTypes).forEach(type => {
-        const chatType = parseInt(type);
-        if (!isNaN(chatType)) {
-          const stringType = ChatTypes[chatType].toLowerCase();
-          if (stringType != "system" && stringType != "admin") {
-            this.chatTypes.push(stringType);
-          }
-        }
-      });
-
-      if (this.client.player.Rank >= Ranks.Admin) {
-        this.chatTypes.push("admin");
+  public setupData(): void {
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.SetupChat,
+      data: {
+        types: this.chatTypes
       }
-    }
+    }))
 
-    console.log("CHAT TYPES SENT", this.chatTypes);
-
-    setTimeout(() => { // Wait until UI processor of resource has loaded
-      SendNuiMessage(JSON.stringify({
-        event: NuiMessages.SetupChat,
-        data: {
-          types: this.chatTypes
-        }
-      }))
-    }, 500);
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.AddSuggestions,
+      data: {
+        suggestions: this.chatSuggestions
+      }
+    }))
   }
 
   // Events
+  private EVENT_setTypes(types: string[]): void {
+    console.log("Set Chat Types", types);
+    this.chatTypes = types;
+  }
+
   private EVENT_addSuggestion(suggestion: Suggestion): void {
-    // console.log("Add Suggestion", suggestion)
+    console.log("Add Suggestion", suggestion.name, suggestion.description)
     // console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.commandParams}`));
-    setTimeout(() => {
-      SendNuiMessage(JSON.stringify({
-        event: NuiMessages.AddSuggestion,
-        data: {
-          name: suggestion.name,
-          description: suggestion.description,
-          params: suggestion.commandParams
-        }
-      }))
-    }, 0);
+    this.chatSuggestions.push(suggestion);
   }
 
   private EVENT_newMsg(message: Message, sender?: string): void {

@@ -24,7 +24,6 @@ import {Warning} from "./warning";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {Notification} from "../ui/notification";
 import { Character, Metadata } from "./character";
-import { Departments } from "../../../shared/enums/jobs/departments";
 import { getRankFromValue } from "../../../shared/utils";
 
 export class Player {

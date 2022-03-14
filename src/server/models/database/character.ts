@@ -302,27 +302,7 @@ export class Metadata {
     this.mugshot = newValue;
   }
 
-  public get Licenses(): Licenses {
-    return this.licenses;
-  }
-
-  public set Licenses(newLicenses: Licenses) {
-    this.licenses = newLicenses;
-  }
-
   // Methods
-  public SetLicenses(newLicenses: string[]): void {
-    const driverLicense = newLicenses.findIndex(license => license.toLowerCase() == "driver");
-    const weaponLicense = newLicenses.findIndex(license => license.toLowerCase() == "weapon");
-
-    const hasDriver = driverLicense !== -1;
-    const hasWeapon = weaponLicense !== -1;
-
-    this.licenses = {
-      driver: hasDriver,
-      weapon: hasWeapon
-    }
-  }
   public async getMetadata(): Promise<void> { // For getting metadata defaults when creating a character
     if (!this.fingerprint) {
       this.fingerprint = await this.generateFingerprint();

@@ -18,7 +18,6 @@ export enum Events {
   populationPedCreating = "populationPedCreating",
   playerSpawned = "playerSpawned",
   chatSuggestion = "chat:addSuggestion",
-  mapStarted = "onClientMapStart",
 
   // Base Events
   playerDied = "baseevents:onPlayerDied",
@@ -30,7 +29,6 @@ export enum Events {
   leftVehicle = "baseevents:leftVehicle",
 
   // Astrid Server Events
-  playerSpawning = "astrid:server:playerSpawning",
   getPlayer = "astrid:server:getPlayer",
   receiveClientCB = "astrid:server:receiveClientCB",
   logDeath = "astrid:server:logDeath",
@@ -66,12 +64,13 @@ export enum Events {
   freezeTime = "astrid:client:freezeTime",
   syncWeather = "astrid:client:syncWeather",
 
-  // Astrid Client (Characters)
-  setupCharacters = "astrid:client:setupCharacters",
-  displayCharacters = "astrid:client:displayCharacters",
+  // Astrid Client (Spawner)
+  setupSpawner = "astrid:client:setupSpawner",
 
-  // Astrid Client (Character Vehicles)
-   
+  // Astrid Client (Characters)
+  receiveCharacters = "astrid:client:receiveCharacters",
+  // setupCharacters = "astrid:client:setupCharacters",
+  displayCharacters = "astrid:client:displayCharacters",
   
   // Astrid Client (Gravity Gun)
   adminGun = "astrid:client:adminGun",
@@ -87,7 +86,7 @@ export enum Events {
   // (Chat Client)
   sendClientMessage = "astrid:client:sendClientMessage",
   sendSystemMessage = "astrid:client:sendSystemMessage",
-  sendSuggestions = "astrid:client:sendSuggestions",
+  setTypes = "astrid:setTypes:setTypes",
   addSuggestion = "astrid:client:addSuggestion",
   removeSuggestion = "astrid:client:removeSuggestion",
   clearChat = "astrid:client:clearChat",

@@ -20,8 +20,8 @@ export class Characters {
     this.registerCallbacks();
 
     // Events
-    onNet(Events.setupCharacters, this.EVENT_setupCharacters.bind(this));
-    onNet(Events.displayCharacters, this.EVENT_displayCharacters.bind(this));
+    onNet(Events.receiveCharacters, this.EVENT_receiveCharacters.bind(this));
+    onNet(Events.displayCharacters, this.displayCharacters.bind(this));
   }
 
   // Methods
@@ -57,7 +57,7 @@ export class Characters {
   }
 
   // Events
-  private EVENT_setupCharacters(characters: any[]): void {
+  private EVENT_receiveCharacters(characters: any[]): void {
     const myChars = [];
 
     for (let i = 0; i < characters.length; i++) {
@@ -65,27 +65,18 @@ export class Characters {
       myChars.push(character);
     }
 
+    // console.log("Recieved Chars", myChars);
     this.myCharacters = myChars;
-
-    setTimeout(() => { // Double check that NUI is loaded & send chars over to UI
-      this.sendCharacters();
-    }, 500);
   }
 
-  private sendCharacters(): void {
+  public displayCharacters(nuiFocus: boolean): void {
+    // console.log("Send chars to UI!");
+    if (nuiFocus) SetNuiFocus(true, true);
     SendNuiMessage(JSON.stringify({
-      event: NuiMessages.SetupCharacters,
+      event: NuiMessages.DisplayCharacters,
       data: {
         characters: this.myCharacters
       }
-    }));
-  }
-
-  public EVENT_displayCharacters(): void {
-    this.client.player.Spawned = false;
-    SetNuiFocus(true, true);
-    SendNuiMessage(JSON.stringify({
-      event: NuiMessages.DisplayCharacter
     }));
   }
 }

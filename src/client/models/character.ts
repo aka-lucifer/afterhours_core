@@ -1,5 +1,4 @@
 import { Job } from "../../server/models/jobs/job"
-import { Metadata } from "../../server/models/database/character"
 
 export class Character {
   private id: number;
@@ -12,7 +11,6 @@ export class Character {
   private isFemale: boolean;
   private phone: string;
   private job: Job;
-  private metadata: Metadata;
   private createdAt: Date;
   private lastUpdated: Date;
 
@@ -27,7 +25,6 @@ export class Character {
     this.isFemale = charData.isFemale;
     this.phone = charData.phone;
     this.job = charData.job;
-    this.metadata = charData.metadata;
     this.createdAt = charData.createdAt;
     this.lastUpdated = charData.createdAt;
   }

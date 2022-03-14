@@ -27,12 +27,12 @@ import {Commends} from "./managers/ui/commends";
 // [Managers] Jobs
 
 // [Controllers] Police
-import {CuffingStuff} from "./controllers/jobs/police/cuffing";
-import {HelicamManager} from "./controllers/jobs/police/helicam";
+// import {CuffingStuff} from "./controllers/jobs/police/cuffing";
+// import {HelicamManager} from "./controllers/jobs/police/helicam";
 import { Grabbing } from "./controllers/jobs/police/grabbing";
 
 
-import {closestPed, Delay, Inform, Log, NumToVector3} from "./utils";
+import {Delay, Inform, Log, NumToVector3, RegisterNuiCallback} from "./utils";
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -46,7 +46,7 @@ import clientConfig from "../configs/client.json";
 import { Message } from "../shared/models/ui/chat/message";
 import { SystemTypes } from "../shared/enums/ui/types";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
-import { AnyAaaaRecord } from "dns";
+import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 
 let takingScreenshot = false;
 
@@ -56,6 +56,8 @@ export class Client {
   private initialSpawn: boolean;
   private developmentMode: boolean = false;
   private richPresenceData: Record<string, any>;
+  private nuiReady: boolean = false;
+  private started: boolean = false;
 
   // Player Data
   public player: Player;
@@ -84,8 +86,8 @@ export class Client {
   // [Managers] Jobs
 
   // [Controllers] Police
-  private cuffing: CuffingStuff;
-  private helicam: HelicamManager;
+  // private cuffing: CuffingStuff;
+  // private helicam: HelicamManager;
   private grabbing: Grabbing;
 
   constructor() {
@@ -96,8 +98,11 @@ export class Client {
     
     // Events
     // (Resources)
-    on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
+    // on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
     on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
+
+    // NUI Ready
+    RegisterNuiCallback(NuiCallbacks.Ready, this.nuiLoaded.bind(this));
 
     // (Player Data)
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
@@ -160,7 +165,6 @@ export class Client {
     this.spawner = new Spawner(client);
     this.characters = new Characters(client);
     this.chatManager = new ChatManager(client);
-    this.chatManager.init();
     this.scoreboard = new Scoreboard(client);
     this.warnings = new Warnings(client);
     this.commends = new Commends(client);
@@ -168,8 +172,8 @@ export class Client {
     // [Managers] Jobs
 
     // [Controllers] Police
-    this.cuffing = new CuffingStuff();
-    this.helicam = new HelicamManager(client);
+    // this.cuffing = new CuffingStuff();
+    // this.helicam = new HelicamManager(client);
     this.grabbing = new Grabbing();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
@@ -181,48 +185,55 @@ export class Client {
       }
     }, false);
 
-    RegisterCommand("cuff", async() => {
-      const [ped, distance] = await closestPed();
-      this.cuffing.init(ped.Handle);
-    }, false);
+    // RegisterCommand("cuff", async() => {
+    //   const [ped, distance] = await closestPed();
+    //   this.cuffing.init(ped.Handle);
+    // }, false);
   }
 
-  // Events
-  private EVENT_resourceRestarted(resourceName: string): void {
-    if (resourceName == GetCurrentResourceName()) {
-      emitNet(Events.playerConnected, undefined, true);
+  public async nuiLoaded(cb: any, data: Record<string, any>): Promise<void> {
+    console.log("NUI READY!");
+    this.nuiReady = true;
+    await this.initialize();
+    this.startUI();
+
+    emitNet(Events.playerConnected, undefined, true);
+  }
+
+  private startUI(): void {
+    this.chatManager.init();
+  }
+
+  private setupUI(): void {
+    this.chatManager.setupData();
+    
+    if (!this.Developing) {
+      this.spawner.init();
+    } else {
+      this.characters.displayCharacters(true);
     }
   }
 
+  // Events
   private EVENT_resourceStop(resourceName: string): void{
     if (resourceName == GetCurrentResourceName()) {
       this.grabbing.stop();
     }
   }
 
-  private async EVENT_playerLoaded(player: any, spawnInfo: Record<string, any>): Promise<void> {
-    await this.initialize()
+  private async EVENT_playerLoaded(player: any): Promise<void> {
     this.player = new Player(player);
-
 
     // Manager Inits
     this.staffManager.init();
     await this.worldManager.init();
-    if (!this.Developing) {
-      this.spawner.start(spawnInfo);
-    } else {
-      setTimeout(() => {
-        this.characters.EVENT_displayCharacters();
-      }, 500);
-    }
-
-    this.chatManager.setup();
+    this.setupUI();
   }
 
   private EVENT_setCharacter(character: any): void {
     this.character = new Character(character);
 
-    console.log("Character Set To", this.Character);
+    // console.log("Character Set To", this.Character);
   }
 
   private EVENT_developmentMode(newState: boolean): void {

@@ -57,6 +57,7 @@ const HUD = new Vue({
     // Char Editing
     editingCharacter: false,
     charEditorMenu: null,
+    editData: {},
 
     // Char Rules
     nameRules: [
@@ -170,16 +171,21 @@ const HUD = new Vue({
     // CHARACTERS
     setupCharacters(data) {
       for (let i = 0; i < data.characters.length; i++) {
-        data.characters[i].jobName = data.characters[i].job.name; // Define this first as job var is overridden below
-        data.characters[i].jobLabel = data.characters[i].job.label;
         data.characters[i].jobRank = data.characters[i].job.rankLabel; // Define this first as job var is overridden below
+        data.characters[i].job = data.characters[i].job.label;
       }
       
       this.characters = data.characters;
     },
 
-    displayCharcaters() {
+    displayCharcaters(data) {
       this.resetCharacters();
+      for (let i = 0; i < data.characters.length; i++) {
+        data.characters[i].jobRank = data.characters[i].job.rankLabel; // Define this first as job var is overridden below
+        data.characters[i].job = data.characters[i].job.label;
+      }
+      
+      this.characters = data.characters;
       this.showCharacters = true;
     },
 
@@ -226,29 +232,23 @@ const HUD = new Vue({
 
     startEditingChar() {
       this.editingCharacter = true;
-
-      const licenses = [];
-      if (this.characters[this.selectedCharacter].metadata.licenses.driver) licenses.push("Driver");
-      if (this.characters[this.selectedCharacter].metadata.licenses.weapon) licenses.push("Weapon");
-
-      this.characters[this.selectedCharacter].licenseValues = licenses;
+      this.editData = this.characters[this.selectedCharacter];
     },
 
     editCharacter() {
       const isFormComplete = this.$refs.charEditorForm.validate();
       if (isFormComplete) {
         this.Post("EDIT_CHARACTER", {
-          characterId: this.characters[this.selectedCharacter].id,
-          firstName: this.characters[this.selectedCharacter].firstName,
-          lastName: this.characters[this.selectedCharacter].lastName,
-          nationality: this.characters[this.selectedCharacter].nationality,
-          backstory: this.characters[this.selectedCharacter].backstory,
-          mugshot: this.characters[this.selectedCharacter].mugshot,
-          licenses: this.characters[this.selectedCharacter].licenseValues
-        }, (charLicenses) => {
-          if (Object.keys(charLicenses).length > 0) {
-            this.characters[this.selectedCharacter].metadata.licenses = charLicenses;
+          characterId: this.editData.id,
+          firstName: this.editData.firstName,
+          lastName: this.editData.lastName,
+          nationality: this.editData.nationality,
+          backstory: this.editData.backstory,
+          mugshot: this.editData.mugshot
+        }, (charData) => {
+          if (charData) {
             this.editingCharacter = false;
+            this.editData = {};
           }
         });
       }
@@ -366,9 +366,9 @@ const HUD = new Vue({
       }
     },
 
-    AddSuggestion(data) {
-      console.log("Push suggestion data", JSON.stringify(data));
-      this.suggestions.push(data);
+    AddSuggestions(data) {
+      console.log("Push suggestion data", JSON.stringify(data.suggestions));
+      this.suggestions = data.suggestions;
     },
     
     OpenChat(data) {
@@ -590,36 +590,43 @@ const HUD = new Vue({
         return [];
       }
 
-      const currentSuggestions = this.suggestions.filter((s) => {
-        if (!s.name.startsWith(this.chatMessage)) {
-          const suggestionSplitted = s.name.split(" ");
-          const messageSplitted = this.chatMessage.split(" ");
-          for (let i = 0; i < messageSplitted.length; i += 1) {
-            if (i >= suggestionSplitted.length) {
-              return i < suggestionSplitted.length + s.params.length;
-            }
-            if (suggestionSplitted[i] !== messageSplitted[i]) {
-              return false;
+      if (this.chatMessage[0] == "/") { // if chat content is a command
+        const currentSuggestions = this.suggestions.filter((s) => {
+          if (!s.name.startsWith(this.chatMessage)) {
+            const suggestionSplitted = s.name.split(" ");
+            const messageSplitted = this.chatMessage.split(" ");
+            for (let i = 0; i < messageSplitted.length; i += 1) {
+              if (i >= suggestionSplitted.length) {
+                return i < suggestionSplitted.length + s.params.length;
+              }
+              if (suggestionSplitted[i] !== messageSplitted[i]) {
+                return false;
+              }
             }
           }
-        }
-        return true;
-      }).slice(0, 5);
+          return true;
+        }).slice(0, 5);
 
-      currentSuggestions.forEach((s) => {
-        // eslint-disable-next-line no-param-reassign
-        s.disabled = !s.name.startsWith(this.chatMessage);
-
-        s.params.forEach((p, index) => {
-          const wType = (index === s.params.length - 1) ? "." : "\\S";
-          const regex = new RegExp(`${s.name} (?:\\w+ ){${index}}(?:${wType}*)$`, "g");
-
+        currentSuggestions.forEach((s) => {
           // eslint-disable-next-line no-param-reassign
-          // @ts-ignore
-          p.disabled = this.chatMessage.match(regex) == null;
+          s.disabled = !s.name.startsWith(this.chatMessage);
+
+          if (s.commandParams.length > 0) {
+            s.commandParams.forEach((p, index) => {
+              const wType = (index === s.commandParams.length - 1) ? "." : "\\S";
+              const regex = new RegExp(`${s.name} (?:\\w+ ){${index}}(?:${wType}*)$`, "g");
+
+              // eslint-disable-next-line no-param-reassign
+              // @ts-ignore
+              p.disabled = this.chatMessage.match(regex) == null;
+            });
+          }
         });
-      });
-      return currentSuggestions;
+
+        return currentSuggestions;
+      } else {
+        return [];
+      }
     },
 
     searchKeybinds() {
@@ -677,7 +684,7 @@ const HUD = new Vue({
 
     // CHAT EVENTS
     RegisterEvent("SETUP_CHAT", this.SetupChat);
-    RegisterEvent("ADD_SUGGESTION", this.AddSuggestion);
+    RegisterEvent("ADD_SUGGESTIONS", this.AddSuggestions);
     RegisterEvent("OPEN_CHAT", this.OpenChat);
     RegisterEvent("SEND_MESSAGE", this.NewMsg);
     RegisterEvent("TOGGLE_CHAT", this.Toggle);
@@ -767,9 +774,9 @@ const HUD = new Vue({
       }
     });
 
+    // NUI Ready
     setTimeout(() => {
       HUD.Post("NUI_READY");
-    });
-    console.log("LOADED!");
+    }, 0);
   }
 });

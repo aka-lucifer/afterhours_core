@@ -3,8 +3,7 @@ export enum NuiMessages {
   OpenSpawner = "OPEN_SPAWNER",
 
   // Characters
-  SetupCharacters = "SETUP_CHARACTERS",
-  DisplayCharacter = "DISPLAY_CHARACTERS",
+  DisplayCharacters = "DISPLAY_CHARACTERS",
   
   // Notifications
   CreateNotification = "CREATE_NOTIFICATION",
@@ -16,6 +15,7 @@ export enum NuiMessages {
 
   // Chat
   SetupChat = "SETUP_CHAT",
+  AddSuggestions = "ADD_SUGGESTIONS",
   AddSuggestion = "ADD_SUGGESTION",
   OpenChat = "OPEN_CHAT",
   SendMessage = "SEND_MESSAGE",

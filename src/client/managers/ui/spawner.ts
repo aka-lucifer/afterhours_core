@@ -9,41 +9,54 @@ import { Events } from "../../../shared/enums/events/events";
 
 export class Spawner {
   private client: Client;
+  private currentAOP: string;
+  private currentPlayers: number;
+  private maxPlayers: number;
+  private bestPlayer: string;
 
   constructor(client: Client) {
     this.client = client;
 
+    // Methods
     this.registerCallbacks();
+
+    // Events
+    onNet(Events.setupSpawner, this.EVENT_setupSpawner.bind(this));
   }
 
   // Methods
   public registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.CloseSpawner, async(data, cb) => {
-      SetNuiFocus(false, false);
       console.log("TP TO AOP & THEN DISPLAY CHAR UI HERE IF NO CHARACTERS");
-      this.client.characters.EVENT_displayCharacters();
+      this.client.characters.displayCharacters(false);
       cb("ok");
     });
   }
 
-  public start(spawnInfo: Record<string, any>): void {
-    setTimeout(async() => {
-      SetNuiFocus(true, true);
+  public init(): void {
+    SetNuiFocus(true, true);
   
-      SendNuiMessage(JSON.stringify({
-        event: NuiMessages.OpenSpawner,
-        data: {
-          aop: "Sandy Shores",
-          players: {
-            current: spawnInfo.current,
-            max: spawnInfo.max,
-            bestPlayer: spawnInfo.bestPlayer,
-          },
-          keybinds: clientConfig.spawnInfo.keybinds,
-          commands: clientConfig.spawnInfo.commands,
-          rules: clientConfig.spawnInfo.rules,
-        }
-      }));
-    }, 500);
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.OpenSpawner,
+      data: {
+        aop: this.currentAOP,
+        players: {
+          current: this.currentPlayers,
+          max: this.maxPlayers,
+          bestPlayer: this.bestPlayer,
+        },
+        keybinds: clientConfig.spawnInfo.keybinds,
+        commands: clientConfig.spawnInfo.commands,
+        rules: clientConfig.spawnInfo.rules,
+      }
+    }));
+  }
+
+  // Events
+  public EVENT_setupSpawner(currentPlayers: number, maxPlayers: number, bestPlayer: string) {
+    this.currentAOP = "Sandy Shores";
+    this.currentPlayers = currentPlayers;
+    this.maxPlayers = maxPlayers;
+    this.bestPlayer = bestPlayer;
   }
 }

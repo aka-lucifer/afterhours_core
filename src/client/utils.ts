@@ -72,7 +72,7 @@ export async function GetClosestPlayerPed(position: Vector3): Promise<[Ped, numb
   let closestDistance = 1000;
   let justStarted = true;
 
-  for (let a = 0; a < Object.keys(GetActivePlayers).length; a++) {
+  for(let a = 0; a < Object.keys(GetActivePlayers).length; a++) {
     const ped = new Ped(GetActivePlayers[a]);
     const pedDist = Dist(position, ped.Position, true);
 
@@ -91,35 +91,31 @@ export async function GetClosestPlayerPed(position: Vector3): Promise<[Ped, numb
   }
 }
 
-export async function closestPed(): Promise<[Ped, number]> {
-  let closestPed: Ped;
+export async function GetClosestPed(position: Vector3): Promise<[Ped, number]> {
+  let closestEntity;
   let closestDistance = 1000;
   let justStarted = true;
-  const worldPeds = World.getAllPeds();
 
-  worldPeds.forEach(ped => {
-    if (Game.PlayerPed.Handle != ped.Handle) {
-      const pedDist = Dist(Game.PlayerPed.Position, ped.Position, true);
+  for(let a = 0; a < World.getAllPeds.length; a++) {
+    const ped = new Ped(World.getAllPeds[a]);
+    const pedDist = Dist(position, ped.Position, true);
 
-      if (justStarted) {
-        closestPed = ped;
+    if (justStarted) {
+      if (!IsPedAPlayer(ped.Handle)) {
+        closestEntity = ped;
         closestDistance = pedDist;
         justStarted = false;
       }
+    }
 
-      if (pedDist < closestDistance) {
-        closestPed = ped;
+    if (closestDistance < pedDist) {
+      if (!IsPedAPlayer(ped.Handle)) {
+        closestEntity = ped;
         closestDistance = pedDist;
       }
     }
-  });
 
-  console.log(`Ped: ${closestPed.Handle} | Distance: ${closestDistance}`);
-  if (closestDistance <= 10.0) {
-    return [closestPed, closestDistance];
-  } else {
-    Error("(closestPed)", "No ped found!");
-    return [null, null];
+    return [closestEntity, closestDistance];
   }
 }
 
@@ -129,6 +125,12 @@ export function Delay(ms : number) : Promise<void> {
 
 export function Random(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+export function DisplayHelp(helpMessage: string, beepSound: boolean = false): void {
+  BeginTextCommandDisplayHelp('STRING')
+	AddTextComponentScaleform(helpMessage)
+	EndTextCommandDisplayHelp(0, false, beepSound, -1)
 }
 
 /**
@@ -181,6 +183,38 @@ export async function PlayAnim(ped: Ped, animDict: string, animName: string, fla
   }
 }
 
+export async function closestPed(): Promise<[Ped, number]> {
+  let closestPed: Ped;
+  let closestDistance = 1000;
+  let justStarted = true;
+  const worldPeds = World.getAllPeds();
+  
+  worldPeds.forEach(ped => {
+    if (Game.PlayerPed.Handle != ped.Handle) {
+      const pedDist = Dist(Game.PlayerPed.Position, ped.Position, true);
+
+      if (justStarted) {
+        closestPed = ped;
+        closestDistance = pedDist;
+        justStarted = false;
+      }
+
+      if (pedDist < closestDistance) {
+        closestPed = ped;
+        closestDistance = pedDist;
+      }
+    }
+  });
+
+  console.log(`Ped: ${closestPed.Handle} | Distance: ${closestDistance}`);
+  if (closestDistance <= 10.0) {
+    return [closestPed, closestDistance];
+  } else {
+    Error("(closestPed)", "No ped found!");
+    return [null, null];
+  }
+}
+
 /**
  * 
  * @param callbackName Name of the callback
@@ -217,13 +251,4 @@ export function Draw3DText(position: Vector3, colour: { r: number, g: number, b:
   SetDrawOrigin(position.x, position.y, position.z, 0);
   DrawText(0, 0);
   ClearDrawOrigin();
-}
-
-/**
- *
- * @param i Integer to add zero to
- */
-export function addZero(i): string {
-  if (i < 10) {i = "0" + i}
-  return i;
 }

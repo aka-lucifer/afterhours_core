@@ -116,7 +116,7 @@
               <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName != 'civilian'"><b>Job</b>: {{ hoveredCharacter.jobLabel }} ({{ hoveredCharacter.jobRank }})</span>
               <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName == 'civilian'"><b>Job</b>: {{ hoveredCharacter.jobLabel }}</span>
               <!-- <span style="font-family: 'PT-Sans-Caption';"><b>Phone</b>: {{ hoveredCharacter.phone }}</span><br> -->
-              <br><span style="font-family: 'PT-Sans-Caption';"><b>Backstory</b>: {{ hoveredCharacter.backstory }}</span>
+              <span style="font-family: 'PT-Sans-Caption';"><b>Backstory</b>: {{ hoveredCharacter.backstory }}</span><br>
             </v-card-text>
           </v-card>
 
@@ -148,6 +148,7 @@
                           <v-select
                             v-model="newCharacter.licenseValues"
                             :items="newCharacter.licenses"
+                            color="green"
                             chips
                             label="Licenses"
                             multiple
@@ -182,21 +183,11 @@
                       <v-row>
                         <v-col cols="12" sm="12" md="20">
                           <br>
-                          <v-text-field v-model="characters[selectedCharacter].firstName" :rules="nameRules" outlined label="First Name" append-icon="mdi-rename-box" required></v-text-field>
-                          <v-text-field v-model="characters[selectedCharacter].lastName" :rules="nameRules" outlined label="Surname" append-icon="mdi-rename-box" required></v-text-field>
-                          <v-text-field v-model="characters[selectedCharacter].nationality" :rules="nationalityRules" outlined label="Nationality" append-icon="mdi-map-marker" required></v-text-field>
-                          <v-textarea v-model="characters[selectedCharacter].backstory" :rules="backstoryRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
-                          <v-text-field v-model="characters[selectedCharacter].mugshot" outlined label="Mugshot Image Link" append-icon="mdi-camera"></v-text-field>
-
-                          <v-select
-                            v-model="characters[selectedCharacter].licenseValues"
-                            :items="newCharacter.licenses"
-                            chips
-                            label="Licenses"
-                            multiple
-                            outlined
-                            append-icon="mdi-card-account-details"
-                          ></v-select>
+                          <v-text-field v-model="editData.firstName" :rules="nameRules" outlined label="First Name" append-icon="mdi-rename-box" required></v-text-field>
+                          <v-text-field v-model="editData.lastName" :rules="nameRules" outlined label="Surname" append-icon="mdi-rename-box" required></v-text-field>
+                          <v-text-field v-model="editData.nationality" :rules="nationalityRules" outlined label="Nationality" append-icon="mdi-map-marker" required></v-text-field>
+                          <v-textarea v-model="editData.backstory" :rules="backstoryRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
+                          <v-text-field v-model="editData.mugshot" outlined label="Mugshot Image Link" append-icon="mdi-camera"></v-text-field>
                         </v-col>
                         
                         <v-flex xs6>
