@@ -252,7 +252,6 @@ const HUD = new Vue({
           mugshot: this.characters[this.selectedCharacter].mugshot,
           licenses: this.characters[this.selectedCharacter].licenseValues
         }, (charLicenses) => {
-          console.log("edit cb", JSON.stringify(charLicenses));
           if (Object.keys(charLicenses).length > 0) {
             this.characters[this.selectedCharacter].metadata.licenses = charLicenses;
             this.editingCharacter = false;
