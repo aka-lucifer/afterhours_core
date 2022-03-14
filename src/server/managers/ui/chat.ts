@@ -41,6 +41,7 @@ export class ChatManager {
       if (player.Spawned) {
         const message = new Message(data.message, data.type);
 
+        console.log("SENT!");
         if (server.IsDebugging) Inform("Message Sent", JSON.stringify(message));
         if (message.content[0] == "/") { // If it's a command
           const args = String(message.content).replace("/", "").split(" "); // All of the arguments of the message
@@ -61,7 +62,7 @@ export class ChatManager {
                 if (player.Rank >= registeredCommands[a].permission) {
                   if (registeredCommands[a].argsRequired) {
                     if (Object.keys(registeredCommands[a].args).length > 0 && args.length >= Object.keys(registeredCommands[a].args).length) {
-                      registeredCommands[a].callback(player.GetHandle, args);
+                      registeredCommands[a].callback(player.Handle, args);
                       emitNet(Events.receiveServerCB, src, true, data);
                     } else {
                       Error("Chat Manager", "All command arguments must be entered!");
@@ -70,7 +71,7 @@ export class ChatManager {
                     }
                   } else {
                     emitNet(Events.receiveServerCB, src, true, data);
-                    registeredCommands[a].callback(player.GetHandle, args);
+                    registeredCommands[a].callback(player.Handle, args);
                   }
                 } else {
                   Error("Chat Manager", "Access Denied!");
@@ -81,6 +82,7 @@ export class ChatManager {
             }
           }
         } else {
+          console.log("message not cmd!");
           // Log chat into DB table
           const chatLog = new ChatLog(player, message);
           await chatLog.save();
@@ -184,13 +186,15 @@ export class ChatManager {
             }
           }
 
+          console.log("after blacklist!");
+
           // Send chat messages
           const connectedPlayers = this.server.connectedPlayerManager.GetPlayers;
 
           if (message.type == ChatTypes.Admin) {
             for (let i = 0; i < connectedPlayers.length; i++) {
               const otherPlayer = connectedPlayers[i];
-              // console.log(`[${otherPlayer.GetHandle}: ${JSON.stringify(otherPlayer)}`);
+              // console.log(`[${otherPlayer.Handle}: ${JSON.stringify(otherPlayer)}`);
 
               if (otherPlayer.Rank >= Ranks.Admin) {
                 await connectedPlayers[i].TriggerEvent(Events.sendClientMessage, message, player.GetName);
@@ -201,6 +205,7 @@ export class ChatManager {
             const character = await this.server.characterManager.Get(player);
 
             if (character) {
+              console.log("send local msg!");
               const sent = await this.server.characterManager.proximityMessage(ProximityTypes.Local, message, character);
               emitNet(Events.receiveServerCB, src, sent, data);
             }

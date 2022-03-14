@@ -62,8 +62,12 @@ export class Player {
     return this.hardwareId;
   }
 
-  public get GetHandle(): string {
+  public get Handle(): string {
     return this.handle
+  }
+
+  public set Handle(newHandle: string) {
+    this.handle = newHandle;
   }
 
   public get GetName(): string {
@@ -101,10 +105,6 @@ export class Player {
   // Set Requests
   public set Spawned(newValue: boolean) {
     this.spawned = newValue;
-  }
-
-  public set SetHandle(newHandle: string) {
-    this.handle = newHandle;
   }
 
   // Methods
@@ -277,7 +277,7 @@ export class Player {
   }
 
   public Position(): Vector3 {
-    return NumToVector3(GetEntityCoords(GetPlayerPed(this.GetHandle)));
+    return NumToVector3(GetEntityCoords(GetPlayerPed(this.Handle)));
   }
 
   public async TriggerEvent(eventName: Events | PoliceEvents, ...args: any[]): Promise<void> {

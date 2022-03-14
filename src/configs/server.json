@@ -148,5 +148,10 @@
   "rankCycling": {
     "interval": 20
   },
+  "characters": {
+    "meCommand": {
+      "drawLength": 5000
+    }
+  },
   "maxClosestDistance": 5
 }

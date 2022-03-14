@@ -20,10 +20,12 @@ import { SystemTypes } from "../../shared/enums/ui/types";
 import { Ranks } from "../../shared/enums/ranks";
 
 import sharedConfig from "../../configs/shared.json";
+import serverConfig from "../../configs/server.json";
 
 export class CharacterManager {
   public server: Server;
   private characters: Character[] = [];
+  private meDrawnings: meDrawing[] = [];
   
   constructor(server: Server) {
     this.server = server;
@@ -69,6 +71,7 @@ export class CharacterManager {
             if (character) {
               const sent = await this.proximityMessage(ProximityTypes.Me, new Message(messageContents, SystemTypes.Me), character);
               if (sent) {
+                await this.meDrawing(character, messageContents);
                 await logCommand("/me", player, messageContents);
               }
             }
@@ -86,8 +89,8 @@ export class CharacterManager {
 
       for (let i = 0; i < players.length; i++) {
         const otherPlayer = players[i];
-        const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.GetHandle)));
-        const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.GetHandle)));
+        const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.Handle)));
+        const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.Handle)));
 
         const dist = Dist(myPos, otherPos, false);
         Log("Proximity Message", `My Position: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
@@ -104,8 +107,9 @@ export class CharacterManager {
 
       for (let i = 0; i < players.length; i++) {
         const otherPlayer = players[i];
-        const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.GetHandle)));
-        const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.GetHandle)));
+        console.log("otherPlayer Handle", otherPlayer.Handle);
+        const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.Handle)));
+        const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.Handle)));
 
         const dist = Dist(myPos, otherPos, false);
         Log("Proximity Message", `My Position: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
@@ -122,7 +126,7 @@ export class CharacterManager {
 
   public async Add(character: Character): Promise<number> {
     const addedData = this.characters.push(character);
-    if (this.server.IsDebugging) Log("Character Manager (Add)", `[Char Id: ${character.Id}]: ${character.Name} | [Player Id: ${character.Owner.GetHandle}]: ${character.Owner.GetName}`);
+    if (this.server.IsDebugging) Log("Character Manager (Add)", `[Char Id: ${character.Id}]: ${character.Name} | [Player Id: ${character.Owner.Handle}]: ${character.Owner.GetName}`);
     return addedData;
   }
 
@@ -178,8 +182,24 @@ export class CharacterManager {
     if (charIndex != -1) {
       const tempData = this.characters[charIndex];
       this.characters.splice(charIndex, 1);
-      Inform("Character Manager", `[Char Id: ${tempData.Id}]: ${tempData.Name} | [Player Id: ${tempData.Owner.GetHandle}]: ${tempData.Owner.GetName} | Removed from character manager!`);
+      Inform("Character Manager", `[Char Id: ${tempData.Id}]: ${tempData.Name} | [Player Id: ${tempData.Owner.Handle}]: ${tempData.Owner.GetName} | Removed from character manager!`);
     }
+  }
+
+  public async meDrawing(sender: Character, content: string): Promise<void> {
+    this.meDrawnings.push(new meDrawing(sender, content));
+    console.log(`Sync /me command | (${content}) by (${JSON.stringify(sender)})`);
+    // sync to client
+
+    // Allow to draw for this length
+    setTimeout(async() => {
+      const meIndex = this.meDrawnings.findIndex(drawing => drawing.By.Owner.Id == sender.Owner.Id && drawing.Content == content);
+      if (meIndex != -1) {
+        this.meDrawnings.splice(meIndex, 1);
+        console.log(`Sync deleted /me content | (${content}) by (${JSON.stringify(sender)})`);
+        // resync to client
+      }
+    }, serverConfig.characters.meCommand.drawLength);
   }
 
   // Callbacks
@@ -352,4 +372,23 @@ export class CharacterManager {
 export enum ProximityTypes {
   Local,
   Me
+}
+
+class meDrawing {
+  private drawedBy: Character;
+  private content: string;
+
+  constructor(drawer: Character, content: string) {
+    this.drawedBy = drawer;
+    this.content = content;
+  }
+
+  // Getters
+  public get By(): Character {
+    return this.drawedBy;
+  }
+
+  public get Content(): string {
+    return this.content;
+  }
 }

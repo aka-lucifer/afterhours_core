@@ -266,7 +266,7 @@ export async function GetClosestPlayer(myPlayer: Player): Promise<[Player, numbe
   for (let i = 0; i < players.length; i++) {
     const player = players[i];
 
-    if (player.GetHandle != myPlayer.GetHandle) {
+    if (player.Handle != myPlayer.Handle) {
       const pedDist = Dist(myPlayer.Position(), player.Position(), true);
 
       if (pedDist <= serverConfig.maxClosestDistance) {

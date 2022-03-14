@@ -91,6 +91,7 @@ export class Server {
 
     // Events
     onNet(Events.resourceStart, this.EVENT_resourceStarted.bind(this));
+    onNet(Events.playerJoined, this.EVENT_playerJoined.bind(this));
     onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
     onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
     onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
@@ -259,8 +260,8 @@ export class Server {
         if (player.Spawned) {
           const [closest, dist] = await GetClosestPlayer(player);
           if (closest) {
-            console.log("Me", player.GetHandle, "Closest", closest.GetHandle, "Dist", dist);
-            await player.TriggerEvent(PoliceEvents.startGrabbing, closest.GetHandle);
+            console.log("Me", player.Handle, "Closest", closest.Handle, "Dist", dist);
+            await player.TriggerEvent(PoliceEvents.startGrabbing, closest.Handle);
           }
         }
       }
@@ -272,7 +273,7 @@ export class Server {
     if (grabbingPlayer) {
       if (grabbeeId) {
         console.log("closest on grabPlayer", grabbeeId);
-        emitNet(PoliceEvents.setGrabbed, grabbeeId, grabbingPlayer.GetHandle);
+        emitNet(PoliceEvents.setGrabbed, grabbeeId, grabbingPlayer.Handle);
       } else {
         console.log("closest ped isn't found!");
       }
@@ -335,7 +336,7 @@ export class Server {
 
       const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
       if (player) {
-        this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.GetHandle, {}, async (cbData, passedData) => {
+        this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.Handle, {}, async (cbData, passedData) => {
           // console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
           const ban = new Ban(playerId, hardwareId, reason, issuedBy);
           ban.Logger = LogTypes.Anticheat;
@@ -366,73 +367,31 @@ export class Server {
     }
   }
 
-  private async EVENT_playerConnected(oldId: number, restarted: boolean = false): Promise<void> {
-    const src = global.source;
-    let player: Player;
-    let loadedPlayer;
+  private async EVENT_playerJoined(oldId: string) {
+    const src = source;
+    const player = await this.connectedPlayerManager.GetPlayer(oldId);
+    if (player) {
 
-    if (!restarted) { // If joined, get our old id and update our data in player manager to new server ID
-      await this.connectedPlayerManager.Update(src, oldId.toString())
-      player = await this.connectedPlayerManager.GetPlayer(src);
-      loadedPlayer = await player.Load();
-    } else { // If restarted resource
-      player = new Player(src);
-      loadedPlayer = await player.Load();
-      this.connectedPlayerManager.Add(player);
-    }
-
-    if (loadedPlayer) {
-      Log("Connection Manager", `Player data loaded for [${player.GetHandle}]: ${player.GetName}`);
-
-      // Sync weather & time
-      await this.timeManager.sync(player);
-      await this.weatherManager.sync(player);
-
-      // Sync chat data
-      await this.chatManager.generateTypes(player);
-      this.commandManager.createChatSuggestions(player);
-
-      // Sync Characters
-      const loadedChars = await player.getCharacters();
-      if (loadedChars) {
-        await player.TriggerEvent(Events.receiveCharacters, player.characters);
-      }
-
-      // Sync spawner data
-      if (this.developmentMode) {
-        await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.GetMaxPlayers, await this.playerManager.getBestPlayer())
-      }
-
-      // Sync Player data
-      await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player));
+      // Update our connected ID to our established net server ID
+      player.Handle = src;
 
       const discord = await player.GetIdentifier("discord");
-
-      if (!restarted) {
-        const rejoined = this.connectionsManager.disconnectedPlayers.findIndex(tempPlayer => tempPlayer.license == player.GetIdentifier("license") || tempPlayer.ip == player.GetIdentifier("ip") || tempPlayer.hardwareId == player.HardwareId);
-
-        if (rejoined != -1) { // If the player hasn't left the server
-          if (this.connectionsManager.disconnectedPlayers[rejoined].name != player.GetName) {
-            await this.logManager.Send(LogTypes.Anticheat, new WebhookMessage({
-              username: "Anticheat Logs", embeds: [{
-                color: EmbedColours.Red,
-                title: "__Name Change Detected__",
-                description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
-                footer: {
-                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                  icon_url: sharedConfig.serverLogo
-                }
-              }]
-            }));
-            this.connectionsManager.disconnectedPlayers.splice(rejoined, 1);
-          } else {
-            await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
-              color: EmbedColours.Green,
-              title: "__Player Connected__",
-              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
-              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-            }]}));
-          }
+      const rejoined = this.connectionsManager.disconnectedPlayers.findIndex(tempPlayer => tempPlayer.license == player.GetIdentifier("license") || tempPlayer.ip == player.GetIdentifier("ip") || tempPlayer.hardwareId == player.HardwareId);
+  
+      if (rejoined != -1) { // If the player hasn't left the server
+        if (this.connectionsManager.disconnectedPlayers[rejoined].name != player.GetName) {
+          await this.logManager.Send(LogTypes.Anticheat, new WebhookMessage({
+            username: "Anticheat Logs", embeds: [{
+              color: EmbedColours.Red,
+              title: "__Name Change Detected__",
+              description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+              footer: {
+                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                icon_url: sharedConfig.serverLogo
+              }
+            }]
+          }));
+          this.connectionsManager.disconnectedPlayers.splice(rejoined, 1);
         } else {
           await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
             color: EmbedColours.Green,
@@ -441,7 +400,61 @@ export class Server {
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
           }]}));
         }
+      } else {
+        await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Player Connected__",
+          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+        }]}));
       }
+    } else {
+      console.log("unable to find player, on event playerJoined!");
+    }
+  }
+
+  private async EVENT_playerConnected(): Promise<void> {
+    const src = source;
+    let player;
+
+    console.log(src)
+    if (await this.connectedPlayerManager.Exists(src)) { // If connected to server
+      player = await this.connectedPlayerManager.GetPlayer(src);
+    } else { // If restarted resource
+      player = new Player(src);
+    }
+
+    if (player) {
+      const loadedPlayer = await player.Load();
+      if (loadedPlayer) {
+        Log("Connection Manager", `Player data loaded for [${player.Handle}]: ${player.GetName}`);
+
+        // Sync weather & time
+        await this.timeManager.sync(player);
+        await this.weatherManager.sync(player);
+
+        // Sync chat data
+        await this.chatManager.generateTypes(player);
+        this.commandManager.createChatSuggestions(player);
+
+        // Sync Characters
+        const loadedChars = await player.getCharacters();
+        if (loadedChars) {
+          await player.TriggerEvent(Events.receiveCharacters, player.characters);
+        }
+
+        // Sync spawner data
+        if (this.developmentMode) {
+          await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.GetMaxPlayers, await this.playerManager.getBestPlayer())
+        }
+
+        // Sync Player data
+        await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player));
+      } else {
+        console.log("error loading player load method!");
+      }
+    } else {
+      console.log("error loading player!");
     }
   }
 
@@ -456,7 +469,6 @@ export class Server {
       console.log(weaponData);
 
       if (weaponData !== undefined) {
-        console.log("DEFINED!");
         if (!data.inVeh && weaponData.type == "weapon") {
           const killDistance = Dist(player.Position(), killer.Position(), false);
           emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
@@ -473,7 +485,6 @@ export class Server {
           }]
         }));
       } else {
-        console.log("OOPSIE!");
         await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
           username: "Kill Logs", embeds: [{
             color: EmbedColours.Green,

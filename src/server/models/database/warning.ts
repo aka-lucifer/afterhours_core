@@ -157,7 +157,7 @@ export class Warning {
       const svPlayers = server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < svPlayers.length; i++) {
-        if (svPlayers[i].GetHandle != this.player.GetHandle) {
+        if (svPlayers[i].Handle != this.player.Handle) {
           await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`^3${this.player.GetName} ^0has received a warning from ^3[${Ranks[this.warner.Rank]}] - ^3${this.warner.GetName}`, SystemTypes.Admin));
         }
       }
@@ -166,7 +166,7 @@ export class Warning {
       const svPlayers = server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < svPlayers.length; i++) {
-        if (svPlayers[i].GetHandle != this.player.GetHandle) {
+        if (svPlayers[i].Handle != this.player.Handle) {
           await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`^3${this.player.GetName} ^0has received a warning from ^3System`, SystemTypes.Admin));
         }
       }

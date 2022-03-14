@@ -58,16 +58,16 @@ export class ConnectedPlayerManager {
 
   public Add(player: Player): number {
     const addedData = this.connectedPlayers.push(player);
-    if (this.server.IsDebugging) Log("Player Manager (Add)", `[${player.GetHandle}]: ${player.GetName}`);
+    if (this.server.IsDebugging) Log("Player Manager (Add)", `[${player.Handle}]: ${player.GetName}`);
     return addedData;
   }
 
   public async Update(newHandle: string, oldHandle: string): Promise<Player> {
     const player = await this.GetPlayer(oldHandle);
     if (player) {
-      const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == oldHandle);
+      const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == oldHandle);
       if (playerIndex != -1) {
-        player.SetHandle = newHandle;
+        player.Handle = newHandle;
         this.connectedPlayers[playerIndex] = player;
         return this.connectedPlayers[playerIndex];
       }
@@ -75,7 +75,7 @@ export class ConnectedPlayerManager {
   }
 
   public async GetPlayer(playerHandle: string): Promise<Player> {
-    const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
+    const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == playerHandle);
     if (playerIndex != -1) {
       return this.connectedPlayers[playerIndex];
     }
@@ -102,11 +102,11 @@ export class ConnectedPlayerManager {
   }
 
   public async Disconnect(playerHandle: string, disconnectReason: string): Promise<void> {
-    const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
+    const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == playerHandle);
     if (playerIndex != -1) {
       const player = await this.GetPlayer(playerHandle);
       const name = player.GetName;
-      const tempData = `[${player.GetHandle}] - ${name}`;
+      const tempData = `[${player.Handle}] - ${name}`;
 
       // Change Name Detection
       const disconnectIndex = this.server.connectionsManager.disconnectedPlayers.findIndex(connectedPlayer => connectedPlayer.name == name);
@@ -133,7 +133,7 @@ export class ConnectedPlayerManager {
   }
 
   public async Remove(playerHandle: string): Promise<void> {
-    const playerIndex = this.connectedPlayers.findIndex(player => player.GetHandle == playerHandle);
+    const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == playerHandle);
     if (playerIndex != -1) {
       this.connectedPlayers.splice(playerIndex, 1);
     }

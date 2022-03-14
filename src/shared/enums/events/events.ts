@@ -13,7 +13,7 @@ export enum Events {
   playerConnecting = "playerConnecting",
   playerEnteredScope = "playerEnteredScope",
   playerLeftScope = "playerLeftScope",
-  playerConnected = "playerJoining",
+  playerJoined = "playerJoining",
   playerDisconnected = "playerDropped",
   populationPedCreating = "populationPedCreating",
   playerSpawned = "playerSpawned",
@@ -29,6 +29,7 @@ export enum Events {
   leftVehicle = "baseevents:leftVehicle",
 
   // Astrid Server Events
+  playerConnected = "astrid:server:playerConnected",
   getPlayer = "astrid:server:getPlayer",
   receiveClientCB = "astrid:server:receiveClientCB",
   logDeath = "astrid:server:logDeath",

@@ -122,10 +122,10 @@ export class Kick {
   public drop(): void {
     if (!this.systemKick) {
       emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.kicker.Rank]}] - ^3${this.kicker.GetName} ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
-      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: [${Ranks[this.kicker.Rank]}] - ${this.kicker.GetName}\n__Reason__: ${this.kickReason}`);
+      DropPlayer(this.player.Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: [${Ranks[this.kicker.Rank]}] - ${this.kicker.GetName}\n__Reason__: ${this.kickReason}`);
     } else {
       emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
-      DropPlayer(this.player.GetHandle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: System\n__Reason__: ${this.kickReason}`);
+      DropPlayer(this.player.Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: System\n__Reason__: ${this.kickReason}`);
     }
   }
 }
