@@ -298,11 +298,28 @@ export class Metadata {
   }
 
   // Getters & Setters
+  public get Licenses(): Licenses {
+    return this.licenses;
+  }
+  
   public set Mugshot(newValue: string) {
     this.mugshot = newValue;
   }
 
   // Methods
+  public setLicenses(newLicenses: string[]): void {
+    const driverLicense = newLicenses.findIndex(license => license.toLowerCase() == "driver");
+    const weaponLicense = newLicenses.findIndex(license => license.toLowerCase() == "weapon");
+
+    const hasDriver = driverLicense !== -1;
+    const hasWeapon = weaponLicense !== -1;
+
+    this.licenses = {
+      driver: hasDriver,
+      weapon: hasWeapon
+    }
+  }
+
   public async getMetadata(): Promise<void> { // For getting metadata defaults when creating a character
     if (!this.fingerprint) {
       this.fingerprint = await this.generateFingerprint();

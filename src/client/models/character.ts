@@ -11,6 +11,7 @@ export class Character {
   private isFemale: boolean;
   private phone: string;
   private job: Job;
+  private metadata: Record<string, any> = {};
   private createdAt: Date;
   private lastUpdated: Date;
 
@@ -25,6 +26,7 @@ export class Character {
     this.isFemale = charData.isFemale;
     this.phone = charData.phone;
     this.job = charData.job;
+    this.metadata = charData.metadata;
     this.createdAt = charData.createdAt;
     this.lastUpdated = charData.createdAt;
   }

@@ -192,7 +192,7 @@ export class Client {
   }
 
   public async nuiLoaded(cb: any, data: Record<string, any>): Promise<void> {
-    console.log("NUI READY!");
+    // console.log("NUI READY!");
     this.nuiReady = true;
     await this.initialize();
     this.startUI();

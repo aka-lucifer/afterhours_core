@@ -229,10 +229,16 @@ export class CharacterManager {
             character.nationality = charData.nationality;
             character.backstory = charData.backstory;
             if (charData.mugshot) character.Metadata.Mugshot = charData.mugshot;
+            if (charData.licenses) character.Metadata.setLicenses(charData.licenses)
+
+            const cb = {
+              status: true,
+              licenses: character.Metadata.Licenses
+            }
 
             const updatedData = await character.update();
             if (updatedData) {
-              await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+              await player.TriggerEvent(Events.receiveServerCB, cb, data); // Update the UI to close and disable NUI focus
               await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
                 color: EmbedColours.Green,
                 title: "__Character Edited__",

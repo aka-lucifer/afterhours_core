@@ -21,7 +21,7 @@ export class ChatManager {
   
   constructor (client) {
     this.client = client;
-    console.log("STARTED CHAT MANAGER!");
+    // console.log("STARTED CHAT MANAGER!");
 
     // Events
     onNet(Events.setTypes, this.EVENT_setTypes.bind(this));
@@ -138,12 +138,12 @@ export class ChatManager {
 
   // Events
   private EVENT_setTypes(types: string[]): void {
-    console.log("Set Chat Types", types);
+    // console.log("Set Chat Types", types);
     this.chatTypes = types;
   }
 
   private EVENT_addSuggestion(suggestion: Suggestion): void {
-    console.log("Add Suggestion", suggestion.name, suggestion.description)
+    // console.log("Add Suggestion", suggestion.name, suggestion.description)
     // console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.params}`));
     this.chatSuggestions.push(suggestion);
   }

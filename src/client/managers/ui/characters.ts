@@ -34,7 +34,9 @@ export class Characters {
 
     RegisterNuiCallback(NuiCallbacks.EditCharacter, async(data, cb) => {
       this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editCharacter, {data}, (cbData, passedData) => {
-        cb(cbData)
+        if (cbData.status) {
+          cb(cbData.licenses)
+        }
       }));
     });
 
