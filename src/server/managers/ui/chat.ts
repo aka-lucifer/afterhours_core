@@ -9,6 +9,8 @@ import { Player } from "../../models/database/player";
 import {Ban} from "../../models/database/ban";
 import {Kick} from "../../models/database/kick";
 
+import { ProximityTypes } from "../characters"; 
+
 import { Message } from "../../../shared/models/ui/chat/message";
 import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
@@ -196,20 +198,12 @@ export class ChatManager {
             }
             emitNet(Events.receiveServerCB, src, true, data);
           } else if (message.type == ChatTypes.Local) {
-            for (let i = 0; i < connectedPlayers.length; i++) {
-              const otherPlayer = connectedPlayers[i];
-              const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(player.GetHandle)));
-              const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.GetHandle)));
+            const character = await this.server.characterManager.Get(player);
 
-              const dist = Dist(myPos, otherPos, false);
-              Log("Proximity Message", `My Position: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
-
-              if (dist <= 60.0) {
-                Inform("Proximity Message", `Player (${otherPlayer.GetName}) is close enough to recieve the proximity message sent from (${player.GetName})`);
-                await otherPlayer.TriggerEvent(Events.sendClientMessage, message, player.GetName);
-              }
+            if (character) {
+              const sent = await this.server.characterManager.proximityMessage(ProximityTypes.Local, message, character);
+              emitNet(Events.receiveServerCB, src, sent, data);
             }
-            emitNet(Events.receiveServerCB, src, true, data);
           } else {
             emitNet(Events.sendClientMessage, -1, message, player.GetName);
             emitNet(Events.receiveServerCB, src, true, data);

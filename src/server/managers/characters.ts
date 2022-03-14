@@ -99,6 +99,24 @@ export class CharacterManager {
       }
 
       return true;
+    } else if (type == ProximityTypes.Local) {
+      const players = this.server.connectedPlayerManager.GetPlayers;
+
+      for (let i = 0; i < players.length; i++) {
+        const otherPlayer = players[i];
+        const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.GetHandle)));
+        const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.GetHandle)));
+
+        const dist = Dist(myPos, otherPos, false);
+        Log("Proximity Message", `My Position: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
+
+        if (dist <= 60.0) {
+          Inform("Proximity Message", `Player (${otherPlayer.GetName}) is close enough to recieve the proximity message sent from (${character.Owner.GetName})`);
+          await otherPlayer.TriggerEvent(Events.sendClientMessage, message, character.Name);
+        }
+      }
+
+      return true;
     }
   }
 
@@ -325,6 +343,7 @@ export class CharacterManager {
   }
 }
 
-enum ProximityTypes {
+export enum ProximityTypes {
+  Local,
   Me
 }
