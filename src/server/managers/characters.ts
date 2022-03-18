@@ -71,7 +71,7 @@ export class CharacterManager {
             if (character) {
               const sent = await this.proximityMessage(ProximityTypes.Me, new Message(messageContents, SystemTypes.Me), character);
               if (sent) {
-                await this.meDrawing(character, messageContents);
+                await this.meDrawing(parseInt(player.Handle), messageContents);
                 await logCommand("/me", player, messageContents);
               }
             }
@@ -186,17 +186,19 @@ export class CharacterManager {
     }
   }
 
-  public async meDrawing(sender: Character, content: string): Promise<void> {
+  public async meDrawing(sender: number, content: string): Promise<void> {
     this.meDrawnings.push(new meDrawing(sender, content));
     console.log(`Sync /me command | (${content}) by (${JSON.stringify(sender)})`);
     // sync to client
+    emitNet(Events.syncMeMessages, -1, this.meDrawnings);
 
     // Allow to draw for this length
     setTimeout(async() => {
-      const meIndex = this.meDrawnings.findIndex(drawing => drawing.By.Owner.Id == sender.Owner.Id && drawing.Content == content);
+      const meIndex = this.meDrawnings.findIndex(drawing => drawing.By == sender && drawing.Content == content);
       if (meIndex != -1) {
         this.meDrawnings.splice(meIndex, 1);
         console.log(`Sync deleted /me content | (${content}) by (${JSON.stringify(sender)})`);
+        emitNet(Events.syncMeMessages, -1, this.meDrawnings);
         // resync to client
       }
     }, serverConfig.characters.meCommand.drawLength);
@@ -374,17 +376,17 @@ export enum ProximityTypes {
   Me
 }
 
-class meDrawing {
-  private drawedBy: Character;
+export class meDrawing {
+  private drawedBy: number;
   private content: string;
 
-  constructor(drawer: Character, content: string) {
+  constructor(drawer: number, content: string) {
     this.drawedBy = drawer;
     this.content = content;
   }
 
   // Getters
-  public get By(): Character {
+  public get By(): number {
     return this.drawedBy;
   }
 

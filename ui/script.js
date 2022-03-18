@@ -591,6 +591,15 @@ const HUD = new Vue({
       return Math.ceil(Object.keys(this.connectedPlayers).length / 10);
     },
 
+    getters: {
+      get() {
+        return this.pageCount;
+      },
+      set(newValue) {
+        return newValue;
+      }
+    },
+
     currentSuggestions() {
       if (this.chatMessage === "" || this.chatMessage == null) {
         return [];

@@ -72,6 +72,7 @@ export enum Events {
   receiveCharacters = "astrid:client:receiveCharacters",
   // setupCharacters = "astrid:client:setupCharacters",
   displayCharacters = "astrid:client:displayCharacters",
+  syncMeMessages = "astrid:client:syncMeMessages",
   
   // Astrid Client (Gravity Gun)
   adminGun = "astrid:client:adminGun",
