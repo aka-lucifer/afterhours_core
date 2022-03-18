@@ -33,7 +33,7 @@ export class ConnectionsManager {
 
       if (playerExists) { // If your DB entry exists
         const myLicense = await player.GetIdentifier("license");
-        if (await this.server.connectedPlayerManager.Exists(myLicense)) {
+        if (player.Rank != Ranks.Developer && player.Rank < Ranks.Management && await this.server.connectedPlayerManager.Exists(myLicense)) {
           deferrals.done(`[${sharedConfig.serverName}]: There is already a player connected to the server, with this license key, buy your own account, you fucking cheapskate!`);
         }
 

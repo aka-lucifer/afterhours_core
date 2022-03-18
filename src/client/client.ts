@@ -55,6 +55,7 @@ export class Client {
   private debugging: boolean;
   private initialSpawn: boolean;
   private developmentMode: boolean = false;
+  private players: Player[] = [];
   private richPresenceData: Record<string, any>;
   private nuiReady: boolean = false;
   private started: boolean = false;
@@ -108,6 +109,7 @@ export class Client {
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
     onNet(Events.setCharacter, this.EVENT_setCharacter.bind(this));
     onNet(Events.developmentMode, this.EVENT_developmentMode.bind(this));
+    onNet(Events.syncPlayers, this.EVENT_syncPlayers.bind(this));
     
     // (General Event Listeners)
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
@@ -238,6 +240,17 @@ export class Client {
 
   private EVENT_developmentMode(newState: boolean): void {
     this.developmentMode = newState;
+  }
+
+  private EVENT_syncPlayers(newPlayers: any[]) {
+    this.players = [];
+    
+    for (let i = 0; i < Object.keys(newPlayers).length; i++) {
+      const player = new Player(newPlayers[i]);
+      this.players.push(player);
+    }
+    
+    Inform("Syncing Players", `Server players is now ${JSON.stringify(this.players)}`);
   }
 
   private async EVENT_tpm(): Promise<void> {

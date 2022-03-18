@@ -12,6 +12,7 @@ import { EmbedColours } from "../../shared/enums/embedColours";
 
 import serverConfig from "../../configs/server.json";
 import sharedConfig from "../../configs/shared.json";
+import { Events } from "../../shared/enums/events/events";
 
 export class ConnectedPlayerManager {
   public server: Server;
@@ -59,6 +60,7 @@ export class ConnectedPlayerManager {
   public Add(player: Player): number {
     const addedData = this.connectedPlayers.push(player);
     if (this.server.IsDebugging) Log("Player Manager (Add)", `[${player.Handle}]: ${player.GetName}`);
+    emitNet(Events.syncPlayers, -1, Object.assign({}, this.connectedPlayers));
     return addedData;
   }
 
@@ -135,6 +137,7 @@ export class ConnectedPlayerManager {
       }
       
       this.connectedPlayers.splice(playerIndex, 1);
+      emitNet(Events.syncPlayers, -1, Object.assign({}, this.connectedPlayers));
       Inform("Player Manager", `${tempData} | Removed from player manager!`);
     }
   }
@@ -143,6 +146,7 @@ export class ConnectedPlayerManager {
     const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == playerHandle);
     if (playerIndex != -1) {
       this.connectedPlayers.splice(playerIndex, 1);
+      emitNet(Events.syncPlayers, -1, Object.assign({}, this.connectedPlayers));
     }
   }
 }

@@ -1,32 +1,40 @@
 import { Game, Ped } from "fivem-js";
 
 export class Player {
-  public id: number;
-  public handle: number;
-  public name: string;
-  public rank: number;
-  public ped: Ped;
+  private id: number;
+  private netId: number;
+  private name: string;
+  private rank: number;
+  private ped: Ped;
   private spawned: boolean;
 
   constructor(playerData: Record<string, any>) {
     this.id = playerData.id;
-    this.handle = Game.Player.Handle;
+    this.netId = playerData.handle;
     this.name = playerData.name;
     this.rank = playerData.rank;
     this.ped = Game.Player.Character;
   }
 
   // Get Requests
-  public get PlayerId(): number {
+  public get Id(): number {
     return this.id;
   }
 
-  public get Handle(): number {
-    return this.handle
+  public get NetworkId(): number {
+    return this.netId
+  }
+
+  public get Name(): string {
+    return this.name;
   }
   
   public get Rank(): number {
     return this.rank;
+  }
+
+  public get Ped(): Ped {
+    return this.ped;
   }
 
   public get Spawned(): boolean {
