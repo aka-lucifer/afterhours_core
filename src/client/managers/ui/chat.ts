@@ -10,7 +10,7 @@ import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
 import {Callbacks} from "../../../shared/enums/events/callbacks";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
-import {ChatTypes} from "../../../shared/enums/ui/types";
+import {ChatTypes} from "../../../shared/enums/ui/chat/types";
 import {ChatStates} from "../../enums/ui/chat/chatStates";
 
 export class ChatManager {

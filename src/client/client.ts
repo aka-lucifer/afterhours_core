@@ -44,7 +44,7 @@ import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
 import clientConfig from "../configs/client.json";
 import { Message } from "../shared/models/ui/chat/message";
-import { SystemTypes } from "../shared/enums/ui/types";
+import { SystemTypes } from "../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 

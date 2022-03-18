@@ -42,7 +42,7 @@ import sharedConfig from "../configs/shared.json";
 import {Callbacks} from "../shared/enums/events/callbacks";
 import {Command} from "./models/ui/chat/command";
 import {Message} from "../shared/models/ui/chat/message";
-import {SystemTypes} from "../shared/enums/ui/types";
+import {SystemTypes} from "../shared/enums/ui/chat/types";
 import {Playtime} from "./models/database/playtime";
 import {PlayerManager} from "./managers/database/players";
 import { ErrorCodes } from "../shared/enums/errors";
@@ -148,8 +148,6 @@ export class Server {
     this.chatManager = new ChatManager(server);
 
     // Run Manager Methods
-    this.staffManager.init();
-
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
     this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
 
@@ -165,12 +163,16 @@ export class Server {
 
     this.chatManager.init(); // Register all commands
     
+    this.staffManager.init();
+
     this.characterManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
 
+    // Register Components
     this.registerCommands();
     this.registerRCONCommands();
     this.registerExports();
 
+    // Start Syncings
     await this.timeManager.init();
     this.timeManager.startTime();
 

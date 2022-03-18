@@ -11,7 +11,7 @@ import { LogTypes } from "../../enums/logTypes";
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
 import {Message} from "../../../shared/models/ui/chat/message";
-import {SystemTypes} from "../../../shared/enums/ui/types";
+import {SystemTypes} from "../../../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import { EmbedColours } from "../../../shared/enums/embedColours";
 

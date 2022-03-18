@@ -1,5 +1,5 @@
 import {Server} from "../server";
-import { Inform, Error } from "../utils";
+import { Inform, Error, logCommand } from "../utils";
 
 import { Command } from "../models/ui/chat/command";
 import { Ban } from "../models/database/ban";
@@ -9,6 +9,8 @@ import {Gravity} from "../controllers/staff/gravity";
 import {Ranks} from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";
 import { concatArgs, isDateValid } from "../../shared/utils";
+import { Message } from "../../shared/models/ui/chat/message";
+import { ChatTypes } from "../../shared/enums/ui/chat/types";
 
 export class StaffManager {
   private readonly server: Server;
@@ -18,13 +20,9 @@ export class StaffManager {
 
   constructor(server: Server) {
     this.server = server;
-
-    this.registerCommands();
-    this.registerRCONCommands();
   }
 
   // Methods
-
   private registerCommands(): void {
     new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
       emitNet(Events.clearWorldVehs, -1);
@@ -38,6 +36,32 @@ export class StaffManager {
         }
       }
     }, Ranks.Admin);
+
+    new Command("sudo", "Sudo someone to send a chat message as them", [{name: "server_id", help: "Server ID of the person to sudo"}, {name: "content", help: "The content of the chat message"}], true, async(source: string, args: any[]) => {
+      if (args[0]) {
+        const player = await this.server.connectedPlayerManager.GetPlayer(args[0]);
+        if (player) {
+          if (args[1]) {
+            const sudoMessage = new Message(concatArgs(1, args), ChatTypes.Global);
+            const character = await this.server.characterManager.Get(player);
+
+            if (character) {
+              emitNet(Events.sendClientMessage, -1, sudoMessage, `${player.GetName} | ${character.Name}`);
+            } else {
+              emitNet(Events.sendClientMessage, -1, sudoMessage, player.GetName);
+            }
+            
+            await logCommand("/sudo", player);
+          } else {
+            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+          }
+        } else {
+          Error("Ban Command", "There is no one in the server with that server ID!");
+        }
+      } else {
+        Error("Ban Command", "Server ID not entered!");
+      }
+    }, Ranks.Management);
   }
 
   private registerRCONCommands(): void {
@@ -112,5 +136,8 @@ export class StaffManager {
   
   public init(): void {
     this.gravityGun = new Gravity(this.server);
+    
+    this.registerCommands();
+    this.registerRCONCommands();
   }
 }

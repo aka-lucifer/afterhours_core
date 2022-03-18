@@ -15,7 +15,7 @@ import {ErrorCodes} from "../../../shared/enums/errors";
 import * as sharedConfig from "../../../configs/shared.json"
 import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
-import {SystemTypes} from "../../../shared/enums/ui/types";
+import {SystemTypes} from "../../../shared/enums/ui/chat/types";
 import { DBPlayer } from "./dbPlayer";
 
 export class Ban {

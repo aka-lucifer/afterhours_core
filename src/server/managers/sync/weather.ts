@@ -10,7 +10,7 @@ import { LogTypes } from "../../enums/logTypes";
 import {Weathers, WinterWeathers} from "../../../shared/enums/sync/weather";
 import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
-import {SystemTypes} from "../../../shared/enums/ui/types";
+import {SystemTypes} from "../../../shared/enums/ui/chat/types";
 import {Ranks} from "../../../shared/enums/ranks";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import { EmbedColours } from "../../../shared/enums/embedColours";

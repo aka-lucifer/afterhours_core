@@ -14,7 +14,7 @@ import { ProximityTypes } from "../characters";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
-import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/types";
+import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/chat/types";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 import {EmbedColours} from "../../../shared/enums/embedColours";
 
@@ -41,7 +41,6 @@ export class ChatManager {
       if (player.Spawned) {
         const message = new Message(data.message, data.type);
 
-        console.log("SENT!");
         if (server.IsDebugging) Inform("Message Sent", JSON.stringify(message));
         if (message.content[0] == "/") { // If it's a command
           const args = String(message.content).replace("/", "").split(" "); // All of the arguments of the message
@@ -82,7 +81,6 @@ export class ChatManager {
             }
           }
         } else {
-          console.log("message not cmd!");
           // Log chat into DB table
           const chatLog = new ChatLog(player, message);
           await chatLog.save();
@@ -111,7 +109,7 @@ export class ChatManager {
                 this.playerWarnings[player.Id]++;
               }
 
-              console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
+              // console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
 
               // Allow chat input
               emitNet(Events.receiveServerCB, src, true, data);
@@ -153,7 +151,7 @@ export class ChatManager {
                 this.playerWarnings[player.Id]++;
               }
 
-              console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
+              // console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
 
               // Allow chat input
               emitNet(Events.receiveServerCB, src, true, data);
@@ -186,12 +184,10 @@ export class ChatManager {
             }
           }
 
-          console.log("after blacklist!");
-
           // Send chat messages
           const connectedPlayers = this.server.connectedPlayerManager.GetPlayers;
 
-          if (message.type == ChatTypes.Admin) {
+          if (message.type == ChatTypes.Admin) { // Administration Chat
             for (let i = 0; i < connectedPlayers.length; i++) {
               const otherPlayer = connectedPlayers[i];
               // console.log(`[${otherPlayer.Handle}: ${JSON.stringify(otherPlayer)}`);
@@ -201,15 +197,14 @@ export class ChatManager {
               }
             }
             emitNet(Events.receiveServerCB, src, true, data);
-          } else if (message.type == ChatTypes.Local) {
+          } else if (message.type == ChatTypes.Local) { // Normal Local Chat
             const character = await this.server.characterManager.Get(player);
 
             if (character) {
-              console.log("send local msg!");
               const sent = await this.server.characterManager.proximityMessage(ProximityTypes.Local, message, character);
               emitNet(Events.receiveServerCB, src, sent, data);
             }
-          } else {
+          } else { // Global Chat
             const character = await this.server.characterManager.Get(player);
 
             if (character) {

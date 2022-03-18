@@ -12,7 +12,7 @@ import * as sharedConfig from "../../../configs/shared.json"
 import * as serverConfig from "../../../configs/server.json"
 import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
-import {SystemTypes} from "../../../shared/enums/ui/types";
+import {SystemTypes} from "../../../shared/enums/ui/chat/types";
 import {Inform, inDiscord} from "../../utils";
 import {LogTypes} from "../../enums/logTypes";
 
