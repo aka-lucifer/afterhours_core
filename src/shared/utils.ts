@@ -38,3 +38,7 @@ export function concatArgs(startPosition: number, args: string[]): string {
   
   return args.join(" ").slice(result)
 }
+
+export function isDateValid(date: Date): boolean {
+  return date.getTime() === date.getTime(); // If the date object is invalid, it will return 'NaN' on getTime() and NaN is never equal to itself.
+}

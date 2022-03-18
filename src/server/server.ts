@@ -47,7 +47,7 @@ import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
 import {PlayerManager} from "./managers/database/players";
 import { ErrorCodes } from "../shared/enums/errors";
-import { concatArgs } from "../shared/utils";
+import { concatArgs, isDateValid } from "../shared/utils";
 
 export class Server {
   // Debug Data
@@ -99,9 +99,6 @@ export class Server {
     
     // Police Events
     onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
-
-    const argsInit = ["1", "this", "Is,", "a", "reason", "slag"];
-    console.log("content!", concatArgs(1, argsInit))
   }
 
   // Get Requests
@@ -173,6 +170,7 @@ export class Server {
     this.characterManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
 
     this.registerCommands();
+    this.registerRCONCommands();
     this.registerExports();
 
     await this.timeManager.init();
@@ -250,8 +248,9 @@ export class Server {
         }
       }
     }, Ranks.Admin);
+  }
 
-    // RCON Commands
+  private registerRCONCommands(): void {
     RegisterCommand("dev", () => {
       this.developmentMode = !this.developmentMode;
       SetConvar("development_server", this.developmentMode.toString());
@@ -270,6 +269,46 @@ export class Server {
         }
       }
     }, false);
+
+    RegisterCommand("ban", async(source: string, args: any[]) => {
+      if (args[0]) {
+        const player = await this.connectedPlayerManager.GetPlayer(args[0]);
+        if (player) {
+          if (args[1]) {
+            const date = new Date(args[1]);
+            if (isDateValid(date)) {
+              if (args[2]) {
+                const banReason = concatArgs(2, args);
+                if (player.Rank < Ranks.Management) {
+                  Inform("Ban Command", `Banned: [${player.Id} | ${player.Handle}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
+                  const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id);
+                  await ban.save();
+                  ban.drop();
+                } else {
+                  Error("Ban Command", "You can't ban management or above!");
+                }
+              } else {
+                Error("Ban Command", "No ban reason provided | format (YY-MM-DD)!");
+              }
+            } else {
+              Error("Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
+            }
+          } else {
+            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+          }
+        } else {
+          Error("Ban Command", "There is no one in the server with that server ID!");
+        }
+      } else {
+        Error("Ban Command", "Server ID not entered!");
+      }
+    }, false);
+
+    const argsInit = ["1", "this", "Is,", "a", "reason", "slag"];
+    console.log("content!", concatArgs(1, argsInit));
+
+    const date = new Date("2011");
+    console.log(isDateValid(date));
   }
 
   private async EVENT_grabPlayer(grabbeeId: number): Promise<void> {
