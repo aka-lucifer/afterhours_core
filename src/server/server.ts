@@ -2,7 +2,6 @@ import {Player} from "./models/database/player";
 import {Ban} from "./models/database/ban";
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
 import {ClientCallback} from "./models/clientCallback";
-import {Character} from "./models/database/character";
 
 // [Managers] Server Data
 import { StaffManager } from "./managers/staff";
@@ -47,7 +46,6 @@ import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
 import {PlayerManager} from "./managers/database/players";
 import { ErrorCodes } from "../shared/enums/errors";
-import { concatArgs, isDateValid } from "../shared/utils";
 
 export class Server {
   // Debug Data
@@ -229,25 +227,12 @@ export class Server {
       }
     }, Ranks.User);
 
-    new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
-      emitNet(Events.clearWorldVehs, -1);
-    }, Ranks.Admin);
-
     new Command("dev", "Toggle development mode", [], false, async(source: string) => {
       this.developmentMode = !this.developmentMode;
       SetConvar("development_server", this.developmentMode.toString());
       emitNet(Events.developmentMode, -1, this.developmentMode);
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, Ranks.Developer);
-
-    new Command("tpm", "Teleport to your waypoint", [], false, async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          await player.TriggerEvent(Events.teleportToMarker);
-        }
-      }
-    }, Ranks.Admin);
   }
 
   private registerRCONCommands(): void {
@@ -267,74 +252,6 @@ export class Server {
             await player.TriggerEvent(PoliceEvents.startGrabbing, closest.Handle);
           }
         }
-      }
-    }, false);
-
-    RegisterCommand("ban", async(source: string, args: any[]) => {
-      if (args[0]) {
-        const player = await this.connectedPlayerManager.GetPlayer(args[0]);
-        if (player) {
-          if (args[1]) {
-            const date = new Date(args[1]);
-            if (isDateValid(date)) {
-              if (args[2]) {
-                const banReason = concatArgs(2, args);
-                if (player.Rank < Ranks.Management) {
-                  Inform("Ban Command", `Banned: [${player.Id} | ${player.Handle}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
-                  const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id);
-                  await ban.save();
-                  ban.drop();
-                } else {
-                  Error("Ban Command", "You can't ban management or above!");
-                }
-              } else {
-                Error("Ban Command", "No ban reason provided | format (YY-MM-DD)!");
-              }
-            } else {
-              Error("Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
-            }
-          } else {
-            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
-          }
-        } else {
-          Error("Ban Command", "There is no one in the server with that server ID!");
-        }
-      } else {
-        Error("Ban Command", "Server ID not entered!");
-      }
-    }, false);
-
-    RegisterCommand("offline_ban", async(source: string, args: any[]) => {
-      if (args[0]) {
-        const player = await this.playerManager.getPlayerFromLicense(args[0]);
-        if (player) {
-          if (args[1]) {
-            const date = new Date(args[1]);
-            if (isDateValid(date)) {
-              if (args[2]) {
-                const banReason = concatArgs(2, args);
-                // if (player.Rank < Ranks.Management) {
-                  Inform("Ban Command", `Banned: [${player.Id}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
-                  const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id);
-                  ban.OfflineBan = true;
-                  await ban.save();
-                // } else {
-                //   Error("Ban Command", "You can't ban management or above!");
-                // }
-              } else {
-                Error("Ban Command", "No ban reason provided | format (YY-MM-DD)!");
-              }
-            } else {
-              Error("Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
-            }
-          } else {
-            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
-          }
-        } else {
-          Error("Ban Command", "There is no player with that game license!");
-        }
-      } else {
-        Error("Ban Command", "Player license not entered!");
       }
     }, false);
   }
