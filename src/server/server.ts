@@ -47,6 +47,7 @@ import {SystemTypes} from "../shared/enums/ui/types";
 import {Playtime} from "./models/database/playtime";
 import {PlayerManager} from "./managers/database/players";
 import { ErrorCodes } from "../shared/enums/errors";
+import { concatArgs } from "../shared/utils";
 
 export class Server {
   // Debug Data
@@ -98,6 +99,9 @@ export class Server {
     
     // Police Events
     onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
+
+    const argsInit = ["1", "this", "Is,", "a", "reason", "slag"];
+    console.log("content!", concatArgs(1, argsInit))
   }
 
   // Get Requests
