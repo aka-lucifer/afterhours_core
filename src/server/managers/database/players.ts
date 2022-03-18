@@ -32,7 +32,14 @@ export class PlayerManager {
 
   public async getPlayerFromId(playerId: number): Promise<DBPlayer> {
     const playerIndex = this.players.findIndex(player => player.Id == playerId);
-    if (playerId != -1) {
+    if (playerIndex != -1) {
+      return this.players[playerIndex];
+    }
+  }
+
+  public async getPlayerFromLicense(license: string): Promise<DBPlayer> {
+    const playerIndex = this.players.findIndex(player => player.License == license);
+    if (playerIndex != -1) {
       return this.players[playerIndex];
     }
   }

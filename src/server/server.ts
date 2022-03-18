@@ -304,11 +304,39 @@ export class Server {
       }
     }, false);
 
-    const argsInit = ["1", "this", "Is,", "a", "reason", "slag"];
-    console.log("content!", concatArgs(1, argsInit));
-
-    const date = new Date("2011");
-    console.log(isDateValid(date));
+    RegisterCommand("offline_ban", async(source: string, args: any[]) => {
+      if (args[0]) {
+        const player = await this.playerManager.getPlayerFromLicense(args[0]);
+        if (player) {
+          if (args[1]) {
+            const date = new Date(args[1]);
+            if (isDateValid(date)) {
+              if (args[2]) {
+                const banReason = concatArgs(2, args);
+                // if (player.Rank < Ranks.Management) {
+                  Inform("Ban Command", `Banned: [${player.Id}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
+                  const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id);
+                  ban.OfflineBan = true;
+                  await ban.save();
+                // } else {
+                //   Error("Ban Command", "You can't ban management or above!");
+                // }
+              } else {
+                Error("Ban Command", "No ban reason provided | format (YY-MM-DD)!");
+              }
+            } else {
+              Error("Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
+            }
+          } else {
+            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+          }
+        } else {
+          Error("Ban Command", "There is no player with that game license!");
+        }
+      } else {
+        Error("Ban Command", "Player license not entered!");
+      }
+    }, false);
   }
 
   private async EVENT_grabPlayer(grabbeeId: number): Promise<void> {
