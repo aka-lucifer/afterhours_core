@@ -179,6 +179,10 @@ export class Server {
     await this.weatherManager.init();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
+
+    RegisterCommand("disc", async(source: string) => {
+      await server.connectedPlayerManager.Disconnect(source, "testing");
+    }, false);
   }
 
   private registerCommands(): void {
@@ -217,13 +221,10 @@ export class Server {
           const myPed = GetPlayerPed(source);
           const currVeh = GetVehiclePedIsIn(myPed, false);
           if (currVeh > 0) {
-            const loaded = await player.Load();
-            if (loaded) {
-              DeleteEntity(currVeh);
-              await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle Deleted", SystemTypes.Success));
-              Error("Del Veh Cmd", "Vehicle Deleted");
-              await logCommand("/delveh", player);
-            }
+            DeleteEntity(currVeh);
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle Deleted", SystemTypes.Success));
+            Error("Del Veh Cmd", "Vehicle Deleted");
+            await logCommand("/delveh", player);
           }
         }
       }
@@ -405,7 +406,7 @@ export class Server {
 
   private async EVENT_playerConnected(): Promise<void> {
     const src = source;
-    let player;
+    let player: Player;
     let existed = false;
 
     if (await this.connectedPlayerManager.Exists(src)) { // If connected to server

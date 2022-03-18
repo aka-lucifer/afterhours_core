@@ -176,7 +176,7 @@ export class CharacterManager {
     }
   }
 
-  public async Disconnect(owner: Player): Promise<void> {
+  public Disconnect(owner: Player): void {
     const charIndex = this.characters.findIndex(character => character.Owner.Id == owner.Id);
 
     if (charIndex != -1) {

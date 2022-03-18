@@ -195,6 +195,8 @@ export class Player {
 
   public async Update(): Promise<boolean> {
     this.hardwareId = GetPlayerToken(this.handle, 0) || "Unknown";
+    this.joinTime = await Utils.GetTimestamp();
+
     const updated = await Database.SendQuery("UPDATE `players` SET `name` = :name, `hardware_id` =:hardwareId, `steam_hex` = :steam_hex, `xbl` = :xbl, `live` = :live, `discord` = :discord, `fivem` = :fivem, `ip` = :ip, `last_connection` = :last_connection WHERE `identifier` = :identifier", {
       name: this.name,
       identifier: await this.GetIdentifier("license"),
@@ -205,7 +207,7 @@ export class Player {
       discord: await this.GetIdentifier("discord"),
       fivem: await this.GetIdentifier("fivem"),
       ip: await this.GetIdentifier("ip"),
-      last_connection: await Utils.GetTimestamp()
+      last_connection: this.joinTime
     });
     
     return updated.data.length > 0;
@@ -226,7 +228,13 @@ export class Player {
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
         this.trustscore = await this.getTrustscore();
-        this.joinTime = playerData.data[0].last_connection;
+        // console.log("SECOND JOIN TIME", playerData.data[0]);
+        // let time: string = playerData.data[0].last_connection.toString();
+        // time = time.replace("T", " ");
+        // time = time.replace(".000Z", " ");
+        // this.joinTime = "DDD";
+        // this.joinTime = playerData.data[0].last_connection;
+        // console.log("join time now", this.joinTime);
         return true;
       }
     } else {
@@ -243,6 +251,7 @@ export class Player {
         this.rank = playerData.data[0].rank;
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
+        console.log("FIRST JOIN TIME", playerData.data[0]);
         this.joinTime = playerData.data[0].last_connection;
         return true;
       }
@@ -426,18 +435,19 @@ export class Player {
       newDisconnection: leaveTime
     });
 
-    const discord = await this.GetIdentifier("discord");
-    await server.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
-      color: EmbedColours.Red,
-      title: "__Player Disconnected__",
-      description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n**Name**: ${this.GetName}\n**Rank**: ${Ranks[this.rank]}\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n**Whitelisted**: ${this.whitelisted}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(this.Identifiers, null, 4)}`,
-      footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-    }]}));
-
     if (updatedDisconnection.meta.affectedRows > 0) {
+    
       if (serverConfig.debug) {
         Utils.Inform("Player Class", `Updated Playtime: ${await this.GetPlaytime.FormatTime()} | Updating Last Disconnection: ${leaveTime}`);
       }
+
+      const discord = await this.GetIdentifier("discord");
+      await server.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+        color: EmbedColours.Red,
+        title: "__Player Disconnected__",
+        description: `A player has disconnected from the server.\n\n**Reason**: ${disconnectReason}\n**Name**: ${this.GetName}\n**Rank**: ${Ranks[this.rank]}\n**Playtime**: ${await this.GetPlaytime.FormatTime()}\n**Whitelisted**: ${this.whitelisted}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(this.Identifiers, null, 4)}`,
+        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      }]}));
       return true;
     }
   }

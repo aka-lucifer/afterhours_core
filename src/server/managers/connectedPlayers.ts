@@ -1,5 +1,5 @@
 import { Server } from "../server";
-import {Error, Inform, Log} from "../utils";
+import {Delay, Error, Inform, Log} from "../utils";
 
 import { Player } from "../models/database/player";
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
@@ -92,7 +92,7 @@ export class ConnectedPlayerManager {
     let result = false;
 
     for (let i = 0; i < this.connectedPlayers.length; i++) {
-      console.log("player license", await this.connectedPlayers[i].GetIdentifier("license"), license);
+      // console.log("player license", await this.connectedPlayers[i].GetIdentifier("license"), license);
       if (await this.connectedPlayers[i].GetIdentifier("license") == license) {
         result = true;
       }
@@ -104,7 +104,7 @@ export class ConnectedPlayerManager {
   public async Disconnect(playerHandle: string, disconnectReason: string): Promise<void> {
     const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == playerHandle);
     if (playerIndex != -1) {
-      const player = await this.GetPlayer(playerHandle);
+      const player: Player = this.connectedPlayers[playerIndex];
       const name = player.GetName;
       const tempData = `[${player.Handle}] - ${name}`;
 
@@ -124,9 +124,10 @@ export class ConnectedPlayerManager {
       }
 
       if (player) {
-        await this.server.characterManager.Disconnect(player);
+        this.server.characterManager.Disconnect(player);
         await player.Disconnect(disconnectReason);
       }
+      
       this.connectedPlayers.splice(playerIndex, 1);
       Inform("Player Manager", `${tempData} | Removed from player manager!`);
     }
