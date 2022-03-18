@@ -409,7 +409,7 @@ export class Server {
     let player: Player;
     let existed = false;
 
-    if (await this.connectedPlayerManager.Exists(src)) { // If connected to server
+    if (await this.connectedPlayerManager.playerConnected(src)) { // If connected to server
       player = await this.connectedPlayerManager.GetPlayer(src);
       existed = true;
     } else { // If restarted resource

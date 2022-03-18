@@ -92,13 +92,19 @@ export class ConnectedPlayerManager {
     let result = false;
 
     for (let i = 0; i < this.connectedPlayers.length; i++) {
-      // console.log("player license", await this.connectedPlayers[i].GetIdentifier("license"), license);
-      if (await this.connectedPlayers[i].GetIdentifier("license") == license) {
+      const playerLicense = await this.connectedPlayers[i].GetIdentifier("license");
+      if (playerLicense == license) {
         result = true;
+        break;
       }
     }
 
     return result;
+  }
+
+  public async playerConnected(playerHandle: string): Promise<boolean> {
+    const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == playerHandle);
+    return playerIndex !== -1;
   }
 
   public async Disconnect(playerHandle: string, disconnectReason: string): Promise<void> {
