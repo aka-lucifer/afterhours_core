@@ -92,8 +92,8 @@ export class Characters {
             if (ped) {
               if (ped.Position.distance(Game.PlayerPed.Position) < 10.0 && HasEntityClearLosToEntity(ped.Handle, Game.PlayerPed.Handle, 17)) {
                 // console.log("close!");
-                const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.0));
-                Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, false, 0.4, true);
+                const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.2));
+                Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, true, 0.1, true);
               } else {
                 // console.log("far enough!");
               }
