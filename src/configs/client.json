@@ -8013,5 +8013,10 @@
         "meCommand": {
             "distance": 10
         }
+    },
+    "staff": {
+        "playerNames": {
+            "distance": 10
+        }
     }
 }

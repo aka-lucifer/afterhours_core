@@ -1,10 +1,10 @@
 import { Client } from "../client";
-import { Player } from "../models/player"
+import { svPlayer } from "../models/player"
 import { Delay } from "../utils";
 
 export class RichPresence {
   private client: Client;
-  public player: Player;
+  public player: svPlayer;
   public appId: string;
   public statusText: string;
   public text: string;
@@ -45,7 +45,7 @@ export class RichPresence {
   }
 
   // Methods
-  public Setup(player: Player): void {
+  public Setup(player: svPlayer): void {
     this.player = player;
     this.presenceTick = setTick(async() => {
       await Delay(2500);

@@ -1,7 +1,7 @@
 import { Game, Ped } from "fivem-js";
 import { Character } from "./character";
 
-export class Player {
+export class svPlayer {
   private id: number;
   private netId: number;
   private name: string;

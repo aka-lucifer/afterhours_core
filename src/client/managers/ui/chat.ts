@@ -12,6 +12,7 @@ import {Callbacks} from "../../../shared/enums/events/callbacks";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
 import {ChatTypes} from "../../../shared/enums/ui/chat/types";
 import {ChatStates} from "../../enums/ui/chat/chatStates";
+import { Game } from "fivem-js";
 
 export class ChatManager {
   private client: Client;
@@ -41,6 +42,11 @@ export class ChatManager {
   // Methods
   private registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.CloseChat, (data, cb) => {
+      // Set chat statebag to closed
+      const player = Player(GetPlayerServerId(Game.Player.Handle));
+      player.state.set("chatOpen", false, true);
+      console.log("Typing set to", player.state.chatOpen);
+
       SetNuiFocus(false, false);
       cb("ok");
     });
@@ -50,6 +56,12 @@ export class ChatManager {
       this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.sendMessage, {message: data.message, type: data.type}, (cbData) => {
         // console.log("RETURNED MSG CB", cbData);
         // SetNuiFocus(!cbData, !cbData);
+
+        // Set chat statebag to closed
+        const player = Player(GetPlayerServerId(Game.Player.Handle));
+        player.state.set("chatOpen", false, true);
+        console.log("Typing set to", player.state.chatOpen);
+
         cb(cbData)
         if (!cbData) this.chatState = ChatStates.Closed;
       }));
@@ -63,6 +75,11 @@ export class ChatManager {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {
           if (this.client.player.Rank >= Ranks.Admin) {
+            // Set chat statebag to open
+            const player = Player(GetPlayerServerId(Game.Player.Handle));
+            player.state.set("chatOpen", true, true);
+            console.log("Typing set to", player.state.chatOpen);
+
             // console.log("CAN OPEN CHAT EVEN IF ITS DISABLED AS YOUR STAFF");
             this.chatState = ChatStates.Open;
             SetNuiFocus(true, true);
@@ -74,6 +91,11 @@ export class ChatManager {
             }))
           } else {
             if (this.chatState != ChatStates.Disabled) {
+              // Set chat statebag to open
+              const player = Player(GetPlayerServerId(Game.Player.Handle));
+              player.state.set("chatOpen", true, true);
+              console.log("Typing set to", player.state.chatOpen);
+
               this.chatState = ChatStates.Open;
               SetNuiFocus(true, true);
               SendNuiMessage(JSON.stringify({

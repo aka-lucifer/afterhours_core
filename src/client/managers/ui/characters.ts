@@ -1,3 +1,4 @@
+import { Ped, Game, Font, Vector3 } from "fivem-js";
 import { Client } from "../../client";
 import { Delay, Draw3DText, NumToVector3, RegisterNuiCallback } from "../../utils";
 
@@ -8,7 +9,8 @@ import { Events } from "../../../shared/enums/events/events";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
-import { Ped, Game, Font, Vector3 } from "fivem-js";
+
+import clientConfig from "../../../configs/client.json";
 
 export class Characters {
   private client: Client;
@@ -16,9 +18,10 @@ export class Characters {
 
   // /me 3D text
   private meMessages: any[] = [];
-  private meTick: number = undefined;
+  private calculatorTick: number = undefined;
+  private displayTick: number = undefined;
   private meWaiter: number = 500;
-  private atLocation: boolean = false;
+  private mePosition: Vector3 = undefined;
 
   constructor(client: Client) {
     this.client = client;
@@ -84,30 +87,66 @@ export class Characters {
     console.log("MESSAGES ARE NOW THIS YE FAT JEW FUCK!", JSON.stringify(messages));
 
     if (this.meMessages.length > 0) {
-      if (this.meTick == undefined) {
-        this.meTick = setTick(async() => {
+      if (this.calculatorTick == undefined) {
+        this.calculatorTick = setTick(async() => {
+        
           for (let i = 0; i < this.meMessages.length; i++) {
-            const ped = new Ped(GetPlayerPed(GetPlayerFromServerId(this.meMessages[i].drawedBy)));
+            const player = GetPlayerFromServerId(this.meMessages[i].drawedBy);
+            const ped = new Ped(GetPlayerPed(player));
 
             if (ped) {
-              if (ped.Position.distance(Game.PlayerPed.Position) < 10.0 && HasEntityClearLosToEntity(ped.Handle, Game.PlayerPed.Handle, 17)) {
-                // console.log("close!");
-                const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.2));
-                Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, true, 0.1, true);
-              } else {
-                // console.log("far enough!");
+              const dist = ped.Position.distance(Game.PlayerPed.Position);
+              if (dist <= clientConfig.characters.meCommand.distance && HasEntityClearLosToEntity(ped.Handle, Game.PlayerPed.Handle, 17)) {
+                if (this.meWaiter > 0) {
+                  this.meWaiter = 0;
+                  this.mePosition = ped.Position;
+                }
+
+                if (this.displayTick == undefined) this.displayTick = setTick(() => {
+                  if (this.meMessages[i].content) {
+                    const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.2));
+                    Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, true, 0.1, true);
+                  }
+                });
               }
             }
           }
 
-
           if (this.meMessages.length <= 0) {
-            clearTick(this.meTick);
-            this.meTick = undefined;
-            // console.log("Clear 3d me text tick!");
+            clearTick(this.calculatorTick);
+            clearTick(this.displayTick);
+            this.calculatorTick = undefined;
+            this.displayTick = undefined;
+            
+            console.log("Clear 3d me text tick 1!");
           }
+
+          if (this.mePosition !== undefined) {
+            if (this.mePosition.distance(Game.PlayerPed.Position) > clientConfig.characters.meCommand.distance) {
+              if (this.meWaiter < 500) {
+                this.meWaiter = 500;
+                this.mePosition = undefined;
+                
+                clearTick(this.calculatorTick);
+                clearTick(this.displayTick);
+                this.calculatorTick = undefined;
+                this.displayTick = undefined;
+                
+                console.log("Clear 3d me text tick, due to leaving the proximity!");
+              }
+            }
+          }
+          
+          await Delay(this.meWaiter);
         });
       }
+    } else {
+      clearTick(this.calculatorTick);
+      clearTick(this.displayTick);
+      this.calculatorTick = undefined;
+      this.displayTick = undefined;
+      
+      console.log("Clear 3d me text tick 2!");
     }
   }
 

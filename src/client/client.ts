@@ -1,6 +1,6 @@
 import {Game, Vector3, VehicleSeat, World, Model} from "fivem-js"
 
-import {Player} from "./models/player";
+import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
 import { Character } from "./models/character";
 
@@ -31,6 +31,8 @@ import {Commends} from "./managers/ui/commends";
 // import {HelicamManager} from "./controllers/jobs/police/helicam";
 import { Grabbing } from "./controllers/jobs/police/grabbing";
 
+// [Controllers] Normal
+import { PlayerNames } from "./controllers/playerNames";
 
 import {Delay, Inform, Log, NumToVector3, RegisterNuiCallback} from "./utils";
 
@@ -55,13 +57,14 @@ export class Client {
   private debugging: boolean;
   private initialSpawn: boolean;
   private developmentMode: boolean = false;
-  private players: Player[] = [];
+  private players: svPlayer[] = [];
   private richPresenceData: Record<string, any>;
   private nuiReady: boolean = false;
   private started: boolean = false;
 
   // Player Data
-  public player: Player;
+  private statesTick: number = undefined;
+  public player: svPlayer;
   public character: Character;
 
   // [Managers]
@@ -90,6 +93,9 @@ export class Client {
   // private cuffing: CuffingStuff;
   // private helicam: HelicamManager;
   private grabbing: Grabbing;
+
+  // [Controllers] Normal
+  private playerNames: PlayerNames;
 
   constructor() {
     this.debugging = clientConfig.debug;
@@ -124,7 +130,7 @@ export class Client {
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
   }
 
-  // Get Requests
+  // Getters & Setters 
   public get IsDebugging(): boolean {
     return this.debugging;
   }
@@ -141,8 +147,12 @@ export class Client {
     return !this.initialSpawn; // Returns the opposite, as the default of initalSpawn is true.
   }
   
-  public get Player(): Player {
+  public get Player(): svPlayer {
     return this.player;
+  }
+
+  public get Players(): svPlayer[] {
+    return this.players;
   }
   
   public get Character(): Character {
@@ -178,6 +188,9 @@ export class Client {
     // this.helicam = new HelicamManager(client);
     this.grabbing = new Grabbing();
 
+    // [Controllers] Normal
+    this.playerNames = new PlayerNames(client);
+
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
     RegisterCommand("pistol", () => {
@@ -212,67 +225,33 @@ export class Client {
     if (!this.Developing) {
       this.spawner.init();
     } else {
-      this.characters.displayCharacters(true);
+      // this.characters.displayCharacters(true);
     }
   }
 
-  // Events
-  private EVENT_resourceStop(resourceName: string): void{
-    if (resourceName == GetCurrentResourceName()) {
-      this.grabbing.stop();
-    }
-  }
-
-  private async EVENT_playerLoaded(player: any): Promise<void> {
-    this.player = new Player(player);
-
-    // Manager Inits
-    this.staffManager.init();
-    await this.worldManager.init();
-    this.setupUI();
-  }
-
-  private EVENT_setCharacter(character: any): void {
-    Game.PlayerPed.removeAllWeapons();
-    this.character = new Character(character);
-
-    // console.log("Character Set To", this.Character);
-  }
-
-  private EVENT_developmentMode(newState: boolean): void {
-    this.developmentMode = newState;
-  }
-
-  private EVENT_syncPlayers(newPlayers: any[]) {
-    this.players = [];
+  private registerStates(): void {
+    let paused = false;
     
-    for (let i = 0; i < Object.keys(newPlayers).length; i++) {
-      const player = new Player(newPlayers[i]);
-      this.players.push(player);
-    }
-    
-    Inform("Syncing Players", `Server players is now ${JSON.stringify(this.players)}`);
-  }
+    const player = Player(GetPlayerServerId(Game.Player.Handle));
+    player.state.set("rankVisible", true, true);
+    player.state.set("chatOpen", false, true);
+    player.state.set("afk", false, true);
+    player.state.set("paused", false, true);
 
-  private async EVENT_tpm(): Promise<void> {
-    const myPed = Game.PlayerPed;
+    this.statesTick = setTick(async() => {
 
-    if (!IsWaypointActive()) {
-      const notify = new Notification("TPM", "You don't have a waypoint set!", NotificationTypes.Error);
-      return
-    }
-
-    const waypointHandle = GetFirstBlipInfoId(8);
-
-    if (DoesBlipExist(waypointHandle)) {
-      const waypointCoords = NumToVector3(GetBlipInfoIdCoord(waypointHandle));
-      const teleported = await this.teleportToCoords(waypointCoords);
-      if (teleported) {
-        emit(Events.sendSystemMessage, new Message("Teleported to waypoint.", SystemTypes.Interaction));
-        const notify = new Notification("Teleporter", "Teleported to waypoint", NotificationTypes.Success);
-        await notify.send();
+      if (IsPauseMenuActive()) {
+        player.state.set("paused", true, true);
+        if(!paused) paused = true;
+      } else {
+        if (paused) {
+          player.state.set("paused", false, true);
+          paused = false;
+        }
       }
-    }
+
+      await Delay(500);
+    });
   }
 
   private async teleportToCoords(coords: Vector3, heading?: number): Promise<boolean> {
@@ -447,6 +426,68 @@ export class Client {
     DoScreenFadeIn(500);
     SetGameplayCamRelativePitch(0.0, 1.0);
     return success;
+  }
+
+  // Events
+  private EVENT_resourceStop(resourceName: string): void{
+    if (resourceName == GetCurrentResourceName()) {
+      this.grabbing.stop();
+    }
+  }
+
+  private async EVENT_playerLoaded(player: any): Promise<void> {
+    this.player = new svPlayer(player);
+
+    // Manager Inits
+    this.staffManager.init();
+    await this.worldManager.init();
+    this.setupUI();
+    
+    // Register Player Statebags
+    this.registerStates();
+  }
+
+  private EVENT_setCharacter(character: any): void {
+    Game.PlayerPed.removeAllWeapons();
+    this.character = new Character(character);
+
+    // console.log("Character Set To", this.Character);
+  }
+
+  private EVENT_developmentMode(newState: boolean): void {
+    this.developmentMode = newState;
+  }
+
+  private EVENT_syncPlayers(newPlayers: any[]) {
+    this.players = [];
+    
+    for (let i = 0; i < Object.keys(newPlayers).length; i++) {
+      const player = new svPlayer(newPlayers[i]);
+      this.players.push(player);
+    }
+    
+    Inform("Syncing Players", `Server players is now ${JSON.stringify(this.players)}`);
+  }
+
+  private async EVENT_tpm(): Promise<void> {
+    const myPed = Game.PlayerPed;
+
+    if (!IsWaypointActive()) {
+      const notify = new Notification("TPM", "You don't have a waypoint set!", NotificationTypes.Error);
+      return
+    }
+
+    const waypointHandle = GetFirstBlipInfoId(8);
+
+    if (DoesBlipExist(waypointHandle)) {
+      const waypointCoords = NumToVector3(GetBlipInfoIdCoord(waypointHandle));
+      const teleported = await this.teleportToCoords(waypointCoords);
+      if (teleported) {
+        emit(Events.sendSystemMessage, new Message("Teleported to waypoint.", SystemTypes.Interaction));
+        const notify = new Notification("Teleporter", "Teleported to waypoint", NotificationTypes.Success);
+        await notify.send();
+      }
+    }
   }
 
   private EVENT_clearVehs(): void {
