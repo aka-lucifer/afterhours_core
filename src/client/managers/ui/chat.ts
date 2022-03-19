@@ -58,7 +58,7 @@ export class ChatManager {
 
   private registerKeybinds(): void {
     // Chat Input Toggling
-    RegisterKeyMapping("open_chat", "Opens the chat", "keyboard", "T");
+    // RegisterKeyMapping("open_chat", "Opens the chat", "keyboard", "T");
     RegisterCommand("open_chat", () => {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {
@@ -94,7 +94,7 @@ export class ChatManager {
     }, false);
 
     // Chat Visibility Toggling
-    RegisterKeyMapping("toggle_chat", "Toggles chat", "keyboard", "insert");
+    // RegisterKeyMapping("toggle_chat", "Toggles chat", "keyboard", "insert");
     RegisterCommand("toggle_chat", () => {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {

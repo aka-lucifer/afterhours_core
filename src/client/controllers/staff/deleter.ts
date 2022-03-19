@@ -30,11 +30,11 @@ export class Deleter {
       onNet(Events.getGravitied, this.EVENT_getGravitied.bind(this));
 
       // Key Mappings
-      RegisterKeyMapping("attach_entity", "Attach the entity to gravity gun", "KEYBOARD", "E");
-      RegisterKeyMapping("shoot_attached_entity", "Shoot attached entity forward", "MOUSE_BUTTON", "MOUSE_LEFT");
-      RegisterKeyMapping("scroll_attached_entity_forward", "Move attached entity forward", "MOUSE_WHEEL", "IOM_WHEEL_UP");
-      RegisterKeyMapping("scroll_attached_entity_backward", "Move attached entity backward", "MOUSE_WHEEL", "IOM_WHEEL_DOWN");
-      RegisterKeyMapping("delete_attached_entity", "Deletes the attached entity", "KEYBOARD", "DELETE");
+      // RegisterKeyMapping("attach_entity", "Attach the entity to gravity gun", "KEYBOARD", "E");
+      // RegisterKeyMapping("shoot_attached_entity", "Shoot attached entity forward", "MOUSE_BUTTON", "MOUSE_LEFT");
+      // RegisterKeyMapping("scroll_attached_entity_forward", "Move attached entity forward", "MOUSE_WHEEL", "IOM_WHEEL_UP");
+      // RegisterKeyMapping("scroll_attached_entity_backward", "Move attached entity backward", "MOUSE_WHEEL", "IOM_WHEEL_DOWN");
+      // RegisterKeyMapping("delete_attached_entity", "Deletes the attached entity", "KEYBOARD", "DELETE");
 
       // Key Mapped Commands
       RegisterCommand("attach_entity", this.attachEntity.bind(this), false);

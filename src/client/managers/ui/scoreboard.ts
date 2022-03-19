@@ -18,19 +18,17 @@ export class Scoreboard {
     onNet(Events.receivePlayers, this.EVENT_recievePlayers.bind(this));
 
     // Opens and Closes scoreboard
-    RegisterKeyMapping("+open_scoreboard", "Opens the scoreboard", "keyboard", "L");
+    // RegisterKeyMapping("+open_scoreboard", "Opens the scoreboard", "keyboard", "L");
     RegisterCommand("+open_scoreboard", this.OpenScoreboard.bind(this), false);
     RegisterCommand("-open_scoreboard", this.CloseScoreboard.bind(this), false);
 
     // Scoreboard Page Up
-    RegisterKeyMapping("+scoreboard_pageup", "Changes to next page of the scoreboard", "keyboard", "PAGEUP");
+    // RegisterKeyMapping("+scoreboard_pageup", "Changes to next page of the scoreboard", "keyboard", "PAGEUP");
     RegisterCommand("+scoreboard_pageup", this.ScoreboardNextPage.bind(this), false);
-    RegisterCommand("-scoreboard_pageup", undefined, false);
 
     // Scoreboard Page Down
-    RegisterKeyMapping("+scoreboard_pagedown", "Changes to previous page of the scoreboard", "keyboard", "PAGEDOWN");
+    // RegisterKeyMapping("+scoreboard_pagedown", "Changes to previous page of the scoreboard", "keyboard", "PAGEDOWN");
     RegisterCommand("+scoreboard_pagedown", this.ScoreboardPrevPage.bind(this), false);
-    RegisterCommand("-scoreboard_pagedown", undefined, false);
   }
 
   // Events
