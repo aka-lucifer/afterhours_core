@@ -233,6 +233,7 @@ export class Client {
   }
 
   private EVENT_setCharacter(character: any): void {
+    Game.PlayerPed.removeAllWeapons();
     this.character = new Character(character);
 
     // console.log("Character Set To", this.Character);
