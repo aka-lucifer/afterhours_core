@@ -278,32 +278,19 @@
               <div id="Middle_Card_Header">Change Log</div>
               <div id="Middle_Card_Body">
                 <div id="Changelog_Contents">
-                  <div style="text-align: center; font-weight: bold; font-size: 2em; text-decoration: underline; color: white;">PRE ALPHA</div><br>
+                  <div v-for="(change, index) in serverChangelog" :key="change.version">
+                    <div style="text-align: center; font-weight: bold; font-size: 2em; text-decoration: underline; color: white;">{{ change.version }}</div><br>
 
-                  <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Additions</h2><br>
-                  <ul style="margin-left: 25px; font-size: 1em; color: white;">
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                    <li>Empty fat CUNT</li>
-                  </ul><br>
+                    <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Additions</h2><br>
+                    <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="addition in change.additions">
+                      <li>{{ addition }}</li>
+                    </ul><br>
 
-                  <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Bug Fixes</h2><br>
-                  <ul style="margin-left: 25px; font-size: 1em; color: white;">
-                      <li>Empty fat CUNT</li>
-                      <li>Empty fat CUNT</li>
-                      <li>Empty fat CUNT</li>
-                  </ul><br>
+                    <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Bug Fixes</h2><br>
+                    <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="fix in change.fixes">
+                        <li>{{ fix }}</li>
+                    </ul><br>
+                  </div>
                 </div>
               </div>
             </div>

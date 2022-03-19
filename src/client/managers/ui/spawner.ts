@@ -45,6 +45,7 @@ export class Spawner {
           max: this.maxPlayers,
           bestPlayer: this.bestPlayer,
         },
+        changelog: clientConfig.spawnInfo.changelog,
         keybinds: clientConfig.spawnInfo.keybinds,
         commands: clientConfig.spawnInfo.commands,
         rules: clientConfig.spawnInfo.rules,

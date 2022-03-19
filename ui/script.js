@@ -20,6 +20,7 @@ const HUD = new Vue({
     },
     bestPlayer: null,
 
+    serverChangelog: [],
     serverKeybinds: [],
     serverCommands: [],
     serverRules: [],
@@ -156,6 +157,7 @@ const HUD = new Vue({
       this.players.max = data.players.max || 64
       this.players.percent = (this.players.current / this.players.max) * 100;
       this.players.bestPlayer = data.players.bestPlayer || "akaLucifer - 0d 0h 0m";
+      this.serverChangelog = data.changelog || [];
       this.serverKeybinds = data.keybinds || [];
       this.serverCommands = data.commands || [];
       this.serverRules = data.rules || [];
