@@ -1,4 +1,4 @@
-import {Game, Vector3, VehicleSeat, World, Model} from "fivem-js"
+import {Game, Vector3, VehicleSeat, World, Model, Entity} from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -33,6 +33,7 @@ import { Grabbing } from "./controllers/jobs/police/grabbing";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
+import { AFK } from "./controllers/afk";
 
 import {Delay, Inform, Log, NumToVector3, RegisterNuiCallback} from "./utils";
 
@@ -41,14 +42,16 @@ import {Events} from "../shared/enums/events/events";
 import {GameEvents} from "../shared/enums/events/gameEvents";
 import {LXEvents} from "../shared/enums/events/lxEvents";
 import {Callbacks} from "../shared/enums/events/callbacks";
-import sharedConfig from "../configs/shared.json";
 import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
-import clientConfig from "../configs/client.json";
 import { Message } from "../shared/models/ui/chat/message";
 import { SystemTypes } from "../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
+
+
+import clientConfig from "../configs/client.json";
+import sharedConfig from "../configs/shared.json";
 
 let takingScreenshot = false;
 
@@ -64,6 +67,8 @@ export class Client {
 
   // Player Data
   private statesTick: number = undefined;
+  public playerStates: EntityInterface;
+  
   public player: svPlayer;
   public character: Character;
 
@@ -96,6 +101,7 @@ export class Client {
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
+  private afk: AFK;
 
   constructor() {
     this.debugging = clientConfig.debug;
@@ -190,6 +196,7 @@ export class Client {
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
+    this.afk = new AFK(client);
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
@@ -225,27 +232,27 @@ export class Client {
     if (!this.Developing) {
       this.spawner.init();
     } else {
-      // this.characters.displayCharacters(true);
+      this.characters.displayCharacters(true);
     }
   }
 
   private registerStates(): void {
     let paused = false;
     
-    const player = Player(GetPlayerServerId(Game.Player.Handle));
-    player.state.set("rankVisible", true, true);
-    player.state.set("chatOpen", false, true);
-    player.state.set("afk", false, true);
-    player.state.set("paused", false, true);
+    this.playerStates = Player(GetPlayerServerId(Game.Player.Handle));
+    this.playerStates.state.set("rankVisible", true, true);
+    this.playerStates.state.set("chatOpen", false, true);
+    this.playerStates.state.set("afk", false, true);
+    this.playerStates.state.set("paused", false, true);
 
     this.statesTick = setTick(async() => {
 
       if (IsPauseMenuActive()) {
-        player.state.set("paused", true, true);
+        this.playerStates.state.set("paused", true, true);
         if(!paused) paused = true;
       } else {
         if (paused) {
-          player.state.set("paused", false, true);
+          this.playerStates.state.set("paused", false, true);
           paused = false;
         }
       }

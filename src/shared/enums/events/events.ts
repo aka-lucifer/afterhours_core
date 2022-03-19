@@ -59,12 +59,29 @@ export enum Events {
   receiveServerCB = "astrid:client:recieveServerCB",
   developmentMode = "astrid:client:developmentMode",
   syncPlayers = "astrid:client:syncPlayers",
+
+  // Astrid Client ([Staff] - AFK)
+  setAFK = "astrid:client:setAFK",
+
+  // Astrid Client ([Staff] - Commands)
   teleportToMarker = "astrid:client:teleportToMarker",
   clearWorldVehs = "astrid:client:clearWorldVehs",
-  notify = "astrid:client:notify",
+  
+  // Astrid Client ([Staff] - Gravity Gun)
+  adminGun = "astrid:client:adminGun",
+  setHeldEntity = "astrid:client:setHeldEntity",
+  unsetHeldEntity = "astrid:unsetHeldEntity:unsetHeldEntity",
+  holdPlayer = "astrid:client:holdPlayer",
+  releasePlayer = "astrid:client:releasePlayer",
+  getGravitied = "astrid:getGravitied:getGravitied",
+
+  // Astrid Client (Syncers)
   syncTime = "astrid:client:syncTime",
   freezeTime = "astrid:client:freezeTime",
   syncWeather = "astrid:client:syncWeather",
+
+  // Astrid Client (Notifications)
+  notify = "astrid:client:notify",
 
   // Astrid Client (Spawner)
   setupSpawner = "astrid:client:setupSpawner",
@@ -74,19 +91,11 @@ export enum Events {
   // setupCharacters = "astrid:client:setupCharacters",
   displayCharacters = "astrid:client:displayCharacters",
   syncMeMessages = "astrid:client:syncMeMessages",
-  
-  // Astrid Client (Gravity Gun)
-  adminGun = "astrid:client:adminGun",
-  setHeldEntity = "astrid:client:setHeldEntity",
-  unsetHeldEntity = "astrid:unsetHeldEntity:unsetHeldEntity",
-  holdPlayer = "astrid:client:holdPlayer",
-  releasePlayer = "astrid:client:releasePlayer",
-  getGravitied = "astrid:getGravitied:getGravitied",
 
-  // (Scoreboard Client)
+  // Astrid Client (Scoreboard)
   receivePlayers = "astrid:client:receivePlayers",
 
-  // (Chat Client)
+  // Astrid Client (Chat)
   sendClientMessage = "astrid:client:sendClientMessage",
   sendSystemMessage = "astrid:client:sendSystemMessage",
   setTypes = "astrid:setTypes:setTypes",
@@ -95,10 +104,10 @@ export enum Events {
   clearChat = "astrid:client:clearChat",
   freezeChat = "astrid:client:freezeChat",
 
-  // (Warnings Client)
+  // Astrid Client (Warnings)
   receiveWarnings = "astrid:client:receiveWarnings",
 
-  // (Commends Client)
+  // Astrid Client (Commends)
   receiveCommends = "astrid:client:receiveCommends"
 }
 

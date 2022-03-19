@@ -6,9 +6,9 @@ export enum ChatTypes {
 }
 
 export enum SystemTypes {
-  Kill = "kill",
-  Interaction = "interaction",
-  Action = "action",
+  Kill = "kill", // Yellow kill logs
+  Interaction = "interaction", // Green message used for logging an action like collecting something or your rank changes
+  Action = "action", // Orange action such as you put your take a rest
   Error = "error",
   Success = "success",
   Announcement = "announcement",

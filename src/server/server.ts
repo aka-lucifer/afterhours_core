@@ -236,6 +236,16 @@ export class Server {
       emitNet(Events.developmentMode, -1, this.developmentMode);
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, Ranks.Developer);
+
+    new Command("afk", "Toggle AFK mode", [], false, async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          await player.TriggerEvent(Events.sendSystemMessage, new Message("You've gone AFK", SystemTypes.Interaction));
+          await player.TriggerEvent(Events.setAFK);
+        }
+      }
+    }, Ranks.Developer);
   }
 
   private registerRCONCommands(): void {
