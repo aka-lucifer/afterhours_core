@@ -58,7 +58,7 @@ export enum Events {
   setCharacter = "astrid:setCharacter:setCharacter",
   receiveServerCB = "astrid:client:recieveServerCB",
   developmentMode = "astrid:client:developmentMode",
-  syncPlayers = "astrid:syncPlayers:syncPlayers",
+  syncPlayers = "astrid:client:syncPlayers",
   teleportToMarker = "astrid:client:teleportToMarker",
   clearWorldVehs = "astrid:client:clearWorldVehs",
   notify = "astrid:client:notify",

@@ -1,4 +1,5 @@
 import { Game, Ped } from "fivem-js";
+import { Character } from "./character";
 
 export class Player {
   private id: number;
@@ -16,7 +17,7 @@ export class Player {
     this.ped = Game.Player.Character;
   }
 
-  // Get Requests
+  // Getters & Setters
   public get Id(): number {
     return this.id;
   }

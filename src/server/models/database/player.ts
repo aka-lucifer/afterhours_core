@@ -53,7 +53,7 @@ export class Player {
     this.ping = GetPlayerPing(this.handle);
   }
 
-  // Get Requests
+  // Getters & Setters
   public get Id(): number {
     return this.id;
   }
@@ -102,7 +102,6 @@ export class Player {
     return this.spawned;
   }
 
-  // Set Requests
   public set Spawned(newValue: boolean) {
     this.spawned = newValue;
   }
@@ -195,7 +194,7 @@ export class Player {
 
   public async Update(): Promise<boolean> {
     this.hardwareId = GetPlayerToken(this.handle, 0) || "Unknown";
-    this.joinTime = await Utils.GetTimestamp();
+    // this.joinTime = await Utils.GetTimestamp();
 
     const updated = await Database.SendQuery("UPDATE `players` SET `name` = :name, `hardware_id` =:hardwareId, `steam_hex` = :steam_hex, `xbl` = :xbl, `live` = :live, `discord` = :discord, `fivem` = :fivem, `ip` = :ip, `last_connection` = :last_connection WHERE `identifier` = :identifier", {
       name: this.name,
@@ -233,7 +232,7 @@ export class Player {
         // time = time.replace("T", " ");
         // time = time.replace(".000Z", " ");
         // this.joinTime = "DDD";
-        // this.joinTime = playerData.data[0].last_connection;
+        this.joinTime = playerData.data[0].last_connection;
         // console.log("join time now", this.joinTime);
         return true;
       }
