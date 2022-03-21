@@ -94,6 +94,41 @@ const HUD = new Vue({
     deletedCharacter: false,
     deleteTimeout: undefined,
 
+    // Vehicles
+    showVehicles: false,
+    registeredVehicles: [
+      {id: 1, label: "R31 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
+      {id: 2, label: "R32 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
+      {id: 3, label: "R33 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
+      {id: 4, label: "R34 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
+      {id: 5, label: "R35 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"}
+    ],
+
+    // [Vehicles] Creating
+    creatingVehicle: false,
+    vehCreatorMenu: null,
+
+    createVehData: {
+      label: "Sultan RS",
+      model: "sultanrs",
+      colour: "Purple, Matte Black",
+      type: "Sports",
+      plate: "46EEK572"
+    },
+
+    // [Vehicles] Editing
+    editingVehicle: false,
+    vehEditorMenu: null,
+
+    editedVehData: {
+      id: 1,
+      label: "Sultan RS",
+      model: "sultanrs",
+      colour: "Purple, Matte Black",
+      type: "Sports",
+      plate: "46EEK572"
+    },
+
     // [SCOREBOARD]
     displaying: false,
 
@@ -328,6 +363,37 @@ const HUD = new Vue({
         age = age - 1;
       }
       return age;
+    },
+
+    // Vehicles
+    setupVehicles(data) {
+
+    },
+
+    displayVehicles() {
+
+    },
+
+    startCreatingVehicles() {
+      this.creatingVehicle = true;
+    },
+
+    startEditingVehicle(index) {
+      this.editedVehData = {
+        id: this.registeredVehicles[index].id,
+        label: this.registeredVehicles[index].label,
+        model: this.registeredVehicles[index].model,
+        colour: this.registeredVehicles[index].colour,
+        type: this.registeredVehicles[index].type,
+        plate: this.registeredVehicles[index].plate
+      }
+
+      this.editingVehicle = true;
+    },
+
+    closeVehicles() {
+      console.log("close vehs init bruv!");
+      this.showVehicles = false;
     },
 
     // Notification
@@ -745,6 +811,8 @@ const HUD = new Vue({
             HUD.CloseWarnings();
           } else if ($("#commends_container").is(":visible")) {
             HUD.CloseCommends();
+          } else if ($("#Vehicles_Container").is(":visible")) {
+            HUD.closeVehicles();
           }
           break;
 

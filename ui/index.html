@@ -33,12 +33,10 @@
   </head>
   <body>
     <v-app id="HUD">
-
-
       <div id="Characters_Container" v-show="showCharacters">
         <div id="Characters_Header">
           <div class="headerImage"></div>
-          <div class="headerText">Character Menu</div>
+          <div class="headerText">CAD/MDT Characters</div>
         </div>
 
         <div id="Characters_Body">
@@ -355,6 +353,122 @@
               </v-tab>
             </v-tabs>
           </div>
+        </div>
+      </div>
+
+      <!-- Vehicles -->
+      <div id="Vehicles_Container" v-show="showVehicles">
+        <div id="Vehicles_Header">
+          <div class="headerImage"></div>
+          <div class="headerText">CAD/MDT Vehicles</div>
+        </div>
+
+        <div id="Vehicles_Body">
+          <div id="Vehicles_Body_Container">
+            <v-tooltip bottom>
+              <template #activator="data">
+                <v-btn class="createVehBtn" small fab dark color="success" v-on="data.on" @click="startCreatingVehicles()" absolute top right><v-icon dark>mdi-pencil</v-icon></v-btn>
+              </template>
+              <span>Create Vehicle</span>
+            </v-tooltip>
+
+            <v-container grid-list-md>
+              <v-row justify="center">
+                <v-col>
+                  <v-expansion-panels id="Vehicles" dark multiple>
+                    <v-expansion-panel id="Vehicle_Card" v-for="(vehicle, index) in registeredVehicles" :key="vehicle.id">
+                      <v-expansion-panel-header>
+                        <strong>{{ vehicle.label }} - {{ vehicle.plate }}</strong>
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <ul>
+                          <li><strong>Type</strong>: {{ vehicle.type }}</li>
+                          <li><strong>Colour</strong>: {{ vehicle.colour }}</li>
+                          <li><strong>Plate</strong>: {{ vehicle.plate }}</li>
+                          <li><strong>Registered On</strong>: {{ vehicle.registeredOn }}</li>
+                        </ul><br>
+                        
+                        <v-divider></v-divider>
+                        <div class="vehicleButtons">
+                          <v-tooltip top>
+                            <template #activator="data">
+                              <v-btn class="mx-2" small fab dark color="primary" v-on="data.on" @click="startEditingVehicle(index)"><v-icon dark>mdi-pencil</v-icon></v-btn>
+                            </template>
+                            <span>Edit Vehicle</span>
+                          </v-tooltip>
+                          
+                          <v-tooltip top>
+                            <template #activator="data">
+                              <v-btn class="mx-2" small fab dark color="error" v-on="data.on" @click=""><v-icon dark>mdi-close</v-icon></v-btn>
+                            </template>
+                            <span>Delete Vehicle</span>
+                          </v-tooltip>
+                        </div>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </v-col>
+              </v-row>
+            </v-container>
+          </div>
+
+          <!-- Vehicle Dialogs -->
+          <v-dialog id="Vehicle-Creator" transition="dialog-top-transition" max-width="600" v-model="creatingVehicle">
+            <template v-slot:default="dialog">
+              <v-card dark>
+                <v-toolbar color="success" dark><h2>New Vehicle</h2></v-toolbar>
+
+                <v-card-text>
+                  <v-form ref="vehCreatorMenu" class="px-3">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="12" md="20">
+                          <br>
+                          <v-text-field v-model="createVehData.label" outlined label="Name" append-icon="mdi-car" readonly></v-text-field>
+                          <v-text-field v-model="createVehData.type" outlined label="Type" append-icon="mdi-format-list-bulleted-type" readonly></v-text-field>
+                          <v-text-field v-model="createVehData.colour" outlined label="Colour" append-icon="mdi-palette" readonly></v-text-field>
+                          <v-text-field v-model="createVehData.plate" outlined label="Plate" append-icon="mdi-card-account-details" readonly></v-text-field>
+                        </v-col>
+                        
+                        <v-col cols="12" sm="12" md="20">
+                          <v-btn color="success" class="mr-4" @click="createCharacter()" :ripple=false>Create</v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
+          
+          <v-dialog id="Vehicle-Editor" transition="dialog-top-transition" max-width="600" v-model="editingVehicle">
+            <template v-slot:default="dialog">
+              <v-card dark>
+                <v-toolbar color="success" dark><h2>Editing Vehicle</h2></v-toolbar>
+
+                <v-card-text>
+                  <v-form ref="vehEditorMenu" class="px-3">
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" sm="12" md="20">
+                          <br>
+                          <v-text-field v-model="editedVehData.label" outlined label="Name" append-icon="mdi-car" readonly></v-text-field>
+                          <v-text-field v-model="editedVehData.type" outlined label="Type" append-icon="mdi-format-list-bulleted-type" readonly></v-text-field>
+                          <v-text-field v-model="editedVehData.colour" outlined label="Colour" append-icon="mdi-palette" readonly></v-text-field>
+                          <v-text-field v-model="editedVehData.plate" outlined label="Plate" append-icon="mdi-card-account-details" readonly></v-text-field>
+                        </v-col>
+                        
+                        <v-col cols="12" sm="12" md="20">
+                          <v-btn color="success" class="mr-4" @click="createCharacter()" :ripple=false>Save</v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-form>
+                </v-card-text>
+              </v-card>
+            </template>
+          </v-dialog>
+
         </div>
       </div>
 

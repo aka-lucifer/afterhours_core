@@ -685,6 +685,85 @@ body {
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
 }
 
+/* Vehicles */
+#Vehicles_Container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 90%;
+  height: 90%;
+
+  /* background-color: #0099cc; */
+}
+
+#Vehicles_Header {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 15%;
+
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+
+  user-select: none;
+
+  background: var(--cardGradient) !important;
+}
+
+#Vehicles_Body {
+  position: relative;
+
+  width: 100%;
+  height: 85%;
+
+  background-color: var(--notificationBG) !important;
+}
+
+#Vehicles_Body_Container {
+  position: relative;
+
+  top: 5%;
+  left: 3%;
+
+  width: 93%;
+  height: 90%;
+
+  /* background-color: #0099cc; */
+}
+
+.createVehBtn {
+  margin-top: 30px;
+}
+
+#Vehicles {
+  position: inherit;
+  margin-top: 20px;
+  margin-left: 5%;
+
+  width: 90%;
+  
+  max-height: 600px;
+  overflow-y: scroll;
+}
+
+#Vehicles::-webkit-scrollbar {
+  width: 5px;
+}
+
+#Vehicles::-webkit-scrollbar-thumb {
+  background: white !important;
+}
+
+.vehicleButtons {
+  margin-top: 10px;
+}
+
 .outline {
   position: fixed !important;
   display: block;
