@@ -36,7 +36,7 @@ import { Grabbing } from "./controllers/jobs/police/grabbing";
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import {Delay, Inform, Log, NumToVector3, RegisterNuiCallback} from "./utils";
+import {Delay, Inform, insideVeh, Log, NumToVector3, RegisterNuiCallback} from "./utils";
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -268,16 +268,15 @@ export class Client {
     let success = false;
 
     // Is player in a vehicle and the driver? Then we'll use that to teleport.
-    const currVehicle = Game.PlayerPed.CurrentVehicle;
-    const insideVeh = currVehicle != null &&  currVehicle.exists() && Game.PlayerPed == currVehicle.Driver;
-    const restoreVehVisibility = insideVeh && currVehicle.IsVisible;
+    const [currVeh, inside] = await insideVeh(Game.PlayerPed);
+    const restoreVehVisibility = insideVeh && currVeh.IsVisible;
     const restorePedVisibility = Game.PlayerPed.IsVisible;
 
     // Freeze vehicle or player location and fade out the entity to the network.
-    if (insideVeh) {
-      currVehicle.IsPositionFrozen = true;
-      if (currVehicle.IsVisible) {
-        NetworkFadeOutEntity(currVehicle.Handle, true, false);
+    if (inside) {
+      currVeh.IsPositionFrozen = true;
+      if (currVeh.IsVisible) {
+        NetworkFadeOutEntity(currVeh.Handle, true, false);
       }
     } else {
       ClearPedTasksImmediately(Game.PlayerPed.Handle);
@@ -337,7 +336,7 @@ export class Client {
 
       // If the player is in a vehicle, teleport the vehicle to this new position.
       if (insideVeh) {
-        SetEntityCoords(currVehicle.Handle, coords.x, coords.y, z, false, false, false, true);
+        SetEntityCoords(currVeh.Handle, coords.x, coords.y, z, false, false, false, true);
       }
       // otherwise, teleport the player to this new position.
       else {
@@ -368,13 +367,13 @@ export class Client {
       {
         Inform("TeleportToCoords Method", `Ground coordinate found: ${groundZ}`);
         if (insideVeh) {
-          SetEntityCoords(currVehicle.Handle, coords.x, coords.y, groundZ, false, false, false, true);
+          SetEntityCoords(currVeh.Handle, coords.x, coords.y, groundZ, false, false, false, true);
 
           // We need to unfreeze the vehicle because sometimes having it frozen doesn't place the vehicle on the ground properly.
-          currVehicle.IsPositionFrozen = false;
-          currVehicle.placeOnGround();
+          currVeh.IsPositionFrozen = false;
+          currVeh.placeOnGround();
           // Re-freeze until screen is faded in again.
-          currVehicle.IsPositionFrozen = true;
+          currVeh.IsPositionFrozen = true;
           success = true;
         }
         else {
@@ -400,10 +399,10 @@ export class Client {
 
       // Teleport vehicle, or player.
       if (insideVeh) {
-        SetEntityCoords(currVehicle.Handle, safePos.x, safePos.y, safePos.z, false, false, false, true);
-        currVehicle.IsPositionFrozen = false;
-        currVehicle.placeOnGround();
-        currVehicle.IsPositionFrozen = true;
+        SetEntityCoords(currVeh.Handle, safePos.x, safePos.y, safePos.z, false, false, false, true);
+        currVeh.IsPositionFrozen = false;
+        currVeh.placeOnGround();
+        currVeh.IsPositionFrozen = true;
         success = true;
       }
       else {
@@ -416,13 +415,13 @@ export class Client {
     if (insideVeh) {
       if (restoreVehVisibility)
       {
-        NetworkFadeInEntity(currVehicle.Handle, true);
+        NetworkFadeInEntity(currVeh.Handle, true);
         if (!restorePedVisibility)
         {
           Game.PlayerPed.IsVisible = false;
         }
       }
-      currVehicle.IsPositionFrozen = false;
+      currVeh.IsPositionFrozen = false;
     }
     else {
       if (restorePedVisibility)

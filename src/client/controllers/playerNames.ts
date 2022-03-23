@@ -2,7 +2,7 @@ import { Vector3, Game, Ped, VehicleSeat } from "fivem-js";
 import { Ranks } from "../../shared/enums/ranks";
 
 import { Client } from "../client";
-import { Delay } from "../utils";
+import { Delay, insideVeh } from "../utils";
 
 export class PlayerNames {
   // Client Data
@@ -84,11 +84,10 @@ export class PlayerNames {
               SetMpGamerTagAlpha(tag, tagIcons.Talking, 255);
               // SetMpGamerTagVisibility(tag, tagIcons.UsingMenu, true); // Flag
               
-              const currVehicle = ped.CurrentVehicle;
-              const insideVeh = currVehicle != null &&  currVehicle.exists();
+              const [currVeh, inside] = await insideVeh(Game.PlayerPed);
 
-              if (insideVeh) {
-                if (currVehicle.getPedOnSeat(VehicleSeat.Driver).Handle == ped.Handle) {
+              if (inside) {
+                if (currVeh.getPedOnSeat(VehicleSeat.Driver).Handle == ped.Handle) {
                   SetMpGamerTagVisibility(tag, tagIcons.Driver, true); // Driver (Wheel)
                   SetMpGamerTagAlpha(tag, tagIcons.Driver, 255);
                 } else {
@@ -96,7 +95,7 @@ export class PlayerNames {
                   SetMpGamerTagAlpha(tag, tagIcons.Driver, 0);
                 }
 
-                if (currVehicle.getPedOnSeat(VehicleSeat.Passenger).Handle == ped.Handle) {
+                if (currVeh.getPedOnSeat(VehicleSeat.Passenger).Handle == ped.Handle) {
                   SetMpGamerTagVisibility(tag, tagIcons.Passenger, true); // Passenger (Headset)
                   SetMpGamerTagAlpha(tag, tagIcons.Passenger, 255);
                 } else {
