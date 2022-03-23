@@ -3,8 +3,6 @@ import { Player } from "./player";
 import { Job } from "../jobs/job";
 
 import * as Database from "../../managers/database/database"
-import { Departments } from "../../../shared/enums/jobs/departments";
-import { PoliceRanks } from "../../../shared/enums/jobs/ranks";
 import { Bloodtypes, Gender } from "../../../shared/enums/characters";
 import { Delay, GetTimestamp, randomBetween, randomEnum } from "../../utils";
 

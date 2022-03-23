@@ -28,11 +28,11 @@ export class AFK {
 
   // Methods
   private startAFK(): void {
-    this.afkInterval = setInterval(() => {
-      if (this.client.Player.Spawned) {
+    // this.afkInterval = setInterval(() => {
+      // if (this.client.Player.Spawned) {
         console.log("AFK TIMER!");
-      }
-    }, 5000);
+      // }
+    // }, 5000);
   }
 
   // Events
