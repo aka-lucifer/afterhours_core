@@ -215,6 +215,7 @@ export class CharacterManager {
       // console.log("New Char Data", charData)
       const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob, charData.gender, charData.licenses, charData.mugshot);
       if (created) {
+        player.characters.push(character);
         data.character = Object.assign({}, character);
         await player.TriggerEvent(Events.receiveServerCB, true, data);
 
@@ -300,6 +301,10 @@ export class CharacterManager {
         await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
         await player.TriggerEvent(Events.setCharacter, Object.assign({}, character)); // Update our character on our client (char info, job, etc)
         await player.Notify("Characters", `You've logged in as ${character.Name}`, NotificationTypes.Success);
+
+        if (player.characters.length > 0) {
+          await player.Notify("Vehicles", `Make sure to create your CAD/MDT vehicles with the /vehicles command.`, NotificationTypes.Info, 10000);
+        }
         
         if (await this.Exists(player)) { // If one of your characters exists in the manager, remove it
           await this.Remove(player);
