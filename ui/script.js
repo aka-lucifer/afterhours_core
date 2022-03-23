@@ -124,6 +124,9 @@ const HUD = new Vue({
       plate: ""
     },
 
+    // [Vehicles] Deletion
+    showVehicleDelete: false,
+
     // [SCOREBOARD]
     displaying: false,
 
@@ -400,6 +403,26 @@ const HUD = new Vue({
             this.registeredVehicles[this.editVehIndex].plate = this.editedVehData.plate;
           }
           this.editingVehicle = false;
+        }
+      });
+    },
+
+    startVehDeletion(index) {
+      this.editVehIndex = index;
+      this.editedVehData = {
+        id: this.registeredVehicles[this.editVehIndex].id
+      }
+
+      this.showVehicleDelete = true;
+    },
+
+    deleteVehicle() {
+      this.Post("DELETE_VEHICLE", {
+        id: this.editedVehData.id
+      }, (deletedVeh) => {
+        if (deletedVeh) {
+          this.registeredVehicles.splice(this.editVehIndex, 1);
+          this.showVehicleDelete = false;
         }
       });
     },

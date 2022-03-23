@@ -38,6 +38,12 @@ export class Vehicles {
         cb(cbData)
       }));
     });
+
+    RegisterNuiCallback(NuiCallbacks.DeleteVehicle, async(data, cb) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteVehicle, {data}, (cbData, passedData) => {
+        cb(cbData)
+      }));
+    });
   }
 
   // Methods

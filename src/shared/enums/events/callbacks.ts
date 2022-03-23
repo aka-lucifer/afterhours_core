@@ -12,6 +12,7 @@ export enum Callbacks {
 
   // Vehicles
   editVehicle = "astrid:server:editVehicle",
+  deleteVehicle = "astrid:server:deleteVehicle",
   
   // Chat
   sendMessage = "astrid:server:sendMessage"
