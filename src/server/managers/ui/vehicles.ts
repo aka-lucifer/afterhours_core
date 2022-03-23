@@ -96,8 +96,6 @@ export class VehicleManager {
       colour: colour,
       plate: plate
     });
-
-    console.log("new Veh shit!", newVehicle);
     
     if (newVehicle.meta.affectedRows > 0) {
       const insertId = newVehicle.meta.insertId;
@@ -160,7 +158,7 @@ export class VehicleManager {
             await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
               color: EmbedColours.Green,
               title: "__Vehicle Registered__",
-              description: `A player has registered a new vehicle.\n\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Nationality**: ${character.Nationality}\n**Character Age**: ${character.Age}\n**Character Gender**: ${character.Gender}\n**Vehicle Name**: ${newVehicle.Label}\n**Vehicle Model**: ${newVehicle.Model}\n**Vehicle Type**: ${newVehicle.Type}\n**Vehicle Colour**: ${newVehicle.Colour}\n**Vehicle Plate**: ${newVehicle.Plate}\n**Vehicle Registered On**: ${new Date(newVehicle.Registered).toUTCString()}`,
+              description: `A player has registered a new vehicle.\n\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Nationality**: ${character.Nationality}\n**Character Age**: ${character.Age}\n**Character Gender**: ${character.Gender}\n**Name**: ${newVehicle.Label}\n**Model**: ${newVehicle.Model}\n**Type**: ${newVehicle.Type}\n**Colour**: ${newVehicle.Colour}\n**Plate**: ${newVehicle.Plate}\n**Registered On**: ${new Date(newVehicle.Registered).toUTCString()}`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]}));
           }
