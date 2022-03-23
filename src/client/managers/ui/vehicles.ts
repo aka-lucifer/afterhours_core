@@ -2,12 +2,14 @@ import { Client } from "../../client";
 import { RegisterNuiCallback } from "../../utils";
 
 import { Vehicle } from "../../models/ui/vehicle"
+import { ServerCallback } from "../../models/serverCallback";
 
 import { Events } from "../../../shared/enums/events/events";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 
 import clientConfig from "../../../configs/client.json";
+import { Callbacks } from "../../../shared/enums/events/callbacks";
 
 export class Vehicles {
   private client: Client;
@@ -26,10 +28,15 @@ export class Vehicles {
 
   // Methods
   private registerCallbacks(): void {
-    console.log("Register Nui Callbacks!"); 
     RegisterNuiCallback(NuiCallbacks.CloseVehicles, (data, cb) => {
       SetNuiFocus(false, false);
       cb(true);
+    });
+
+    RegisterNuiCallback(NuiCallbacks.EditVehicle, async(data, cb) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editVehicle, {data}, (cbData, passedData) => {
+        cb(cbData)
+      }));
     });
   }
 

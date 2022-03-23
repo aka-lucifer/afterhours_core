@@ -9,6 +9,9 @@ export enum Callbacks {
   editCharacter = "astrid:server:editCharacter",
   selectCharacter = "astrid:server:selectCharacter",
   deleteCharacter = "astrid:server:deleteCharacter",
+
+  // Vehicles
+  editVehicle = "astrid:server:editVehicle",
   
   // Chat
   sendMessage = "astrid:server:sendMessage"

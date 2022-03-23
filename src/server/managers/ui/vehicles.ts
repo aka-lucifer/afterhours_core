@@ -1,6 +1,8 @@
 import { Server } from "../../server";
 import {Dist, Inform, Log, logCommand, NumToVector3} from "../../utils";
 
+import { LogTypes } from "../../enums/logTypes";
+
 import { Character } from "../../models/database/character";
 import { Vehicle } from "../../models/database/vehicle";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";
@@ -15,6 +17,7 @@ import { Ranks } from "../../../shared/enums/ranks";
 import { Events } from "../../../shared/enums/events/events";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 import { formatSQLDate } from "../../../shared/utils";
+import { EmbedColours } from "../../../shared/enums/embedColours";
 
 export class VehicleManager {
   public server: Server;
@@ -24,7 +27,7 @@ export class VehicleManager {
     this.server = server;
 
     // Callbacks
-    // onNet(Callbacks.editCharacter, this.CALLBACK_editVehicle.bind(this));
+    onNet(Callbacks.editVehicle, this.CALLBACK_editVehicle.bind(this));
   }
 
   // Get Requests
@@ -54,7 +57,6 @@ export class VehicleManager {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         if (player.Spawned) {
-          player.Spawned = false;
           await player.TriggerEvent(Events.displayVehicles);
         }
       }
@@ -73,13 +75,25 @@ export class VehicleManager {
     return charVehicles;
   }
 
-  public async Yours(charId: number, owner: Character): Promise<boolean> {
-    const charData = await Database.SendQuery("SELECT `id` FROM `player_characters` WHERE `id` = :id AND `player_id` = :playerId LIMIT 1", {
-      id: charId,
-      playerId: owner.Id
+  public async getVehFromId(id: number): Promise<Vehicle> {
+    const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Id == id);
+    if (vehIndex !== -1) {
+      return this.vehicles[vehIndex];
+    }
+  }
+
+  public async yourVehicle(id: number): Promise<boolean> {
+    const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Id == id);
+    return vehIndex !== -1;
+  }
+
+  public async edit(id: number, plate: string): Promise<boolean> {
+    const updatedVeh = await Database.SendQuery("UPDATE `character_vehicles` SET `plate` = :newPlate WHERE `id` = :id", {
+      id: id,
+      newPlate: plate
     });
 
-    return charData.data.length > 0;
+    return updatedVeh.meta.affectedRows > 0;
   }
 
   public async Delete(charId: number, owner: Character): Promise<boolean> {
@@ -89,5 +103,31 @@ export class VehicleManager {
     });
 
     return charData.data.length > 0;
+  }
+
+  // Callbacks
+  private async CALLBACK_editVehicle(data: Record<string, any>): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      if (player.Spawned) {
+        const vehData = data.data;
+        if (vehData.id !== undefined && vehData.id > 0) {
+          const vehicle = await this.getVehFromId(vehData.id);
+          const updatedVeh = await this.edit(vehData.id, vehData.plate);
+          if (updatedVeh) {
+            vehicle.Plate = vehData.plate;
+            await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
+              color: EmbedColours.Green,
+              title: "__Vehicle Edited__",
+              description: `A player has edited one of their vehicles.\n\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Old Plate**: ${vehData.oldPlate}\n**New Plate**: ${vehicle.Plate}\n**Registered At**: ${new Date(vehicle.Registered).toUTCString()}`,
+              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+            }]}));
+            // webhook update plate
+          }
+        }
+      }
+    }
   }
 }

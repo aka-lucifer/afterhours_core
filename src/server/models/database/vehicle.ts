@@ -51,6 +51,10 @@ export class Vehicle {
     return this.plate;
   }
 
+  public set Plate(newPlate: string) {
+    this.plate = newPlate;
+  }
+
   public get Registered(): string {
     return this.registeredOn;
   }

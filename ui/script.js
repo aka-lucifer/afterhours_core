@@ -103,24 +103,25 @@ const HUD = new Vue({
     vehCreatorMenu: null,
 
     createVehData: {
-      label: "Sultan RS",
-      model: "sultanrs",
-      colour: "Purple, Matte Black",
-      type: "Sports",
-      plate: "46EEK572"
+      label: "",
+      model: "",
+      colour: "",
+      type: "",
+      plate: ""
     },
 
     // [Vehicles] Editing
     editingVehicle: false,
     vehEditorMenu: null,
 
+    editVehIndex: -1,
     editedVehData: {
-      id: 1,
-      label: "Sultan RS",
-      model: "sultanrs",
-      colour: "Purple, Matte Black",
-      type: "Sports",
-      plate: "46EEK572"
+      id: 0,
+      label: "",
+      model: "",
+      colour: "",
+      type: "",
+      plate: ""
     },
 
     // [SCOREBOARD]
@@ -371,16 +372,36 @@ const HUD = new Vue({
     },
 
     startEditingVehicle(index) {
+      this.editVehIndex = index;
       this.editedVehData = {
-        id: this.registeredVehicles[index].id,
-        label: this.registeredVehicles[index].label,
-        model: this.registeredVehicles[index].model,
-        colour: this.registeredVehicles[index].colour,
-        type: this.registeredVehicles[index].type,
-        plate: this.registeredVehicles[index].plate
+        id: this.registeredVehicles[this.editVehIndex].id,
+        label: this.registeredVehicles[this.editVehIndex].label,
+        model: this.registeredVehicles[this.editVehIndex].model,
+        colour: this.registeredVehicles[this.editVehIndex].colour,
+        type: this.registeredVehicles[this.editVehIndex].type,
+        plate: this.registeredVehicles[this.editVehIndex].plate
       }
 
       this.editingVehicle = true;
+    },
+
+    editVehicle() {
+      this.Post("EDIT_VEHICLE", {
+        id: this.editedVehData.id,
+        label: this.editedVehData.label,
+        model: this.editedVehData.model,
+        colour: this.editedVehData.colour,
+        type: this.editedVehData.type,
+        oldPlate: this.registeredVehicles[this.editVehIndex].plate,
+        plate: this.editedVehData.plate
+      }, (charLicenses) => {
+        if (charLicenses) {
+          if (this.registeredVehicles[this.editVehIndex].plate != this.editedVehData.plate) {
+            this.registeredVehicles[this.editVehIndex].plate = this.editedVehData.plate;
+          }
+          this.editingVehicle = false;
+        }
+      });
     },
 
     closeVehicles() {

@@ -13,6 +13,7 @@ export enum NuiCallbacks {
 
   // Vehicles
   CloseVehicles = "CLOSE_VEHICLES",
+  EditVehicle = "EDIT_VEHICLE",
   
   // Chat
   CloseChat = "CLOSE_CHAT",

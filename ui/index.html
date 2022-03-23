@@ -434,7 +434,7 @@
                           <v-text-field v-model="createVehData.label" outlined label="Name" append-icon="mdi-car" readonly></v-text-field>
                           <v-text-field v-model="createVehData.type" outlined label="Type" append-icon="mdi-format-list-bulleted-type" readonly></v-text-field>
                           <v-text-field v-model="createVehData.colour" outlined label="Colour" append-icon="mdi-palette" readonly></v-text-field>
-                          <v-text-field v-model="createVehData.plate" outlined label="Plate" append-icon="mdi-card-account-details" readonly></v-text-field>
+                          <v-text-field v-model="createVehData.plate" outlined label="Plate" append-icon="mdi-card-account-details"></v-text-field>
                         </v-col>
                         
                         <v-col cols="12" sm="12" md="20">
@@ -462,11 +462,11 @@
                           <v-text-field v-model="editedVehData.label" outlined label="Name" append-icon="mdi-car" readonly></v-text-field>
                           <v-text-field v-model="editedVehData.type" outlined label="Type" append-icon="mdi-format-list-bulleted-type" readonly></v-text-field>
                           <v-text-field v-model="editedVehData.colour" outlined label="Colour" append-icon="mdi-palette" readonly></v-text-field>
-                          <v-text-field v-model="editedVehData.plate" outlined label="Plate" append-icon="mdi-card-account-details" readonly></v-text-field>
+                          <v-text-field v-model="editedVehData.plate" outlined label="Plate" append-icon="mdi-card-account-details"></v-text-field>
                         </v-col>
                         
                         <v-col cols="12" sm="12" md="20">
-                          <v-btn color="success" class="mr-4" @click="createCharacter()" :ripple=false>Save</v-btn>
+                          <v-btn color="success" class="mr-4" @click="editVehicle()" :ripple=false>Save</v-btn>
                         </v-col>
                       </v-row>
                     </v-container>
