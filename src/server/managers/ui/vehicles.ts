@@ -99,7 +99,7 @@ export class VehicleManager {
   }
 
   public async create(owner: Character, label: string, model: string, type: string, colour: string, plate: string): Promise<[number, boolean]> {
-    const newVehicle = await Database.SendQuery("INSERT INTO `character_vehicles` (`character_id`, `label`, `model`, `type`, `colour`, `plate`) VALUES (:characterId, :label, :model, type, :colour, :plate)", {
+    const newVehicle = await Database.SendQuery("INSERT INTO `character_vehicles` (`character_id`, `label`, `model`, `type`, `colour`, `plate`) VALUES (:characterId, :label, :model, :type, :colour, :plate)", {
       characterId: owner.Id,
       label: label,
       model: model,
