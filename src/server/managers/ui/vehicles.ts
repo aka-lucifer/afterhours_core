@@ -49,21 +49,10 @@ export class VehicleManager {
       this.vehicles.push(vehicle);
     }
 
-    console.log(`Server Registered Vehicles | ${JSON.stringify(this.vehicles)}`);
-
     this.registerCommands();
   }
 
   private registerCommands(): void {
-    RegisterCommand("insert", async () => {
-      const character = new Character(1);
-      const loaded = await character.load(2);
-      if (loaded) {
-        const [insertId, inserted] = await this.create(character, "test", "test", "test", "test", "test");
-        console.log("insert data", insertId, inserted);
-      }
-    }, false);
-
     new Command("vehicles", "Edit your characters vehicles.", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
