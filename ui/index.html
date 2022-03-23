@@ -367,6 +367,13 @@
           <div id="Vehicles_Body_Container">
             <v-tooltip bottom>
               <template #activator="data">
+                <v-btn class="closeVehBtn" small fab dark color="error" v-on="data.on" @click="closeVehicles()" top right><v-icon dark>mdi-close</v-icon></v-btn>
+              </template>
+              <span>Close</span>
+            </v-tooltip>
+
+            <v-tooltip bottom>
+              <template #activator="data">
                 <v-btn class="createVehBtn" small fab dark color="success" v-on="data.on" @click="startCreatingVehicles()" absolute top right><v-icon dark>mdi-pencil</v-icon></v-btn>
               </template>
               <span>Create Vehicle</span>
@@ -385,7 +392,7 @@
                           <li><strong>Type</strong>: {{ vehicle.type }}</li>
                           <li><strong>Colour</strong>: {{ vehicle.colour }}</li>
                           <li><strong>Plate</strong>: {{ vehicle.plate }}</li>
-                          <li><strong>Registered On</strong>: {{ vehicle.registeredOn }}</li>
+                          <li><strong>Registered On</strong>: {{ vehicle.displayDate }}</li>
                         </ul><br>
                         
                         <v-divider></v-divider>

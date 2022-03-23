@@ -4,6 +4,10 @@ export enum NuiMessages {
 
   // Characters
   DisplayCharacters = "DISPLAY_CHARACTERS",
+
+  // Vehicles
+  SetupVehicles = "SETUP_VEHICLES",
+  DisplayVehicles = "DISPLAY_VEHICLES",
   
   // Notifications
   CreateNotification = "CREATE_NOTIFICATION",

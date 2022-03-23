@@ -14,6 +14,7 @@ import {CommendManager} from "./managers/database/commends";
 import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
 import {CharacterManager} from "./managers/characters";
+import { VehicleManager } from "./managers/ui/vehicles";
 
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
@@ -66,6 +67,7 @@ export class Server {
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
   public characterManager: CharacterManager;
+  public vehicleManager: VehicleManager;
 
   // [Managers] Syncing
   private timeManager: TimeManager;
@@ -130,6 +132,7 @@ export class Server {
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
     this.characterManager = new CharacterManager(server);
+    this.vehicleManager = new VehicleManager(server);
 
     // [Managers] Syncing
     this.timeManager = new TimeManager(server);
@@ -166,6 +169,7 @@ export class Server {
     this.staffManager.init();
 
     this.characterManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
+    await this.vehicleManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
 
     // Register Components
     this.registerCommands();

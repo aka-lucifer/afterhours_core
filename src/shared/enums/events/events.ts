@@ -92,6 +92,10 @@ export enum Events {
   displayCharacters = "astrid:client:displayCharacters",
   syncMeMessages = "astrid:client:syncMeMessages",
 
+  // Astrid Client (Vehicles)
+  setupVehicles = "astrid:client:setupVehicles",
+  displayVehicles = "astrid:client:displayVehicles",
+
   // Astrid Client (Scoreboard)
   receivePlayers = "astrid:client:receivePlayers",
 

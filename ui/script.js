@@ -96,13 +96,7 @@ const HUD = new Vue({
 
     // Vehicles
     showVehicles: false,
-    registeredVehicles: [
-      {id: 1, label: "R31 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
-      {id: 2, label: "R32 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
-      {id: 3, label: "R33 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
-      {id: 4, label: "R34 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"},
-      {id: 5, label: "R35 Skyline", model: "skyline", type: "Sports", colour: "Purple, Matte Black", plate: "46EEK572", registeredOn: "19th of March, 2022"}
-    ],
+    registeredVehicles: [],
 
     // [Vehicles] Creating
     creatingVehicle: false,
@@ -205,15 +199,6 @@ const HUD = new Vue({
     },
 
     // CHARACTERS
-    setupCharacters(data) {
-      for (let i = 0; i < data.characters.length; i++) {
-        data.characters[i].jobRank = data.characters[i].job.rankLabel; // Define this first as job var is overridden below
-        data.characters[i].job = data.characters[i].job.label;
-      }
-      
-      this.characters = data.characters;
-    },
-
     displayCharcaters(data) {
       this.resetCharacters();
       for (let i = 0; i < data.characters.length; i++) {
@@ -367,11 +352,18 @@ const HUD = new Vue({
 
     // Vehicles
     setupVehicles(data) {
+      if (data.vehicles) {
+        for (let i = 0; i < data.vehicles.length; i++) {
+          data.vehicles[i].displayDate = new Date(data.vehicles[i].registeredOn).toUTCString();
+        }
 
+        this.registeredVehicles = data.vehicles;
+        // console.log("Recieved vehicles", JSON.stringify(this.registeredVehicles, null, 2));
+      }
     },
 
     displayVehicles() {
-
+      this.showVehicles = true;
     },
 
     startCreatingVehicles() {
@@ -392,8 +384,12 @@ const HUD = new Vue({
     },
 
     closeVehicles() {
-      console.log("close vehs init bruv!");
-      this.showVehicles = false;
+      this.Post("CLOSE_VEHICLES", {}, (callbackData) => {
+        if (callbackData) {
+          console.log("close vehs init bruv!");
+          this.showVehicles = false;
+        }
+      });
     },
 
     // Notification
@@ -755,8 +751,11 @@ const HUD = new Vue({
     RegisterEvent("OPEN_SPAWNER", this.SetupSpawn);
 
     // Characters
-    RegisterEvent("SETUP_CHARACTERS", this.setupCharacters);
     RegisterEvent("DISPLAY_CHARACTERS", this.displayCharcaters);
+
+    // Vehicles
+    RegisterEvent("SETUP_VEHICLES", this.setupVehicles);
+    RegisterEvent("DISPLAY_VEHICLES", this.displayVehicles);
 
     // Notification
     RegisterEvent("CREATE_NOTIFICATION", this.Notification);
@@ -811,8 +810,6 @@ const HUD = new Vue({
             HUD.CloseWarnings();
           } else if ($("#commends_container").is(":visible")) {
             HUD.CloseCommends();
-          } else if ($("#Vehicles_Container").is(":visible")) {
-            HUD.closeVehicles();
           }
           break;
 

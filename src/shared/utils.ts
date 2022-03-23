@@ -42,3 +42,23 @@ export function concatArgs(startPosition: number, args: string[]): string {
 export function isDateValid(date: Date): boolean {
   return date.getTime() === date.getTime(); // If the date object is invalid, it will return 'NaN' on getTime() and NaN is never equal to itself.
 }
+
+/**
+ * 
+ * @returns The current date in a MySQL Timestamp format.
+ */
+ export async function GetTimestamp(): Promise<string> {
+  const currDate = new Date();
+  const dates = [currDate.getFullYear(), TwoDigits(currDate.getMonth() + 1), TwoDigits(currDate.getDate()), TwoDigits(currDate.getHours()), TwoDigits(currDate.getMinutes()), TwoDigits(currDate.getSeconds())];
+  return `${dates[0]}-${dates[1]}-${dates[2]} ${dates[3]}:${dates[4]}:${dates[5]}`;
+}
+
+function TwoDigits(d) {
+  if(0 <= d && d < 10) return "0" + d.toString();
+  if(-10 < d && d < 0) return "-0" + (-1*d).toString();
+  return d.toString();
+}
+
+export function formatSQLDate(timestamp: Date): string {
+  return `${timestamp.getFullYear()}-${TwoDigits(timestamp.getMonth() + 1)}-${TwoDigits(timestamp.getDate())} ${TwoDigits(timestamp.getHours())}:${TwoDigits(timestamp.getMinutes())}:${TwoDigits(timestamp.getSeconds())}`;
+}

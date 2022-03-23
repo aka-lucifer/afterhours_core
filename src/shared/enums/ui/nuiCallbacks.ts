@@ -10,6 +10,9 @@ export enum NuiCallbacks {
   EditCharacter = "EDIT_CHARACTER",
   SelectCharacter = "SELECT_CHARACTER",
   DeleteCharacter = "DELETE_CHARACTER",
+
+  // Vehicles
+  CloseVehicles = "CLOSE_VEHICLES",
   
   // Chat
   CloseChat = "CLOSE_CHAT",

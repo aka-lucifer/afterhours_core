@@ -145,7 +145,7 @@ body {
 
   color: white;
   font-family: "Inter-Light";
-  font-size: 5em;
+  font-size: 4em;
   font-weight: bolder;
   letter-spacing: .07em;
   text-shadow: var(--charactersHeaderShadow);
@@ -696,6 +696,7 @@ body {
   height: 90%;
 
   /* background-color: #0099cc; */
+  z-index: 4.5;
 }
 
 #Vehicles_Header {
@@ -739,6 +740,10 @@ body {
 
 .createVehBtn {
   margin-top: 30px;
+}
+
+.closeVehBtn {
+  margin-top: 12px;
 }
 
 #Vehicles {

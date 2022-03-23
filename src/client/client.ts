@@ -19,6 +19,7 @@ import {ServerCallbackManager} from "./managers/serverCallbacks";
 // [Managers] UI
 import {Spawner} from "./managers/ui/spawner";
 import {Characters} from "./managers/ui/characters";
+import {Vehicles} from "./managers/ui/vehicles";
 import {ChatManager} from "./managers/ui/chat";
 import {Scoreboard} from "./managers/ui/scoreboard";
 import {Warnings} from "./managers/ui/warnings";
@@ -87,6 +88,7 @@ export class Client {
   // [Managers] UI
   private spawner: Spawner;
   public characters: Characters;
+  public vehicles: Vehicles;
   private chatManager: ChatManager;
   private scoreboard: Scoreboard;
   private warnings: Warnings;
@@ -182,6 +184,7 @@ export class Client {
     // [Managers] UI
     this.spawner = new Spawner(client);
     this.characters = new Characters(client);
+    this.vehicles = new Vehicles(client);
     this.chatManager = new ChatManager(client);
     this.scoreboard = new Scoreboard(client);
     this.warnings = new Warnings(client);
