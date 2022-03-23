@@ -1,5 +1,5 @@
 import { Server } from "../../server";
-import {Dist, Inform, Log, logCommand, NumToVector3} from "../../utils";
+import {Dist, GetTimestamp, Inform, Log, logCommand, NumToVector3} from "../../utils";
 
 import { LogTypes } from "../../enums/logTypes";
 
@@ -27,6 +27,7 @@ export class VehicleManager {
     this.server = server;
 
     // Callbacks
+    onNet(Callbacks.createVehicle, this.CALLBACK_createVehicle.bind(this));
     onNet(Callbacks.editVehicle, this.CALLBACK_editVehicle.bind(this));
     onNet(Callbacks.deleteVehicle, this.CALLBACK_deleteVehicle.bind(this));
   }
@@ -54,6 +55,15 @@ export class VehicleManager {
   }
 
   private registerCommands(): void {
+    RegisterCommand("insert", async () => {
+      const character = new Character(1);
+      const loaded = await character.load(2);
+      if (loaded) {
+        const [insertId, inserted] = await this.create(character, "test", "test", "test", "test", "test");
+        console.log("insert data", insertId, inserted);
+      }
+    }, false);
+
     new Command("vehicles", "Edit your characters vehicles.", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
@@ -88,6 +98,26 @@ export class VehicleManager {
     return vehIndex !== -1;
   }
 
+  public async create(owner: Character, label: string, model: string, type: string, colour: string, plate: string): Promise<[number, boolean]> {
+    const newVehicle = await Database.SendQuery("INSERT INTO `character_vehicles` (`character_id`, `label`, `model`, `type`, `colour`, `plate`) VALUES (:characterId, :label, :model, type, :colour, :plate)", {
+      characterId: owner.Id,
+      label: label,
+      model: model,
+      type: type,
+      colour: colour,
+      plate: plate
+    });
+
+    console.log("new Veh shit!", newVehicle);
+    
+    if (newVehicle.meta.affectedRows > 0) {
+      const insertId = newVehicle.meta.insertId;
+      return [insertId, true];
+    } else {
+      return [undefined, false];
+    }
+  }
+
   public async edit(id: number, plate: string, owner: Character): Promise<boolean> {
     const updatedVeh = await Database.SendQuery("UPDATE `character_vehicles` SET `plate` = :newPlate WHERE `id` = :id AND `character_id` = :ownerId", {
       id: id,
@@ -118,6 +148,38 @@ export class VehicleManager {
   }
 
   // Callbacks
+  private async CALLBACK_createVehicle(data: Record<string, any>): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      if (player.Spawned) {
+        const character = await this.server.characterManager.Get(player);
+        if (character) {
+          const vehData = data.data;
+          const newVehicle = new Vehicle(character.Id, vehData.label, vehData.model, vehData.type, vehData.colour, vehData.plate)
+          const [insertId, inserted] = await this.create(character, newVehicle.Label, newVehicle.Model, newVehicle.Type, newVehicle.Colour, newVehicle.Plate);
+
+          if (inserted) {
+            vehData.id = insertId;
+            vehData.registeredOn = await GetTimestamp();
+
+            newVehicle.Id = insertId;
+            newVehicle.Registered = vehData.registeredOn;
+            this.vehicles.push(newVehicle);
+
+            await player.TriggerEvent(Events.receiveServerCB, vehData, data); // Update the UI to close and disable NUI focus
+
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
+              color: EmbedColours.Green,
+              title: "__Vehicle Registered__",
+              description: `A player has registered a new vehicle.\n\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Nationality**: ${character.Nationality}\n**Character Age**: ${character.Age}\n**Character Gender**: ${character.Gender}\n**Vehicle Name**: ${newVehicle.Label}\n**Vehicle Model**: ${newVehicle.Model}\n**Vehicle Type**: ${newVehicle.Type}\n**Vehicle Colour**: ${newVehicle.Colour}\n**Vehicle Plate**: ${newVehicle.Plate}\n**Vehicle Registered On**: ${new Date(newVehicle.Registered).toUTCString()}`,
+              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+            }]}));
+          }
+        }
+      }
+    }
+  }
+
   private async CALLBACK_editVehicle(data: Record<string, any>): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {

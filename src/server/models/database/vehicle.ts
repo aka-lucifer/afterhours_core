@@ -8,14 +8,17 @@ export class Vehicle {
   private plate: string;
   private registeredOn: string;
 
-  constructor(ownerId: number, label: string, model: string, type: string, colour: string, plate: string, registeredOn: string) {
+  constructor(ownerId: number, label: string, model: string, type: string, colour: string, plate: string, registeredOn?: string) {
     this.ownerId = ownerId;
     this.label = label;
     this.model = model;
     this.type = type;
     this.colour = colour;
     this.plate = plate;
-    this.registeredOn = registeredOn;
+
+    if (registeredOn !== undefined) {
+      this.registeredOn = registeredOn;
+    }
   }
 
   // Get & Set Requests
@@ -57,5 +60,9 @@ export class Vehicle {
 
   public get Registered(): string {
     return this.registeredOn;
+  }
+
+  public set Registered(newDate: string) {
+    this.registeredOn = newDate;
   }
 }

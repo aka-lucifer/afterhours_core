@@ -1,5 +1,5 @@
 import { Colour } from "../shared/models/utils/colour";
-import { Vector3, Ped, World, Font, Game } from "fivem-js";
+import { Vector3, Ped, World, Font, Game, Vehicle } from "fivem-js";
 
 /**
  * @param reference Title for organisation logs
@@ -251,4 +251,10 @@ export function Draw3DText(position: Vector3, colour: { r: number, g: number, b:
   SetDrawOrigin(position.x, position.y, position.z, 0);
   DrawText(0, 0);
   ClearDrawOrigin();
+}
+
+export async function insideVeh(ped: Ped): Promise<[Vehicle, boolean]> {
+  const currVehicle = ped.CurrentVehicle;
+  const inside = currVehicle != null && currVehicle.exists() && ped.Handle == currVehicle.Driver.Handle;
+  return [currVehicle, inside];
 }

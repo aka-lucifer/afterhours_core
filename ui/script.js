@@ -102,6 +102,9 @@ const HUD = new Vue({
     creatingVehicle: false,
     vehCreatorMenu: null,
 
+    insideVeh: false,
+    insideNotify: false,
+    insideTimeout: undefined,
     createVehData: {
       label: "",
       model: "",
@@ -366,12 +369,72 @@ const HUD = new Vue({
       }
     },
 
-    displayVehicles() {
+    displayVehicles(data) {
+      this.insideVeh = data.vehData.inside;
+      this.createVehData = {
+        label: data.vehData.label,
+        model: data.vehData.model,
+        type: data.vehData.type,
+        colour: data.vehData.colour,
+        plate: data.vehData.plate
+      }
+
       this.showVehicles = true;
     },
 
     startCreatingVehicles() {
       this.creatingVehicle = true;
+      if (!this.insideVeh) {
+        this.insideNotify = true;
+
+        if (this.insideTimeout !== undefined) {
+          this.insideTimeout = setTimeout(() => {
+            this.insideTimeout = undefined;
+            clearTimeout(this.insideTimeout);
+            this.creatingVehicle = false; // Hide create vehicle dialog
+            this.insideNotify = false; // Not inside vehicle notification
+          }, 2000);
+        } else {
+          this.insideTimeout = undefined;
+          clearTimeout(this.insideTimeout);
+          
+          this.insideTimeout = setTimeout(() => {
+            this.creatingVehicle = false; // Hide create vehicle dialog
+            this.insideNotify = false; // Not inside vehicle notification
+          }, 2000);
+        }
+      }
+    },
+
+    createVehicle() {
+      this.Post("CREATE_VEHICLE", {
+        label: this.createVehData.label,
+        model: this.createVehData.model,
+        type: this.createVehData.type,
+        colour: this.createVehData.colour,
+        plate: this.createVehData.plate.toUpperCase()
+      }, (vehData) => {
+        if (vehData.id > 0) {
+          vehData.displayDate = new Date(vehData.registeredOn).toUTCString();
+          this.registeredVehicles.push(vehData);
+
+          this.Notification({
+            title: "Vehicles",
+            text: "Vehicle Registered!",
+            status: "success",
+            effect: "slide",
+            speed: 300,
+            autoclose: true,
+            autotimeout: 3000,
+            type: 2,
+            position: "top left",
+            progress: false,
+            showCloseButton: false
+          });
+
+          this.creatingVehicle = false;
+        }
+      });
     },
 
     startEditingVehicle(index) {
@@ -380,8 +443,8 @@ const HUD = new Vue({
         id: this.registeredVehicles[this.editVehIndex].id,
         label: this.registeredVehicles[this.editVehIndex].label,
         model: this.registeredVehicles[this.editVehIndex].model,
-        colour: this.registeredVehicles[this.editVehIndex].colour,
         type: this.registeredVehicles[this.editVehIndex].type,
+        colour: this.registeredVehicles[this.editVehIndex].colour,
         plate: this.registeredVehicles[this.editVehIndex].plate
       }
 
@@ -393,8 +456,8 @@ const HUD = new Vue({
         id: this.editedVehData.id,
         label: this.editedVehData.label,
         model: this.editedVehData.model,
-        colour: this.editedVehData.colour,
         type: this.editedVehData.type,
+        colour: this.editedVehData.colour,
         oldPlate: this.registeredVehicles[this.editVehIndex].plate,
         plate: this.editedVehData.plate
       }, (charLicenses) => {
@@ -402,6 +465,21 @@ const HUD = new Vue({
           if (this.registeredVehicles[this.editVehIndex].plate != this.editedVehData.plate) {
             this.registeredVehicles[this.editVehIndex].plate = this.editedVehData.plate;
           }
+
+          this.Notification({
+            title: "Vehicles",
+            text: "Vehicle Edited!",
+            status: "info",
+            effect: "slide",
+            speed: 300,
+            autoclose: true,
+            autotimeout: 3000,
+            type: 2,
+            position: "top left",
+            progress: false,
+            showCloseButton: false
+          });
+
           this.editingVehicle = false;
         }
       });
@@ -422,6 +500,21 @@ const HUD = new Vue({
       }, (deletedVeh) => {
         if (deletedVeh) {
           this.registeredVehicles.splice(this.editVehIndex, 1);
+
+          this.Notification({
+            title: "Vehicles",
+            text: "Vehicle Deleted!",
+            status: "error",
+            effect: "slide",
+            speed: 300,
+            autoclose: true,
+            autotimeout: 3000,
+            type: 2,
+            position: "top left",
+            progress: false,
+            showCloseButton: false
+          });
+
           this.showVehicleDelete = false;
         }
       });

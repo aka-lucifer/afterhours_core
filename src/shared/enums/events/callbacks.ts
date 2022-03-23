@@ -11,6 +11,7 @@ export enum Callbacks {
   deleteCharacter = "astrid:server:deleteCharacter",
 
   // Vehicles
+  createVehicle = "astrid:server:createVehicle",
   editVehicle = "astrid:server:editVehicle",
   deleteVehicle = "astrid:server:deleteVehicle",
   

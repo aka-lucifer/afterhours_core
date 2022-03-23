@@ -427,8 +427,13 @@
 
                 <v-card-text>
                   <v-form ref="vehCreatorMenu" class="px-3">
+        
                     <v-container>
-                      <v-row>
+                      <v-alert color="red" dark icon="mdi-close" border="left" prominent v-show="insideNotify">
+                        You aren't inside a vehicle
+                      </v-alert>
+
+                      <v-row v-if="!insideNotify">
                         <v-col cols="12" sm="12" md="20">
                           <br>
                           <v-text-field v-model="createVehData.label" outlined label="Name" append-icon="mdi-car" readonly></v-text-field>
@@ -438,7 +443,7 @@
                         </v-col>
                         
                         <v-col cols="12" sm="12" md="20">
-                          <v-btn color="success" class="mr-4" @click="createCharacter()" :ripple=false>Create</v-btn>
+                          <v-btn color="success" class="mr-4" @click="createVehicle()" :ripple=false>Create</v-btn>
                         </v-col>
                       </v-row>
                     </v-container>
