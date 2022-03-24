@@ -68,7 +68,26 @@ export class PlayerNames {
             if (this.createdTags[netId].ped.Position.distance(ped.Position) <= 15 && HasEntityClearLosToEntity(this.createdTags[netId].ped.Handle, ped.Handle, 17)) {
 
               // Sets gamertag name colour
-              SetMpGamerTagColour(tag, tagIcons.Name, 142);
+              switch(svPlayers[i].Rank) {
+                case Ranks.Ownership:
+                  SetMpGamerTagColour(tag, tagIcons.Name, 201);
+                  break;
+                case Ranks.Management:
+                  SetMpGamerTagColour(tag, tagIcons.Name, 142);
+                  break;
+                case Ranks.SeniorAdmin:
+                  SetMpGamerTagColour(tag, tagIcons.Name, 27);
+                  break;
+                case Ranks.Admin:
+                  SetMpGamerTagColour(tag, tagIcons.Name, 25);
+                  break;
+                case Ranks.Moderator:
+                  SetMpGamerTagColour(tag, tagIcons.Name, 9);
+                  break;
+                default: // Set default colour (white)
+                  SetMpGamerTagColour(tag, tagIcons.Name, 1);
+                  break;
+              }
 
               // Gamertag Icons
 
@@ -78,7 +97,7 @@ export class PlayerNames {
 
               SetMpGamerTagVisibility(tag, tagIcons.Health, true); // Health
               SetMpGamerTagAlpha(tag, tagIcons.Health, 255);
-              SetMpGamerTagHealthBarColour(tag, 25); -// Health Colour
+              SetMpGamerTagHealthBarColour(tag, 25); // Health Colour
 
               SetMpGamerTagVisibility(tag, tagIcons.Talking, NetworkIsPlayerTalking(playerId)); // Talking
               SetMpGamerTagAlpha(tag, tagIcons.Talking, 255);
