@@ -17,7 +17,7 @@ export class PoliceJob {
     emit("astrid_target:client:addBoxZone", "Sandy PD", new Vector3(1852.24, 3687.0, 34.27), 2.4, 1.4, {
       name: "sandy_pd PD",
       heading: 301,
-      debugPoly: true,
+      debugPoly: false,
       minZ: 32.95,
       maxZ: 36.95
     }, {

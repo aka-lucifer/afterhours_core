@@ -9,11 +9,17 @@ import { JobEvents } from "../../shared/enums/events/jobEvents";
 import { PoliceJob } from "../controllers/jobs/policeJob";
 import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
 
+// Controllers
+import { JobBlips } from "../controllers/jobs/features/jobBlips";
+
 export class JobManager {
   private client: Client;
 
   // Jobs
   private policeJob: PoliceJob;
+
+  // Controllers
+  private jobBlips: JobBlips;
 
   constructor(client: Client) {
     this.client = client;
@@ -24,8 +30,12 @@ export class JobManager {
 
   // Methods
   public init(): void {
+    // Jobs
     this.policeJob = new PoliceJob(this.client);
     this.policeJob.init();
+
+    // Controllers
+    this.jobBlips = new JobBlips(this.client);
   }
 
   // Events

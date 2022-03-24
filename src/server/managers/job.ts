@@ -2,14 +2,35 @@ import { Server } from "../server";
 
 import { JobEvents } from "../../shared/enums/events/jobEvents";
 
+// Jobs
+import { PoliceJob } from "../controllers/jobs/policeJob";
+
+// Controllers
+import { JobBlips } from "../controllers/jobs/features/jobBlips";
+
 export class JobManager {
   private server: Server;
+
+  // Jobs
+  private policeJob: PoliceJob;
+
+  // Controllers
+  private jobBlips: JobBlips;
 
   constructor(server: Server) {
     this.server = server;
 
     // Events
     onNet(JobEvents.setDuty, this.EVENT_setDuty.bind(this));
+  }
+
+  // Methods
+  public init(): void {
+    // Jobs
+    this.policeJob = new PoliceJob(this.server);
+    
+    // Controllers
+    this.jobBlips = new JobBlips(this.server);
   }
 
   // Events
