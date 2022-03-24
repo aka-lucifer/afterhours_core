@@ -1,5 +1,5 @@
 import { Client } from "../../client";
-import { insideVeh, insideVeh, RegisterNuiCallback } from "../../utils";
+import { insideVeh, RegisterNuiCallback } from "../../utils";
 
 import { Vehicle } from "../../models/ui/vehicle"
 import { ServerCallback } from "../../models/serverCallback";
@@ -8,10 +8,8 @@ import { Events } from "../../../shared/enums/events/events";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 
-import clientConfig from "../../../configs/client.json";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 import { Game, VehicleClass, VehicleColor } from "fivem-js";
-import { stringify } from "querystring";
 
 export class Vehicles {
   private client: Client;
