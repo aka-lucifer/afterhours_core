@@ -37,6 +37,15 @@ export class StaffManager {
       }
     }, Ranks.Admin);
 
+    new Command("showrank", "Show your rank in your name", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          await player.TriggerEvent(Events.showRank);
+        }
+      }
+    }, Ranks.Admin);
+
     new Command("sudo", "Sudo someone to send a chat message as them", [{name: "server_id", help: "Server ID of the person to sudo"}, {name: "content", help: "The content of the chat message"}], true, async(source: string, args: any[]) => {
       if (args[0]) {
         const player = await this.server.connectedPlayerManager.GetPlayer(args[0]);

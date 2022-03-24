@@ -66,6 +66,7 @@ export enum Events {
   // Astrid Client ([Staff] - Commands)
   teleportToMarker = "astrid:client:teleportToMarker",
   clearWorldVehs = "astrid:client:clearWorldVehs",
+  showRank = "astrid:client:showRank",
   
   // Astrid Client ([Staff] - Gravity Gun)
   adminGun = "astrid:client:adminGun",
