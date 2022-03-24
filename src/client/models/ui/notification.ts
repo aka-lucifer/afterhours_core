@@ -59,7 +59,7 @@ export class Notification {
 
     if (this.start) this.start();
     this.timeout = setTimeout(() => {
-      console.log(`TIMEOUT OF (${this.timer}) is finished!`);
+      // console.log(`TIMEOUT OF (${this.timer}) is finished!`);
       if (this.finish) this.finish();
     }, this.timer);
   }

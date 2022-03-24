@@ -258,3 +258,13 @@ export async function insideVeh(ped: Ped): Promise<[Vehicle, boolean]> {
   const inside = currVehicle != null && currVehicle.exists() && ped.Handle == currVehicle.Driver.Handle;
   return [currVehicle, inside];
 }
+
+/**
+ *
+ * @param content The string to capitalize
+ * @returns: Capitalizes the first letter of the provided strings
+ */
+ export function Capitalize(content: string): string {
+  if (typeof content !== 'string') return ''
+  return content.charAt(0).toUpperCase() + content.slice(1)
+}
