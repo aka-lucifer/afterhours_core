@@ -15,6 +15,7 @@ import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
 import {CharacterManager} from "./managers/characters";
 import { VehicleManager } from "./managers/ui/vehicles";
+import { JobManager } from "./managers/job";
 
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
@@ -68,6 +69,7 @@ export class Server {
   public connectionsManager: ConnectionsManager;
   public characterManager: CharacterManager;
   public vehicleManager: VehicleManager;
+  public jobManager: JobManager;
 
   // [Managers] Syncing
   private timeManager: TimeManager;
@@ -133,6 +135,7 @@ export class Server {
     this.connectionsManager = new ConnectionsManager(server);
     this.characterManager = new CharacterManager(server);
     this.vehicleManager = new VehicleManager(server);
+    this.jobManager = new JobManager(server);
 
     // [Managers] Syncing
     this.timeManager = new TimeManager(server);
@@ -311,8 +314,8 @@ export class Server {
       return await this.connectedPlayerManager.GetPlayer(source);
     });
 
-    global.exports("getCharacter", async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
+    global.exports("getCharacter", async(playerId: number) => {
+      const player = await this.connectedPlayerManager.GetPlayerFromId(playerId)
       if (player) {
         return await this.characterManager.Get(player);
       } else {

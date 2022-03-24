@@ -43,4 +43,8 @@ export class Character {
   public get Phone(): string {
     return this.phone
   }
+
+  public get Job(): Job {
+    return this.job;
+  }
 }

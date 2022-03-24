@@ -21,7 +21,15 @@ export class Job {
     if (status) this.status = status;
   }
 
-  // Set Requests
+  // Getters & Setters 
+  public get Status(): boolean {
+    return this.status;
+  }
+
+  public set Status(newState: boolean) {
+    this.status = newState;
+  }
+
   public set RankLabel(newValue: string) {
     this.rankLabel = newValue;
   }

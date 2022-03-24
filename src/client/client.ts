@@ -26,6 +26,7 @@ import {Warnings} from "./managers/ui/warnings";
 import {Commends} from "./managers/ui/commends";
 
 // [Managers] Jobs
+import { JobManager } from "./managers/job";
 
 // [Controllers] Police
 // import {CuffingStuff} from "./controllers/jobs/police/cuffing";
@@ -49,6 +50,7 @@ import { Message } from "../shared/models/ui/chat/message";
 import { SystemTypes } from "../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
+import {Jobs} from "../shared/enums/jobs/jobs";
 
 
 import clientConfig from "../configs/client.json";
@@ -95,6 +97,7 @@ export class Client {
   private commends: Commends;
 
   // [Managers] Jobs
+  private jobManager: JobManager;
 
   // [Controllers] Police
   // private cuffing: CuffingStuff;
@@ -191,6 +194,7 @@ export class Client {
     this.commends = new Commends(client);
 
     // [Managers] Jobs
+    this.jobManager = new JobManager(client);
 
     // [Controllers] Police
     // this.cuffing = new CuffingStuff();
@@ -200,6 +204,8 @@ export class Client {
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
     this.afk = new AFK(client);
+
+    this.registerExports();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
@@ -223,6 +229,60 @@ export class Client {
     this.startUI();
 
     emitNet(Events.playerConnected, undefined, true);
+    
+    emit("astrid_target:client:addBoxZone", "Sandy PD", new Vector3(1852.24, 3687.0, 34.27), 2.4, 1.4, {
+      name: "sandy_pd PD",
+      heading: 301,
+      debugPoly: true,
+      minZ: 32.95,
+      maxZ: 36.95
+    }, {
+      options: [
+        {
+          event: "qrp_duty:goOnDuty",
+          icon: "fas fa-sign-in-alt",
+          label: "Sign In",
+          job: Jobs.Police,
+        },
+        {
+          event: "qrp_duty:goOffDuty",
+          icon: "fas fa-sign-out-alt",
+          label: "Sign Out",
+          job: Jobs.Police,
+        },
+      ],
+      distance: 3.5
+    });
+
+    emit("astrid_target:client:addTargetModel", [810004487], {
+      options: [
+        {
+          event: "eventname",
+          icon: "fas fa-box-circle-check",
+          label: "action 1",
+          num: 1
+        },
+        {
+          event: "eventname",
+          icon: "fas fa-box-circle-check",
+          label: "action 2",
+          num: 2
+        },
+      ],
+      distance: 2
+    });
+
+    emit("astrid_target:client:addTargetBone", ["wheel_lr"], {
+      options: [
+        {
+          event: "eventname",
+          icon: "fas fa-box-circle-check",
+          label: "Slice Tire",
+          num: 1
+        }
+      ],
+      distance: 2
+    })
   }
 
   private startUI(): void {
@@ -261,6 +321,21 @@ export class Client {
       }
 
       await Delay(500);
+    });
+  }
+  
+  private registerExports(): void {
+    global.exports("getPlayer", async(source: string) => {
+      return this.player;
+    });
+
+    global.exports("getCharacter", async(source: string) => {
+      return this.character;
+    });
+
+    global.exports("notify", async(header: string, body: string, type: NotificationTypes, timer?: number, progress?: boolean) => {
+      const notify = new Notification(header, body, type, timer, progress);
+      await notify.send();
     });
   }
 
@@ -450,6 +525,8 @@ export class Client {
     // Manager Inits
     this.staffManager.init();
     await this.worldManager.init();
+    this.jobManager.init();
+
     this.setupUI();
     
     // Register Player Statebags
