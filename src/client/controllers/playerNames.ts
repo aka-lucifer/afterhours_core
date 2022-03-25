@@ -72,11 +72,13 @@ export class PlayerNames {
 
               if (this.createdTags[netId] === undefined) {
                 this.createdTags[netId] = {
+                  // tag: CreateMpGamerTagWithCrewColor(playerId, `${netId} | ${name}`, true, true, "Gold", 2, 0, 255, 0),
                   tag: CreateMpGamerTag(ped.Handle, `${netId} | ${name}`, false, false, null, -1),
                   ped: ped
                 }
               } else {
                 this.createdTags[netId] = {
+                  // tag: CreateMpGamerTagWithCrewColor(playerId, `${netId} | ${name}`, true, true, "Gold", 2, 0, 255, 0),
                   tag: CreateMpGamerTag(ped.Handle, `${netId} | ${name}`, false, false, null, -1),
                   ped: ped
                 }
@@ -119,6 +121,12 @@ export class PlayerNames {
                 SetMpGamerTagAlpha(tag, tagIcons.Health, 255);
                 SetMpGamerTagHealthBarColour(tag, 25); // Health Colour
 
+
+                // SetMpGamerTagVisibility(tag, tagIcons.CrewTag, true); // Crew Tag
+                // SetMpGamerTagVisibility(tag, tagIcons.Passive, true); // Paused
+                // SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, true); // Person (Passenger)
+
+
                 SetMpGamerTagVisibility(tag, tagIcons.Talking, NetworkIsPlayerTalking(playerId)); // Talking
                 SetMpGamerTagAlpha(tag, tagIcons.Talking, 255);
                 // SetMpGamerTagVisibility(tag, tagIcons.UsingMenu, true); // Flag
@@ -127,26 +135,17 @@ export class PlayerNames {
 
                 if (inside) {
                   if (currVeh.getPedOnSeat(VehicleSeat.Driver).Handle == ped.Handle) {
-                    SetMpGamerTagVisibility(tag, tagIcons.Driver, true); // Driver (Wheel)
-                    SetMpGamerTagAlpha(tag, tagIcons.Driver, 255);
+                    if (IsThisModelABike(currVeh.Model.Hash) || IsThisModelAQuadbike(currVeh.Model.Hash)) {
+                      SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, true); // Driver (Wheel)
+                      SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 255);
+                    } else {
+                      SetMpGamerTagVisibility(tag, tagIcons.Driver, true); // Driver (Wheel)
+                      SetMpGamerTagAlpha(tag, tagIcons.Driver, 255);
+                    }
                   } else {
-                    SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Wheel)
+                    SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, true); // Person (Passenger)
                     SetMpGamerTagAlpha(tag, tagIcons.Driver, 0);
                   }
-
-                  if (currVeh.getPedOnSeat(VehicleSeat.Passenger).Handle == ped.Handle) {
-                    SetMpGamerTagVisibility(tag, tagIcons.Passenger, true); // Passenger (Headset)
-                    SetMpGamerTagAlpha(tag, tagIcons.Passenger, 255);
-                  } else {
-                    SetMpGamerTagVisibility(tag, tagIcons.Passenger, false); // Passenger (Headset)
-                    SetMpGamerTagAlpha(tag, tagIcons.Passenger, 0);
-                  }
-                } else {
-                  SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Wheel)
-                  SetMpGamerTagAlpha(tag, tagIcons.Driver, 0);
-
-                  SetMpGamerTagVisibility(tag, tagIcons.Passenger, false); // Passenger (Headset)
-                  SetMpGamerTagAlpha(tag, tagIcons.Passenger, 0);
                 }
 
                 SetMpGamerTagVisibility(tag, tagIcons.Typing, playerStates.state.chatOpen); // Typing
@@ -202,5 +201,16 @@ enum tagIcons {
   Packages,
   PedFollowing,
   RankText,
-  Typing
+  Typing,
+  BagLarge,
+  GangCEO,
+  GankBiker,
+  BikerArrow,
+  MCPresident,
+  MCVicePresident,
+  MCRoadCaptain,
+  MCSergeant,
+  MCEnforcer,
+  Transmitter,
+  Bomb
 }
