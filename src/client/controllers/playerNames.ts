@@ -1,8 +1,11 @@
 import { Vector3, Game, Ped, VehicleSeat } from "fivem-js";
-import { Ranks } from "../../shared/enums/ranks";
 
 import { Client } from "../client";
 import { Delay, insideVeh } from "../utils";
+
+
+import { Ranks } from "../../shared/enums/ranks";
+import { getRankFromValue } from "../../shared/utils";
 
 export class PlayerNames {
   // Client Data
@@ -37,11 +40,27 @@ export class PlayerNames {
           const ped = new Ped(GetPlayerPed(playerId));
 
           // If the other connected players aren't you
-          if (this.client.player.NetworkId != netId) {
+          // if (this.client.player.NetworkId != netId) {
 
             // Name formatting
-            let name = svPlayers[i].Rank >= Ranks.Admin && playerStates.state.rankVisible ? `${svPlayers[i].Name} | ${Ranks[svPlayers[i].Rank]}`: svPlayers[i].Name;
+            let name;
 
+            // If you're a mod or above, display player & character names on ped, otherwise just the character name
+            if (this.client.Player.Rank >= Ranks.Moderator) {
+              name = `${svPlayers[i].Name} | ${svPlayers[i].Character.firstName} ${svPlayers[i].Character.lastName}`;
+            } else {
+              name = `${svPlayers[i].Character.firstName} ${svPlayers[i].Character.lastName}`;
+            }
+
+            // Job department and rank in name (if their job is LEO, Fire, or EMS & they're on duty)
+            if (svPlayers[i].Character.job.name != "civilian" && svPlayers[i].Character.job.status) {
+              name = `${name} | ${svPlayers[i].Character.job.label} (${await getRankFromValue(svPlayers[i].Character.job.rank, svPlayers[i].Character.job.name)})`;
+            }
+
+            // Whether or not to display staffs ranks in their name
+            name = svPlayers[i].Rank >= Ranks.Admin && playerStates.state.rankVisible ? `${name} | ${Ranks[svPlayers[i].Rank]}`: name;
+
+            // Displaying AFK or paused in player name
             if (playerStates.state.afk && !playerStates.state.paused) {
               name = `${name} | AFK`;
             } else if (playerStates.state.paused && !playerStates.state.afk) {
@@ -139,7 +158,7 @@ export class PlayerNames {
               SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Wheel)
               SetMpGamerTagVisibility(tag, tagIcons.Passenger, false); // Driver (Wheel)
             }
-          }
+          // }
         }
       });
     }

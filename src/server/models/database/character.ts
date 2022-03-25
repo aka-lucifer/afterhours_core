@@ -48,6 +48,10 @@ export class Character {
     return this.nationality;
   }
 
+  public get DOB(): string {
+    return this.dob;
+  }
+
   public get Age(): number {
     return this.age;
   }
@@ -104,7 +108,7 @@ export class Character {
       this.age = this.formatAge(this.dob);
       this.isFemale = (charData.data[0].gender == 1);
       this.phone = this.formatPhone(charData.data[0].phone);
-      this.job = new Job(jobData.name, jobData.label, jobData.rank, jobData.department, jobData.isBoss, jobData.callsign, jobData.status);
+      this.job = new Job(jobData.name, jobData.label, jobData.rank, jobData.isBoss, jobData.callsign, jobData.status);
       this.metadata = new Metadata(metaData.licenses, metaData.mugshot, metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.jailData, metaData.criminalRecord);
       this.createdAt = new Date(charData.data[0].created_at);
       this.lastUpdated = new Date(charData.data[0].last_updated);
@@ -164,6 +168,20 @@ export class Character {
     });
 
     return updatedChar.meta.affectedRows > 0;
+  }
+
+  public async updateTypes(type: string, newValue: string): Promise<boolean> {
+    if (type == "callsign") {
+      this.Job.Callsign = newValue;
+
+      const updateCallsign = await Database.SendQuery("UPDATE `player_characters` SET `job` = :newJob WHERE `id` = :id AND `player_id` = :playerId", {
+        id: this.id,
+        playerId: this.playerId,
+        newJob: JSON.stringify(this.Job)
+      });
+
+      return updateCallsign.meta.affectedRows > 0;
+    }
   }
 
   public async format(character?: Info): Promise<boolean> {

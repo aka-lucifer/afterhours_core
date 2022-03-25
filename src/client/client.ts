@@ -67,6 +67,7 @@ export class Client {
   private richPresenceData: Record<string, any>;
   private nuiReady: boolean = false;
   private started: boolean = false;
+  private usingKeyboard: boolean = false;
 
   // Player Data
   private statesTick: number = undefined;
@@ -152,6 +153,14 @@ export class Client {
 
   public get Discord(): Record<string, any> {
     return this.richPresenceData;
+  }
+
+  public get UsingKeyboard(): boolean {
+    return this.usingKeyboard;
+  }
+
+  public set UsingKeyboard(newState: boolean) {
+    this.usingKeyboard = newState;
   }
 
   public get Spawned(): boolean {
@@ -283,6 +292,8 @@ export class Client {
       const notify = new Notification(header, body, type, timer, progress);
       await notify.send();
     });
+
+    global.exports("usingKeyboard", this.UsingKeyboard);
   }
 
   private async teleportToCoords(coords: Vector3, heading?: number): Promise<boolean> {
@@ -618,4 +629,4 @@ export class Client {
   }
 }
 
-const client = new Client();
+export const client = new Client();

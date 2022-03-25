@@ -2,26 +2,32 @@ import { PoliceRanks, CountyRanks, StateRanks } from "../../../shared/enums/jobs
 import { Departments } from "../../../shared/enums/jobs/departments";
 
 export class Job {
-  private name: string;
-  private label: string;
-  private isBoss: boolean;
-  private rank: number | PoliceRanks | CountyRanks | StateRanks;
-  private rankLabel: string;
-  private callsign;
-  private status: boolean;
-  private department: Departments;
+  public name: string;
+  public label: string;
+  public isBoss: boolean;
+  public rank: number | PoliceRanks | CountyRanks | StateRanks;
+  public rankLabel: string;
+  public callsign: string;
+  public status: boolean;
 
-  constructor(name: string, label: string, rank?: number | PoliceRanks | CountyRanks | StateRanks, department?: Departments, isBoss?: boolean, callsign?: string, status?: boolean) {
+  constructor(name: string, label: string, rank?: number | PoliceRanks | CountyRanks | StateRanks, isBoss?: boolean, callsign?: string, status?: boolean) {
     this.name = name;
     this.label = label;
     if (rank) this.rank = rank;
-    if (department) this.department = department;
-    if (isBoss) this.isBoss = isBoss;
+    if (isBoss !== undefined) this.isBoss = isBoss;
     if (callsign) this.callsign = callsign;
-    if (status) this.status = status;
+    if (status !== undefined) this.status = status;
   }
 
-  // Getters & Setters 
+  // Getters & Setters
+  public get Callsign(): string {
+    return this.callsign;
+  }
+
+  public set Callsign(newCallsign: string) {
+    this.callsign = newCallsign;
+  }
+
   public get Status(): boolean {
     return this.status;
   }

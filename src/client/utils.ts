@@ -1,4 +1,4 @@
-import { Colour } from "../shared/models/utils/colour";
+import { client } from "./client";
 import { Vector3, Ped, World, Font, Game, Vehicle } from "fivem-js";
 
 /**
@@ -267,4 +267,31 @@ export async function insideVeh(ped: Ped): Promise<[Vehicle, boolean]> {
  export function Capitalize(content: string): string {
   if (typeof content !== 'string') return ''
   return content.charAt(0).toUpperCase() + content.slice(1)
+}
+
+/**
+ * 
+ * @param textEntry The placeholder of the input
+ * @param maxStringLength The character limit of the input
+ * @returns 
+ */
+export async function keyboardInput(textEntry: string, maxStringLength: number): Promise<string> {
+	AddTextEntry("FMMC_KEY_TIP1", textEntry)
+	DisplayOnscreenKeyboard(1, "FMMC_KEY_TIP1", "", "", "", "", "", maxStringLength)
+	client.UsingKeyboard = true
+
+	while (UpdateOnscreenKeyboard() != 1 && UpdateOnscreenKeyboard() != 2) {
+		await Delay(0)
+  }
+		
+	if (UpdateOnscreenKeyboard() != 2) {
+		const keyboardResult = GetOnscreenKeyboardResult()
+		await Delay(500)
+		client.UsingKeyboard = false
+		return keyboardResult
+  } else {
+		await Delay(500)
+		client.UsingKeyboard = false
+		return null
+  }
 }

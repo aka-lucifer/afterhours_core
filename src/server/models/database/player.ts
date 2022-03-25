@@ -42,6 +42,7 @@ export class Player {
   private joinTime: string;
   private whitelisted: boolean = false;
   public characters: any[];
+  public selectedCharacter: Record<string, any> = {};
   private spawned: boolean;
 
   constructor(handle: string) {
@@ -391,11 +392,11 @@ export class Player {
         const jobData = JSON.parse(charData.data[i].job);
         const metaData = JSON.parse(charData.data[i].metadata);
 
-        const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.department, jobData.isBoss, jobData.callsign, jobData.status);
+        const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.isBoss, jobData.callsign, jobData.status);
         const metadata = new Metadata(metaData.licenses, metaData.mugshot, metaData.fingerprint, metaData.bloodtype, metaData.isDead, metaData.isCuffed, metaData.jailData, metaData.criminalRecord);
 
         if (jobData.name != "civilian") { // Only police & fire (formats their rank from number to string)
-          job.RankLabel = await getRankFromValue(jobData.rank, jobData.department);
+          job.rankLabel = await getRankFromValue(jobData.rank, jobData.name);
         }
 
         const formatted = await character.format({

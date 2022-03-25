@@ -1,19 +1,19 @@
 import { Job } from "../../server/models/jobs/job"
 
 export class Character {
-  private id: number;
-  private firstName: string;
-  private lastName: string;
-  private nationality: string;
-  private backstory: string;
-  private dob: Date;
-  private age: number;
-  private isFemale: boolean;
-  private phone: string;
-  private job: Job;
-  private metadata: Record<string, any> = {};
-  private createdAt: Date;
-  private lastUpdated: Date;
+  public id: number;
+  public firstName: string;
+  public lastName: string;
+  public nationality: string;
+  public backstory: string;
+  public dob: Date;
+  public age: number;
+  public isFemale: boolean;
+  public phone: string;
+  public job: Job;
+  public metadata: Record<string, any> = {};
+  public createdAt: Date;
+  public lastUpdated: Date;
 
   constructor(charData: Record<string, any>) {
     this.id = charData.id;

@@ -16,7 +16,7 @@ import { Events } from "../../shared/enums/events/events";
 
 export class ConnectedPlayerManager {
   public server: Server;
-  private connectedPlayers: any[] = [];
+  public connectedPlayers: any[] = [];
   
   constructor(server: Server) {
     this.server = server;

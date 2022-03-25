@@ -302,6 +302,27 @@ export class CharacterManager {
         await player.TriggerEvent(Events.setCharacter, Object.assign({}, character)); // Update our character on our client (char info, job, etc)
         await player.Notify("Characters", `You've logged in as ${character.Name}`, NotificationTypes.Success);
 
+        // Set your selected character fuck thing
+        player.selectedCharacter = {
+          id: character.Id,
+          firstName: character.firstName,
+          lastName: character.lastName,
+          nationality: character.nationality,
+          backstory: character.backstory,
+          dob: character.DOB,
+          age: character.Age,
+          isFemale: character.Gender,
+          phone: character.Phone,
+          job: character.Job,
+          metadata: character.Metadata,
+          createdAt: character.CreatedAt,
+          lastUpdated: character.LastEdited,
+        };
+        
+        // Sync all players & selected characters to all clients
+        emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.connectedPlayers));
+
+        // If your character hasn't made any vehicles notify them
         if (player.characters.length > 0) {
           await player.Notify("Vehicles", `Make sure to create your CAD/MDT vehicles with the /vehicles command.`, NotificationTypes.Info, 10000);
         }

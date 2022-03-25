@@ -3,7 +3,7 @@ import { Vector3 } from "fivem-js";
 import { Client } from "../../client";
 
 import { Jobs } from "../../../shared/enums/jobs/jobs";
-import { JobEvents } from "../../../shared/enums/events/jobEvents";
+import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
 
 export class PoliceJob {
   private client: Client
@@ -24,18 +24,24 @@ export class PoliceJob {
       options: [
         {
           event: JobEvents.toggleDuty,
-          icon: "fas fa-sign-in-alt",
-          label: "Sign In",
-          job: Jobs.Police,
+          icon: "fas fa-solid fa-check",
+          label: "On Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
           state: true
         },
         {
           event: JobEvents.toggleDuty,
-          icon: "fas fa-sign-out-alt",
-          label: "Sign Out",
-          job: Jobs.Police,
+          icon: "fas fa-solid fa-ban",
+          label: "Off Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
           state: false
         },
+        {
+          event: JobEvents.setCallsign,
+          icon: "fas fa-solid fa-walkie-talkie",
+          label: "Set Callsign",
+          job: [Jobs.State, Jobs.County, Jobs.Police]
+        }
       ],
       distance: 3.5
     });

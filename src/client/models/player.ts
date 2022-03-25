@@ -8,6 +8,7 @@ export class svPlayer {
   private rank: number;
   private ped: Ped;
   private spawned: boolean;
+  public character: Character;
 
   constructor(playerData: Record<string, any>) {
     this.id = playerData.id;
@@ -15,6 +16,9 @@ export class svPlayer {
     this.name = playerData.name;
     this.rank = playerData.rank;
     this.ped = Game.Player.Character;
+    if (Object.keys(playerData.selectedCharacter).length > 0) {
+      this.character = playerData.selectedCharacter;
+    }
   }
 
   // Getters & Setters
@@ -44,5 +48,9 @@ export class svPlayer {
 
   public set Spawned(newValue: boolean) {
     this.spawned = newValue;
+  }
+
+  public get Character(): Character {
+    return this.character;
   }
 }

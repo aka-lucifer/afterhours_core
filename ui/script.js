@@ -250,7 +250,8 @@ const HUD = new Vue({
         }, (charData) => {
           if (Object.keys(charData).length > 0) {
             console.log("job", JSON.stringify(charData.job), typeof charData.job);
-            charData.job = charData.job.label;
+            charData.jobName = charData.job.name;
+            charData.jobLabel = charData.job.label;
             this.characters.push(charData);
             this.creatingCharacter = false;
             this.resetCharCreation();

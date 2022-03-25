@@ -1,5 +1,6 @@
 import { Departments } from "./enums/jobs/departments";
 import { PoliceRanks, StateRanks, CountyRanks} from "./enums/jobs/ranks";
+import { Jobs } from "./enums/jobs/jobs";
 
 /**
  * 
@@ -7,16 +8,16 @@ import { PoliceRanks, StateRanks, CountyRanks} from "./enums/jobs/ranks";
  * @param department Department Enum
  * @returns Rank string depending on your rank power & department int.
  */
-export async function getRankFromValue(rank: PoliceRanks | StateRanks | CountyRanks, department: Departments): Promise<string> {
+export async function getRankFromValue(rank: PoliceRanks | StateRanks | CountyRanks, job: Jobs | string): Promise<string> {
   let rankString: string;
 
-  if (department == Departments.Police) {
+  if (job == Jobs.Police) {
     rankString = PoliceRanks[rank];
     rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
-  } else if (department == Departments.State) {
+  } else if (job == Jobs.State) {
     rankString = StateRanks[rank];
     rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
-  } else if (department == Departments.County) {
+  } else if (job == Jobs.County) {
     rankString = CountyRanks[rank];
     rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
   }
