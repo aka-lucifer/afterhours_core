@@ -84,7 +84,7 @@ export class Characters {
 
   private async EVENT_syncMeMessages(messages: any[]): Promise<void> {
     this.meMessages = messages;
-    console.log("MESSAGES ARE NOW THIS YE FAT JEW FUCK!", JSON.stringify(messages));
+    // console.log("MESSAGES ARE NOW THIS YE FAT JEW FUCK!", JSON.stringify(messages));
 
     if (this.meMessages.length > 0) {
       if (this.calculatorTick == undefined) {
@@ -118,7 +118,7 @@ export class Characters {
             this.calculatorTick = undefined;
             this.displayTick = undefined;
             
-            console.log("Clear 3d me text tick 1!");
+            // console.log("Clear 3d me text tick 1!");
           }
 
           if (this.mePosition !== undefined) {
@@ -132,7 +132,7 @@ export class Characters {
                 this.calculatorTick = undefined;
                 this.displayTick = undefined;
                 
-                console.log("Clear 3d me text tick, due to leaving the proximity!");
+                // console.log("Clear 3d me text tick, due to leaving the proximity!");
               }
             }
           }
@@ -146,7 +146,7 @@ export class Characters {
       this.calculatorTick = undefined;
       this.displayTick = undefined;
       
-      console.log("Clear 3d me text tick 2!");
+      // console.log("Clear 3d me text tick 2!");
     }
   }
 
