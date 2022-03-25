@@ -53,9 +53,19 @@ export class JobManager {
             console.log("Set Duty", Capitalize(this.client.Character.Job.status.toString()));
             
             if (data.state) {
+              if (this.client.Character.isLeoJob()) {
+                global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
+                global.exports["pma-voice"].setRadioChannel(1, "[State Trooper] - RTO");
+              }
+
               const notify = new Notification("Job", `You've gone on duty`, NotificationTypes.Success);
               await notify.send();
             } else {
+              if (this.client.Character.isLeoJob()) {
+                global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
+                global.exports["pma-voice"].setRadioChannel(0);
+              }
+
               const notify = new Notification("Job", `You've gone off duty`, NotificationTypes.Success);
               await notify.send();
             }

@@ -1,4 +1,5 @@
 import { Job } from "../../server/models/jobs/job"
+import { Jobs } from "../../shared/enums/jobs/jobs";
 
 export class Character {
   public id: number;
@@ -46,5 +47,10 @@ export class Character {
 
   public get Job(): Job {
     return this.job;
+  }
+
+  // Methods
+  public isLeoJob(): boolean {
+    return this.job.name == Jobs.State || this.job.name == Jobs.County || this.job.name == Jobs.Police
   }
 }
