@@ -54,6 +54,8 @@ const HUD = new Vue({
     },
     creatingCharacter: false,
     charCreatorMenu: null,
+    incorrectDOB: false,
+    incorrectDOBTimer: null,
 
     // Char Editing
     editingCharacter: false,
@@ -242,31 +244,51 @@ const HUD = new Vue({
     createCharacter() {
       const isFormComplete = this.$refs.charCreatorForm.validate();
       if (isFormComplete) {
-        this.Post("CREATE_CHARACTER", {
-          firstName: this.newCharacter.firstName,
-          lastName: this.newCharacter.lastName,
-          nationality: this.newCharacter.nationality,
-          backstory: this.newCharacter.backstory,
-          dob: this.newCharacter.dob,
-          gender: this.newCharacter.isFemale,
-          licenses: this.newCharacter.licenseValues,
-          mugshot: this.newCharacter.mugshot
-        }, (charData) => {
-          if (Object.keys(charData).length > 0) {
-            console.log("job", JSON.stringify(charData.job), typeof charData.job);
-            charData.jobName = charData.job.name;
-            charData.jobLabel = charData.job.label;
+        const dobValid = isDateValid(this.newCharacter.dob);
 
-            // If chars empty (quick fix)
-            if (this.characters === undefined) {
-              this.characters = [];
+        if (dobValid) {
+          this.Post("CREATE_CHARACTER", {
+            firstName: this.newCharacter.firstName,
+            lastName: this.newCharacter.lastName,
+            nationality: this.newCharacter.nationality,
+            backstory: this.newCharacter.backstory,
+            dob: this.newCharacter.dob,
+            gender: this.newCharacter.isFemale,
+            licenses: this.newCharacter.licenseValues,
+            mugshot: this.newCharacter.mugshot
+          }, (charData) => {
+            if (Object.keys(charData).length > 0) {
+              charData.jobName = charData.job.name;
+              charData.jobLabel = charData.job.label;
+
+              // If chars empty (quick fix)
+              if (this.characters === undefined) {
+                this.characters = [];
+              }
+
+              this.characters.push(charData);
+              this.creatingCharacter = false;
+              this.resetCharCreation();
             }
-
-            this.characters.push(charData);
-            this.creatingCharacter = false;
-            this.resetCharCreation();
+          });
+        } else {
+          this.incorrectDOB = true;
+          
+          if (this.incorrectDOBTimer !== undefined) {
+            this.incorrectDOBTimer = setTimeout(() => {
+              this.incorrectDOBTimer = undefined;
+              clearTimeout(this.incorrectDOBTimer);
+              this.incorrectDOB = false;
+            }, 2000);
+          } else {
+            this.insideTincorrectDOBTimerimeout = undefined;
+            clearTimeout(this.incorrectDOBTimer);
+            
+            this.incorrectDOBTimer = setTimeout(() => {
+              this.incorrectDOB = false;
+            }, 2000);
           }
-        });
+        }
       }
     },
 
@@ -1011,3 +1033,7 @@ const HUD = new Vue({
     }, 0);
   }
 });
+
+function isDateValid(date) {
+  return date.getTime() === date.getTime(); // If the date object is invalid, it will return 'NaN' on getTime() and NaN is never equal to itself.
+}

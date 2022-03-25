@@ -50,6 +50,11 @@
               <v-alert color="red" dark icon="mdi-close" border="left" prominent v-show="deletedCharacter">
                 Character Deleted
               </v-alert>
+
+              <v-alert color="red" dark icon="mdi-close" border="left" prominent v-show="incorrectDOB">
+                Invalid DOB Entered
+              </v-alert>
+
               <div id="Characters" v-for="(character, index) in characters" :key="character.id">
                 <div class="character" @click="selectCharacter(index)" @mouseover="showCharacter(index)" @mouseleave="hideCharacter()">{{ character.firstName }} {{ character.lastName }} - {{ character.nationality }} ({{ character.age }})</div><br>
                 <!-- {{ character.firstName }} -->
@@ -137,7 +142,7 @@
                           
                           <v-menu ref="charCreatorMenu" v-model="charCreatorMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
                             <template v-slot:activator="{ on, attrs }">
-                              <v-text-field v-model="newCharacter.dob" label="Date of Birth" :rules="dobRules" readonly hint="YYYY-MM-DD format" persistent-hint append-icon="mdi-calendar" v-bind="attrs" v-on="on"></v-text-field>
+                              <v-text-field v-model="newCharacter.dob" label="Date of Birth" :rules="dobRules" hint="YYYY-MM-DD format" persistent-hint append-icon="mdi-calendar" v-bind="attrs" v-on="on"></v-text-field>
                             </template>
                             <v-date-picker id="Character-DOB" color="success" v-model="newCharacter.dob" no-title @input="charCreatorMenu = false" dark></v-date-picker>
                           </v-menu><br>
