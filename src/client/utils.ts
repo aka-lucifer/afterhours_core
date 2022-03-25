@@ -255,7 +255,7 @@ export function Draw3DText(position: Vector3, colour: { r: number, g: number, b:
 
 export async function insideVeh(ped: Ped): Promise<[Vehicle, boolean]> {
   const currVehicle = ped.CurrentVehicle;
-  const inside = currVehicle != null && currVehicle.exists() && ped.Handle == currVehicle.Driver.Handle;
+  const inside = currVehicle != null && currVehicle.exists();
   return [currVehicle, inside];
 }
 
