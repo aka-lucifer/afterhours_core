@@ -208,10 +208,14 @@ const HUD = new Vue({
     // CHARACTERS
     displayCharcaters(data) {
       this.resetCharacters();
-      for (let i = 0; i < data.characters.length; i++) {
-        data.characters[i].jobName = data.characters[i].job.name; // Define this first as job var is overridden below
-        data.characters[i].jobLabel = data.characters[i].job.label;
-        data.characters[i].jobRank = data.characters[i].job.rankLabel; // Define this first as job var is overridden below
+      if (data.character != undefined) {
+        if (data.characters.length > 0) {
+          for (let i = 0; i < data.characters.length; i++) {
+            data.characters[i].jobName = data.characters[i].job.name; // Define this first as job var is overridden below
+            data.characters[i].jobLabel = data.characters[i].job.label;
+            data.characters[i].jobRank = data.characters[i].job.rankLabel; // Define this first as job var is overridden below
+          }
+        }
       }
       
       this.characters = data.characters;
@@ -252,6 +256,11 @@ const HUD = new Vue({
             console.log("job", JSON.stringify(charData.job), typeof charData.job);
             charData.jobName = charData.job.name;
             charData.jobLabel = charData.job.label;
+
+            if (this.characters === undefined) {
+              this.characters = [];
+            }
+
             this.characters.push(charData);
             this.creatingCharacter = false;
             this.resetCharCreation();

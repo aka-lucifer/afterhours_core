@@ -215,6 +215,11 @@ export class CharacterManager {
       // console.log("New Char Data", charData)
       const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob, charData.gender, charData.licenses, charData.mugshot);
       if (created) {
+
+        if (player.characters === undefined) {
+          player.characters = [];
+        }
+
         player.characters.push(character);
         data.character = Object.assign({}, character);
         await player.TriggerEvent(Events.receiveServerCB, true, data);
