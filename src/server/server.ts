@@ -222,7 +222,7 @@ export class Server {
     }, Ranks.Admin);
 
     new Command("dv", "Deletes the vehicle you're inside.", [{}], false, async (source: string) => {
-      const player = new Player(source);
+      const player = await this.connectedPlayerManager.GetPlayer(source);
       if (player) {
         if (player.Spawned) {
           const myPed = GetPlayerPed(source);
