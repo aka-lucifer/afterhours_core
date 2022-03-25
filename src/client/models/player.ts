@@ -7,7 +7,7 @@ export class svPlayer {
   private name: string;
   private rank: number;
   private ped: Ped;
-  private spawned: boolean;
+  public spawned: boolean;
   public character: Character;
 
   constructor(playerData: Record<string, any>) {
@@ -16,6 +16,8 @@ export class svPlayer {
     this.name = playerData.name;
     this.rank = playerData.rank;
     this.ped = Game.Player.Character;
+    this.spawned = playerData.spawned;
+    
     if (Object.keys(playerData.selectedCharacter).length > 0) {
       this.character = playerData.selectedCharacter;
     }
