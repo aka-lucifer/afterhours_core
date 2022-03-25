@@ -301,7 +301,7 @@ export class Client {
 
     // Is player in a vehicle and the driver? Then we'll use that to teleport.
     const [currVeh, inside] = await insideVeh(Game.PlayerPed);
-    const restoreVehVisibility = insideVeh && currVeh.IsVisible;
+    const restoreVehVisibility = inside && currVeh.IsVisible;
     const restorePedVisibility = Game.PlayerPed.IsVisible;
 
     // Freeze vehicle or player location and fade out the entity to the network.
@@ -367,7 +367,7 @@ export class Client {
       }
 
       // If the player is in a vehicle, teleport the vehicle to this new position.
-      if (insideVeh) {
+      if (inside) {
         SetEntityCoords(currVeh.Handle, coords.x, coords.y, z, false, false, false, true);
       }
       // otherwise, teleport the player to this new position.
@@ -398,7 +398,7 @@ export class Client {
       if (found)
       {
         Inform("TeleportToCoords Method", `Ground coordinate found: ${groundZ}`);
-        if (insideVeh) {
+        if (inside) {
           SetEntityCoords(currVeh.Handle, coords.x, coords.y, groundZ, false, false, false, true);
 
           // We need to unfreeze the vehicle because sometimes having it frozen doesn't place the vehicle on the ground properly.
@@ -430,7 +430,7 @@ export class Client {
       Log("TeleportToCoords Method", "Could not find a safe ground coord. Placing you on the nearest road instead.");
 
       // Teleport vehicle, or player.
-      if (insideVeh) {
+      if (inside) {
         SetEntityCoords(currVeh.Handle, safePos.x, safePos.y, safePos.z, false, false, false, true);
         currVeh.IsPositionFrozen = false;
         currVeh.placeOnGround();
@@ -444,7 +444,7 @@ export class Client {
     }
 
     // Once the teleporting is done, unfreeze vehicle or player and fade them back in.
-    if (insideVeh) {
+    if (inside) {
       if (restoreVehVisibility)
       {
         NetworkFadeInEntity(currVeh.Handle, true);
