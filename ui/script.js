@@ -208,7 +208,7 @@ const HUD = new Vue({
     // CHARACTERS
     displayCharcaters(data) {
       this.resetCharacters();
-      if (data.character != undefined) {
+      if (data.characters != undefined) {
         if (data.characters.length > 0) {
           for (let i = 0; i < data.characters.length; i++) {
             data.characters[i].jobName = data.characters[i].job.name; // Define this first as job var is overridden below
@@ -257,6 +257,7 @@ const HUD = new Vue({
             charData.jobName = charData.job.name;
             charData.jobLabel = charData.job.label;
 
+            // If chars empty (quick fix)
             if (this.characters === undefined) {
               this.characters = [];
             }
