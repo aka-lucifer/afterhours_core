@@ -461,7 +461,7 @@ export class Server {
         }
 
         // Sync spawner data
-        if (this.developmentMode) {
+        if (!this.developmentMode) {
           await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.GetMaxPlayers, await this.playerManager.getBestPlayer())
         }
 
