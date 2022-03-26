@@ -33,6 +33,9 @@ import { JobManager } from "./managers/job";
 // import {HelicamManager} from "./controllers/jobs/police/helicam";
 import { Grabbing } from "./controllers/jobs/police/grabbing";
 
+// [Controllers] Vehicle
+import { Speedzones } from "./controllers/vehicles/speedzones";
+
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
@@ -104,6 +107,9 @@ export class Client {
   // private cuffing: CuffingStuff;
   // private helicam: HelicamManager;
   private grabbing: Grabbing;
+
+  // [Controllers] Vehicle
+  private speedZones: Speedzones;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -210,6 +216,9 @@ export class Client {
     // this.helicam = new HelicamManager(client);
     this.grabbing = new Grabbing();
 
+    // [Controllers] Vehicle
+    this.speedZones = new Speedzones(client);
+
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
     this.afk = new AFK(client);
@@ -252,6 +261,8 @@ export class Client {
     } else {
       this.characters.displayCharacters(true);
     }
+
+    this.speedZones.init();
   }
 
   private registerStates(): void {
