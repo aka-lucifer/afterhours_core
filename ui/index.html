@@ -281,7 +281,7 @@
               <div id="Middle_Card_Header">Change Log</div>
               <div id="Middle_Card_Body">
                 <div id="Changelog_Contents">
-                  <div v-for="(change, index) in serverChangelog" :key="change.version">
+                  <div v-for="(change, index) in serverChangelog" style="margin-left: 10px;" :key="change.version">
                     <div style="text-align: center; font-weight: bold; font-size: 2em; text-decoration: underline; color: white;">{{ change.version }}</div><br>
 
                     <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Additions</h2><br>
@@ -340,7 +340,7 @@
               <div id="Middle_Card_Header">Rules</div>
               <div id="Middle_Card_Body">
                 <div id="Rules_Contents">
-                  <div v-for="(rule, index) in serverRules" style="line-height: 2.5;" :key="rule.title">
+                  <div v-for="(rule, index) in serverRules" style="margin-left: 10px; line-height: 2.5;" :key="rule.title">
                     <div class="ruleTitle">{{ index + 1 }}) {{ rule.title }}:</div>
                     <div class="ruleDescription">{{ rule.description }}</div>
                   </div>

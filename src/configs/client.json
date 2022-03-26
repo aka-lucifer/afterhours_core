@@ -8012,12 +8012,16 @@
         "keybinds": [
             {"key": "T", "description": "Opens the chat"},
             {"key": "INSERT", "description": "Toggles chat visibility"},
-            {"key": "L", "description": "Opens the scoreboard"}
+            {"key": "L", "description": "Opens the scoreboard"},
+            {"key": "X", "description": "Enable the target interaction (Locations, Peds, Vehicles, Players, Props)"},
+            {"key": "F11", "description": "Toggle player names"}
         ],
         "commands": [
             {"name": "dv", "description": "Deletes your current vehicle"},
             {"name": "warnings", "description": "View all your warnings"},
-            {"name": "commends", "description": "View all your commends"}
+            {"name": "commends", "description": "View all your commends"},
+            {"name": "characters", "description": "Change your current selected character"},
+            {"name": "vehicles", "description": "View, edit or delete your selected characters CAD/MDT vehicles"}
         ],
         "rules": [
             {"title": "Age Requirement", "description": "Players must be 13 years of age to play in order to comply with Discord ToS."},
