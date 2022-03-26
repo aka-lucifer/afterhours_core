@@ -185,7 +185,14 @@ const HUD = new Vue({
     commendSearch: "",
 
     // [COMMENDS] - Server Data
-    issuedCommends: []
+    issuedCommends: [],
+
+    // [ASTRID MENU]
+    menuVisible: false,
+    menuPosition: "middle-right",
+    menuName: "Default",
+    menuComponents: [],
+    menuOption: 0
   },
   methods: {
     // Spawn UI
@@ -809,6 +816,57 @@ const HUD = new Vue({
 
     SetCompass(data) {
       $(".mapdirections").css("transform", `rotate(${data.rotation}deg)`);
+    },
+
+    // ASTRID MENU
+    OpenMenu(data) {
+      this.menuPosition = data.position;
+      this.menuName = data.name;
+      this.menuComponents = data.components;
+      this.menuOption = data.option;
+      this.menuVisible = true;
+    },
+
+    CloseMenu() {
+      this.menuName = "";
+      this.menuComponents = {};
+      this.menuOption = 0;
+      this.menuVisible = false;
+    },
+
+    SetMenuOption(data) {
+      console.log("set menu option", JSON.stringify(data));
+      this.menuOption = data.option;
+      const element = document.getElementById(`${this.menuOption}`);
+      element.scrollIntoView();
+    },
+
+    SetCheckboxState(data) {
+      const comp = this.GetMenuIndexById(data.id)
+
+      console.log("comp", JSON.stringify(comp), JSON.stringify(data))
+      if (comp != null) {
+        console.log("set value", this.menuComponents[comp].state);
+        this.menuComponents[comp].state = data.state
+        console.log("setted value", this.menuComponents[comp].state);
+      }
+    },
+
+    SetListItem(data) {
+      this.menuComponents.forEach(comp => {
+        if (comp.index == data.index) {
+          comp.listIndex = data.listIndex
+        }
+      });
+    },
+
+    GetMenuIndexById(id) {
+      for (let a = 0; a < this.menuComponents.length; a++) {
+        if (this.menuComponents[a].index == id) {
+          return a
+        }
+      }
+      return null;
     }
   },
 
@@ -948,6 +1006,13 @@ const HUD = new Vue({
 
     // Commend Events
     RegisterEvent("OPEN_COMMENDS", this.DisplayCommends);
+
+    // ASTRID MENU Events
+    RegisterEvent("OPEN_MENU", this.OpenMenu);
+    RegisterEvent("CLOSE_MENU", this.CloseMenu);
+    RegisterEvent("SET_MENU_OPTION", this.SetMenuOption);
+    RegisterEvent("SET_CHECKBOX_STATE", this.SetCheckboxState);
+    RegisterEvent("SET_LIST_ITEM", this.SetListItem);
 
     // HUD Events
     RegisterEvent("SET_COMPASS", this.SetCompass);

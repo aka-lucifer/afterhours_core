@@ -30,5 +30,12 @@ export enum NuiMessages {
   OpenWarnings = "OPEN_WARNINGS",
 
   // Commends
-  OpenCommends = "OPEN_COMMENDS"
+  OpenCommends = "OPEN_COMMENDS",
+
+  // Astrid Menu
+  OpenMenu = "OPEN_MENU",
+  CloseMenu = "CLOSE_MENU",
+  SetMenuOption = "SET_MENU_OPTION",
+  SetCheckboxState = "SET_CHECKBOX_STATE",
+  SetListItem = "SET_LIST_ITEM"
 }

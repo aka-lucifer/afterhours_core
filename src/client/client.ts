@@ -24,6 +24,7 @@ import {ChatManager} from "./managers/ui/chat";
 import {Scoreboard} from "./managers/ui/scoreboard";
 import {Warnings} from "./managers/ui/warnings";
 import {Commends} from "./managers/ui/commends";
+import { MenuManager } from "./managers/ui/menu";
 
 // [Managers] Jobs
 import { JobManager } from "./managers/job";
@@ -53,7 +54,6 @@ import { Message } from "../shared/models/ui/chat/message";
 import { SystemTypes } from "../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
-import {Jobs} from "../shared/enums/jobs/jobs";
 
 
 import clientConfig from "../configs/client.json";
@@ -99,6 +99,7 @@ export class Client {
   private scoreboard: Scoreboard;
   private warnings: Warnings;
   private commends: Commends;
+  public menuManager: MenuManager;
 
   // [Managers] Jobs
   private jobManager: JobManager;
@@ -207,6 +208,7 @@ export class Client {
     this.scoreboard = new Scoreboard(client);
     this.warnings = new Warnings(client);
     this.commends = new Commends(client);
+    this.menuManager = new MenuManager(client);
 
     // [Managers] Jobs
     this.jobManager = new JobManager(client);

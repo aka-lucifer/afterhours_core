@@ -724,6 +724,34 @@
           </div>
         </div>
       </div>
+
+      <div id="astrid_menu" v-show="menuVisible">
+        <div id="astrid_menu_base" v-bind:class="{ 'top-left': menuPosition == 'top-left', 'top-right': menuPosition == 'top-right', 'middle-left': menuPosition == 'middle-left', 'middle-right': menuPosition == 'middle-right', 'bottom-left': menuPosition == 'bottom-left', 'bottom-right': menuPosition == 'bottom-right' }">
+          <div id="astrid_menu_header">{{ menuName }}</div>
+          <div id="astrid_menu_body">
+            <div v-for="(comp, compIndex) in menuComponents">
+              <!-- List -->
+              <div :id="compIndex" v-if="comp.type == 'list'" class="astrid_menu_list" v-bind:class="{ 'astrid_menu_list_hovered': compIndex == menuOption }">
+                <i style="margin-top: 5px;" class="fa fa-arrow-left fa-1x astrid_menu_list_icon_left"></i>
+                {{ comp.list[comp.listIndex] }}
+                <i style="margin-top: 5px;" class="fa fa-arrow-right fa-1x astrid_menu_list_icon_right"></i>
+              </div>
+  
+              <!-- Checkbox -->
+              <div :id="compIndex" v-else-if="comp.type == 'checkbox'" class="astrid_menu_checkbox" v-bind:class="{ 'astrid_menu_checkbox_hovered': compIndex == menuOption, 'menu_checkbox_icon_hovered': compIndex == menuOption }">
+                <div style="margin-top: -5px;">{{ comp.name }}</div>
+                <v-icon color="black" class="astrid_menu_checkbox_icon" v-if="comp.state">mdi-check</v-icon>
+                <v-icon color="black" class="astrid_menu_checkbox_icon" v-else>mdi-close</v-icon>
+              </div>
+  
+              <!-- Button -->
+              <div :id="compIndex" v-else class="astrid_menu_button" v-bind:class="{ 'astrid_menu_button_hovered': compIndex == menuOption }">
+                <div class="astrid_menu_button_text">{{ comp.name }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </v-app>
 
     <!-- Axios -->
