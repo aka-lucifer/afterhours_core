@@ -3,7 +3,7 @@ import { Player } from "./player";
 import { Job } from "../jobs/job";
 
 import * as Database from "../../managers/database/database"
-import { Bloodtypes, Gender } from "../../../shared/enums/characters";
+import { Bloodtypes, Gender } from "../../../shared/enums/ui/characters";
 import { Delay, GetTimestamp, randomBetween, randomEnum } from "../../utils";
 
 export class Character {

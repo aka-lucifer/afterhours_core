@@ -14,7 +14,7 @@ import * as Database from "../managers/database/database"
 import { Callbacks } from "../../shared/enums/events/callbacks";
 import { Events } from "../../shared/enums/events/events";
 import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
-import { EmbedColours } from "../../shared/enums/embedColours";
+import { EmbedColours } from "../../shared/enums/logging/embedColours";
 import { Message } from "../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../shared/enums/ui/chat/types";
 import { Ranks } from "../../shared/enums/ranks";
@@ -215,11 +215,6 @@ export class CharacterManager {
       // console.log("New Char Data", charData)
       const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob, charData.gender, charData.licenses, charData.mugshot);
       if (created) {
-
-        if (player.characters === undefined) {
-          player.characters = [];
-        }
-
         player.characters.push(character);
         data.character = Object.assign({}, character);
         await player.TriggerEvent(Events.receiveServerCB, true, data);
@@ -323,6 +318,9 @@ export class CharacterManager {
           createdAt: character.CreatedAt,
           lastUpdated: character.LastEdited,
         };
+
+        // Empty owned characters table, when you spawn in as a character
+        player.characters = [];
         
         // Sync all players & selected characters to all clients
         emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.connectedPlayers));

@@ -16,7 +16,7 @@ import { server } from "../../server";
 
 import { Events, PoliceEvents } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
-import {EmbedColours} from "../../../shared/enums/embedColours";
+import {EmbedColours} from "../../../shared/enums/logging/embedColours";
 import sharedConfig from "../../../configs/shared.json"
 import {Delay, NumToVector3} from "../../utils";
 import {Kick} from "./kick";
@@ -25,6 +25,7 @@ import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {Notification} from "../ui/notification";
 import { Character, Metadata } from "./character";
 import { getRankFromValue } from "../../../shared/utils";
+import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
 
 export class Player {
   public id: number;
@@ -41,7 +42,7 @@ export class Player {
   public formattedPlaytime: string;
   private joinTime: string;
   private whitelisted: boolean = false;
-  public characters: any[];
+  public characters: any[] = [];
   public selectedCharacter: Record<string, any> = {};
   private spawned: boolean;
 
@@ -289,7 +290,7 @@ export class Player {
     return NumToVector3(GetEntityCoords(GetPlayerPed(this.Handle)));
   }
 
-  public async TriggerEvent(eventName: Events | PoliceEvents, ...args: any[]): Promise<void> {
+  public async TriggerEvent(eventName: Events | PoliceEvents | JobEvents, ...args: any[]): Promise<void> {
     return emitNet(eventName, this.handle, ...args);
   }
 

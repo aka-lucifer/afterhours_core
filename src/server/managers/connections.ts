@@ -3,7 +3,7 @@ import * as Database from "./database/database";
 
 import { Events } from "../../shared/enums/events/events";
 import { Server } from "../server";
-import {ErrorCodes} from "../../shared/enums/errors";
+import {ErrorCodes} from "../../shared/enums/logging/errors";
 import {Ranks} from "../../shared/enums/ranks";
 
 import { Log, Error, Inform, Delay } from "../utils";
@@ -275,6 +275,7 @@ export class ConnectionsManager {
           rank: Ranks[player.Rank],
           playtime: await player.GetPlaytime.FormatTime(),
           avatar:  player.steamAvatar,
+          development: this.server.Developing
         });
 
         deferrals.done();

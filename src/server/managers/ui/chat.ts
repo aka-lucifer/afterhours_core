@@ -16,7 +16,7 @@ import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {ChatTypes, SystemTypes} from "../../../shared/enums/ui/chat/types";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
-import {EmbedColours} from "../../../shared/enums/embedColours";
+import {EmbedColours} from "../../../shared/enums/logging/embedColours";
 
 import {FormattedWarning} from "../../../client/models/ui/warning";
 import {FormattedCommend} from "../../../client/models/ui/commend";

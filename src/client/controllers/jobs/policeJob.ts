@@ -10,6 +10,9 @@ export class PoliceJob {
 
   constructor(client: Client) {
     this.client = client;
+
+    // Events
+    onNet(JobEvents.setupMRAP, this.EVENT_setupMRAP.bind(this));
   }
 
   // Methods
@@ -49,5 +52,11 @@ export class PoliceJob {
 
   public init(): void {
     this.registerBoxZones();
+  }
+
+  // Events
+  public EVENT_setupMRAP(networkId: number): void {
+    const handle = NetworkGetEntityFromNetworkId(networkId);
+    SetVehicleTyresCanBurst(handle, false);
   }
 }

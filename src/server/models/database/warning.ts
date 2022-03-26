@@ -12,8 +12,8 @@ import {LogTypes} from "../../enums/logTypes";
 import {addZero, Error, Inform} from "../../utils";
 
 import {Ranks} from "../../../shared/enums/ranks";
-import {EmbedColours} from "../../../shared/enums/embedColours";
-import {ErrorCodes} from "../../../shared/enums/errors";
+import {EmbedColours} from "../../../shared/enums/logging/embedColours";
+import {ErrorCodes} from "../../../shared/enums/logging/errors";
 import * as sharedConfig from "../../../configs/shared.json"
 import * as serverConfig from "../../../configs/server.json"
 import {Events} from "../../../shared/enums/events/events";

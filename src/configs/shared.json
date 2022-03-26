@@ -639,6 +639,11 @@
       "name": "WEAPON_COUGAR",
       "label": "Cougar",
       "reason": "mauled"
+    },
+    "1061211904": {
+      "name": "WEAPON_GRAVITY",
+      "label": "Gravity Gun",
+      "reason": "fucking disintegrated"
     }
   }
 }

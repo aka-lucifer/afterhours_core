@@ -13,7 +13,7 @@ import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/chat/types";
 import {Ranks} from "../../../shared/enums/ranks";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
-import { EmbedColours } from "../../../shared/enums/embedColours";
+import { EmbedColours } from "../../../shared/enums/logging/embedColours";
 
 import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";

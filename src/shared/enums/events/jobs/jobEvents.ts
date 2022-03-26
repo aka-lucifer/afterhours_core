@@ -3,5 +3,8 @@ export enum JobEvents {
 
   // All (Client)
   toggleDuty = "astrid:client:jobs:toggleDuty",
-  setCallsign = "astrid:client:jobs:setCallsign"
+  setCallsign = "astrid:client:jobs:setCallsign",
+
+  // LEO (Client)
+  setupMRAP = "astrid:client:jobs:police:setupMRAP"
 }

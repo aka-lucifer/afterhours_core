@@ -1,7 +1,6 @@
 export enum Weapons {
   Unarmed = -1569615261,
   BerettaM9 = 453432689,
-  Deleter = 1629277293,
   AdvancedRifle = -1357824103,
   APPistol = 584646201,
   AK47 = -1074790547,
@@ -80,6 +79,10 @@ export enum Weapons {
   SwitchBlade = -538741184,
   VintagePistol = 137902532,
   Wrench = 419712736
+}
+
+export enum AddonWeapons {
+  GravityGun = 1061211904
 }
 
 export enum VehicleWeapons {

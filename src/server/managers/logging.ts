@@ -8,7 +8,7 @@ import RateLimitInfo from "../models/webhook/discord/rateLimitInfo";
 import {Server} from "../server";
 import {Delay, Error} from "../utils";
 import serverConfig from "../../configs/server.json"
-import { ErrorCodes } from "../../shared/enums/errors";
+import { ErrorCodes } from "../../shared/enums/logging/errors";
 
 export class LogManager {
   private server: Server;
@@ -37,9 +37,9 @@ export class LogManager {
     try {
       const formData = message.toFormData();
 
-      await axios.post(url, formData.getBuffer(), {
-        headers: formData.getHeaders()
-      });
+      // await axios.post(url, formData.getBuffer(), {
+      //   headers: formData.getHeaders()
+      // });
     } catch (error) {
       const axiosError = error as AxiosError;
       const response = axiosError.response;

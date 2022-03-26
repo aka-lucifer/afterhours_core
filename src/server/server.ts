@@ -14,7 +14,7 @@ import {CommendManager} from "./managers/database/commends";
 import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
 import {CharacterManager} from "./managers/characters";
-import { VehicleManager } from "./managers/ui/vehicles";
+import { CharVehicleManager } from "./managers/ui/charVehicles";
 import { JobManager } from "./managers/job";
 
 // [Managers] Syncing
@@ -39,7 +39,7 @@ import {Capitalize, Dist, Error, GetClosestPlayer, GetHash, Inform, Log, logComm
 
 import {Events, PoliceEvents} from "../shared/enums/events/events";
 import {Ranks} from "../shared/enums/ranks";
-import {EmbedColours} from "../shared/enums/embedColours";
+import {EmbedColours} from "../shared/enums/logging/embedColours";
 import sharedConfig from "../configs/shared.json";
 import {Callbacks} from "../shared/enums/events/callbacks";
 import {Command} from "./models/ui/chat/command";
@@ -47,7 +47,7 @@ import {Message} from "../shared/models/ui/chat/message";
 import {SystemTypes} from "../shared/enums/ui/chat/types";
 import {Playtime} from "./models/database/playtime";
 import {PlayerManager} from "./managers/database/players";
-import { ErrorCodes } from "../shared/enums/errors";
+import { ErrorCodes } from "../shared/enums/logging/errors";
 
 export class Server {
   // Debug Data
@@ -68,7 +68,7 @@ export class Server {
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
   public characterManager: CharacterManager;
-  public vehicleManager: VehicleManager;
+  public charVehicleManager: CharVehicleManager;
   public jobManager: JobManager;
 
   // [Managers] Syncing
@@ -101,6 +101,8 @@ export class Server {
     
     // Police Events
     onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
+
+    console.log("GRAVITY HASH", GetHash("WEAPON_GRAVITY"));
   }
 
   // Get Requests
@@ -134,7 +136,7 @@ export class Server {
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
     this.characterManager = new CharacterManager(server);
-    this.vehicleManager = new VehicleManager(server);
+    this.charVehicleManager = new CharVehicleManager(server);
     this.jobManager = new JobManager(server);
 
     // [Managers] Syncing
@@ -172,7 +174,7 @@ export class Server {
     this.staffManager.init();
 
     this.characterManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
-    await this.vehicleManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
+    await this.charVehicleManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
 
     // Register Components
     this.registerCommands();

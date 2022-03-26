@@ -7,13 +7,13 @@ import {LogTypes} from "./enums/logTypes";
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
 import {StaffLog} from "./models/database/staffLog";
 
-import {EmbedColours} from "../shared/enums/embedColours";
+import {EmbedColours} from "../shared/enums/logging/embedColours";
 import {Ranks} from "../shared/enums/ranks";
 import sharedConfig from "../configs/shared.json";
 import serverConfig from "../configs/server.json"
 import {Player} from "./models/database/player";
 import {StaffLogs} from "./enums/database/staffLogs";
-import {ErrorCodes} from "../shared/enums/errors";
+import {ErrorCodes} from "../shared/enums/logging/errors";
 
 /**
  * @param reference Title for organisation logs
