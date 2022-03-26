@@ -17,6 +17,9 @@ import {CharacterManager} from "./managers/characters";
 import { CharVehicleManager } from "./managers/ui/charVehicles";
 import { JobManager } from "./managers/job";
 
+// [Managers] Vehicle Control
+import { VehicleManager } from "./managers/vehicles";
+
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
@@ -71,6 +74,9 @@ export class Server {
   public charVehicleManager: CharVehicleManager;
   public jobManager: JobManager;
 
+  // [Managers] Vehicle Control
+  public vehicleManager: VehicleManager;
+
   // [Managers] Syncing
   private timeManager: TimeManager;
   private weatherManager: WeatherManager;
@@ -101,8 +107,6 @@ export class Server {
     
     // Police Events
     onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
-
-    console.log("GRAVITY HASH", GetHash("WEAPON_GRAVITY"));
   }
 
   // Get Requests
@@ -139,6 +143,9 @@ export class Server {
     this.charVehicleManager = new CharVehicleManager(server);
     this.jobManager = new JobManager(server);
 
+    // [Managers] Vehicle Control
+    this.vehicleManager = new VehicleManager(server);
+
     // [Managers] Syncing
     this.timeManager = new TimeManager(server);
     this.weatherManager = new WeatherManager(server);
@@ -173,8 +180,10 @@ export class Server {
     
     this.staffManager.init();
 
-    this.characterManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
-    await this.charVehicleManager.init(); // Load characters data (has to be loaded after chat due to commands requiring it loaded)
+    // Load below now as it has to be loaded after the chat & commands, otherwise commands wont work
+    this.characterManager.init();
+    await this.charVehicleManager.init();
+    await this.vehicleManager.init();
 
     // Register Components
     this.registerCommands();

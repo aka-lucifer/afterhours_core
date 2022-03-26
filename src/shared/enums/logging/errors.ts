@@ -4,5 +4,6 @@ export enum ErrorCodes {
   NoDBPlayer = "MWUZOrkJWIL3h5ME",
   NotInDiscord = "WXIPAWfQmV2LUv6U",
   WeaponNotFound = "uEZdZHTEVaWacekf",
+  VehicleNotFound = "BsrRLxBLcJIaVCjw",
   DiscordDown = "nAITGtbGBApfLlnO"
 }

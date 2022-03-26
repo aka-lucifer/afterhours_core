@@ -1,23 +1,21 @@
 import { Server } from "../server";
-import {Dist, GetTimestamp, Inform, Log, logCommand, NumToVector3} from "../utils";
+import { GetHash } from "../utils";
+
+import { Command } from "../models/ui/chat/command";;
+import WebhookMessage from "../models/webhook/discord/webhookMessage";
 
 import { LogTypes } from "../enums/logTypes";
 
-import { Character } from "../models/database/character";
-import { Vehicle } from "../models/database/vehicle";
-import WebhookMessage from "../models/webhook/discord/webhookMessage";
-import { Command } from "../models/ui/chat/command";
-import { Ban } from "../models/database/ban";
-
-import * as Database from "./database/database";
-
-import sharedConfig from "../../configs/shared.json";
-import serverConfig from "../../configs/server.json";
 import { Ranks } from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";
-import { Callbacks } from "../../shared/enums/events/callbacks";
-import { formatSQLDate } from "../../shared/utils";
+import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
 import { EmbedColours } from "../../shared/enums/logging/embedColours";
+import { ErrorCodes } from "../../shared/enums/logging/errors";
+
+import serverConfig from "../../configs/server.json";
+import sharedConfig from "../../configs/shared.json";
+import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
+import { Jobs } from "../../shared/enums/jobs/jobs";
 
 export class VehicleManager {
   public server: Server;
@@ -25,10 +23,8 @@ export class VehicleManager {
   constructor(server: Server) {
     this.server = server;
 
-    // Callbacks
-    onNet(Callbacks.createVehicle, this.CALLBACK_createVehicle.bind(this));
-    onNet(Callbacks.editVehicle, this.CALLBACK_editVehicle.bind(this));
-    onNet(Callbacks.deleteVehicle, this.CALLBACK_deleteVehicle.bind(this));
+    // Events
+    onNet(Events.entityCreated, this.EVENT_entityCreated.bind(this));
   }
 
   // Methods
@@ -38,200 +34,161 @@ export class VehicleManager {
   }
 
   private registerCommands(): void {
-    new Command("vehicles", "Edit your characters vehicles.", [], false, async(source: string) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          await player.TriggerEvent(Events.displayVehicles);
+    new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
+      emitNet(Events.clearWorldVehs, -1);
+    }, Ranks.Admin);
+  }
+
+  private async hasPermission(myRank: Ranks, vehRanks: number[] | number): Promise<boolean> {
+    if (typeof vehRanks == "object") {
+      for (let i = 0; i < vehRanks.length; i++) {
+        if (myRank >= vehRanks[i]) {
+          return true;
         }
       }
-    }, Ranks.User);
-  }
-
-  public async GetCharVehicles(character: Character): Promise<Vehicle[]> {
-    const charVehicles: Vehicle[] = [];
-
-    for (let i = 0; i < this.vehicles.length; i++) {
-      if (this.vehicles[i].Owner == character.Id) {
-        charVehicles.push(this.vehicles[i]);
+    } else if (typeof vehRanks == "number") {
+      if (myRank >= vehRanks) {
+        return true;
       }
     }
 
-    return charVehicles;
+    return false;
   }
 
-  public async getVehFromId(id: number): Promise<Vehicle> {
-    const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Id == id);
-    if (vehIndex !== -1) {
-      return this.vehicles[vehIndex];
-    }
-  }
+  // Events
+  public async EVENT_entityCreated(entity: number): Promise<void> {
+    // If entity actually exists
+    if (DoesEntityExist(entity)) {
+      // If the entity is a vehicle
+      if (GetEntityType(entity) == 2) {
+        const source = NetworkGetEntityOwner(entity)
 
-  public async yourVehicle(id: number, owner: Character): Promise<boolean> {
-    const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Id == id && vehicle.Owner == owner.Id);
-    return vehIndex !== -1;
-  }
+        // If the owner isn't a player
+        if (source === undefined) {
+          CancelEvent();
+        }
 
-  public async create(owner: Character, label: string, model: string, type: string, colour: string, plate: string): Promise<[number, boolean]> {
-    const newVehicle = await Database.SendQuery("INSERT INTO `character_vehicles` (`character_id`, `label`, `model`, `type`, `colour`, `plate`) VALUES (:characterId, :label, :model, :type, :colour, :plate)", {
-      characterId: owner.Id,
-      label: label,
-      model: model,
-      type: type,
-      colour: colour,
-      plate: plate
-    });
+        const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+
+        if (player) {
+          if (player.Spawned) {
+            // Permission Checker
+            const vehModel = GetEntityModel(entity);
+            const vehData = serverConfig.vehicles.blacklister.general[vehModel];
+            if (vehData !== undefined) {
+              console.log("spawning veh!", entity);
+              const discord = await player.GetIdentifier("discord");
+
+              // If LEO, Fire or EMS vehicle
+              if (vehData.type == "emergency") {
+                const character = await this.server.characterManager.Get(player);
+                if (character) {
+                  if (character.Job.name == vehData.job || player.Rank >= Ranks.Admin) {
+                    if (character.Job.rank >= vehData.rank || player.Rank >= Ranks.Admin) {
+                      console.log("spawn police vehicle!");
+                    } else {
+                      console.log("you aren't the correct rank to drive this vehicle!");
+
+                      // Cancel the event
+                      CancelEvent();
+
+                      // Delete the entity, incase cancelling the event, hasn't prevented the entity from being spawned
+                      DeleteEntity(entity);
+
+                      // Notify the player of the error
+                      if (vehData.job == Jobs.State) {
+                        await player.Notify("State Police", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
+                      } else if (vehData.job == Jobs.County) {
+                        await player.Notify("Sheriffs Office", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
+                      } else if (vehData.job == Jobs.Police) {
+                        await player.Notify("Police Department", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
+                      } else if (vehData.job == Jobs.Fire) {
+                        await player.Notify("Fire Department", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
+                      } else if (vehData.job == Jobs.EMS) {
+                        await player.Notify("Medical Services", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
+                      }
     
-    if (newVehicle.meta.affectedRows > 0) {
-      const insertId = newVehicle.meta.insertId;
-      return [insertId, true];
-    } else {
-      return [undefined, false];
-    }
-  }
+                      // Log it via a webhook
+                      await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                        username: "Vehicle Logs", embeds: [{
+                          color: EmbedColours.Green,
+                          title: "__Created Vehicle__",
+                          description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+                        }]
+                      }));
+                    }
+                  } else {
+                    console.log("not police!");
 
-  public async edit(id: number, plate: string, owner: Character): Promise<boolean> {
-    const updatedVeh = await Database.SendQuery("UPDATE `character_vehicles` SET `plate` = :newPlate WHERE `id` = :id AND `character_id` = :ownerId", {
-      id: id,
-      newPlate: plate,
-      ownerId: owner.Id
-    });
+                    // Cancel the event
+                    CancelEvent();
 
-    return updatedVeh.meta.affectedRows > 0;
-  }
+                    // Delete the entity, incase cancelling the event, hasn't prevented the entity from being spawned
+                    DeleteEntity(entity);
 
-  public async deleted(id: number, owner: Character): Promise<boolean> {
-    const vehData = await Database.SendQuery("DELETE FROM `character_vehicles` WHERE `id` = :id AND `character_id` = :ownerId LIMIT 1", {
-      id: id,
-      ownerId: owner.Id
-    });
+                    // Notify the player of the error
+                    if (vehData.job == Jobs.State) {
+                      await player.Notify("State Police", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
+                    } else if (vehData.job == Jobs.County) {
+                      await player.Notify("Sheriffs Office", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
+                    } else if (vehData.job == Jobs.Police) {
+                      await player.Notify("Police Department", "You don't have permission to spawn this vehicle!!", NotificationTypes.Error, 4000);
+                    } else if (vehData.job == Jobs.Fire) {
+                      await player.Notify("Fire Department", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
+                    } else if (vehData.job == Jobs.EMS) {
+                      await player.Notify("Medical Services", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
+                    }
+    
+                    // Log it via a webhook
+                    await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                      username: "Vehicle Logs", embeds: [{
+                        color: EmbedColours.Green,
+                        title: "__Created Vehicle__",
+                        description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+                      }]
+                    }));
+                  }
+                }
+              } else { // General vehicles
+                const hasPermission = await this.hasPermission(player.Rank, vehData.rank);
+                
+                if (hasPermission) {
+                  console.log("has spawn permission!", vehData);
+                } else {
+                  CancelEvent();
+                  await player.Notify("Vehicles", "You aren't the correct rank to spawn this vehicle!", NotificationTypes.Error, 4000);
 
-    if (vehData.meta.affectedRows > 0) {
-      const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Id == id);
+                  await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                    username: "Vehicle Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Created Vehicle__",
+                      description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                      footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+                    }]
+                  }));
+                }
+              }
+            } else {
+      
+              // MRAP Bulletproof Tyres
+              if (GetEntityModel(entity) == GetHash("mrap")) {
+                if (player) {
+                  if (player.Spawned) {
+                    await player.TriggerEvent(JobEvents.setupMRAP, NetworkGetNetworkIdFromEntity(entity));
+                  }
+                }
+              }
 
-      if (vehIndex !== -1) {
-        this.vehicles.splice(vehIndex, 1);
-      }
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // Callbacks
-  private async CALLBACK_createVehicle(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
-    if (player) {
-      if (player.Spawned) {
-        const character = await this.server.characterManager.Get(player);
-        if (character) {
-          const vehData = data.data;
-          const newVehicle = new Vehicle(character.Id, vehData.label, vehData.model, vehData.type, vehData.colour, vehData.plate)
-          const [insertId, inserted] = await this.create(character, newVehicle.Label, newVehicle.Model, newVehicle.Type, newVehicle.Colour, newVehicle.Plate);
-
-          if (inserted) {
-            vehData.id = insertId;
-            vehData.registeredOn = await GetTimestamp();
-
-            newVehicle.Id = insertId;
-            newVehicle.Registered = vehData.registeredOn;
-            this.vehicles.push(newVehicle);
-
-            await player.TriggerEvent(Events.receiveServerCB, vehData, data); // Update the UI to close and disable NUI focus
-
-            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
-              color: EmbedColours.Green,
-              title: "__Vehicle Registered__",
-              description: `A player has registered a new vehicle.\n\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Nationality**: ${character.Nationality}\n**Character Age**: ${character.Age}\n**Character Gender**: ${character.Gender}\n**Name**: ${newVehicle.Label}\n**Model**: ${newVehicle.Model}\n**Type**: ${newVehicle.Type}\n**Colour**: ${newVehicle.Colour}\n**Plate**: ${newVehicle.Plate}\n**Registered On**: ${new Date(newVehicle.Registered).toUTCString()}`,
-              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-            }]}));
-          }
-        }
-      }
-    }
-  }
-
-  private async CALLBACK_editVehicle(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
-    if (player) {
-      if (player.Spawned) {
-        const character = await this.server.characterManager.Get(player);
-        if (character) {
-          const vehData = data.data;
-
-          if (vehData.id !== undefined && vehData.id > 0) {
-            const vehicle = await this.getVehFromId(vehData.id);
-            const yourVeh = await this.yourVehicle(vehicle.Id, character);
-
-            if (yourVeh) {
-              const updatedVeh = await this.edit(vehData.id, vehData.plate, character);
-              if (updatedVeh) {
-                vehicle.Plate = vehData.plate;
-                await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
-
-                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
+              await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                username: "Vehicle Logs", embeds: [{
                   color: EmbedColours.Green,
-                  title: "__Vehicle Edited__",
-                  description: `A player has edited one of their vehicles.\n\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Old Plate**: ${vehData.oldPlate}\n**New Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
+                  title: "__Entering Vehicle__",
+                  description: `A player is creating a vehicle. Vehicle not found (Entity: ${entity} | Model: ${vehModel}) | Error Code: ${ErrorCodes.VehicleNotFound}\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: ${player.Id}\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}`,
                   footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-                }]}));
-              }
-            } else {
-              const ban = new Ban(player.Id, player.HardwareId, "Trying to edit someone else's vehicle (Lua Executor)", player.Id);
-              await ban.save();
-              ban.drop();
-              
-              const discord = await player.GetIdentifier("discord");
-              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicle Logs", embeds: [{
-                color: EmbedColours.Red,
-                title: "__Attempted Vehicle Edit__",
-                description: `A player has tried to edit someone else's vehicle.\n\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
-                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-              }]}));
-            }
-          }
-        }
-      }
-    }
-  }
-
-  private async CALLBACK_deleteVehicle(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
-    if (player) {
-      if (player.Spawned) {
-        const character = await this.server.characterManager.Get(player);
-        if (character) {
-          const vehData = data.data;
-
-          if (vehData.id !== undefined && vehData.id > 0) {
-            const vehicle = await this.getVehFromId(vehData.id);
-            const yourVeh = await this.yourVehicle(vehicle.Id, character);
-
-            if (yourVeh) {
-              const deletedVeh = await this.deleted(vehData.id, character);
-              if (deletedVeh) {
-                await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
-
-                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
-                  color: EmbedColours.Red,
-                  title: "__Vehicle Deleted__",
-                  description: `A player has deleted one of their vehicles.\n\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
-                  footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-                }]}));
-              }
-            } else {
-              const ban = new Ban(player.Id, player.HardwareId, "Trying to edit someone else's vehicle (Lua Executor)", player.Id);
-              await ban.save();
-              ban.drop();
-              
-              const discord = await player.GetIdentifier("discord");
-              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicle Logs", embeds: [{
-                color: EmbedColours.Red,
-                title: "__Attempted Vehicle Deletion__",
-                description: `A player has tried to delete someone else's vehicle.\n\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
-                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-              }]}));
+                }]
+              }));
             }
           }
         }

@@ -22,43 +22,6 @@ export class JobManager {
 
   constructor(server: Server) {
     this.server = server;
-
-    // Events
-    onNet(Events.entityCreating, async(entity: number) => {
-      if (DoesEntityExist(entity)) {
-        if (GetEntityType(entity) == 2) { // If vehicle
-          const source = NetworkGetEntityOwner(entity)
-          if (source === undefined) {
-            CancelEvent();
-          }
-
-          if (GetEntityModel(entity) == GetHash("mrap")) {
-            console.log("creating handle!", entity, NetworkGetNetworkIdFromEntity(entity));
-            const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
-            if (player) {
-              if (player.Spawned) {
-                emitNet(JobEvents.setupMRAP, -1, NetworkGetNetworkIdFromEntity(entity))
-              }
-            }
-          }
-        }
-      }
-    });
-
-    // onNet(Events.entityCreated, (entity: number) => {
-    //   if (DoesEntityExist(entity)) {
-    //     if (GetEntityType(entity) == 2) { // If vehicle
-    //       const src = NetworkGetEntityOwner(entity)
-    //       if (src === undefined) {
-    //         CancelEvent();
-    //       }
-
-    //       if (GetEntityModel(entity) == GetHash("mrap")) {
-    //         console.log("created handle!", entity);
-    //       }
-    //     }
-    //   }
-    // });
     
     // Callbacks
     onNet(JobCallbacks.setDuty, this.CALLBACK_setDuty.bind(this));

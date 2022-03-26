@@ -336,7 +336,7 @@ export class CharacterManager {
 
         await this.Add(character); // Add your character to the manager
 
-        const charVehicles = await this.server.vehicleManager.GetCharVehicles(character);
+        const charVehicles = await this.server.charVehicleManager.GetCharVehicles(character);
         if (charVehicles) {
           await player.TriggerEvent(Events.setupVehicles, charVehicles);
         }

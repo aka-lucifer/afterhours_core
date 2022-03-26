@@ -56,7 +56,7 @@ export class PoliceJob {
 
   // Events
   public EVENT_setupMRAP(networkId: number): void {
-    const handle = NetworkGetEntityFromNetworkId(networkId);
+    const handle = NetToVeh(networkId);
     SetVehicleTyresCanBurst(handle, false);
   }
 }
