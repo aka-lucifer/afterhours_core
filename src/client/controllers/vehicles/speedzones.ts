@@ -1,4 +1,3 @@
-import * as Vec2D from "vector2d";
 import { Game, Vector3 } from "fivem-js";
 
 import { Client } from "../../client";

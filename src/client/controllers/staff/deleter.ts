@@ -4,7 +4,7 @@ import { Notification } from "../../models/ui/notification";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
-import {Weapons} from "../../../shared/enums/weapons";
+import {AddonWeapons} from "../../../shared/enums/weapons";
 import clientConfig from "../../../configs/client.json";
 
 import {Game, Entity, Bone, Prop, Ped, Vehicle, VehicleSeat} from "fivem-js";
@@ -50,7 +50,7 @@ export class Deleter {
     if (this.client.player.Rank >= Ranks.Admin) {
       const myPed = Game.PlayerPed;
 
-      if (GetSelectedPedWeapon(myPed.Handle) == Weapons.Deleter) {
+      if (GetSelectedPedWeapon(myPed.Handle) == AddonWeapons.GravityGun) {
         if (IsPlayerFreeAiming(Game.Player.Handle)) {
           if (!this.holding) { // If no entity is held
             let [bool, foundEntity] = GetEntityPlayerIsFreeAimingAt(Game.Player.Handle);
