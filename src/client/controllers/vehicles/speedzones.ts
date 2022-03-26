@@ -27,7 +27,7 @@ export class Speedzones {
         points: speedzones[i].points,
         options: {
           name: speedzones[i].options.name,
-          debugPoly: true,
+          debugPoly: false,
           debugGrid: false,
           gridDivisions: 30
         }
@@ -36,29 +36,31 @@ export class Speedzones {
       zone.onPlayerInOut(async(isCurrInside: boolean, pedPos: Vector3) => {
         if (isCurrInside) {
           if (this.client.player.Rank < Ranks.Admin) {
-            const leoJob = this.client.Character.isLeoJob(); 
-            if (!leoJob) {
-              const [currVeh, inside] = await insideVeh(Game.PlayerPed);
-              if (inside) {
-                const currMph = Math.ceil(currVeh.Speed * 2.236936);
-                if (currMph >= 50) {
-                  currVeh.IsPositionFrozen = true;
-                  await Delay(500);
-                  const notify = new Notification("Speed Zones", "Your vehicle was stopped as it was detected speeding through known troll zones, driving at high speeds.", NotificationTypes.Info, 5000, true);
-                  await notify.send();
-                  currVeh.IsPositionFrozen = false;
+            if (this.client.Player.Spawned) {
+              const leoJob = this.client.Character.isLeoJob(); 
+              if (!leoJob) {
+                const [currVeh, inside] = await insideVeh(Game.PlayerPed);
+                if (inside) {
+                  const currMph = Math.ceil(currVeh.Speed * 2.236936);
+                  if (currMph >= 50) {
+                    currVeh.IsPositionFrozen = true;
+                    await Delay(500);
+                    const notify = new Notification("Speed Zones", "Your vehicle was stopped as it was detected speeding through known troll zones, driving at high speeds.", NotificationTypes.Info, 5000, true);
+                    await notify.send();
+                    currVeh.IsPositionFrozen = false;
+                  }
                 }
-              }
-            } else if (leoJob && !this.client.Character.job.status) {
-              const [currVeh, inside] = await insideVeh(Game.PlayerPed);
-              if (inside) {
-                const currMph = Math.ceil(currVeh.Speed * 2.236936);
-                if (currMph >= 50) {
-                  const notify = new Notification("Speed Zones", "Your vehicle was stopped as it was detected speeding through known troll zones, driving at high speeds.", NotificationTypes.Info, 5000, true);
-                  currVeh.IsPositionFrozen = true;
-                  await notify.send();
-                  await Delay(500);
-                  currVeh.IsPositionFrozen = false;
+              } else if (leoJob && !this.client.Character.job.status) {
+                const [currVeh, inside] = await insideVeh(Game.PlayerPed);
+                if (inside) {
+                  const currMph = Math.ceil(currVeh.Speed * 2.236936);
+                  if (currMph >= 50) {
+                    const notify = new Notification("Speed Zones", "Your vehicle was stopped as it was detected speeding through known troll zones, driving at high speeds.", NotificationTypes.Info, 5000, true);
+                    currVeh.IsPositionFrozen = true;
+                    await notify.send();
+                    await Delay(500);
+                    currVeh.IsPositionFrozen = false;
+                  }
                 }
               }
             }
