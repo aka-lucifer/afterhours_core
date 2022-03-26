@@ -5,9 +5,10 @@ import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 
 interface ProgressDisablers {
+  movement?: boolean,
+  vehicle?: boolean;
   mouse?: boolean,
-  player?: boolean,
-  vehicle?: boolean
+  combat?: boolean
 }
 
 interface ProgressOptions {
@@ -42,9 +43,10 @@ export class Progress {
     radius: 25,
     stroke: 7.5,
     controlDisablers: {
+      movement: false,
+      vehicle: false,
       mouse: false,
-      player: false,
-      vehicle: false
+      combat: false
     },
     useTime: true,
     usePercent: false
@@ -114,6 +116,43 @@ export class Progress {
     }));
 
     this.controlTick = setTick(() => {
+      if (this.options.controlDisablers.movement) {
+        DisableControlAction(0, 30, true); // Left/Right
+        DisableControlAction(0, 31, true); // Forward/Back
+        DisableControlAction(0, 36, true); // Ducking
+        DisableControlAction(0, 21, true); // Sprinting
+      }
+      
+      if (this.options.controlDisablers.vehicle) {
+        DisableControlAction(0, 63, true); // Turn Left
+        DisableControlAction(0, 64, true); // Turn Right
+        DisableControlAction(0, 71, true); // Forward
+        DisableControlAction(0, 72, true); // Backwards
+        DisableControlAction(0, 75, true); // Exit Vehicle
+      }
+      
+      if (this.options.controlDisablers.mouse) {
+        DisableControlAction(0, 1, true); // LookLeftRight
+        DisableControlAction(0, 2, true); // LookUpDown
+        DisableControlAction(0, 106, true); // VehicleMouseControlOverride
+      }
+      
+      if (this.options.controlDisablers.combat) {
+        DisablePlayerFiring(Game.PlayerPed.Handle, true); // Disable weapon firing
+        DisableControlAction(0, 24, true); // Disable attack
+        DisableControlAction(0, 25, true); // Disable aim
+        DisableControlAction(1, 37, true); // Disable weapon select
+        DisableControlAction(0, 47, true); // Disable weapon
+        DisableControlAction(0, 58, true); // Disable weapon
+        DisableControlAction(0, 140, true); // Disable melee
+        DisableControlAction(0, 141, true); // Disable melee
+        DisableControlAction(0, 142, true); // Disable melee
+        DisableControlAction(0, 143, true); // Disable melee
+        DisableControlAction(0, 263, true); // Disable melee
+        DisableControlAction(0, 264, true); // Disable melee
+        DisableControlAction(0, 257, true); // Disable melee
+      }
+
       if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.FrontendCancel)) {
         // disable progress UI
         SendNuiMessage(JSON.stringify({
