@@ -153,5 +153,35 @@
       "drawLength": 5000
     }
   },
+  "vehicles": {
+    "blacklister": {
+      "general": {
+        "-1291952903": {
+          "name": "entityxf",
+          "brand": "Overflod",
+          "model": "Entity XF",
+          "type": "super",
+          "rank": 2
+        },
+        "-1216765807": {
+          "name": "adder",
+          "brand": "Truffade",
+          "model": "Adder",
+          "type": "super",
+          "rank": [2, 5]
+        },
+
+        
+        "-1530015901": {
+          "name": "sasp1",
+          "brand": "Ford",
+          "model": "CVPI",
+          "type": "emergency",
+          "job": "state",
+          "rank": 4
+        }
+      }
+    }
+  },
   "maxClosestDistance": 5
 }
