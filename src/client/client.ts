@@ -546,10 +546,17 @@ export class Client {
 
   private EVENT_clearVehs(): void {
     const worldVehs = World.getAllVehicles();
-    worldVehs.forEach(vehicle => {
-      vehicle.delete();
-      vehicle.markAsNoLongerNeeded();
-    });
+    
+    for (let i = 0; i < worldVehs.length; i++) {
+      if (!worldVehs[i].getPedOnSeat(VehicleSeat.Driver).IsPlayer) {
+        worldVehs[i].PreviouslyOwnedByPlayer = false;
+        SetEntityAsMissionEntity(worldVehs[i].Handle, false, false);
+        worldVehs[i].delete();
+        if (worldVehs[i].exists()) {
+          worldVehs[i].delete();
+        }
+      }
+    }
   }
 
   private EVENT_pedDied(damagedEntity: number, attackingEntity: number, weaponHash: number, isMelee: boolean): void {

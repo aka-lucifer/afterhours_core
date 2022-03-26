@@ -1,5 +1,5 @@
 import { Server } from "../server";
-import { GetHash } from "../utils";
+import { Delay, GetHash } from "../utils";
 
 import { Command } from "../models/ui/chat/command";;
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
@@ -16,15 +16,20 @@ import serverConfig from "../../configs/server.json";
 import sharedConfig from "../../configs/shared.json";
 import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
 import { Jobs } from "../../shared/enums/jobs/jobs";
+import { VehicleSeat } from "fivem-js";
+import { Message } from "../../shared/models/ui/chat/message";
+import { SystemTypes } from "../../shared/enums/ui/chat/types";
 
 export class VehicleManager {
   public server: Server;
-  
+  private worldVehicles: number[] = [];
+
   constructor(server: Server) {
     this.server = server;
 
     // Events
     onNet(Events.entityCreated, this.EVENT_entityCreated.bind(this));
+    onNet(Events.entityRemoved, this.EVENT_entityRemoved.bind(this));
   }
 
   // Methods
@@ -34,7 +39,9 @@ export class VehicleManager {
   }
 
   private registerCommands(): void {
-    new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
+    new Command("vehclear", "Clear the vehicles in the area", [], false, async() => {
+      emitNet(Events.sendSystemMessage, -1, new Message(`All empty world vehicles are going to be deleted in ${serverConfig.vehicles.clearCommand.interval} seconds, if you wish to keep your vehicle, enter it.`, SystemTypes.Announcement));
+      await Delay(serverConfig.vehicles.clearCommand.interval * 1000);
       emitNet(Events.clearWorldVehs, -1);
     }, Ranks.Admin);
   }
@@ -86,6 +93,7 @@ export class VehicleManager {
                   if (character.Job.name == vehData.job || player.Rank >= Ranks.Admin) {
                     if (character.Job.rank >= vehData.rank || player.Rank >= Ranks.Admin) {
                       console.log("spawn police vehicle!");
+                      this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
                     } else {
                       console.log("you aren't the correct rank to drive this vehicle!");
 
@@ -156,6 +164,7 @@ export class VehicleManager {
                 
                 if (hasPermission) {
                   console.log("has spawn permission!", vehData);
+                  this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
                 } else {
                   CancelEvent();
                   await player.Notify("Vehicles", "You aren't the correct rank to spawn this vehicle!", NotificationTypes.Error, 4000);
@@ -171,7 +180,6 @@ export class VehicleManager {
                 }
               }
             } else {
-      
               // MRAP Bulletproof Tyres
               if (GetEntityModel(entity) == GetHash("mrap")) {
                 if (player) {
@@ -180,6 +188,8 @@ export class VehicleManager {
                   }
                 }
               }
+
+              this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
 
               await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
                 username: "Vehicle Logs", embeds: [{
@@ -191,6 +201,23 @@ export class VehicleManager {
               }));
             }
           }
+        }
+      }
+    }
+  }
+
+  public EVENT_entityRemoved(entity: number): void {
+    // If entity actually exists
+    if (DoesEntityExist(entity)) {
+      // If the entity is a vehicle
+      if (GetEntityType(entity) == 2) {
+        // If vehicle exists in world vehicles array
+        const vehIndex = this.worldVehicles.findIndex(vehicle => vehicle == entity);
+
+        if (vehIndex !== -1) {
+          // Remove from array and log it
+          this.worldVehicles.splice(vehIndex, 1);
+          console.log(`Removed veh from world vehicle manager (${entity} | ${GetEntityModel(entity)})`);
         }
       }
     }

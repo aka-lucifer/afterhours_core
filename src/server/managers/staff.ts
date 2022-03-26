@@ -24,10 +24,6 @@ export class StaffManager {
 
   // Methods
   private registerCommands(): void {
-    new Command("vehclear", "Clear the vehicles in the area", [], false, () => {
-      emitNet(Events.clearWorldVehs, -1);
-    }, Ranks.Admin);
-
     new Command("tpm", "Teleport to your waypoint", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {

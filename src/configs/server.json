@@ -154,6 +154,9 @@
     }
   },
   "vehicles": {
+    "clearCommand": {
+      "interval": 30
+    },
     "blacklister": {
       "general": {
         "-1291952903": {

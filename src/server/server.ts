@@ -197,10 +197,6 @@ export class Server {
     await this.weatherManager.init();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
-
-    RegisterCommand("disc", async(source: string) => {
-      await server.connectedPlayerManager.Disconnect(source, "testing");
-    }, false);
   }
 
   private registerCommands(): void {
