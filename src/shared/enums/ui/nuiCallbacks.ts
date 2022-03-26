@@ -20,4 +20,9 @@ export enum NuiCallbacks {
   // Chat
   CloseChat = "CLOSE_CHAT",
   SendMessage = "SEND_MESSAGE",
+
+  // Progress Bar
+  ProgressStarted = "PROGRESS_STARTED",
+  ProgressFinished = "PROGRESS_FINISHED",
+  ProgressCancelled = "PROGRESS_CANCELLED",
 }

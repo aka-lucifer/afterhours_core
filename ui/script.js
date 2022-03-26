@@ -192,7 +192,13 @@ const HUD = new Vue({
     menuPosition: "middle-right",
     menuName: "Default",
     menuComponents: [],
-    menuOption: 0
+    menuOption: 0,
+
+    // Progress Bar
+    progressElement: null,
+    runningProgress: false,
+    progressBar: false,
+    staticProgressBar: false
   },
   methods: {
     // Spawn UI
@@ -848,7 +854,7 @@ const HUD = new Vue({
       if (comp != null) {
         console.log("set value", this.menuComponents[comp].state);
         this.menuComponents[comp].state = data.state
-        console.log("setted value", this.menuComponents[comp].state);
+        console.log("setted value", this.menuComponents[comp].state)
       }
     },
 
@@ -867,6 +873,115 @@ const HUD = new Vue({
         }
       }
       return null;
+    },
+
+    StartProgress(data) {
+      HUD.progressBar = new RadialProgress({
+        r: data.radius,
+        s: data.stroke,
+        x: data.x,
+        y: data.y,
+        color: data.colour,
+        bgColor: data.backgroundColour,
+        rotation: data.rotation,
+        maxAngle: data.maxAngle,
+        progress: 0,
+
+        onStart: function() {
+          HUD.running = true;
+
+          this.container.classList.add(`label-${data.LabelPosition}`);
+          this.label.textContent = data.Label;
+
+          HUD.Post("PROGRESS_STARTED")
+        },
+
+        onChange: function(progress, t, duration) {
+          if (data.useTime) {
+            this.indicator.style.fontSize = "30"; // Better Sized Overall
+            this.indicator.textContent = `${((duration - t) / 1000).toFixed(1)}`;
+          }
+
+          if (data.usePercent) {
+            this.indicator.textContent = `${Math.ceil(progress)}%`;
+          }                
+        },  
+
+        onComplete: function () {
+          this.indicator.textContent = "";
+          this.label.textContent = "";
+          this.container.classList.add("done");
+
+          setTimeout(() => {
+            this.remove();
+          }, 1000)
+  
+          HUD.Post("PROGRESS_FINISHED");
+                
+          HUD.running = false;
+        }
+      });
+
+      HUD.progressBar.render(HUD.progressElement);
+      HUD.progressBar.start(100, 0, data.duration);
+    },
+
+    StartStaticProgress(data) {
+      if (HUD.staticProgressBar === undefined) {	
+        HUD.staticProgressBar = new RadialProgress({	
+          r: data.radius,	
+          s: data.stroke,	
+          x: data.x,	
+          y: data.y,	
+          color: data.color,	
+          bgColor: data.backgroundColour,	
+          rotation: data.rotation,
+          maxAngle: data.maxAngle,	
+          progress: 0,	
+          onChange: function(progress) {	
+            if (data.showProgress) {	
+              this.indicator.style.fontSize = "17"; // Better Sized Overall
+              this.indicator.textContent = `${Math.ceil(progress)}%`;	
+            }                	
+          },                 	
+        });
+
+        HUD.staticProgressBar.container.classList.add(`label-${data.LabelPosition}`);	
+        HUD.staticProgressBar.label.textContent = data.Label;            	
+        HUD.Post("static", data)	
+      } else {	
+        if (data.show) {
+          HUD.staticProgressBar.render(HUD.progressElement);	
+        }
+
+        if (data.hide) {
+          HUD.staticProgressBar.remove();
+        }
+
+        if (data.progress !== false) {
+          HUD.staticProgressBar.setProgress(data.progress)
+        }
+
+        if (data.destroy) {
+          HUD.staticProgressBar.remove();	
+          HUD.staticProgressBar = false;	
+        }             	
+      }
+    },
+
+    CancelProgress() {
+      HUD.running = false;
+      if (this.progressBar) {
+        this.progressBar.stop();	
+        this.progressBar = false;
+      }
+      
+      if (this.staticProgressBar) {
+        this.staticProgressBar.stop();	
+        this.staticProgressBar = false;
+      }
+
+      HUD.Post("PROGRESS_CANCELLED");
     }
   },
 
@@ -1013,6 +1128,10 @@ const HUD = new Vue({
     RegisterEvent("SET_MENU_OPTION", this.SetMenuOption);
     RegisterEvent("SET_CHECKBOX_STATE", this.SetCheckboxState);
     RegisterEvent("SET_LIST_ITEM", this.SetListItem);
+
+    this.progressElement = document.getElementById("progressBar");
+    RegisterEvent("PROGRESS_START", this.StartProgress);
+    RegisterEvent("CANCEL_PROGRESS", this.CancelProgress);
 
     // HUD Events
     RegisterEvent("SET_COMPASS", this.SetCompass);

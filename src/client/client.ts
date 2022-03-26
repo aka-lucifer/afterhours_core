@@ -58,6 +58,7 @@ import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
+import { Progress } from "./models/ui/progress";
 
 let takingScreenshot = false;
 
@@ -265,6 +266,18 @@ export class Client {
     }
 
     this.speedZones.init();
+
+    RegisterCommand("progress_ui", () => {
+      const progress = new Progress(4000, {}, () => {
+        console.log("cancelled!");
+      }, () => {
+        console.log("started!");
+      }, () => {
+        console.log("finished!");
+      })
+
+      progress.start();
+    }, false);
   }
 
   private registerStates(): void {

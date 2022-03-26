@@ -83,7 +83,7 @@ export class VehicleManager {
             const vehModel = GetEntityModel(entity);
             const vehData = serverConfig.vehicles.blacklister.general[vehModel];
             if (vehData !== undefined) {
-              console.log("spawning veh!", entity);
+              // console.log("spawning veh!", entity);
               const discord = await player.GetIdentifier("discord");
 
               // If LEO, Fire or EMS vehicle
@@ -92,10 +92,10 @@ export class VehicleManager {
                 if (character) {
                   if (character.Job.name == vehData.job || player.Rank >= Ranks.Admin) {
                     if (character.Job.rank >= vehData.rank || player.Rank >= Ranks.Admin) {
-                      console.log("spawn police vehicle!");
+                      // console.log("spawn police vehicle!");
                       this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
                     } else {
-                      console.log("you aren't the correct rank to drive this vehicle!");
+                      // console.log("you aren't the correct rank to drive this vehicle!");
 
                       // Cancel the event
                       CancelEvent();
@@ -127,7 +127,7 @@ export class VehicleManager {
                       }));
                     }
                   } else {
-                    console.log("not police!");
+                    // console.log("not police!");
 
                     // Cancel the event
                     CancelEvent();
@@ -163,7 +163,7 @@ export class VehicleManager {
                 const hasPermission = await this.hasPermission(player.Rank, vehData.rank);
                 
                 if (hasPermission) {
-                  console.log("has spawn permission!", vehData);
+                  // console.log("has spawn permission!", vehData);
                   this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
                 } else {
                   CancelEvent();
@@ -217,7 +217,7 @@ export class VehicleManager {
         if (vehIndex !== -1) {
           // Remove from array and log it
           this.worldVehicles.splice(vehIndex, 1);
-          console.log(`Removed veh from world vehicle manager (${entity} | ${GetEntityModel(entity)})`);
+          // console.log(`Removed veh from world vehicle manager (${entity} | ${GetEntityModel(entity)})`);
         }
       }
     }

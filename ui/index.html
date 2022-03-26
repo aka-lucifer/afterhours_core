@@ -253,7 +253,7 @@
             <div id="Card_Header">Server Info</div>
             <div id="Card_Body">
               <!-- <h1>Lorem Ipsum</h1> -->
-              <v-progress-circular :rotate="-90" :size="120" :width="10" :value="players.percent" color="success">
+              <v-progress-circular class="playerCount" :rotate="-90" :size="120" :width="10" :value="players.percent" color="success">
                 <div id="progress-text">
                   <span style="display: block; text-align: center; color: white; font-size: 2em; font-family: 'PT-Sans-Bold';">
                     {{ players.current }} 
@@ -754,6 +754,9 @@
       </div>
     </v-app>
 
+    <!-- Progress Bar -->
+    <div id="progressBar"></div>
+
     <!-- Axios -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -770,6 +773,9 @@
 
     <!-- Simply Notify -->
     <script src="./libraries/js/simple-notify.min.js"></script>
+
+    <!-- Progress Bar -->
+    <script src="./libraries/js/radialProgress.js"></script>
 
     <!-- Default -->
     <script src="events.js"></script>
