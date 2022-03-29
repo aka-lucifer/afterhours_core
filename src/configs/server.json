@@ -173,18 +173,169 @@
           "type": "super",
           "rank": [2, 5]
         },
+        "338562499": {
+          "name": "vacca",
+          "brand": "Pegassi",
+          "model": "Vacca",
+          "type": "super",
+          "rank": 2
+        },
 
         
+        "COMMENT_1": "SASP Vehicles",
         "-1530015901": {
           "name": "sasp1",
           "brand": "Ford",
-          "model": "CVPI",
+          "model": "CVPI (2011)",
           "type": "emergency",
           "job": "state",
-          "rank": 4
+          "rank": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        },
+        "-1291621426": {
+          "name": "sasp2",
+          "brand": "Ford",
+          "model": "Taurus (2018)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+        },
+        "1198560426": {
+          "name": "sasp3",
+          "brand": "Ford",
+          "model": "Explorer (2016)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [2, 3, 4, 5, 6, 7, 8]
+        },
+        "1430204487": {
+          "name": "sasp4",
+          "brand": "Dodge",
+          "model": "Charger (2918)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [2, 3, 4, 5, 6, 7, 8]
+        },
+        "1811307957": {
+          "name": "sasp5",
+          "brand": "Dodge",
+          "model": "Charger (2018 | K9)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+        },
+        "2043148632": {
+          "name": "sasp6",
+          "brand": "Ford",
+          "model": "F-150 (2018)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [3, 4, 5, 6, 7, 8]
+        },
+        "1805737223": {
+          "name": "sasp7",
+          "brand": "Chevrolet",
+          "model": "Tahoe (2014)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [4, 5, 6, 7, 8]
+        },
+        "2045966762": {
+          "name": "sasp8",
+          "brand": "Ford",
+          "model": "Mustang (2018)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+        },
+        "847047359": {
+          "name": "sasp9",
+          "brand": "Chevrolet",
+          "model": "Tahoe (2020)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [4, 5, 6, 7, 8]
+        },
+        "1740784122": {
+          "name": "sasp10",
+          "brand": "Chevrolet",
+          "model": "Tahoe (2020 | K9)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+        },
+        "-1661686690": {
+          "name": "sasp11",
+          "brand": "Dodge",
+          "model": "Durango (2021)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [7, 8]
+        },
+        "-1958475523": {
+          "name": "sasp12",
+          "brand": "Chevrolet",
+          "model": "Tahoe (2021)",
+          "type": "emergency",
+          "job": "state",
+          "rank": [7, 8]
+        },
+        "-1042057669": {
+          "name": "sasp13",
+          "brand": "BMW",
+          "model": "RT1200",
+          "type": "emergency",
+          "job": "state",
+          "rank": [3, 4, 5, 6, 7, 8]
+        },
+        "-1350053500": {
+          "name": "sasp14",
+          "brand": "Boston",
+          "model": "Whaler",
+          "type": "emergency",
+          "job": "state",
+          "rank": [4, 5, 6, 7, 8]
         }
       }
     }
+  },
+  "aop": {
+    "locations": [
+      {"name": "Harmony", "automaticCycling": false, "positions": []},
+      {"name": "Sandy Shores", "automaticCycling": true, "playerMax": 15, "positions": [
+        {"x": 2767.00, "y": 3476.68, "z": 55.50, "heading": 223.3},
+        {"x": 1733.16, "y": 3034.62, "z": 61.34, "heading": 288.6},
+        {"x": 2063.96, "y": 2937.93, "z": 47.29, "heading": 2.23},
+        {"x": 1333.55, "y": 3637.60, "z": 33.59, "heading": 33.23}
+      ]},
+      {"name": "Grapeseed", "automaticCycling": false, "positions": [
+        {"x": 1723.03, "y": 4794.10, "z": 41.66, "heading": 75.21},
+        {"x": 1718.97, "y": 4638.48, "z": 43.31, "heading": 112.3},
+        {"x": 2171.96, "y": 4802.35, "z": 41.8, "heading": 175.2},
+        {"x": 2515.39, "y": 4968.47, "z": 44.58, "heading": 155.98}
+      ]},
+      {"name": "Paleto Bay", "automaticCycling": true, "playerMax": 25, "positions": [
+        {"x": -23.59, "y": 6406.17, "z": 31.49, "heading": 220.5},
+        {"x": -171.44, "y": 6435.74, "z": 31.91, "heading": 56.2},
+        {"x": 144.34, "y": 6624.94, "z": 31.54, "heading": 187.4},
+        {"x": -690.86, "y": 5767.32, "z": 17.30, "heading": 41.3}
+      ]},
+      {"name": "Blaine County", "automaticCycling": true, "playerMax": 40, "positions": [
+        {"x": 2767.00, "y": 3476.68, "z": 55.50, "heading": 223.3},
+        {"x": 144.34, "y": 6624.94, "z": 31.54, "heading": 187.4},
+        {"x": 2515.39, "y": 4968.47, "z": 44.58, "heading": 155.98},
+        {"x": 2063.96, "y": 2937.93, "z": 47.29, "heading": 2.23}
+      ]},
+      {"name": "Upper LS", "automaticCycling": false, "positions": []},
+      {"name": "Middle LS", "automaticCycling": false, "positions": []},
+      {"name": "Lower LS", "automaticCycling": false, "positions": []},
+      {"name": "Los Santos", "automaticCycling": true, "playerMax": 50, "positions": [
+        {"x": 1389.23, "y": -2036.22, "z": 51.99, "heading": 31.6},
+        {"x": -1542.97, "y": -994.72, "z": 13.01, "heading": 289.0},
+        {"x": 612.22, "y": 98.25, "z": 92.64, "heading": 163.4},
+        {"x": -13.07, "y": -1737.10, "z": 29.30, "heading": 16.1}
+      ]},
+      {"name": "Statewide", "automaticCycling": true, "playerMax": 64, "positions": "all"}
+    ]
   },
   "maxClosestDistance": 5
 }
