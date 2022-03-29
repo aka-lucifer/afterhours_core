@@ -844,7 +844,7 @@ const HUD = new Vue({
       console.log("set menu option", JSON.stringify(data));
       this.menuOption = data.option;
       const element = document.getElementById(`${this.menuOption}`);
-      element.scrollIntoView();
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
     },
 
     SetCheckboxState(data) {
@@ -874,7 +874,16 @@ const HUD = new Vue({
       }
       return null;
     },
+    
+    HideMenu() {
+      this.menuVisible = false;
+    },
 
+    ShowMenu() {
+      this.menuVisible = true;
+    },
+
+    // PROGRESS UI
     StartProgress(data) {
       HUD.progressBar = new RadialProgress({
         r: data.radius,
@@ -1128,6 +1137,8 @@ const HUD = new Vue({
     RegisterEvent("SET_MENU_OPTION", this.SetMenuOption);
     RegisterEvent("SET_CHECKBOX_STATE", this.SetCheckboxState);
     RegisterEvent("SET_LIST_ITEM", this.SetListItem);
+    RegisterEvent("HIDE_MENU", this.HideMenu);
+    RegisterEvent("SHOW_MENU", this.ShowMenu);
 
     this.progressElement = document.getElementById("progressBar");
     RegisterEvent("PROGRESS_START", this.StartProgress);

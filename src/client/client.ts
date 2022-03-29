@@ -12,6 +12,7 @@ import {StaffManager} from "./managers/staff";
 import {WorldManager} from "./managers/sync/world";
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
+import { AOPManager } from "./managers/sync/aop";
 
 // [Managers] Callbacks
 import {ServerCallbackManager} from "./managers/serverCallbacks";
@@ -88,6 +89,7 @@ export class Client {
   private worldManager: WorldManager;
   private timeManager: TimeManager;
   private weatherManager: WeatherManager;
+  public aopManager: AOPManager;
 
   // [Managers] Callbacks
   public serverCallbackManager: ServerCallbackManager;
@@ -197,6 +199,7 @@ export class Client {
     this.worldManager = new WorldManager(client);
     this.timeManager = new TimeManager(client);
     this.weatherManager = new WeatherManager(client);
+    this.aopManager = new AOPManager(client);
 
     // [Managers] Callbacks
     this.serverCallbackManager = new ServerCallbackManager(client);
@@ -262,9 +265,13 @@ export class Client {
     if (!this.Developing) {
       this.spawner.init();
     } else {
-      this.characters.displayCharacters(true);
+      // this.characters.displayCharacters(true);
     }
 
+    // Managers Inits
+    this.aopManager.init();
+
+    // Controllers Inits
     this.speedZones.init();
 
     RegisterCommand("progress_ui", () => {
@@ -296,10 +303,18 @@ export class Client {
     this.statesTick = setTick(async() => {
 
       if (IsPauseMenuActive()) {
+        if (await this.menuManager.IsAnyMenuOpen()) {
+          this.menuManager.hide();
+        }
+
         this.playerStates.state.set("paused", true, true);
         if(!paused) paused = true;
       } else {
         if (paused) {
+          if (this.menuManager.Hidden) {
+            this.menuManager.show();
+          }
+          
           this.playerStates.state.set("paused", false, true);
           paused = false;
         }

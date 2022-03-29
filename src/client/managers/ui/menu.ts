@@ -13,6 +13,8 @@ let hoveredIndex = 0;
 
 export class MenuManager {
   private client: Client;
+  
+  private menuHidden: boolean;
 
   constructor(client: Client) {
     this.client = client;
@@ -47,6 +49,11 @@ export class MenuManager {
     RegisterCommand("+menu_go_right", () => { this.GoRight()}, false);
     RegisterCommand("+menu_enter", async() => { await this.Enter()}, false);
     RegisterCommand("+menu_back", async() => { await this.Backspace()}, false);
+  }
+
+  // Getters
+  public get Hidden(): boolean {
+    return this.menuHidden;
   }
 
   // Methods
@@ -226,6 +233,22 @@ export class MenuManager {
 
       delete menus[menuIndex].components[a];
     }
+  }
+
+  public hide(): void {
+    this.menuHidden = true;
+
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.HideMenu
+    }))
+  }
+
+  public show(): void {
+    this.menuHidden = false;
+    
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.ShowMenu
+    }))
   }
 
   // Controls

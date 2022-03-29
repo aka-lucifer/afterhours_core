@@ -38,6 +38,8 @@ export enum NuiMessages {
   SetMenuOption = "SET_MENU_OPTION",
   SetCheckboxState = "SET_CHECKBOX_STATE",
   SetListItem = "SET_LIST_ITEM",
+  HideMenu = "HIDE_MENU",
+  ShowMenu = "SHOW_MENU",
 
   // Progress Bar
   StartProgress = "PROGRESS_START",
