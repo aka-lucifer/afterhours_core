@@ -13,7 +13,6 @@ export class PlayerNames {
   private client: Client;
 
   // Tick Data
-  private distTick: number = undefined;
   private displayTick: number = undefined;
 
   // Names Data
@@ -29,7 +28,7 @@ export class PlayerNames {
   // Methods
   private displayNames(): void {
     if (this.client.Player.Spawned) {
-      if (this.displayTick == undefined) this.distTick = setTick(async() => {
+      if (this.displayTick == undefined) this.displayTick = setTick(async() => {
         const myPed = Game.PlayerPed;
         const svPlayers = this.client.Players;
 
@@ -175,11 +174,6 @@ export class PlayerNames {
     if (this.client.Player.Spawned) {
       for (const [key, value] of Object.entries(this.createdTags)) {
         RemoveMpGamerTag(value["tag"]);
-      }
-
-      if (this.distTick !== undefined) {
-        clearTick(this.distTick);
-        this.distTick = undefined;
       }
       
       if (this.displayTick !== undefined) {
