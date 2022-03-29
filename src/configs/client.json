@@ -8014,7 +8014,8 @@
             {"key": "INSERT", "description": "Toggles chat visibility"},
             {"key": "L", "description": "Opens the scoreboard"},
             {"key": "X", "description": "Enable the target interaction (Locations, Peds, Vehicles, Players, Props)"},
-            {"key": "F11", "description": "Toggle player names"}
+            {"key": "F11", "description": "Toggle player names"},
+            {"key": "TAB", "description": "Autocomplete commands (whilst in chat)"}
         ],
         "commands": [
             {"name": "dv", "description": "Deletes your current vehicle"},
