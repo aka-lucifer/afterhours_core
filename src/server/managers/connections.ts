@@ -114,10 +114,10 @@ export class ConnectionsManager {
           Inform("Whitelist Check", "Not whitelisted!");
           deferrals.done(`[${sharedConfig.serverName}]: Whitelist Active!`);
         } else {
-          this.displayAdaptiveCard(player, deferrals);
+          await this.displayAdaptiveCard(player, deferrals);
         }
       } else {
-        this.displayAdaptiveCard(player, deferrals);
+        await this.displayAdaptiveCard(player, deferrals);
       }
     });
 
@@ -127,160 +127,174 @@ export class ConnectionsManager {
   }
 
   // Methods
-  private displayAdaptiveCard(player: Player, deferrals): void {
-    deferrals.presentCard({
-      "type": "AdaptiveCard",
-      "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-      "version": "1.3",
-      "body": [
-        {
-          "type": "Container",
-          "items": [
-            {
-              "type": "TextBlock",
-              "text": "\n",
-              "wrap": true,
-              "size": "Large",
-              "weight": "Bolder",
-              "color": "Light"
-            },
-            {
-              "type": "Image",
-              "url": "https://i.imgur.com/Miq0Jd4.png",
-              "size": "300px",
-              "horizontalAlignment": "center"
-            },
-            {
-              "type": "TextBlock",
-              "text": "\n\n",
-              "wrap": true,
-              "size": "Large",
-              "weight": "Bolder",
-              "color": "Light"
-            },
-            {
-              "type": "TextBlock",
-              "text": `Make sure to join our Discord for discussions, events and to read the rules. Also make sure to visit our website to apply for departments, document suggestions & bug reports, or even report a players.`,
-              "wrap": true,
-              "color": "Light",
-              "size": "Medium",
-              "horizontalAlignment": "center"
-            },
-            {
-              "type": "TextBlock",
-              "text": "\n",
-              "wrap": true,
-              "size": "Large",
-              "weight": "Bolder",
-              "color": "Light"
-            },
-            {
-              "type": "Input.Toggle",
-              "id": "acceptRules",
-              "title": "I accept the servers Discord & FiveM rules & regulations",
-              "wrap": true,
-              "value": "false",
-              "valueOn": "true",
-              "valueOff": "false",
-              "isRequired": true,
-              "errorMessage": "You need to accept the rules to join the server!",
-              "horizontalAlignment": "center"
-            },
-            {
-              "type": "TextBlock",
-              "text": "\n",
-              "wrap": true,
-              "size": "Large",
-              "weight": "Bolder",
-              "color": "Light"
-            },
-            {
-              "type": "ColumnSet",
-              "height": "stretch",
-              "minHeight": "5px",
-              "bleed": true,
-              "selectAction": {
-                "type": "Action.OpenUrl"
+  private async displayAdaptiveCard(player: Player, deferrals): Promise<void> {
+    if (player.Rank < Ranks.Admin) {
+      deferrals.presentCard({
+        "type": "AdaptiveCard",
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "version": "1.3",
+        "body": [
+          {
+            "type": "Container",
+            "items": [
+              {
+                "type": "TextBlock",
+                "text": "\n",
+                "wrap": true,
+                "size": "Large",
+                "weight": "Bolder",
+                "color": "Light"
               },
-              "columns": [
-                {
-                  "type": "Column",
-                  "width": "stretch",
-                  "items": [
-                    {
-                      "type": "ActionSet",
-                      "actions": [
-                        {
-                          "type": "Action.OpenUrl",
-                          "title": "Discord",
-                          "url": "https://discord.com/invite/JQPM99rs37",
-                          "style": "positive",
-                          "iconUrl": ""
-                        }
-                      ]
-                    }
-                  ]
+              {
+                "type": "Image",
+                "url": "https://i.imgur.com/Miq0Jd4.png",
+                "size": "300px",
+                "horizontalAlignment": "center"
+              },
+              {
+                "type": "TextBlock",
+                "text": "\n\n",
+                "wrap": true,
+                "size": "Large",
+                "weight": "Bolder",
+                "color": "Light"
+              },
+              {
+                "type": "TextBlock",
+                "text": `Make sure to join our Discord for discussions, events and to read the rules. Also make sure to visit our website to apply for departments, document suggestions & bug reports, or even report a players.`,
+                "wrap": true,
+                "color": "Light",
+                "size": "Medium",
+                "horizontalAlignment": "center"
+              },
+              {
+                "type": "TextBlock",
+                "text": "\n",
+                "wrap": true,
+                "size": "Large",
+                "weight": "Bolder",
+                "color": "Light"
+              },
+              {
+                "type": "Input.Toggle",
+                "id": "acceptRules",
+                "title": "I accept the servers Discord & FiveM rules & regulations",
+                "wrap": true,
+                "value": "false",
+                "valueOn": "true",
+                "valueOff": "false",
+                "isRequired": true,
+                "errorMessage": "You need to accept the rules to join the server!",
+                "horizontalAlignment": "center"
+              },
+              {
+                "type": "TextBlock",
+                "text": "\n",
+                "wrap": true,
+                "size": "Large",
+                "weight": "Bolder",
+                "color": "Light"
+              },
+              {
+                "type": "ColumnSet",
+                "height": "stretch",
+                "minHeight": "5px",
+                "bleed": true,
+                "selectAction": {
+                  "type": "Action.OpenUrl"
                 },
-                {
-                  "type": "Column",
-                  "width": "stretch",
-                  "items": [
-                    {
-                      "type": "ActionSet",
-                      "actions": [
-                        {
-                          "type": "Action.Submit",
-                          "title": "Play",
-                          "style": "positive",
-                          "id": "connect"
-                        }
-                      ]
-                    }
-                  ],
-                  "backgroundImage": {}
-                },
-                {
-                  "type": "Column",
-                  "width": "stretch",
-                  "items": [
-                    {
-                      "type": "ActionSet",
-                      "actions": [
-                        {
-                          "type": "Action.OpenUrl",
-                          "title": "Website",
-                          "style": "positive",
-                          "url": "https://astridnetwork.com/"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ],
-              "horizontalAlignment": "Center"
-            }
-          ],
-          "style": "default",
-          "bleed": true,
-          "height": "stretch",
-          "isVisible": true
-        }
-      ]
-    }, async (data, rawData) => {
-      // console.log("data", JSON.stringify(data), "rawData", JSON.stringify(rawData))
-      if (data.submitId == "connect") {
-        deferrals.handover({
-          id: player.id,
-          name: player.GetName,
-          rank: Ranks[player.Rank],
-          playtime: await player.GetPlaytime.FormatTime(),
-          avatar:  player.steamAvatar,
-          development: this.server.Developing
-        });
+                "columns": [
+                  {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                      {
+                        "type": "ActionSet",
+                        "actions": [
+                          {
+                            "type": "Action.OpenUrl",
+                            "title": "Discord",
+                            "url": "https://discord.com/invite/JQPM99rs37",
+                            "style": "positive",
+                            "iconUrl": ""
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                      {
+                        "type": "ActionSet",
+                        "actions": [
+                          {
+                            "type": "Action.Submit",
+                            "title": "Play",
+                            "style": "positive",
+                            "id": "connect"
+                          }
+                        ]
+                      }
+                    ],
+                    "backgroundImage": {}
+                  },
+                  {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                      {
+                        "type": "ActionSet",
+                        "actions": [
+                          {
+                            "type": "Action.OpenUrl",
+                            "title": "Website",
+                            "style": "positive",
+                            "url": "https://astridnetwork.com/"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "horizontalAlignment": "Center"
+              }
+            ],
+            "style": "default",
+            "bleed": true,
+            "height": "stretch",
+            "isVisible": true
+          }
+        ]
+      }, async (data, rawData) => {
+        // console.log("data", JSON.stringify(data), "rawData", JSON.stringify(rawData))
+        if (data.submitId == "connect") {
+          deferrals.handover({
+            id: player.id,
+            name: player.GetName,
+            rank: Ranks[player.Rank],
+            playtime: await player.GetPlaytime.FormatTime(),
+            avatar:  player.steamAvatar,
+            development: this.server.Developing
+          });
 
-        deferrals.done();
-        this.server.connectedPlayerManager.Add(player);
-      }
-    });
+          deferrals.done();
+          this.server.connectedPlayerManager.Add(player);
+        }
+      });
+    } else {
+      deferrals.handover({
+        id: player.id,
+        name: player.GetName,
+        rank: Ranks[player.Rank],
+        playtime: await player.GetPlaytime.FormatTime(),
+        avatar:  player.steamAvatar,
+        development: this.server.Developing
+      });
+
+      deferrals.done();
+      this.server.connectedPlayerManager.Add(player);
+    }
   }
 }
