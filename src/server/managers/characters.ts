@@ -311,7 +311,7 @@ export class CharacterManager {
           backstory: character.backstory,
           dob: character.DOB,
           age: character.Age,
-          isFemale: character.Gender,
+          isFemale: character.Female,
           phone: character.Phone,
           job: character.Job,
           metadata: character.Metadata,
@@ -335,6 +335,10 @@ export class CharacterManager {
         }
 
         await this.Add(character); // Add your character to the manager
+        
+        // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+        this.server.commandManager.createChatSuggestions(player);
+        await player.TriggerEvent(Events.updateSuggestions);
 
         const charVehicles = await this.server.charVehicleManager.GetCharVehicles(character);
         if (charVehicles) {

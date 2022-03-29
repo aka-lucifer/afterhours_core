@@ -7,16 +7,16 @@ export class Character {
   public lastName: string;
   public nationality: string;
   public backstory: string;
-  public dob: Date;
+  public dob: string;
   public age: number;
   public isFemale: boolean;
   public phone: string;
   public job: Job;
   public metadata: Record<string, any> = {};
-  public createdAt: Date;
-  public lastUpdated: Date;
+  public createdAt: string;
+  public lastUpdated: string;
 
-  constructor(charData: Record<string, any>) {
+  constructor(charData: SelectedCharacter) {
     this.id = charData.id;
     this.firstName = charData.firstName;
     this.lastName = charData.lastName;
@@ -53,4 +53,20 @@ export class Character {
   public isLeoJob(): boolean {
     return this.job.name == Jobs.State || this.job.name == Jobs.County || this.job.name == Jobs.Police
   }
+}
+
+interface SelectedCharacter {
+  id: number,
+  firstName: string,
+  lastName: string,
+  nationality: string,
+  backstory: string,
+  dob: string,
+  age: number,
+  isFemale: boolean,
+  phone: string,
+  job: Job,
+  metadata: Record<string, any>,
+  createdAt: string,
+  lastUpdated: string,
 }

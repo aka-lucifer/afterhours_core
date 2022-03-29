@@ -6,19 +6,22 @@ export class svPlayer {
   private netId: number;
   private name: string;
   private rank: number;
+  private joinedAt: string;
   private ped: Ped;
   public spawned: boolean;
   public character: Character;
 
   constructor(playerData: Record<string, any>) {
+    // console.log("ply data", playerData)
     this.id = playerData.id;
     this.netId = playerData.handle;
     this.name = playerData.name;
     this.rank = playerData.rank;
+    this.joinedAt = playerData.joinTime;
     this.ped = Game.Player.Character;
     this.spawned = playerData.spawned;
     
-    if (Object.keys(playerData.selectedCharacter).length > 0) {
+    if (playerData.selectedCharacter !== undefined) {
       this.character = playerData.selectedCharacter;
     }
   }

@@ -68,6 +68,10 @@ export class Character {
     return Gender[value];
   }
 
+  public get Female(): boolean {
+    return this.isFemale;
+  }
+
   public get Phone(): string {
     return this.phone
   }
@@ -334,6 +338,18 @@ export class Metadata {
       driver: hasDriver,
       weapon: hasWeapon
     }
+  }
+
+  public licensesToLabel(): string[] {
+    const newLicenses = [];
+
+    const hasDriver = this.licenses.driver;
+    const hasWeapon = this.licenses.weapon;
+
+    if (hasDriver) newLicenses.push("Driver");
+    if (hasWeapon) newLicenses.push("Weapon");
+
+    return newLicenses;
   }
 
   public async getMetadata(): Promise<void> { // For getting metadata defaults when creating a character

@@ -43,7 +43,7 @@ export class Player {
   private joinTime: string;
   private whitelisted: boolean = false;
   public characters: any[] = [];
-  public selectedCharacter: Record<string, any> = {};
+  public selectedCharacter: SelectedCharacter;
   private spawned: boolean;
 
   constructor(handle: string) {
@@ -234,7 +234,8 @@ export class Player {
         // time = time.replace("T", " ");
         // time = time.replace(".000Z", " ");
         // this.joinTime = "DDD";
-        this.joinTime = playerData.data[0].last_connection;
+        // this.joinTime = playerData.data[0].last_connection;
+        this.joinTime = await Utils.GetTimestamp();
         // console.log("join time now", this.joinTime);
         return true;
       }
@@ -253,7 +254,8 @@ export class Player {
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
         console.log("FIRST JOIN TIME", playerData.data[0]);
-        this.joinTime = playerData.data[0].last_connection;
+        // this.joinTime = playerData.data[0].last_connection;
+        this.joinTime = await Utils.GetTimestamp();
         return true;
       }
     }
@@ -452,4 +454,20 @@ export class Player {
       return true;
     }
   }
+}
+
+interface SelectedCharacter {
+  id: number,
+  firstName: string,
+  lastName: string,
+  nationality: string,
+  backstory: string,
+  dob: string,
+  age: number,
+  isFemale: boolean,
+  phone: string,
+  job: Job,
+  metadata: Metadata,
+  createdAt: string,
+  lastUpdated: string,
 }
