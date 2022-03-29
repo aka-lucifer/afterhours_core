@@ -13,7 +13,7 @@ export class Notification {
 
   // Closing
   private autoclose: boolean = true;
-  private timer: number = 3000;
+  private timer: number = 4500;
 
   private readonly type: number = 2;
 
