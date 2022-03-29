@@ -50,7 +50,6 @@ export class ChatManager {
           const jobCommands = this.server.commandManager.JobCommands
 
           if (commands.findIndex(cmd => cmd.name == command) !== -1) {
-            console.log("normal command!");
             args.splice(0, 1); // Remove the first argument (the command) from the args table.
             CancelEvent();
     
@@ -78,7 +77,6 @@ export class ChatManager {
               }
             }
           } else if (jobCommands.filter(cmd => cmd.name == command).length > 0) {
-            console.log("job command!");
             args.splice(0, 1); // Remove the first argument (the command) from the args table.
             CancelEvent();
     

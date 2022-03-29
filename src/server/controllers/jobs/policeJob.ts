@@ -39,23 +39,16 @@ export class PoliceJob {
                     lastName: args[1]
                   });
 
-                  console.log("found results", foundCharacter);
-
                   if (foundCharacter.data.length > 0) {
-                    console.log("here!");
                     const foundChar = await this.server.characterManager.getFromId(foundCharacter.data[0].id);
-
-                    console.log("found char!", foundChar);
 
                     if (foundChar) {
                       const charLicenses = foundChar.Metadata.licensesToLabel();
-                      console.log("char licenses!", charLicenses);
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`^0Name: ^3${foundChar.Name} ^0| DOB: ^3${foundChar.DOB} ^0| Nationality: ^3${foundChar.Nationality} ^0| Gender: ^3${foundChar.Gender} ^0| Drivers License: ^3${Capitalize(charLicenses.includes("driver").toString())} ^0| Weapons License: ^3${Capitalize(charLicenses.includes("weapon").toString())}^0.`, SystemTypes.Dispatch));
 
                       
                       const vehicles = await this.server.charVehicleManager.GetCharVehicles(foundChar);
                       if (vehicles.length > 0) {
-                        console.log("has vehicles!", vehicles);
                         let vehString = "";
 
                         if (vehicles.length > 1) {
