@@ -43,7 +43,16 @@ export class CommandManager {
     });
     
     this.registeredJobCommands.forEach(async(command, index) => {
-      if (player.selectedCharacter.job.name == command.permission) {
+      let hasPermission = false;
+
+      if (typeof command.permission == "object") {
+        const permissionIndex = command.permission.findIndex(permission => permission == player.selectedCharacter.job.name);
+        hasPermission = permissionIndex !== -1;
+      } else {
+        hasPermission = player.selectedCharacter.job.name == command.permission;
+      }
+
+      if (hasPermission) {
         command.argsRequired ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
       }
     });

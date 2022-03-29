@@ -23,6 +23,7 @@ import {FormattedCommend} from "../../../client/models/ui/commend";
 
 import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
+import { Jobs } from "../../../shared/enums/jobs/jobs";
 
 export class ChatManager {
   private server: Server;
@@ -86,13 +87,15 @@ export class ChatManager {
                 let hasPermission = false;
 
                 if (typeof jobCommands[a].permission == "object") {
-                  const permissions = jobCommands[a].permission;
-                  for (let i = 0; i < permissions.length; i++) {
-                    if (player.selectedCharacter.job.name == permissions[i]) {
-                      hasPermission = true;
-                      break;
-                    }
-                  }
+
+                  // Define permissions into static string array instead of (Jobs string or Jobs array)
+                  const permissions = jobCommands[a].permission as string[];
+
+                  // Check if your current job name exists on the job command permissions
+                  const permissionIndex = permissions.findIndex(permission => permission == player.selectedCharacter.job.name);
+
+                  // Set permission to whether or not the index is equal to -1 (true exists (0 & greater), false doesn't exist (-1))
+                  hasPermission = permissionIndex !== -1;
                 } else {
                   hasPermission = player.selectedCharacter.job.name == jobCommands[a].permission;
                 }
