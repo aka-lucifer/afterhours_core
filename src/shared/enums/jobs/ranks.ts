@@ -26,12 +26,11 @@ export enum CountyRanks {
 export enum StateRanks {
   Cadet,
   Trooper,
-  Trooper_First_Class,
+  Senior_Trooper,
+  Corportal,
   Sergeant,
-  Master_Sergeant,
   Lieutenant,
   Captain,
-  Major,
-  Lieutenant_Colonel,
-  Commissioner
+  Asst_Commander,
+  Commander
 }
