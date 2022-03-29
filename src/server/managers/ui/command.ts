@@ -35,7 +35,6 @@ export class CommandManager {
   }
 
   public createChatSuggestions(player: Player): void {
-    console.log("create suggestions!");
     this.registeredCommands.forEach(async(command, index) => {
       if (player.Rank >= command.permission) {
         command.argsRequired ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
