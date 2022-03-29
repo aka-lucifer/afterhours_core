@@ -11,6 +11,7 @@ export enum SystemTypes {
   Action = "action", // Orange action such as you put your take a rest
   Error = "error",
   Success = "success",
+  Dispatch = "dispatch", // Red dispatch message
   Announcement = "announcement",
   Admin = "adminAction",
   Advert = "advert", // Requires you to pass player name param to client

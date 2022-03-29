@@ -142,6 +142,13 @@ export class CharacterManager {
     }
   }
 
+  public async getFromId(id: number): Promise<Character> {
+    const charIndex = this.characters.findIndex(character => character.Id == id);
+    if (charIndex != -1) {
+      return this.characters[charIndex];
+    }
+  }
+
   public async Yours(charId: number, owner: Player): Promise<boolean> {
     const charData = await Database.SendQuery("SELECT `id` FROM `player_characters` WHERE `id` = :id AND `player_id` = :playerId LIMIT 1", {
       id: charId,

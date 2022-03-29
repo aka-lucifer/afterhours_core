@@ -3,6 +3,7 @@ import {Dist, GetTimestamp, Inform, Log, logCommand, NumToVector3} from "../../u
 
 import { LogTypes } from "../../enums/logTypes";
 
+import { Player } from "../../models/database/player";
 import { Character } from "../../models/database/character";
 import { Vehicle } from "../../models/database/vehicle";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";
@@ -79,6 +80,21 @@ export class CharVehicleManager {
     const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Id == id);
     if (vehIndex !== -1) {
       return this.vehicles[vehIndex];
+    }
+  }
+
+  public async getVehFromPlate(player: Player, plate: string, firstName: string, lastName: string): Promise<Vehicle> {
+    const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Plate == plate);
+    if (vehIndex !== -1) {
+      console.log("got index!");
+      const owner = new Character(player.Id);
+      const loadedChar = await owner.load(this.vehicles[vehIndex].Owner);
+      if (loadedChar) {
+        console.log("got veh!");
+        if (owner.Name == `${firstName} ${lastName}`) {
+          return this.vehicles[vehIndex];
+        }
+      }
     }
   }
 

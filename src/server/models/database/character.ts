@@ -346,8 +346,8 @@ export class Metadata {
     const hasDriver = this.licenses.driver;
     const hasWeapon = this.licenses.weapon;
 
-    if (hasDriver) newLicenses.push("Driver");
-    if (hasWeapon) newLicenses.push("Weapon");
+    if (hasDriver) newLicenses.push("driver");
+    if (hasWeapon) newLicenses.push("weapon");
 
     return newLicenses;
   }

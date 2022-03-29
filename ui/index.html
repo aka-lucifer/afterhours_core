@@ -580,6 +580,7 @@
             <div id="Chat-Message" class="action" v-if="message.notificationType == 'action'"><span v-html="message.contents"></div>
             <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="successMsg" v-if="message.notificationType == 'success'">[System]: <span v-html="message.contents"></span></div>
+            <div id="Chat-Message" class="dispatch" v-if="message.notificationType == 'dispatch'">[Dispatch]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): <span v-html="message.contents"></div>
