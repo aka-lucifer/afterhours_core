@@ -39,6 +39,10 @@ export enum Events {
   ungravityPlayer = "astrid:server:ungravityPlayer",
   shootEntity = "astrid:shootEntity:shootEntity",
 
+  // Astrid Server ([AOP] - Syncers)
+  setAOP = "astrid:server:setAOP",
+  setCycling = "astrid:server:setCycling",
+
   // (Scoreboard Server)
   requestPlayers = "astrid:server:requestPlayers",
 
@@ -74,12 +78,18 @@ export enum Events {
   unsetHeldEntity = "astrid:unsetHeldEntity:unsetHeldEntity",
   holdPlayer = "astrid:client:holdPlayer",
   releasePlayer = "astrid:client:releasePlayer",
-  getGravitied = "astrid:getGravitied:getGravitied",
+  getGravitied = "astrid:client:getGravitied",
 
   // Astrid Client (Syncers)
   syncTime = "astrid:client:syncTime",
   freezeTime = "astrid:client:freezeTime",
   syncWeather = "astrid:client:syncWeather",
+
+  // Astrid Client ([AOP] - Syncers)
+  syncAOP = "astrid:client:syncAOP",
+  syncAOPCycling = "astrid:client:syncAOPCycling",
+  updateCycling = "astrid:client:updateCycling",
+  aopMenu = "astrid:client:aopMenu",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

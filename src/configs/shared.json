@@ -12,6 +12,46 @@
     "Management": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"],
     "Owner": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"]
   },
+  "aop": {
+    "locations": [
+      {"name": "Harmony", "automaticCycling": false, "positions": []},
+      {"name": "Sandy Shores", "automaticCycling": true, "playerMax": 10, "positions": [
+        {"x": 2767.00, "y": 3476.68, "z": 55.50, "heading": 223.3},
+        {"x": 1733.16, "y": 3034.62, "z": 61.34, "heading": 288.6},
+        {"x": 2063.96, "y": 2937.93, "z": 47.29, "heading": 2.23},
+        {"x": 1333.55, "y": 3637.60, "z": 33.59, "heading": 33.23}
+      ]},
+      {"name": "Grapeseed", "automaticCycling": false, "positions": [
+        {"x": 1723.03, "y": 4794.10, "z": 41.66, "heading": 75.21},
+        {"x": 1718.97, "y": 4638.48, "z": 43.31, "heading": 112.3},
+        {"x": 2171.96, "y": 4802.35, "z": 41.8, "heading": 175.2},
+        {"x": 2515.39, "y": 4968.47, "z": 44.58, "heading": 155.98}
+      ]},
+      {"name": "Paleto Bay", "automaticCycling": true, "playerMax": 20, "positions": [
+        {"x": -23.59, "y": 6406.17, "z": 31.49, "heading": 220.5},
+        {"x": -171.44, "y": 6435.74, "z": 31.91, "heading": 56.2},
+        {"x": 144.34, "y": 6624.94, "z": 31.54, "heading": 187.4},
+        {"x": -690.86, "y": 5767.32, "z": 17.30, "heading": 41.3}
+      ]},
+      {"name": "Blaine County", "automaticCycling": true, "playerMax": 35, "positions": [
+        {"x": 2767.00, "y": 3476.68, "z": 55.50, "heading": 223.3},
+        {"x": 144.34, "y": 6624.94, "z": 31.54, "heading": 187.4},
+        {"x": 2515.39, "y": 4968.47, "z": 44.58, "heading": 155.98},
+        {"x": 2063.96, "y": 2937.93, "z": 47.29, "heading": 2.23}
+      ]},
+      {"name": "Upper LS", "automaticCycling": false, "positions": []},
+      {"name": "Middle LS", "automaticCycling": false, "positions": []},
+      {"name": "Lower LS", "automaticCycling": false, "positions": []},
+      {"name": "Los Santos", "automaticCycling": true, "playerMax": 45, "positions": [
+        {"x": 1389.23, "y": -2036.22, "z": 51.99, "heading": 31.6},
+        {"x": -1542.97, "y": -994.72, "z": 13.01, "heading": 289.0},
+        {"x": 612.22, "y": 98.25, "z": 92.64, "heading": 163.4},
+        {"x": -13.07, "y": -1737.10, "z": 29.30, "heading": 16.1}
+      ]},
+      {"name": "Statewide", "automaticCycling": true, "playerMax": 60, "positions": "all"}
+    ],
+    "cycleInterval": 5000
+  },
   "weapons": {
     "453432689": {
       "name": "weapon_pistol", "label": "Berreta M9", "ammoType": "AMMO_PISTOL", "attachments": [

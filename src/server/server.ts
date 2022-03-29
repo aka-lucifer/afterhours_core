@@ -23,6 +23,7 @@ import { VehicleManager } from "./managers/vehicles";
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
+import { AOPManager } from "./managers/sync/aop";
 
 // [Managers] Client Callbacks
 import {ClientCallbackManager} from "./managers/clientCallbacks";
@@ -80,6 +81,7 @@ export class Server {
   // [Managers] Syncing
   private timeManager: TimeManager;
   private weatherManager: WeatherManager;
+  private aopManager: AOPManager;
 
   // [Managers] Client Callbacks
   private clientCallbackManager: ClientCallbackManager;
@@ -149,6 +151,7 @@ export class Server {
     // [Managers] Syncing
     this.timeManager = new TimeManager(server);
     this.weatherManager = new WeatherManager(server);
+    this.aopManager = new AOPManager(server);
 
     // [Managers] Client Callbacks
     this.clientCallbackManager = new ClientCallbackManager(server);
@@ -184,6 +187,7 @@ export class Server {
     this.characterManager.init();
     await this.charVehicleManager.init();
     await this.vehicleManager.init();
+    this.jobManager.init();
 
     // Register Components
     this.registerCommands();
@@ -195,6 +199,8 @@ export class Server {
     this.timeManager.startTime();
 
     await this.weatherManager.init();
+
+    this.aopManager.init();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
@@ -452,13 +458,14 @@ export class Server {
 
         // Sync chat data
         await this.chatManager.generateTypes(player);
-        this.commandManager.createChatSuggestions(player);
 
         // Sync Characters
         const loadedChars = await player.getCharacters();
         if (loadedChars) {
           await player.TriggerEvent(Events.receiveCharacters, player.characters);
         }
+
+        await player.TriggerEvent(Events.syncAOP, this.aopManager.AOP);
 
         // Sync spawner data
         if (!this.developmentMode) {
@@ -531,8 +538,9 @@ export class Server {
 
     for (let a = 0; a < svPlayers.length; a++) {
       svPlayers[a].RefreshPing();
-      const currPlaytime = await svPlayers[a].CurrentPlaytime();
-      svPlayers[a].formattedPlaytime = await new Playtime(currPlaytime).FormatTime();
+      // const currPlaytime = await svPlayers[a].CurrentPlaytime();
+      // svPlayers[a].formattedPlaytime = await new Playtime(currPlaytime).FormatTime();
+      svPlayers[a].formattedPlaytime = "DISABLED_FOR_TESTING";
     }
 
     await player.TriggerEvent(Events.receivePlayers, this.maxPlayers, Object.assign({}, svPlayers));

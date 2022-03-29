@@ -1,15 +1,17 @@
 import {Client} from "../../client";
-import { RegisterNuiCallback, Delay } from "../../utils";
+import { RegisterNuiCallback, Delay, randomBetween, teleportToCoords } from "../../utils";
+
+import { AOPLayout } from "../../managers/sync/aop";
 
 import clientConfig from "../../../configs/client.json";
 
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 import { Events } from "../../../shared/enums/events/events";
+import { Vector3 } from "fivem-js";
 
 export class Spawner {
   private client: Client;
-  private currentAOP: string;
   private currentPlayers: number;
   private maxPlayers: number;
   private bestPlayer: string;
@@ -28,7 +30,13 @@ export class Spawner {
   public registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.CloseSpawner, async(data, cb) => {
       console.log("TP TO AOP & THEN DISPLAY CHAR UI HERE IF NO CHARACTERS");
-      this.client.characters.displayCharacters(false);
+
+      const aopPosition = this.client.aopManager.AOP.positions[randomBetween(1, this.client.aopManager.AOP.positions.length)]
+
+      const teleported = await teleportToCoords(new Vector3(aopPosition.x, aopPosition.y, aopPosition.z), aopPosition.heading);
+      if (teleported) {
+        this.client.characters.displayCharacters(false);
+      }
       cb("ok");
     });
   }
@@ -39,7 +47,7 @@ export class Spawner {
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.OpenSpawner,
       data: {
-        aop: this.currentAOP,
+        aop: this.client.aopManager.AOP.name,
         players: {
           current: this.currentPlayers,
           max: this.maxPlayers,
@@ -55,7 +63,6 @@ export class Spawner {
 
   // Events
   public EVENT_setupSpawner(currentPlayers: number, maxPlayers: number, bestPlayer: string) {
-    this.currentAOP = "Sandy Shores";
     this.currentPlayers = currentPlayers;
     this.maxPlayers = maxPlayers;
     this.bestPlayer = bestPlayer;

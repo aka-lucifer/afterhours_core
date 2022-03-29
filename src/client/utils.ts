@@ -123,7 +123,7 @@ export function Delay(ms : number) : Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-export function Random(min: number, max: number): number {
+export function randomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
