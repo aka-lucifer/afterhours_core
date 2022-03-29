@@ -32,6 +32,7 @@ export class JobManager {
   public init(): void {
     // Jobs
     this.policeJob = new PoliceJob(this.server);
+    this.policeJob.init();
     
     // Controllers
     this.jobBlips = new JobBlips(this.server);
