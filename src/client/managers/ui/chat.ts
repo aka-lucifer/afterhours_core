@@ -27,6 +27,7 @@ export class ChatManager {
     // Events
     onNet(Events.setTypes, this.EVENT_setTypes.bind(this));
     onNet(Events.addSuggestion, this.EVENT_addSuggestion.bind(this));
+    onNet(Events.updateSuggestions, this.EVENT_updateSuggestions.bind(this));
     onNet(Events.sendClientMessage, this.EVENT_newMsg.bind(this))
     onNet(Events.sendSystemMessage, this.EVENT_systemMsg.bind(this));
     onNet(Events.clearChat, this.EVENT_clearChat.bind(this));
@@ -168,6 +169,16 @@ export class ChatManager {
     // console.log("Add Suggestion", suggestion.name, suggestion.description)
     // console.log(NuiMessages.AddSuggestion, JSON.stringify(`${suggestion.name} | ${suggestion.description} | ${suggestion.params}`));
     this.chatSuggestions.push(suggestion);
+  }
+
+  private EVENT_updateSuggestions(): void {
+    // console.log("sync suggestions to chat handler in UI!");
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.AddSuggestions,
+      data: {
+        suggestions: this.chatSuggestions
+      }
+    }))
   }
 
   private EVENT_newMsg(message: Message, sender?: string): void {

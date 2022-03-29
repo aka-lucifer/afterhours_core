@@ -45,23 +45,20 @@ export class ChatManager {
         if (message.content[0] == "/") { // If it's a command
           const args = String(message.content).replace("/", "").split(" "); // All of the arguments of the message
           const command = args[0].toLowerCase();
-          const registeredCommands = this.server.commandManager.Commands;
+          const commands = this.server.commandManager.Commands;
+          const jobCommands = this.server.commandManager.JobCommands
 
-          if (registeredCommands.filter(cmd => cmd.name == command).length <= 0) {
-            Error("Chat Manager", `Command (/${command}) doesn't exist!`)
-            await player.TriggerEvent(Events.sendSystemMessage, new Message(`Command (/${command}) doesn't exist!`, SystemTypes.Error));
-            emitNet(Events.receiveServerCB, src, false, data);
-            return;
-          } else {
+          if (commands.findIndex(cmd => cmd.name == command) !== -1) {
+            console.log("normal command!");
             args.splice(0, 1); // Remove the first argument (the command) from the args table.
             CancelEvent();
     
-            for (let a = 0; a < registeredCommands.length; a++) {
-              if (command == registeredCommands[a].name) {
-                if (player.Rank >= registeredCommands[a].permission) {
-                  if (registeredCommands[a].argsRequired) {
-                    if (Object.keys(registeredCommands[a].args).length > 0 && args.length >= Object.keys(registeredCommands[a].args).length) {
-                      registeredCommands[a].callback(player.Handle, args);
+            for (let a = 0; a < commands.length; a++) {
+              if (command == commands[a].name) {
+                if (player.Rank >= commands[a].permission) {
+                  if (commands[a].argsRequired) {
+                    if (Object.keys(commands[a].args).length > 0 && args.length >= Object.keys(commands[a].args).length) {
+                      commands[a].callback(player.Handle, args);
                       emitNet(Events.receiveServerCB, src, true, data);
                     } else {
                       Error("Chat Manager", "All command arguments must be entered!");
@@ -70,7 +67,7 @@ export class ChatManager {
                     }
                   } else {
                     emitNet(Events.receiveServerCB, src, true, data);
-                    registeredCommands[a].callback(player.Handle, args);
+                    commands[a].callback(player.Handle, args);
                   }
                 } else {
                   Error("Chat Manager", "Access Denied!");
@@ -79,6 +76,53 @@ export class ChatManager {
                 }
               }
             }
+          } else if (jobCommands.filter(cmd => cmd.name == command).length > 0) {
+            console.log("job command!");
+            args.splice(0, 1); // Remove the first argument (the command) from the args table.
+            CancelEvent();
+    
+            for (let a = 0; a < jobCommands.length; a++) {
+              if (command == jobCommands[a].name) {
+                let hasPermission = false;
+
+                if (typeof jobCommands[a].permission == "object") {
+                  const permissions = jobCommands[a].permission;
+                  for (let i = 0; i < permissions.length; i++) {
+                    if (player.selectedCharacter.job.name == permissions[i]) {
+                      hasPermission = true;
+                      break;
+                    }
+                  }
+                } else {
+                  hasPermission = player.selectedCharacter.job.name == jobCommands[a].permission;
+                }
+
+                if (hasPermission) {
+                  if (jobCommands[a].argsRequired) {
+                    if (Object.keys(jobCommands[a].args).length > 0 && args.length >= Object.keys(jobCommands[a].args).length) {
+                      jobCommands[a].callback(player.Handle, args);
+                      emitNet(Events.receiveServerCB, src, true, data);
+                    } else {
+                      Error("Chat Manager", "All command arguments must be entered!");
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message("All command arguments must be entered!", SystemTypes.Error));
+                      emitNet(Events.receiveServerCB, src, false, data);
+                    }
+                  } else {
+                    emitNet(Events.receiveServerCB, src, true, data);
+                    jobCommands[a].callback(player.Handle, args);
+                  }
+                } else {
+                  Error("Chat Manager", "Access Denied!");
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message("Job Access Denied!", SystemTypes.Error));
+                  emitNet(Events.receiveServerCB, src, false, data);
+                }
+              }
+            }
+          } else {
+            Error("Chat Manager", `Command (/${command}) doesn't exist!`)
+            await player.TriggerEvent(Events.sendSystemMessage, new Message(`Command (/${command}) doesn't exist!`, SystemTypes.Error));
+            emitNet(Events.receiveServerCB, src, false, data);
+            return;
           }
         } else {
           // Log chat into DB table

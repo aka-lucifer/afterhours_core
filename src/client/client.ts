@@ -1,4 +1,4 @@
-import {Game, Vector3, VehicleSeat, World, Model, Entity} from "fivem-js"
+import {Game, Vector3, VehicleSeat, World, Model, Entity, Screen} from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -41,7 +41,7 @@ import { Speedzones } from "./controllers/vehicles/speedzones";
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import {Delay, Inform, insideVeh, Log, NumToVector3, RegisterNuiCallback} from "./utils";
+import {Delay, Inform, insideVeh, Log, NumToVector3, RegisterNuiCallback, teleportToCoords} from "./utils";
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -257,7 +257,7 @@ export class Client {
   }
 
   private setupUI(): void {
-    this.chatManager.setupData();
+    this.chatManager.setupData(); // Send types and any client sided suggestions
     
     if (!this.Developing) {
       this.spawner.init();
@@ -268,7 +268,11 @@ export class Client {
     this.speedZones.init();
 
     RegisterCommand("progress_ui", () => {
-      const progress = new Progress(4000, {}, () => {
+      const progress = new Progress(4000, {
+        mouse: true,
+        movement: true,
+        combat: true
+      }, () => {
         console.log("cancelled!");
       }, () => {
         console.log("started!");
@@ -320,179 +324,6 @@ export class Client {
     });
 
     global.exports("usingKeyboard", this.UsingKeyboard);
-  }
-
-  private async teleportToCoords(coords: Vector3, heading?: number): Promise<boolean> {
-    let success = false;
-
-    // Is player in a vehicle and the driver? Then we'll use that to teleport.
-    const [currVeh, inside] = await insideVeh(Game.PlayerPed);
-    const restoreVehVisibility = inside && currVeh.IsVisible;
-    const restorePedVisibility = Game.PlayerPed.IsVisible;
-
-    // Freeze vehicle or player location and fade out the entity to the network.
-    if (inside) {
-      currVeh.IsPositionFrozen = true;
-      if (currVeh.IsVisible) {
-        NetworkFadeOutEntity(currVeh.Handle, true, false);
-      }
-    } else {
-      ClearPedTasksImmediately(Game.PlayerPed.Handle);
-      Game.PlayerPed.IsPositionFrozen = true;
-      if (Game.PlayerPed.IsVisible) {
-        NetworkFadeOutEntity(Game.PlayerPed.Handle, true, false);
-      }
-    }
-
-    // Fade out the screen and wait for it to be faded out completely.
-    DoScreenFadeOut(500);
-    while (!IsScreenFadedOut())
-    {
-      await Delay(0);
-    }
-
-    // This will be used to get the return value from the groundz native.
-    let groundZ = 850.0;
-
-    // Bool used to determine if the groundz coord could be found.
-    let found = false;
-
-    // Loop from 950 to 0 for the ground z coord, and take away 25 each time.
-    for (let zz = 950.0; zz >= 0.0; zz -= 25.0) {
-      let z = zz;
-      // The z coord is alternating between a very high number, and a very low one.
-      // This way no matter the location, the actual ground z coord will always be found the fastest.
-      // If going from top > bottom then it could take a long time to reach the bottom. And vice versa.
-      // By alternating top/bottom each iteration, we minimize the time on average for ANY location on the map.
-      if (zz % 2 != 0) {
-        z = 950.0 - zz;
-      }
-
-      // Request collision at the coord. I've never actually seen this do anything useful, but everyone keeps telling me this is needed.
-      // It doesn't matter to get the ground z coord, and neither does it actually prevent entities from falling through the map, nor does
-      // it seem to load the world ANY faster than without, but whatever.
-      RequestCollisionAtCoord(coords.x, coords.y, z);
-
-      // Request a new scene. This will trigger the world to be loaded around that area.
-      NewLoadSceneStart(coords.x, coords.y, z, coords.x, coords.y, z, 50.0, 0);
-
-      // Timer to make sure things don't get out of hand (player having to wait forever to get teleported if something fails).
-      let tempTimer = GetGameTimer();
-
-      // Wait for the new scene to be loaded.
-      while (IsNetworkLoadingScene())
-      {
-        // If this takes longer than 1 second, just abort. It's not worth waiting that long.
-        if (GetGameTimer() - tempTimer > 1000)
-        {
-          Inform("TeleportToCoords Method", "Waiting for the scene to load is taking too long (more than 1s). Breaking from wait loop.");
-          break;
-        }
-
-        await Delay(0);
-      }
-
-      // If the player is in a vehicle, teleport the vehicle to this new position.
-      if (inside) {
-        SetEntityCoords(currVeh.Handle, coords.x, coords.y, z, false, false, false, true);
-      }
-      // otherwise, teleport the player to this new position.
-      else {
-        SetEntityCoords(Game.PlayerPed.Handle, coords.x, coords.y, z, false, false, false, true);
-      }
-
-      // Reset the timer.
-      tempTimer = GetGameTimer();
-
-      // Wait for the collision to be loaded around the entity in this new location.
-      while (!HasCollisionLoadedAroundEntity(Game.PlayerPed.Handle))
-      {
-        // If this takes too long, then just abort, it's not worth waiting that long since we haven't found the real ground coord yet anyway.
-        if (GetGameTimer() - tempTimer > 1000)
-        {
-          Inform("TeleportToCoords Method", "Waiting for the collision is taking too long (more than 1s). Breaking from wait loop.");
-          break;
-        }
-
-        await Delay(0);
-      }
-
-      // Check for a ground z coord.
-      [found, groundZ] = GetGroundZFor_3dCoord(coords.x, coords.y, z, false);
-
-      // If we found a ground z coord, then teleport the player (or their vehicle) to that new location and break from the loop.
-      if (found)
-      {
-        Inform("TeleportToCoords Method", `Ground coordinate found: ${groundZ}`);
-        if (inside) {
-          SetEntityCoords(currVeh.Handle, coords.x, coords.y, groundZ, false, false, false, true);
-
-          // We need to unfreeze the vehicle because sometimes having it frozen doesn't place the vehicle on the ground properly.
-          currVeh.IsPositionFrozen = false;
-          currVeh.placeOnGround();
-          // Re-freeze until screen is faded in again.
-          currVeh.IsPositionFrozen = true;
-          success = true;
-        }
-        else {
-          SetEntityCoords(Game.PlayerPed.Handle, coords.x, coords.y, groundZ, false, false, false, true);
-          success = true;
-        }
-
-        break;
-      }
-
-      // Wait 10ms before trying the next location.
-      await Delay(10);
-    }
-
-    // If the loop ends but the ground z coord has not been found yet, then get the nearest vehicle node as a fail-safe coord.
-    if (!found)
-    {
-      const safePos = coords;
-      GetNthClosestVehicleNode(coords.x, coords.y, coords.z, 0, 0, 0, 0);
-
-      // Notify the user that the ground z coord couldn't be found, so we will place them on a nearby road instead.
-      Log("TeleportToCoords Method", "Could not find a safe ground coord. Placing you on the nearest road instead.");
-
-      // Teleport vehicle, or player.
-      if (inside) {
-        SetEntityCoords(currVeh.Handle, safePos.x, safePos.y, safePos.z, false, false, false, true);
-        currVeh.IsPositionFrozen = false;
-        currVeh.placeOnGround();
-        currVeh.IsPositionFrozen = true;
-        success = true;
-      }
-      else {
-        SetEntityCoords(Game.PlayerPed.Handle, safePos.x, safePos.y, safePos.z, false, false, false, true);
-        success = true;
-      }
-    }
-
-    // Once the teleporting is done, unfreeze vehicle or player and fade them back in.
-    if (inside) {
-      if (restoreVehVisibility)
-      {
-        NetworkFadeInEntity(currVeh.Handle, true);
-        if (!restorePedVisibility)
-        {
-          Game.PlayerPed.IsVisible = false;
-        }
-      }
-      currVeh.IsPositionFrozen = false;
-    }
-    else {
-      if (restorePedVisibility)
-      {
-        NetworkFadeInEntity(Game.PlayerPed.Handle, true);
-      }
-      Game.PlayerPed.IsPositionFrozen = false;
-    }
-
-    // Fade screen in and reset the camera angle.
-    DoScreenFadeIn(500);
-    SetGameplayCamRelativePitch(0.0, 1.0);
-    return success;
   }
 
   // Events
@@ -550,7 +381,7 @@ export class Client {
 
     if (DoesBlipExist(waypointHandle)) {
       const waypointCoords = NumToVector3(GetBlipInfoIdCoord(waypointHandle));
-      const teleported = await this.teleportToCoords(waypointCoords);
+      const teleported = await teleportToCoords(waypointCoords);
       if (teleported) {
         emit(Events.sendSystemMessage, new Message("Teleported to waypoint.", SystemTypes.Interaction));
         const notify = new Notification("Teleporter", "Teleported to waypoint", NotificationTypes.Success);
