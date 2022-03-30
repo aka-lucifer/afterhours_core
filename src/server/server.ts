@@ -23,7 +23,7 @@ import { VehicleManager } from "./managers/vehicles";
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
-import { AOPManager } from "./managers/sync/aop";
+import { AOPManager, AOPStates } from "./managers/sync/aop";
 
 // [Managers] Client Callbacks
 import {ClientCallbackManager} from "./managers/clientCallbacks";
@@ -465,7 +465,7 @@ export class Server {
           await player.TriggerEvent(Events.receiveCharacters, player.characters);
         }
 
-        await player.TriggerEvent(Events.syncAOP, this.aopManager.AOP);
+        await player.TriggerEvent(Events.syncAOP, this.aopManager.AOP, AOPStates.None);
 
         // Sync spawner data
         if (!this.developmentMode) {
