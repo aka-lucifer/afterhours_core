@@ -16,11 +16,17 @@ interface AOPLayout {
   positions: {x: number, y: number, z: number, heading: number}[]
 }
 
+export enum AOPStates {
+  None,
+  Updated,
+  Automatic
+}
+
 export class AOPManager {
   private server: Server;
 
   // AOP Cycling
-  private readonly aopLocations: Record<string, any> = sharedConfig.aop.locations;
+  private readonly aopLocations: any[] = sharedConfig.aop.locations;
   private playerCount: number = 8;
   private cycleInterval: NodeJS.Timeout = undefined;
   private aopCycling: boolean;
@@ -185,6 +191,29 @@ export class AOPManager {
     return aopIndex;
   }
 
+  private closestCycleAOP(): number {
+    let closest = this.aopLocations[1].playerMax; // 1 for sandy shores
+    for (let i = 0; i < this.aopLocations.length; i++) {
+      if (Math.abs(this.aopLocations[i].playerMax - this.playerCount) < Math.abs(closest - this.playerCount)) {
+        closest = i;
+      }
+    }
+    return closest;
+  }
+  // private closestCycleAOP(): number {
+  //   let closestNum: number;
+  //   this.aopLocations.reduce((a, b) => {
+  //     if (a !== undefined && b !== undefined)
+  //     console.log("a1 data", JSON.stringify(a), "\n\nb1 data", JSON.stringify(b));
+  //     if (a.automaticCycling && b.automaticCycling) {
+  //       console.log("a2 data", JSON.stringify(a), "\n\nb2 data", JSON.stringify(b));
+  //       closestNum = Math.abs(b.playerMax - this.playerCount) < Math.abs(a.playerMax - this.playerCount) ? b : a;
+  //     }
+  //   });
+
+  //   return closestNum;
+  // }
+
   private startCycling(): void {
     this.cycleInterval = setInterval(async() => {
       if (this.aopCycling) {
@@ -249,7 +278,7 @@ export class AOPManager {
   }
 
   private globalSync(): void {
-    emitNet(Events.syncAOP, -1, this.currentAOP);
+    emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Automatic);
     emitNet(Events.syncAOPCycling, -1, this.aopCycling);
   }
 
@@ -270,7 +299,7 @@ export class AOPManager {
 
             // Set the current AOP to the passed AOP, and sync it to every client.
             this.currentAOP = newAOP;
-            emitNet(Events.syncAOP, -1, this.currentAOP, true);
+            emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Automatic);
 
             // console.log("updated AOP here!", this.currentAOP);
             // log who changed it here
@@ -283,31 +312,31 @@ export class AOPManager {
   }
 
   public async EVENT_setCycling(newState: boolean): Promise<void> {
+    console.log(this.aopCycling, newState)
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       if (player.Spawned) {
         if (player.Rank >= Ranks.Admin) {
           // console.log("has perm!", newState, this.aopCycling);
-          if (newState != this.aopCycling) {
-            this.aopCycling = newState;
-            
-            if (!this.aopCycling) {
-              // console.log("aop cycling disabled, clear interval, until re-enabled!");
-              clearInterval(this.cycleInterval);
-              this.cycleInterval = undefined;
-            } else {
-              if (this.cycleInterval == undefined) {
-                // console.log("create aop cycle interval!");
-                this.startCycling();
-              }
+          this.aopCycling = newState;
+          
+          if (!this.aopCycling) {
+            // console.log("aop cycling disabled, clear interval, until re-enabled!");
+            clearInterval(this.cycleInterval);
+            this.cycleInterval = undefined;
+          } else {
+            // Get correct cycling AOP & sync to all clients
+            this.aopIndex = this.closestCycleAOP();
+            this.currentAOP = this.aopLocations[this.aopIndex];
+            emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Updated);
+
+            if (this.cycleInterval == undefined) {
+              // console.log("create aop cycle interval!");
+              this.startCycling();
             }
-
-            emitNet(Events.syncAOPCycling, -1, this.aopCycling);
-
-            // send notify to inform of the change
-
-            // log who changed it here
           }
+
+          emitNet(Events.syncAOPCycling, -1, this.aopCycling);
         }
       }
     }
