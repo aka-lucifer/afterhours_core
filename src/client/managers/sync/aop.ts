@@ -19,6 +19,12 @@ export interface AOPLayout {
   positions: {x: number, y: number, z: number, heading: number}[]
 }
 
+enum AOPStates {
+  None,
+  Updated,
+  Automatic
+}
+
 export class AOPManager {
   private client: Client;
 
@@ -71,16 +77,34 @@ export class AOPManager {
   }
 
   // Events
-  public async EVENT_syncAOP(newAOP: AOPLayout, drawScaleform: boolean = false): Promise<void> {
+  public async EVENT_syncAOP(newAOP: AOPLayout, aopState: AOPStates = AOPStates.Automatic): Promise<void> {
     this.currentAOP = newAOP;
 
     Inform("AOP Updated", `New AOP: ${this.currentAOP.name}`);
 
-    if (drawScaleform) {
+    if (aopState == AOPStates.Automatic) {
       this.aopScaleform = new Scaleform("mp_big_message_freemode");
       const loadedScaleform = await this.aopScaleform.load();
       if (loadedScaleform) {
         this.aopScaleform.callFunction("SHOW_SHARD_WASTED_MP_MESSAGE", "AOP Change", `The Area of Patrol has changed to ~y~${this.currentAOP.name}~w~!`, 5);
+
+        if (this.scaleformTick == undefined) this.scaleformTick = setTick(async() => {
+          await this.aopScaleform.render2D();
+        })
+
+        await Delay(5000);
+
+        if (this.scaleformTick != undefined) {
+          clearTick(this.scaleformTick);
+          this.scaleformTick = undefined;
+        }
+      }
+    } else if (aopState == AOPStates.Updated) {
+      this.aopScaleform = new Scaleform("mp_big_message_freemode");
+      const loadedScaleform = await this.aopScaleform.load();
+
+      if (loadedScaleform) {
+        this.aopScaleform.callFunction("SHOW_SHARD_WASTED_MP_MESSAGE", "Automatic AOP", `Player based AOP has been re-enabled, the new AOP is ~y~${this.currentAOP.name}~w~!`, 5);
 
         if (this.scaleformTick == undefined) this.scaleformTick = setTick(async() => {
           await this.aopScaleform.render2D();
