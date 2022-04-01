@@ -292,7 +292,7 @@ type PolyObj = {
   isPolyZone: boolean
 }
 
-class PolyZone {
+export class PolyZone {
   destroyed = false;
 
   points: PolyZoneOptions["points"] = [];
@@ -515,6 +515,10 @@ class PolyZone {
     }
   }
 
+  public async near(): Promise<boolean> {
+    return this.isPointInside(Cfx.Game.PlayerPed.Position);
+  }
+
   public onPlayerInOut(onPointInOutCb: (isCurrInside: boolean, pedPos: Cfx.Vector3) => void, waitInMS = 500) {
     let isInside = false;
 
@@ -532,4 +536,4 @@ class PolyZone {
   }
 }
 
-export default PolyZone;
+// export default PolyZone;

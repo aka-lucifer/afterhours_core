@@ -8,8 +8,11 @@ import { Character } from "./models/character";
 import {RichPresence} from "./managers/richPresence";
 import {StaffManager} from "./managers/staff";
 
+// [Managers] World
+import {WorldManager} from "./managers/world/world";
+import { SafezoneManager } from "./managers/world/safezones";
+
 // [Managers] Syncing
-import {WorldManager} from "./managers/sync/world";
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
 import { AOPManager } from "./managers/sync/aop";
@@ -85,8 +88,11 @@ export class Client {
   private richPresence: RichPresence;
   private staffManager: StaffManager;
 
-  // [Managers] Syncing
+  // [Managers] World
   private worldManager: WorldManager;
+  public safezoneManager: SafezoneManager;
+
+  // [Managers] Syncing
   private timeManager: TimeManager;
   private weatherManager: WeatherManager;
   public aopManager: AOPManager;
@@ -195,8 +201,12 @@ export class Client {
     this.richPresence = new RichPresence(client);
     this.staffManager = new StaffManager(client);
 
-    // [Managers] Syncing
+    // [Managers] World
     this.worldManager = new WorldManager(client);
+    this.safezoneManager = new SafezoneManager(client);
+    this.safezoneManager.init();
+
+    // [Managers] Syncing
     this.timeManager = new TimeManager(client);
     this.weatherManager = new WeatherManager(client);
     this.aopManager = new AOPManager(client);
@@ -250,6 +260,7 @@ export class Client {
     // console.log("NUI READY!");
     this.nuiReady = true;
     await this.initialize();
+    await this.spawner.init();
     this.startUI();
 
     emitNet(Events.playerConnected, undefined, true);
@@ -263,13 +274,14 @@ export class Client {
     this.chatManager.setupData(); // Send types and any client sided suggestions
     
     if (!this.Developing) {
-      this.spawner.init();
+      this.spawner.requestUI();
     } else {
-      // this.characters.displayCharacters(true);
+      this.characters.displayCharacters(true);
     }
 
     // Managers Inits
     this.aopManager.init();
+    this.safezoneManager.start();
 
     // Controllers Inits
     this.speedZones.init();

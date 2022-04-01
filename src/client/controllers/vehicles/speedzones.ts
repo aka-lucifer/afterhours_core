@@ -3,7 +3,7 @@ import { Game, Vector3 } from "fivem-js";
 import { Client } from "../../client";
 import { insideVeh, Delay } from "../../utils";
 
-import PolyZone from "../../helpers/polyZone";
+import { PolyZone } from "../../helpers/polyZone";
 import { Notification } from "../../models/ui/notification";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 
@@ -32,8 +32,8 @@ export class Speedzones {
         }
       }).create();
 
-      zone.onPlayerInOut(async(isCurrInside: boolean, pedPos: Vector3) => {
-        if (isCurrInside) {
+      zone.onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
+        if (isInside) {
           const [currVeh, inside] = await insideVeh(Game.PlayerPed);
           if (inside) {
             if (this.client.player.Rank < Ranks.Admin) {
