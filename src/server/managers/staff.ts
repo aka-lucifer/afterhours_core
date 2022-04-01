@@ -40,7 +40,7 @@ export class StaffManager {
           await player.TriggerEvent(Events.showRank);
         }
       }
-    }, Ranks.Admin);
+    }, Ranks.Moderator);
 
     new Command("sudo", "Sudo someone to send a chat message as them", [{name: "server_id", help: "Server ID of the person to sudo"}, {name: "content", help: "The content of the chat message"}], true, async(source: string, args: any[]) => {
       if (args[0]) {

@@ -44,9 +44,9 @@ export class JobCommand {
         server.commandManager.addJobCommand(this);
 
         if (typeof cmdPermission == "object") {
-            Log("Commands Manager", `Command (${this.name}) added with permission (${JSON.stringify(this.permission)} || Ranks[Ranks.User]})`);
+            Log("Commands Manager", `Command (${this.name}) added with permission (${JSON.stringify(this.permission)})`);
         } else {
-            Log("Commands Manager", `Command (${this.name}) added with permission (${this.permission} || Ranks[Ranks.User]})`);
+            Log("Commands Manager", `Command (${this.name}) added with permission (${this.permission})`);
         }
     }
 }
