@@ -13,12 +13,21 @@
     "Owner": ["tazerTroll", "extraArmour", "particleSpam", "blacklistedEntity", "cheatEngine", "blacklistedPlate", "thermalVision", "nightVision", "invisiblePlayer", "explosiveWeapon", "antiRagdoll", "infiniteStamina", "blacklistedCmd", "freecam", "resourceChanging", "clearPedTasks", "weaponGive", "weaponRemove", "explosion", "menu", "report", "chat", "adminChat", "freeze", "kick", "log", "ban", "spectate", "general", "revive", "message", "teleport", "bring", "updateJob", "markerTP", "invisible", "godmode", "blips", "bringAll", "noclip", "userManagement", "unban"]
   },
   "aop": {
+    "spawnModels": [
+      "a_m_m_bevhills_01",
+      "a_m_m_skater_01",
+      "a_m_y_business_01",
+      "a_m_y_business_02",
+      "a_m_y_business_03",
+      "a_m_y_genstreet_01",
+      "a_m_y_genstreet_02"
+    ],
     "locations": [
       {"name": "Harmony", "automaticCycling": false, "positions": []},
       {"name": "Sandy Shores", "automaticCycling": true, "playerMax": 10, "positions": [
         {"x": 2767.00, "y": 3476.68, "z": 55.50, "heading": 223.3},
         {"x": 1733.16, "y": 3034.62, "z": 61.34, "heading": 288.6},
-        {"x": 2063.96, "y": 2937.93, "z": 47.29, "heading": 2.23},
+        {"x":2068.860595703125, "y":2971.903564453125, "z":46.05562973022461, "heading": 9.22203254699707},
         {"x": 1333.55, "y": 3637.60, "z": 33.59, "heading": 33.23}
       ]},
       {"name": "Grapeseed", "automaticCycling": false, "positions": [
@@ -285,7 +294,7 @@
       "type": "weapon"
     },
     "-1357824103": {
-      "name": "weapon_advancedrifle", "label": "MTAR", "ammoType": "AMMO_RIFLE","attachments": [
+      "name": "weapon_advancedrifle", "label": "Advanced Rifle", "ammoType": "AMMO_RIFLE","attachments": [
         {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_ADVANCEDRIFLE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_ADVANCEDRIFLE_CLIP_02"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
