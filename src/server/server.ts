@@ -20,6 +20,9 @@ import { JobManager } from "./managers/job";
 // [Managers] Vehicle Control
 import { VehicleManager } from "./managers/vehicles";
 
+// [Managers] Weapon Control
+import { WeaponsManager } from "./managers/weapons";
+
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
 import {WeatherManager} from "./managers/sync/weather";
@@ -77,6 +80,9 @@ export class Server {
 
   // [Managers] Vehicle Control
   public vehicleManager: VehicleManager;
+
+  // [Managers] Weapon Control
+  public weaponManager: WeaponsManager;
 
   // [Managers] Syncing
   private timeManager: TimeManager;
@@ -147,6 +153,9 @@ export class Server {
 
     // [Managers] Vehicle Control
     this.vehicleManager = new VehicleManager(server);
+
+    // [Managers] Weapon Control
+    this.weaponManager = new WeaponsManager(server);
 
     // [Managers] Syncing
     this.timeManager = new TimeManager(server);

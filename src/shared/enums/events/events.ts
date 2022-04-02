@@ -43,6 +43,9 @@ export enum Events {
   setAOP = "astrid:server:setAOP",
   setCycling = "astrid:server:setCycling",
 
+  // Astrid Server (Weapons)
+  checkWeapon = "astrid:server:checkWeapon",
+
   // (Scoreboard Server)
   requestPlayers = "astrid:server:requestPlayers",
 

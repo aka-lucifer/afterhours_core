@@ -41,6 +41,9 @@ import { Grabbing } from "./controllers/jobs/police/grabbing";
 // [Controllers] Vehicle
 import { Speedzones } from "./controllers/vehicles/speedzones";
 
+// [Controllers] Weapon
+import { WeaponRemovers } from "./controllers/weapons.ts/removers";
+
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
@@ -120,6 +123,9 @@ export class Client {
 
   // [Controllers] Vehicle
   private speedZones: Speedzones;
+
+  // [Controllers] Weapons
+  private weaponRemoves: WeaponRemovers; 
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -234,6 +240,9 @@ export class Client {
 
     // [Controllers] Vehicle
     this.speedZones = new Speedzones(client);
+    
+    // [Controllers] Weapon
+    this.weaponRemoves = new WeaponRemovers(client);
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
@@ -284,6 +293,11 @@ export class Client {
     this.safezoneManager.start();
 
     // Controllers Inits
+
+    // Weapons
+    this.weaponRemoves.start();
+
+    // Vehicles
     this.speedZones.init();
 
     RegisterCommand("progress_ui", () => {
