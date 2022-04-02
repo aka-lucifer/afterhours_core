@@ -46,7 +46,7 @@ export class WeaponsManager {
   private async EVENT_checkWeapon(currentWeapon: number): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
-      console.log("curr weapon!", currentWeapon);
+      // console.log("curr weapon!", currentWeapon);
       const weaponData = sharedConfig.weapons[currentWeapon];
       // console.log("weap data", JSON.stringify(weaponData, null, 4));
       const discord = await player.GetIdentifier("discord");
@@ -54,9 +54,7 @@ export class WeaponsManager {
       if (weaponData !== undefined) {
         const hasPermission = await this.hasPermission(player.Rank, weaponData.rank);
         
-        if (hasPermission) {
-          console.log("has equip permission!", weaponData);
-        } else {
+        if (!hasPermission) {
           // Remove weapon from ped and set to unarmed
           const ped = GetPlayerPed(player.Handle);
           RemoveWeaponFromPed(ped, currentWeapon);
@@ -73,10 +71,9 @@ export class WeaponsManager {
             }]
           }));
         }
-
       } else {
         await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
-          username: "Kill Logs", embeds: [{
+          username: "Weapon Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__Player Killed__",
             description: `Weapon not found (${currentWeapon}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,

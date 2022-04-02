@@ -18,7 +18,7 @@ export class WeaponRemovers {
 
   // Methods
   public start(): void {
-    console.log("start tick!");
+    // console.log("start tick!");
     if (this.changeTick === undefined) this.changeTick = setTick(async() => {
       
       if (this.currentWeapon === undefined) { // If our current weapon is unassigned
@@ -26,14 +26,14 @@ export class WeaponRemovers {
       } else { // If it is assigned check if it's different
         const currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
         if (currWeapon !== this.currentWeapon) {
-          console.log("diff weapon!")
+          // console.log("diff weapon!")
           this.currentWeapon = currWeapon; // Set new weapon
           this.changedWeapon = true; // Set changed our weapon to true
         }
       }
 
       if (this.changedWeapon) {
-        console.log("mandem changed his weapon init bruv!");
+        // console.log("mandem changed his weapon init bruv!");
         emitNet(Events.checkWeapon, this.currentWeapon);
         this.changedWeapon = false;
       }
@@ -42,5 +42,12 @@ export class WeaponRemovers {
     });
 
 
+  }
+
+  public stop(): void {
+    if (this.changeTick !== undefined) {
+      clearTick(this.changeTick);
+      this.changeTick = undefined;
+    }
   }
 }
