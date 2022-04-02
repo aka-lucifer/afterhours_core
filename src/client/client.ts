@@ -42,7 +42,8 @@ import { Grabbing } from "./controllers/jobs/police/grabbing";
 import { Speedzones } from "./controllers/vehicles/speedzones";
 
 // [Controllers] Weapon
-import { WeaponRemovers } from "./controllers/weapons.ts/removers";
+import { WeaponRemovers } from "./controllers/weapons/removers";
+import { Disarmer } from "./controllers/weapons/disarmer";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
@@ -125,7 +126,8 @@ export class Client {
   private speedZones: Speedzones;
 
   // [Controllers] Weapons
-  private weaponRemoves: WeaponRemovers; 
+  private weaponRemovers: WeaponRemovers;
+  private weaponDisamers: Disarmer;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -242,7 +244,8 @@ export class Client {
     this.speedZones = new Speedzones(client);
     
     // [Controllers] Weapon
-    this.weaponRemoves = new WeaponRemovers(client);
+    this.weaponRemovers = new WeaponRemovers(client);
+    this.weaponDisamers = new Disarmer(client);
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
@@ -295,7 +298,7 @@ export class Client {
     // Controllers Inits
 
     // Weapons
-    this.weaponRemoves.start();
+    this.weaponRemovers.start();
 
     // Vehicles
     this.speedZones.init();
