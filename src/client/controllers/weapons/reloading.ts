@@ -59,7 +59,11 @@ export class Reloading {
               DisableControlAction(0, Control.Reload, true);
               DisablePlayerFiring(Game.Player.Handle, true);
               Screen.displayHelpTextThisFrame("~w~Reload your weapon!");
-              // Screen.showSubtitle("~y~Reload your weapon!");
+              
+              if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                Screen.showSubtitle("~r~Reload your weapon!");
+              }
             });
           }
         }
