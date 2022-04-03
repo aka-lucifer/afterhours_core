@@ -38,7 +38,7 @@ export class WeaponRemovers {
         this.changedWeapon = false;
       }
 
-      // await Delay(500);
+      await Delay(500);
     });
 
 

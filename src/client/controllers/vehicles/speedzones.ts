@@ -13,12 +13,13 @@ import { Ranks } from "../../../shared/enums/ranks";
 export class Speedzones {
   private client: Client;
 
+  private zones: PolyZone[] = [];
+
   constructor(client: Client) {
     this.client = client;
   }
 
   public init(): void {
-    const zones: PolyZone[] = [];
     const speedzones = clientConfig.world.speedzones;
 
     for (let i = 0; i < speedzones.length; i++) {
@@ -32,7 +33,13 @@ export class Speedzones {
         }
       }).create();
 
-      zone.onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
+      this.zones.push(zone);
+    }
+  }
+
+  public start(): void {
+    for (let i = 0; i < this.zones.length; i++) {
+      this.zones[i].onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
         if (isInside) {
           const [currVeh, inside] = await insideVeh(Game.PlayerPed);
           if (inside) {
@@ -70,7 +77,7 @@ export class Speedzones {
             }
           }
         }
-      }, 500);
+      }, 1000);
     }
   }
 }

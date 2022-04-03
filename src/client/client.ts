@@ -1,8 +1,9 @@
-import {Game, Vector3, VehicleSeat, World, Model, Entity, Screen} from "fivem-js"
+import {Game, VehicleSeat, World} from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
 import { Character } from "./models/character";
+import { Progress } from "./models/ui/progress";
 
 // [Managers] Client Data
 import {RichPresence} from "./managers/richPresence";
@@ -44,6 +45,7 @@ import { Speedzones } from "./controllers/vehicles/speedzones";
 // [Controllers] Weapon
 import { WeaponRemovers } from "./controllers/weapons/removers";
 import { Disarmer } from "./controllers/weapons/disarmer";
+import { Reloading } from "./controllers/weapons/reloading";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
@@ -54,7 +56,6 @@ import {Delay, Inform, insideVeh, Log, NumToVector3, RegisterNuiCallback, telepo
 // Shared
 import {Events} from "../shared/enums/events/events";
 import {GameEvents} from "../shared/enums/events/gameEvents";
-import {LXEvents} from "../shared/enums/events/lxEvents";
 import {Callbacks} from "../shared/enums/events/callbacks";
 import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
@@ -66,7 +67,6 @@ import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
-import { Progress } from "./models/ui/progress";
 
 let takingScreenshot = false;
 
@@ -128,6 +128,7 @@ export class Client {
   // [Controllers] Weapons
   private weaponRemovers: WeaponRemovers;
   private weaponDisamers: Disarmer;
+  private weaponReloading: Reloading;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -155,7 +156,6 @@ export class Client {
     
     // (General Event Listeners)
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
-    onNet(LXEvents.Gunshot, this.EVENT_gunFired.bind(this));
     onNet(Events.notify, this.EVENT_notify.bind(this));
 
     // (General Methods)
@@ -242,10 +242,12 @@ export class Client {
 
     // [Controllers] Vehicle
     this.speedZones = new Speedzones(client);
+    this.speedZones.init();
     
     // [Controllers] Weapon
     this.weaponRemovers = new WeaponRemovers(client);
     this.weaponDisamers = new Disarmer(client);
+    this.weaponReloading = new Reloading(client);
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
@@ -296,6 +298,7 @@ export class Client {
     this.safezoneManager.start();
 
     // Controllers Inits
+    this.safezoneManager.start();
 
     // Weapons
     this.weaponRemovers.start();
@@ -495,10 +498,6 @@ export class Client {
     }
   }
 
-  private EVENT_gunFired(shootersNet: number): void {
-    Inform("LX Event (Gunshot)", `${shootersNet} fired their weapon!`);
-  }
-
   private EVENT_notify(title: string, description: string, type: NotificationTypes, timer: number, progressBar: boolean): void {
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.CreateNotification,
@@ -528,7 +527,7 @@ export class Client {
           ['content-type']: 'multipart/form-data'
         }
       }, (results) => {
-        console.log(JSON.parse(results).data.link)
+        // console.log(JSON.parse(results).data.link)
         data.url = JSON.parse(results).data.link;
         takingScreenshot = false
         emitNet(Events.receiveClientCB, false, data);
