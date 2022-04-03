@@ -183,13 +183,13 @@ export class WeaponModes {
   }
 
   private async toggleSafety(): Promise<void> {
-    const currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+    this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
 
-    if (currWeapon !== Weapons.Unarmed) {
+    if (this.currentWeapon !== Weapons.Unarmed) {
       // Shoots bullets
-      if (GetWeaponDamageType(currWeapon) == 3) {
+      if (GetWeaponDamageType(this.currentWeapon) == 3) {
         this.safetyActive = !this.safetyActive;
-        const [weaponEntry, weaponIndex] = await this.weaponExists();
+        let [weaponEntry, weaponIndex] = await this.weaponExists();
         // console.log("weapon findIndex data", weaponEntry, weaponIndex, this.weapons[weaponIndex]);
         if (weaponEntry) {
           this.weapons[weaponIndex].safety = this.safetyActive;
@@ -197,31 +197,43 @@ export class WeaponModes {
         } else {
           // console.log("weapon not found, insert it!");
           this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
+          weaponIndex = this.weapons.length - 1;
+          console.log("index", weaponIndex, this.weapons);
         }
 
-        if (this.safetyActive) {
+        if (this.weapons[weaponIndex].safety) {
           const notify = new Notification("Weapon", `Safety toggled!`, NotificationTypes.Info);
           await notify.send();
-        } else {
-          const notify = new Notification("Weapon", `Safety disabled!`, NotificationTypes.Info);
-          await notify.send();
-        }
-
-        if (this.safetyActive) {
+          
           // console.log("safety on")
-          if (this.safetyTick === undefined) this.safetyTick = setTick(() => {
+          if (this.safetyTick === undefined) this.safetyTick = setTick(async() => {
             // console.log("running safety tick!");
-            const currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+            this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
         
-            if (currWeapon !== Weapons.Unarmed) {
+            if (this.currentWeapon !== Weapons.Unarmed) {
               // Shoots bullets
-              if (GetWeaponDamageType(currWeapon) == 3) {
-                // console.log("disable thing!");
-                DisablePlayerFiring(Game.Player.Handle, true);
+              if (GetWeaponDamageType(this.currentWeapon) == 3) {
+                const currWeapData = await this.getWeaponFromHash();
+                if (currWeapData) {
+                  if (currWeapData.safety) {
+                    if (this.safetyActive !== currWeapData.safety) {
+                      this.safetyActive = currWeapData.safety;
+                    }
+                    
+                    // console.log("disable thing!");
+                    DisablePlayerFiring(Game.Player.Handle, true);
 
-                if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
-                  PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
-                  Screen.showSubtitle("~y~Safety Active", 2000);
+                    if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                      PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                      Screen.showSubtitle("~y~Safety Active", 2000);
+                    }
+                  } else {
+                    // console.log("current weapon doesn't have safety toggled!");
+                  }
+                } else {
+                  this.weapons.push(new Weapon(this.currentWeapon, Modes.Automatic, false));
+                  weaponIndex = this.weapons.length - 1;
+                  console.log("index 2", weaponIndex, this.weapons);
                 }
               }
             }
@@ -229,6 +241,9 @@ export class WeaponModes {
         } else {
           clearTick(this.safetyTick);
           this.safetyTick = undefined;
+          
+          const notify = new Notification("Weapon", `Safety disabled!`, NotificationTypes.Info);
+          await notify.send();
         }
       }
     }
