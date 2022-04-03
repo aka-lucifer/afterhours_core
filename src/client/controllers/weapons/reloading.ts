@@ -1,4 +1,4 @@
-import { Control, Game, Screen } from "fivem-js";
+import { Audio, Control, Game, Screen } from "fivem-js";
 
 import { GetHash, Inform } from "../../utils";
 import { Client } from "../../client";
@@ -58,8 +58,8 @@ export class Reloading {
             if (this.notifyTick == undefined) this.notifyTick = setTick(() => {
               DisableControlAction(0, Control.Reload, true);
               DisablePlayerFiring(Game.Player.Handle, true);
-              // Screen.displayHelpTextThisFrame("~y~Reload your weapon!");
-              Screen.showSubtitle("~y~Reload your weapon!");
+              Screen.displayHelpTextThisFrame("~w~Reload your weapon!");
+              // Screen.showSubtitle("~y~Reload your weapon!");
             });
           }
         }
