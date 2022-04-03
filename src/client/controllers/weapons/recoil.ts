@@ -70,7 +70,7 @@ export class WeaponRecoil {
         this.ammoType = GetPedAmmoType(myPed.Handle, this.currentWeapon);
         this.weapon = new Prop(GetCurrentPedWeaponEntityIndex(myPed.Handle));
 
-        console.log(`Weapon: ${this.currentWeapon} | Object: ${this.weapon.Handle} | Ammo Type: ${this.ammoType} | Default Recoil: ${this.baseRecoil} | Wind Speed: ${GetWindSpeed()} | Wind Direction: ${GetWindDirection()}`);
+        // console.log(`Weapon: ${this.currentWeapon} | Object: ${this.weapon.Handle} | Ammo Type: ${this.ammoType} | Default Recoil: ${this.baseRecoil} | Wind Speed: ${GetWindSpeed()} | Wind Direction: ${GetWindDirection()}`);
         
         switch(this.ammoType) {
           case AmmoType.Pistol:
@@ -92,36 +92,36 @@ export class WeaponRecoil {
 
         if (this.currentRecoil > 0) {
           this.currentRecoil = this.baseRecoil + this.currentRecoil;
-          if (this.client.IsDebugging) console.log(`Stage 1 Recoil: ${this.currentRecoil}`);
+          // if (this.client.IsDebugging) console.log(`Stage 1 Recoil: ${this.currentRecoil}`);
 
           const weapDimensions = GetModelDimensions(GetEntityModel(this.weapon.Handle));
           const modelLength = Math.abs(weapDimensions[0][1])
           if (modelLength > 0.05) { // Y Coord
             this.currentRecoil = this.currentRecoil * this.longGunsMult;
-            if (this.client.IsDebugging) console.log("Using Long Gun");
+            // if (this.client.IsDebugging) console.log("Using Long Gun");
           } else if (modelLength > 0.02) {
-            if (this.client.IsDebugging) console.log("Using Normal Gun");
+            // if (this.client.IsDebugging) console.log("Using Normal Gun");
           } else {
             this.currentRecoil = this.currentRecoil * this.shortGunsMult;
-            if (this.client.IsDebugging) console.log("Using Short Gun");
+            // if (this.client.IsDebugging) console.log("Using Short Gun");
           }
 
           if (IsPedCurrentWeaponSilenced(Game.PlayerPed.Handle)) {
             this.currentRecoil = this.currentRecoil - this.silencerSubtractor;
-            if (this.client.IsDebugging) console.log(`Silenced Recoil: ${this.silencerSubtractor} = ${this.currentRecoil}`);
+            // if (this.client.IsDebugging) console.log(`Silenced Recoil: ${this.silencerSubtractor} = ${this.currentRecoil}`);
           }
 
           if (HasPedGotWeaponComponent(Game.PlayerPed.Handle, this.currentWeapon, GetHash("COMPONENT_AT_AR_AFGRIP"))) {
             this.currentRecoil = this.currentRecoil - this.gripSubtractor;
-            if (this.client.IsDebugging) console.log(`Grip Recoil: ${this.gripSubtractor} = ${this.currentRecoil}`);
+            // if (this.client.IsDebugging) console.log(`Grip Recoil: ${this.gripSubtractor} = ${this.currentRecoil}`);
           }
 
           const windDirection = GetWindDirection();
           const windSpeed = GetWindSpeed();
 
-          if (this.client.IsDebugging) console.log(`Final Recoil: ${this.currentRecoil}`)
-          if (this.client.IsDebugging) console.log(`Cam Pitch: ${GetGameplayCamRelativePitch()}`)
-          console.log(`Wind Data - Speed: ${windSpeed} | Direction: ${windDirection}`);
+          // if (this.client.IsDebugging) console.log(`Final Recoil: ${this.currentRecoil}`)
+          // if (this.client.IsDebugging) console.log(`Cam Pitch: ${GetGameplayCamRelativePitch()}`)
+          // console.log(`Wind Data - Speed: ${windSpeed} | Direction: ${windDirection}`);
           // if (this.ammoType == AmmoType.Sniper) SetGameplayCamRelativeHeading(GetGameplayCamRelativeHeading() + (windSpeed / 4));
           SetGameplayCamRelativePitch(GetGameplayCamRelativePitch() + this.currentRecoil, 1.0);
 
