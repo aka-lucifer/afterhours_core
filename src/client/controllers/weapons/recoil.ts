@@ -106,12 +106,12 @@ export class WeaponRecoil {
             // if (this.client.IsDebugging) console.log("Using Short Gun");
           }
 
-          if (IsPedCurrentWeaponSilenced(Game.PlayerPed.Handle)) {
+          if (IsPedCurrentWeaponSilenced(myPed.Handle)) {
             this.currentRecoil = this.currentRecoil - this.silencerSubtractor;
             // if (this.client.IsDebugging) console.log(`Silenced Recoil: ${this.silencerSubtractor} = ${this.currentRecoil}`);
           }
 
-          if (HasPedGotWeaponComponent(Game.PlayerPed.Handle, this.currentWeapon, GetHash("COMPONENT_AT_AR_AFGRIP"))) {
+          if (HasPedGotWeaponComponent(myPed.Handle, this.currentWeapon, GetHash("COMPONENT_AT_AR_AFGRIP")) || HasPedGotWeaponComponent(myPed.Handle, this.currentWeapon, GetHash("COMPONENT_AT_AR_AFGRIP_02"))) {
             this.currentRecoil = this.currentRecoil - this.gripSubtractor;
             // if (this.client.IsDebugging) console.log(`Grip Recoil: ${this.gripSubtractor} = ${this.currentRecoil}`);
           }
