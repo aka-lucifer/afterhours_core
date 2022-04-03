@@ -257,6 +257,23 @@
                     "WEAPON_COMPACTRIFLE",
                     "WEAPON_MILITARYRIFLE"
                 ]
+            },
+            "spamPreventor": {
+                "holdCount": 100
+            },
+            "recoil": {
+                "baseRecoil": 0.5,
+                "pistolAmmoRecoil": 0.1,
+                "smgAmmoRecoil": 0.2,
+                "lmgAmmoRecoil": 2.0,
+                "sniperAmmoRecoil": 5.0,
+                "rifleAmmoRecoil": 0.35,
+                "shotgunAmmoRecoil": 2.5,
+                "shortGunsMult": 2.0,
+                "longGunsMult": 0.5,
+                "aimedShotMult": 0.5,
+                "silencerSubtractor": 0.5,
+                "gripSubtractor": 0.5
             }
         }
     },

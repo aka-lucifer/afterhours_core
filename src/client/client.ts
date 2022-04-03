@@ -48,6 +48,7 @@ import { Disarmer } from "./controllers/weapons/disarmer";
 import { Reloading } from "./controllers/weapons/reloading";
 import { WeaponModes } from "./controllers/weapons/modes";
 import { SpamPreventor } from "./controllers/weapons/spamPreventor";
+import { WeaponRecoil } from "./controllers/weapons/recoil";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
@@ -133,6 +134,7 @@ export class Client {
   private weaponReloading: Reloading;
   private weaponModes: WeaponModes;
   private weaponSpamPreventor: SpamPreventor;
+  private weaponRecoil: WeaponRecoil;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -254,6 +256,7 @@ export class Client {
     this.weaponReloading = new Reloading(client);
     this.weaponModes = new WeaponModes(client);
     this.weaponSpamPreventor = new SpamPreventor(client);
+    this.weaponRecoil = new WeaponRecoil(client);
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
@@ -308,6 +311,7 @@ export class Client {
 
     // Weapons
     this.weaponRemovers.start();
+    this.weaponRecoil.init();
 
     // Vehicles
     this.speedZones.init();
