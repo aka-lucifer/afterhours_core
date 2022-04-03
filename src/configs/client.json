@@ -219,6 +219,26 @@
             "propBlacklist": [
                 "stt_prop_track_slowdown_t1"
             ]
+        },
+        "weapons": {
+            "manualReload": {
+                "weaponWhitelist": [
+                    "WEAPON_MINIGUN",
+                    "WEAPON_RPG",
+                    "WEAPON_STINGER",
+                    "WEAPON_FIREWORK",
+                    "WEAPON_HOMINGLAUNCHER",
+                    "WEAPON_GRENADELAUNCHER",
+                    "WEAPON_RAILGUN",
+                    "WEAPON_COMPACTLAUNCHER",
+                    "WEAPON_RAYPISTOL",
+                    "WEAPON_RAYCARBINE",
+                    "WEAPON_RAYMINIGUN",
+                    "WEAPON_FLAREGUN",
+                    "WEAPON_DBSHOTGUN",
+                    "WEAPON_MUSKET"
+                ]
+            }
         }
     },
     "heli": {

@@ -1,14 +1,25 @@
 export enum LXEvents {
-  PedDied = "LX_Events:client:PedDied",
-  PedInjured = "LX_Events:client:PedInjured",
-  VehDamaged = "LX_Events:client:VehDamaged",
-  ObjDamaged = "LX_Events:client:ObjDamaged",
-  VehCollision = "LX_Events:client:vehCollision",
-  Gunshot = "LX_Events:client:gunshot",
-  EnteredVeh = "LX_Events:client:enteredVeh",
-  EnteringVeh = "LX_Events:client:enteringVehicle",
-  EnteringVehAborted = "LX_Events:client:enteringVehAborted",
-  LeftVeh = "LX_Events:client:leftVehicle",
-  PlayerDied = "LX_Events:client:playerDied",
-  PlayerKill = "LX_Events:client:playerKilled"
+  // Client
+  PedInjured_Cl = "LX_Events:client:pedInjured",
+  VehDamaged_Cl = "LX_Events:client:VehDamaged",
+  ObjDamaged_Cl = "LX_Events:client:ObjDamaged",
+  VehCollision_Cl = "LX_Events:client:vehCollision",
+  Gunshot_Cl = "LX_Events:client:gunshot",
+  EnteredVeh_Cl = "LX_Events:client:enteredVeh",
+  EnteringVeh_Cl = "LX_Events:client:enteringVehicle",
+  EnteringVehAborted_Cl = "LX_Events:client:enteringVehAborted",
+  LeftVeh_Cl = "LX_Events:client:leftVehicle",
+  PlayerDied_Cl = "LX_Events:client:playerDied",
+  PlayerKilled_Cl = "LX_Events:client:playerKilled",
+
+  // Server
+  PedInjured_Sv = "LX_Events:server:pedInjured",
+  Gunshot_Sv = "LX_Events:server:gunshot",
+  VehCollision_Sv = "LX_Events:server:vehCollision",
+  EnteredVeh_Sv = "LX_Events:server:enteredVeh",
+  EnteringVeh_Sv = "LX_Events:server:enteringVehicle",
+  EnteringVehAborted_Sv = "LX_Events:server:enteringVehAborted",
+  LeftVeh_Sv = "LX_Events:server:leftVehicle",
+  PlayerDied_Sv = "LX_Events:server:playerDied",
+  PlayerKill_Sv = "LX_Events:server:playerKilled"
 }
