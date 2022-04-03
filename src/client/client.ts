@@ -46,12 +46,13 @@ import { Speedzones } from "./controllers/vehicles/speedzones";
 import { WeaponRemovers } from "./controllers/weapons/removers";
 import { Disarmer } from "./controllers/weapons/disarmer";
 import { Reloading } from "./controllers/weapons/reloading";
+import { WeaponModes } from "./controllers/weapons/modes";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import {Delay, Inform, insideVeh, Log, NumToVector3, RegisterNuiCallback, teleportToCoords} from "./utils";
+import {Delay, Inform, NumToVector3, RegisterNuiCallback, teleportToCoords} from "./utils";
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -129,6 +130,7 @@ export class Client {
   private weaponRemovers: WeaponRemovers;
   private weaponDisamers: Disarmer;
   private weaponReloading: Reloading;
+  private weaponModes: WeaponModes;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -248,6 +250,7 @@ export class Client {
     this.weaponRemovers = new WeaponRemovers(client);
     this.weaponDisamers = new Disarmer(client);
     this.weaponReloading = new Reloading(client);
+    this.weaponModes = new WeaponModes(client);
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);

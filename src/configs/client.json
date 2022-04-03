@@ -238,6 +238,25 @@
                     "WEAPON_DBSHOTGUN",
                     "WEAPON_MUSKET"
                 ]
+            },
+            "weaponModes": {
+                "weapons": [
+                    "WEAPON_SMG",
+                    "WEAPON_SMG_MK2",
+                    "WEAPON_ASSAULTSMG",
+                    "WEAPON_COMBATPDW",
+                    "WEAPON_ASSAULTRIFLE",
+                    "WEAPON_ASSAULTRIFLE_MK2",
+                    "WEAPON_CARBINERIFLE",
+                    "WEAPON_CARBINERIFLE_MK2",
+                    "WEAPON_ADVANCEDRIFLE",
+                    "WEAPON_SPECIALCARBINE",
+                    "WEAPON_SPECIALCARBINE_MK2",
+                    "WEAPON_BULLPUPRIFLE",
+                    "WEAPON_BULLPUPRIFLE_MK2",
+                    "WEAPON_COMPACTRIFLE",
+                    "WEAPON_MILITARYRIFLE"
+                ]
             }
         }
     },
