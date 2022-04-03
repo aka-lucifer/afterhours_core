@@ -189,19 +189,20 @@ export class WeaponModes {
       // Shoots bullets
       if (GetWeaponDamageType(this.currentWeapon) == 3) {
         this.safetyActive = !this.safetyActive;
-        let [weaponEntry, weaponIndex] = await this.weaponExists();
-        // console.log("weapon findIndex data", weaponEntry, weaponIndex, this.weapons[weaponIndex]);
+        const [weaponEntry, weaponIndex] = await this.weaponExists();
+        let wepIndex = weaponIndex;
+        // console.log("weapon findIndex data", weaponEntry, wepIndex, this.weapons[wepIndex]);
         if (weaponEntry) {
-          this.weapons[weaponIndex].safety = this.safetyActive;
+          this.weapons[wepIndex].safety = this.safetyActive;
           // console.log("set safety to", this.safetyActive);
         } else {
           // console.log("weapon not found, insert it!");
           this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
-          weaponIndex = this.weapons.length - 1;
-          console.log("index", weaponIndex, this.weapons);
+          wepIndex = this.weapons.length - 1;
+          console.log("index", wepIndex, this.weapons);
         }
 
-        if (this.weapons[weaponIndex].safety) {
+        if (this.weapons[wepIndex].safety) {
           const notify = new Notification("Weapon", `Safety toggled!`, NotificationTypes.Info);
           await notify.send();
           
@@ -232,8 +233,8 @@ export class WeaponModes {
                   }
                 } else {
                   this.weapons.push(new Weapon(this.currentWeapon, Modes.Automatic, false));
-                  weaponIndex = this.weapons.length - 1;
-                  console.log("index 2", weaponIndex, this.weapons);
+                  wepIndex = this.weapons.length - 1;
+                  console.log("index 2", wepIndex, this.weapons);
                 }
               }
             }
@@ -271,13 +272,14 @@ export class WeaponModes {
         // If weapon has multiple firing modes
         if (configIndex !== -1) {
           // insert weapon into array if not found!
-          let [weaponEntry, weaponIndex] = await this.weaponExists();
+          const [weaponEntry, weaponIndex] = await this.weaponExists();
+          let wepIndex = weaponIndex;
 
           if (weaponEntry) {
-            // console.log("set values to array data", this.weapons[weaponIndex])
+            // console.log("set values to array data", this.weapons[wepIndex])
             // Update values back to weapon settings
-            this.currentState = this.weapons[weaponIndex].state;
-            this.safetyActive = this.weapons[weaponIndex].safety;
+            this.currentState = this.weapons[wepIndex].state;
+            this.safetyActive = this.weapons[wepIndex].safety;
           } else {
             // console.log("insert weapon data", this.currentWeapon, Modes.Automatic, false);
             // Update values back to default and then insert new class
@@ -285,8 +287,8 @@ export class WeaponModes {
             this.safetyActive = false;
 
             this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
-            weaponIndex = this.weapons.length - 1;
-            currWeapData = this.weapons[weaponIndex];
+            wepIndex = this.weapons.length - 1;
+            currWeapData = this.weapons[wepIndex];
           }
 
           // console.log("my local data", this.currentWeapon, this.currentState, this.safetyActive, this.weapons);

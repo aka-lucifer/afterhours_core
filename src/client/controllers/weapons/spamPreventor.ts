@@ -13,8 +13,7 @@ export class SpamPreventor {
   private client: Client;
   private currentWeapon: number;
   private holdCount: number = 0;
-  // private holdMaxCount: number = clientConfig.controllers.weapons.spamPreventor;
-  private holdMaxCount: number = 100;
+  private holdMaxCount: number = clientConfig.controllers.weapons.spamPreventor.holdCount;
 
   constructor(client: Client) {
     this.client = client;
