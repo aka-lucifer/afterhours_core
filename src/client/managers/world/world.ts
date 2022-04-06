@@ -16,6 +16,10 @@ export class WorldManager {
   // Methods
   public async init(): Promise<void> {
     const pickups = clientConfig.world.weaponPickups;
+
+    // Enable persistent flashlight
+    SetFlashLightKeepOnWhileMoving(true);
+
     // Disable default EMS & Fire
     for (let i = 0; i < 30; i++) {
       EnableDispatchService(i, false);
