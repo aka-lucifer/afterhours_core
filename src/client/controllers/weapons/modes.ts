@@ -297,7 +297,7 @@ export class WeaponModes {
 
           if (currWeapData.state == Modes.Burst) {
             // console.log("this weapon is burst when firing!");
-            await Delay(350);
+            await Delay(300);
 
             while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
               DisablePlayerFiring(Game.Player.Handle, true);
