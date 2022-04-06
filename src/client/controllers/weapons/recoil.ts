@@ -28,6 +28,7 @@ export class WeaponRecoil {
   private shotgunAmmoRecoil: number;
   private gripSubtractor: number;
   private silencerSubtractor: number;
+  private crouchSubractor: number;
   private tickHandler: number;
   private currentRecoil: number;
 
@@ -51,6 +52,7 @@ export class WeaponRecoil {
     this.shotgunAmmoRecoil = clientConfig.controllers.weapons.recoil.shotgunAmmoRecoil;
     this.silencerSubtractor = clientConfig.controllers.weapons.recoil.silencerSubtractor;
     this.gripSubtractor = clientConfig.controllers.weapons.recoil.gripSubtractor;
+    this.crouchSubractor = clientConfig.controllers.weapons.recoil.crouchSubtractor;
     this.longGunsMult = clientConfig.controllers.weapons.recoil.longGunsMult;
   }
 
@@ -88,6 +90,9 @@ export class WeaponRecoil {
           case AmmoType.Shotgun:
             this.currentRecoil = this.shotgunAmmoRecoil;
             break;
+          case AmmoType.MG:
+            this.currentRecoil = this.lmgAmmoRecoil;
+            break;
         }
 
         if (this.currentRecoil > 0) {
@@ -114,6 +119,10 @@ export class WeaponRecoil {
           if (HasPedGotWeaponComponent(myPed.Handle, this.currentWeapon, GetHash("COMPONENT_AT_AR_AFGRIP")) || HasPedGotWeaponComponent(myPed.Handle, this.currentWeapon, GetHash("COMPONENT_AT_AR_AFGRIP_02"))) {
             this.currentRecoil = this.currentRecoil - this.gripSubtractor;
             // if (this.client.IsDebugging) console.log(`Grip Recoil: ${this.gripSubtractor} = ${this.currentRecoil}`);
+          }
+
+          if (myPed.IsInStealthMode) { // Change this when crouch is properly done
+            this.currentRecoil = this.currentRecoil - this.crouchSubractor;
           }
 
           const windDirection = GetWindDirection();

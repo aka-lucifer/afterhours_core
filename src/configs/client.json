@@ -273,7 +273,11 @@
                 "longGunsMult": 0.5,
                 "aimedShotMult": 0.5,
                 "silencerSubtractor": 0.5,
-                "gripSubtractor": 0.5
+                "gripSubtractor": 0.5,
+                "crouchSubtractor": 0.25
+            },
+            "jamming": {
+                "blockPercentage": 5
             }
         }
     },
