@@ -315,6 +315,7 @@ export class Client {
     // Weapons
     this.weaponRemovers.start();
     this.weaponRecoil.init();
+    this.weaponDisablers.start();
 
     // Vehicles
     this.speedZones.init();

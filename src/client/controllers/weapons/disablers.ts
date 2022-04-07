@@ -7,6 +7,7 @@ import { Weapons } from "../../../shared/enums/weapons";
 
 export class WeaponDisablers {
   private rollTick: number = undefined;
+  private stanceFixerTick: number = undefined;
 
   constructor() {
 
@@ -20,6 +21,16 @@ export class WeaponDisablers {
   }
 
   // Methods
+  public start(): void {
+    if (this.stanceFixerTick === undefined) this.stanceFixerTick = setTick(async() => {
+      if (IsPedUsingActionMode(Game.PlayerPed.Handle)) {
+        SetPedUsingActionMode(Game.PlayerPed.Handle, false, -1, "DEFAULT_ACTION");
+      } else {
+        await Delay(500);
+      }
+    });
+  }
+
   public startRoll(): void {
     // Disable Combat Roll
     if (this.rollTick === undefined) this.rollTick = setTick(async() => {
