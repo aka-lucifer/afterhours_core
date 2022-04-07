@@ -1,4 +1,4 @@
-import {Game, VehicleSeat, World} from "fivem-js"
+import {Entity, Game, VehicleSeat, World} from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -49,6 +49,7 @@ import { Reloading } from "./controllers/weapons/reloading";
 import { WeaponModes } from "./controllers/weapons/modes";
 import { SpamPreventor } from "./controllers/weapons/spamPreventor";
 import { WeaponRecoil } from "./controllers/weapons/recoil";
+import { WeaponDisablers } from "./controllers/weapons/disablers";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
@@ -135,6 +136,7 @@ export class Client {
   private weaponModes: WeaponModes;
   private weaponSpamPreventor: SpamPreventor;
   private weaponRecoil: WeaponRecoil;
+  public weaponDisablers: WeaponDisablers;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -257,6 +259,7 @@ export class Client {
     this.weaponModes = new WeaponModes(client);
     this.weaponSpamPreventor = new SpamPreventor(client);
     this.weaponRecoil = new WeaponRecoil(client);
+    this.weaponDisablers = new WeaponDisablers();
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
