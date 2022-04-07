@@ -276,6 +276,11 @@
                 "gripSubtractor": 0.5,
                 "crouchSubtractor": 0.25
             },
+            "disablers": {
+                "antiPunch": {
+                    "time": 2500
+                }
+            },
             "jamming": {
                 "blockPercentage": 5
             }
