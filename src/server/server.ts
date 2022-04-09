@@ -13,8 +13,14 @@ import {WarnManager} from "./managers/database/warnings";
 import {CommendManager} from "./managers/database/commends";
 import {ConnectedPlayerManager} from "./managers/connectedPlayers";
 import {ConnectionsManager} from "./managers/connections";
+
+// [Managers] UI
 import {CharacterManager} from "./managers/characters";
 import { CharVehicleManager } from "./managers/ui/charVehicles";
+import {ChatManager} from "./managers/ui/chat";
+import {CommandManager} from "./managers/ui/command";
+
+// [Managers] Jobs
 import { JobManager } from "./managers/job";
 
 // [Managers] Vehicle Control
@@ -35,10 +41,6 @@ import * as Database from "./managers/database/database"
 // [Managers] Logging
 import {StaffLogManager} from "./managers/database/staffLogs";
 import {LogManager} from "./managers/logging";
-
-// [Managers] Chat
-import {ChatManager} from "./managers/ui/chat";
-import {CommandManager} from "./managers/ui/command";
 
 import serverConfig from "../configs/server.json";
 import {LogTypes} from "./enums/logTypes";
@@ -74,8 +76,14 @@ export class Server {
   public playerManager: PlayerManager;
   public connectedPlayerManager: ConnectedPlayerManager;
   public connectionsManager: ConnectionsManager;
+
+  // [Managers] UI
   public characterManager: CharacterManager;
   public charVehicleManager: CharVehicleManager;
+  public commandManager: CommandManager;
+  public chatManager: ChatManager;
+  
+  // [Managers] Jobs
   public jobManager: JobManager;
 
   // [Managers] Vehicle Control
@@ -95,10 +103,6 @@ export class Server {
   // [Managers] Logging
   public staffLogManager: StaffLogManager;
   public logManager: LogManager;
-
-  // [Managers] Chat
-  public commandManager: CommandManager;
-  public chatManager: ChatManager;
 
   constructor() {
     this.debugMode = serverConfig.debug;
@@ -147,8 +151,14 @@ export class Server {
     this.playerManager = new PlayerManager(server);
     this.connectedPlayerManager = new ConnectedPlayerManager(server);
     this.connectionsManager = new ConnectionsManager(server);
+
+    // [Managers] UI
     this.characterManager = new CharacterManager(server);
     this.charVehicleManager = new CharVehicleManager(server);
+    this.commandManager = new CommandManager(server);
+    this.chatManager = new ChatManager(server);
+
+    // [Managers] Jobs
     this.jobManager = new JobManager(server);
 
     // [Managers] Vehicle Control
@@ -169,10 +179,6 @@ export class Server {
     this.staffLogManager = new StaffLogManager(server);
 
     this.logManager = new LogManager(server);
-
-    // [Managers] Chat
-    this.commandManager = new CommandManager(server);
-    this.chatManager = new ChatManager(server);
 
     // Run Manager Methods
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
@@ -232,7 +238,7 @@ export class Server {
 
             const vehModel = String(args[0]);
             const myPosition = GetEntityCoords(myPed);
-            const vehicle = CreateVehicle(await GetHash(vehModel), myPosition[0], myPosition[1], myPosition[2], GetEntityHeading(myPed), true, false);
+            const vehicle = CreateVehicle(GetHash(vehModel), myPosition[0], myPosition[1], myPosition[2], GetEntityHeading(myPed), true, false);
             SetPedIntoVehicle(myPed, vehicle, -1);
             SetVehicleNumberPlateText(vehicle, "Astrid");
             await logCommand("/veh", player, "");
