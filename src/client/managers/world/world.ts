@@ -33,6 +33,7 @@ export class WorldManager {
     this.clearerTick = setTick(async() => {
       const myPed = Game.PlayerPed;
 
+      this.disableIdleCam();
       this.disablePolice(myPed);
       this.disablePVP(myPed);
       this.disableVehRewards(myPed);
@@ -42,6 +43,11 @@ export class WorldManager {
 
       await Delay(500);
     });
+  }
+
+  // Disable Wondering Idle Cam (Don't call every frame, as it activates every 30 seconds)
+  private disableIdleCam(): void {
+    InvalidateIdleCam();
   }
 
   // Disable Wanted Level, Police Radio, Vehicle & Vehicle Rewards
