@@ -30,8 +30,7 @@ export class WeaponJamming {
       if (currWeapon !== Weapons.Unarmed) {
         // Shoots bullets
         if (GetWeaponDamageType(currWeapon) == 3) {
-          // const jamChance = randomBetween(1, 100);
-          const jamChance = 2;
+          const jamChance = randomBetween(1, 100);
           if (jamChance <= clientConfig.controllers.weapons.jamming.blockPercentage) {
             this.jammedWeapons.push(currWeapon);
             const notify = new Notification("Weapon", "Your weapon has jammed!", NotificationTypes.Info);
