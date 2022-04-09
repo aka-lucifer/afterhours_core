@@ -26,8 +26,10 @@ export class CruiseControl {
       if (!this.active) {
         this.start()
       } else {
-        Screen.showNotification("~r~Cruise control disabled!");
-        this.stop();
+        if (this.vehicle.Model.IsCar || this.vehicle.Model.IsBike || this.vehicle.Model.IsQuadbike) {
+          Screen.showNotification("~r~Cruise control disabled!");
+          this.stop();
+        }
       }
 
       this.active = !this.active;
