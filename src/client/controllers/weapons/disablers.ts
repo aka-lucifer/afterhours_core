@@ -42,10 +42,14 @@ export class WeaponDisablers {
   public startRoll(): void {
     // Disable Combat Roll
     if (this.rollTick === undefined) this.rollTick = setTick(async() => {
-      if (IsPedArmed(Game.PlayerPed.Handle, 2 | 4)) {
-        if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Aim)) { // If aim held
-          Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Jump);
+      if (IsPedOnFoot(Game.PlayerPed.Handle)) {
+        if (IsPedArmed(Game.PlayerPed.Handle, 2 | 4)) {
+          if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Aim)) { // If aim held
+            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Jump);
+          }
         }
+      } else {
+        await Delay(500);
       }
     });
   }
@@ -61,25 +65,29 @@ export class WeaponDisablers {
     // Disable Punch Spammer
     if (this.punchTick === undefined) this.punchTick = setTick(async() => {
       const myPed = Game.PlayerPed;
-      // If we're unarmed
-      if (GetSelectedPedWeapon(myPed.Handle) == Weapons.Unarmed) {
-        // If we have punched someone
-        if (IsPedPerformingMeleeAction(myPed.Handle)) { // If punched
-          if (this.punchControlTick === undefined) this.punchControlTick = setTick(() => {
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack1);
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack2);
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy);
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackLight);
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeBlock);
-          });
-          
-          await Delay(clientConfig.controllers.weapons.disablers.antiPunch.time);
+      if (IsPedOnFoot(Game.PlayerPed.Handle)) {
+        // If we're unarmed
+        if (GetSelectedPedWeapon(myPed.Handle) == Weapons.Unarmed) {
+          // If we have punched someone
+          if (IsPedPerformingMeleeAction(myPed.Handle)) { // If punched
+            if (this.punchControlTick === undefined) this.punchControlTick = setTick(() => {
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack1);
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack2);
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy);
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackLight);
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeBlock);
+            });
+            
+            await Delay(clientConfig.controllers.weapons.disablers.antiPunch.time);
 
-          clearTick(this.punchControlTick);
-          this.punchControlTick = undefined;
+            clearTick(this.punchControlTick);
+            this.punchControlTick = undefined;
+          } else {
+            await Delay(500);
+          }
         } else {
           await Delay(500);
         }
