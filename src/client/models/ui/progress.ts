@@ -11,6 +11,10 @@ interface ProgressDisablers {
   combat?: boolean
 }
 
+let onCancel;
+let onStart;
+let onFinish;
+
 interface ProgressOptions {
   startPercentage?: number,
   stopPercentage?: number,
@@ -51,20 +55,16 @@ export class Progress {
     useTime: true,
     usePercent: false
   }
-  
-  private onStart: CallableFunction;
-  private onFinish: CallableFunction;
-  private onCancel: CallableFunction;
 
   private controlTick: number = undefined;
   private cancelled: boolean = false;
 
-  constructor(duration: number, disablers: ProgressDisablers, onCancel?: CallableFunction, onStart?: CallableFunction, onFinish?: CallableFunction) {
+  constructor(duration: number, disablers: ProgressDisablers, cancel?: CallableFunction, start?: CallableFunction, finish?: CallableFunction) {
     this.options.duration = duration;
     this.options.controlDisablers = disablers;
-    this.onCancel = onCancel;
-    this.onStart = onStart;
-    this.onFinish = onFinish;
+    onCancel = cancel;
+    onStart = start;
+    onFinish = finish;
 
     this.registerCallbacks();
   }
@@ -72,9 +72,10 @@ export class Progress {
   // Methods
   public registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.ProgressStarted, (data, cb) => {
-      if (this.onStart !== undefined) {
+      if (onStart !== undefined) {
         // console.log("start function is defined, so we're running it!");
-        this.onStart();
+        onStart();
+        onStart = undefined;
       }
 
       cb("ok");
@@ -82,9 +83,10 @@ export class Progress {
     
     RegisterNuiCallback(NuiCallbacks.ProgressFinished, (data, cb) => {
       if (!this.cancelled) {
-        if (this.onFinish !== undefined) {
+        if (onFinish !== undefined) {
           // console.log("duration timeout is finished and finish function is defined, so we're running it!");
-          this.onFinish();
+          onFinish();
+          onFinish = undefined;
 
           // Clear control ticks after timer is finished
           clearTick(this.controlTick);
@@ -99,7 +101,10 @@ export class Progress {
     
     RegisterNuiCallback(NuiCallbacks.ProgressCancelled, (data, cb) => {
       this.cancelled = true;
-      if (this.onCancel !== undefined) this.onCancel();
+      if (onCancel !== undefined) {
+        onCancel();
+        onCancel = undefined;
+      }
       clearTick(this.controlTick);
       this.controlTick = undefined;
 
@@ -160,7 +165,11 @@ export class Progress {
         }))
 
         this.cancelled = true;
-        if (this.onCancel !== undefined) this.onCancel();
+        if (onCancel !== undefined) {
+          onCancel();
+          onCancel = undefined;
+        }
+
         clearTick(this.controlTick);
         this.controlTick = undefined;
 
