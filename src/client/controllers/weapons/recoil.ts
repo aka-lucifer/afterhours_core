@@ -1,7 +1,7 @@
 import { AmmoType, Game, Prop } from "fivem-js";
 
 import { Client } from "../../client";
-import { GetHash, Inform } from "../../utils";
+import { GetHash, Inform, insideVeh } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { Weapons } from "../../../shared/enums/weapons";
@@ -31,6 +31,7 @@ export class WeaponRecoil {
   private crouchSubractor: number;
   private tickHandler: number;
   private currentRecoil: number;
+  private vehRecoil: number;
 
   constructor(client: Client) {
     this.client = client;
@@ -54,6 +55,7 @@ export class WeaponRecoil {
     this.gripSubtractor = clientConfig.controllers.weapons.recoil.gripSubtractor;
     this.crouchSubractor = clientConfig.controllers.weapons.recoil.crouchSubtractor;
     this.longGunsMult = clientConfig.controllers.weapons.recoil.longGunsMult;
+    this.vehRecoil = clientConfig.controllers.weapons.recoil.vehRecoil;
   }
 
   public init(): void {
@@ -125,8 +127,13 @@ export class WeaponRecoil {
             this.currentRecoil = this.currentRecoil - this.crouchSubractor;
           }
 
-          const windDirection = GetWindDirection();
-          const windSpeed = GetWindSpeed();
+          if (IsPedInAnyVehicle(myPed.Handle, false)) {
+            this.currentRecoil = this.currentRecoil + 1; // Fix veh height shooting below
+            this.currentRecoil = this.currentRecoil + this.vehRecoil;
+          }
+          
+          // const windDirection = GetWindDirection();
+          // const windSpeed = GetWindSpeed();
 
           // if (this.client.IsDebugging) console.log(`Final Recoil: ${this.currentRecoil}`)
           // if (this.client.IsDebugging) console.log(`Cam Pitch: ${GetGameplayCamRelativePitch()}`)
