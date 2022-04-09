@@ -20,7 +20,7 @@ export class Speedzones {
   }
 
   public init(): void {
-    const speedzones = clientConfig.world.speedzones;
+    const speedzones = clientConfig.controllers.vehicles.speedzones;
 
     for (let i = 0; i < speedzones.length; i++) {
       const zone = new PolyZone({
