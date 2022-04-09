@@ -12,113 +12,143 @@ import clientConfig from "../../../configs/client.json";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 
 export class WeaponJamming {
+  private weapon: number;
   private jammedWeapons: number[] = [];
   private jamTick: number = undefined;
   private unjammingWeapon: boolean = false;
+  private jamAttempted: boolean = false;
 
   constructor() {
+    // Key Mapping
+    RegisterCommand("+unjam_weapon", this.unjamWeapon.bind(this), false);
+
     // Events
     onNet(LXEvents.Gunshot_Cl, this.EVENT_gunshot.bind(this));
   }
 
-  // Events
-  private async EVENT_gunshot(): Promise<void> {
-    let currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-    const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == currWeapon);
+  // Methods
+  private unjamWeapon(): void {
+    const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
 
-    if (jammedIndex === -1) {
-      if (currWeapon !== Weapons.Unarmed) {
+    if (jammedIndex !== -1) {
+      if (this.weapon !== Weapons.Unarmed) {
         // Shoots bullets
-        if (GetWeaponDamageType(currWeapon) == 3) {
-          const jamChance = randomBetween(1, 100);
-          if (jamChance <= clientConfig.controllers.weapons.jamming.blockPercentage) {
-            this.jammedWeapons.push(currWeapon);
-            const notify = new Notification("Weapon", "Your weapon has jammed!", NotificationTypes.Info);
-            await notify.send();
+        if (GetWeaponDamageType(this.weapon) == 3) {
+          if (!this.unjammingWeapon) {
+            this.unjammingWeapon = true;
 
-            if (this.jamTick == undefined) this.jamTick = setTick(async() => {
-              currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-              const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == currWeapon);
+            const currAmmoType = GetPedAmmoTypeFromWeapon(Game.PlayerPed.Handle, this.weapon);
+            let unjamLength;
+            let unjamDict;
 
-              if (jammedIndex !== -1) {
-                DisablePlayerFiring(Game.Player.Handle, true);
-                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
-                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Aim);
-                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Reload);
-                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
-                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
+            switch(currAmmoType) {
+              case AmmoType.Pistol:
+                unjamLength = 10000;
+                unjamDict = "anim@cover@weapon@reloads@pistol@flare";
+                break;
+              case AmmoType.SMG:
+                unjamLength = 15000;
+                unjamDict = "anim@cover@weapon@machinegun@gusenberg_str";
+                break;
+              case AmmoType.AssaultRifle:
+                unjamLength = 20000;
+                unjamDict = "anim@cover@weapon@reloads@rifle@spcarbine";
+                break;
+              case AmmoType.Shotgun:
+                unjamLength = 20000;
+                unjamDict = "anim@cover@weapon@reloads@rifle@dbshot";
+                break;
+              case AmmoType.Sniper:
+                unjamLength = 25000;
+                unjamDict = "cover@weapon@reloads@rifle@sniper_rifle";
+                break;
+            }
 
-                if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
-                  PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
-                  Screen.showSubtitle("~r~Weapon Jammed", 2000);
-                }
+            const progress = new Progress(unjamLength, {
+              combat: true
+            }, async() => {
+              ClearPedTasks(Game.PlayerPed.Handle);
+              this.unjammingWeapon = false;
+              const notify = new Notification("Weapon", "You stopped unjamming your weapon!", NotificationTypes.Error);
+              await notify.send();
+            }, async() => {
+              const loadedAnim = await LoadAnim(unjamDict);
+              if (loadedAnim) {
+                PlayAnim(Game.PlayerPed, unjamDict, "reload_low_left", 49, unjamLength, 8.0, -8.0, 0.0, false, false, false);
+              }
+            }, async() => {
+              StopAnimTask(Game.PlayerPed.Handle, unjamDict, "reload_low_left", 1.0);
+              MakePedReload(Game.PlayerPed.Handle);
+              this.jammedWeapons.splice(jammedIndex, 1);
 
-                if (!this.unjammingWeapon) {
-                  Screen.displayHelpTextThisFrame("~INPUT_DETONATE~ Unjam Weapon");
-                  if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Detonate)) {
-                    this.unjammingWeapon = true;
-
-                    const currAmmoType = GetPedAmmoTypeFromWeapon(Game.PlayerPed.Handle, currWeapon);
-                    let unjamLength;
-                    let unjamDict;
-
-                    switch(currAmmoType) {
-                      case AmmoType.Pistol:
-                        unjamLength = 10000;
-                        unjamDict = "anim@cover@weapon@reloads@pistol@flare";
-                        break;
-                      case AmmoType.SMG:
-                        unjamLength = 15000;
-                        unjamDict = "anim@cover@weapon@machinegun@gusenberg_str";
-                        break;
-                      case AmmoType.AssaultRifle:
-                        unjamLength = 20000;
-                        unjamDict = "anim@cover@weapon@reloads@rifle@spcarbine";
-                        break;
-                      case AmmoType.Shotgun:
-                        unjamLength = 20000;
-                        unjamDict = "anim@cover@weapon@reloads@rifle@dbshot";
-                        break;
-                      case AmmoType.Sniper:
-                        unjamLength = 25000;
-                        unjamDict = "cover@weapon@reloads@rifle@sniper_rifle";
-                        break;
-                    }
-
-                    const progress = new Progress(unjamLength, {
-                      combat: true
-                    }, async() => {
-                      ClearPedTasks(Game.PlayerPed.Handle);
-                      this.unjammingWeapon = false;
-                      const notify = new Notification("Weapon", "You stopped unjamming your weapon!", NotificationTypes.Error);
-                      await notify.send();
-                    }, async() => {
-                      const loadedAnim = await LoadAnim(unjamDict);
-                      if (loadedAnim) {
-                        PlayAnim(Game.PlayerPed, unjamDict, "reload_low_left", 49, unjamLength, 8.0, -8.0, 0.0, false, false, false);
-                      }
-                    }, async() => {
-                      StopAnimTask(Game.PlayerPed.Handle, unjamDict, "reload_low_left", 1.0);
-                      MakePedReload(Game.PlayerPed.Handle);
-                      this.jammedWeapons.splice(jammedIndex, 1);
-
-                      if (this.jammedWeapons.length <= 0) {
-                        if (this.jamTick !== undefined) {
-                          clearTick(this.jamTick);
-                          this.jamTick = undefined;
-                          this.unjammingWeapon = false;
-                        }
-                      }
-                      const notify = new Notification("Weapon", "You unjammed your weapon!", NotificationTypes.Info);
-                      await notify.send();
-                    })
-
-                    progress.start();
-                  }
+              if (this.jammedWeapons.length <= 0) {
+                if (this.jamTick !== undefined) {
+                  clearTick(this.jamTick);
+                  this.jamTick = undefined;
+                  this.unjammingWeapon = false;
                 }
               }
-            });
+              const notify = new Notification("Weapon", "You unjammed your weapon!", NotificationTypes.Info);
+              await notify.send();
+            })
+
+            progress.start();
           }
+        }
+      }
+    }
+  }
+
+  // Events
+  private async EVENT_gunshot(): Promise<void> {
+    this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+    const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
+
+    if (jammedIndex === -1) {
+      if (this.weapon !== Weapons.Unarmed) {
+        // Shoots bullets
+        if (GetWeaponDamageType(this.weapon) == 3) {
+          if (!this.jamAttempted) {
+            // console.log("not ran jam attempt");
+            this.jamAttempted = true;
+            const jamChance = randomBetween(1, 100);
+            if (jamChance <= clientConfig.controllers.weapons.jamming.blockPercentage) {
+              this.jammedWeapons.push(this.weapon);
+              const notify = new Notification("Weapon", "Your weapon has jammed!", NotificationTypes.Info);
+              await notify.send();
+
+              if (this.jamTick == undefined) this.jamTick = setTick(async() => {
+                this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+                const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
+
+                if (jammedIndex !== -1) {
+                  DisablePlayerFiring(Game.Player.Handle, true);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Aim);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Reload);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
+
+                  if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                    PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                    Screen.showSubtitle("~r~Weapon Jammed", 2000);
+                  }
+
+                  if (!this.unjammingWeapon) {
+                    Screen.displayHelpTextThisFrame("~y~Unjam your weapon");
+                  }
+                }
+              });
+            }
+
+            setTimeout(() => {
+              // console.log("set jam attempted back to false")
+              this.jamAttempted = false;
+            }, clientConfig.controllers.weapons.jamming.timeBetween);
+          }
+          // else {
+          //   console.log("can't run jam attempt until 20 second timeout is finished!");
+          // }
         }
       }
     }
