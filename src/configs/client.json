@@ -241,7 +241,8 @@
                 }
             },
             "jamming": {
-                "blockPercentage": 5
+                "blockPercentage": 5,
+                "timeBetween": 20000
             }
         },
         "vehicles": {

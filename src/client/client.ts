@@ -50,6 +50,7 @@ import { WeaponModes } from "./controllers/weapons/modes";
 import { SpamPreventor } from "./controllers/weapons/spamPreventor";
 import { WeaponRecoil } from "./controllers/weapons/recoil";
 import { WeaponDisablers } from "./controllers/weapons/disablers";
+import { WeaponJamming } from "./controllers/weapons/jamming";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
@@ -136,6 +137,7 @@ export class Client {
   private weaponSpamPreventor: SpamPreventor;
   private weaponRecoil: WeaponRecoil;
   public weaponDisablers: WeaponDisablers;
+  private weaponJamming: WeaponJamming;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -259,6 +261,7 @@ export class Client {
     this.weaponSpamPreventor = new SpamPreventor(client);
     this.weaponRecoil = new WeaponRecoil(client);
     this.weaponDisablers = new WeaponDisablers();
+    this.weaponJamming = new WeaponJamming();
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
