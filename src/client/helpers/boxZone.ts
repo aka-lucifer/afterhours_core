@@ -37,28 +37,28 @@ function calculatePoints(center: Vec3, length: number, width: number, minScale: 
   const halfLength = length / 2;
   const halfWidth = width / 2;
   let min = new Vector3(-halfWidth, -halfLength, 0.0);
-    let max = new Vector3(halfWidth, halfLength, 0.0);
+  let max = new Vector3(halfWidth, halfLength, 0.0);
 
-    min = min.multiply(minScale);
-    min = min.subtract(minOffset);
+  min = min.multiply(minScale);
+  min = min.subtract(minOffset);
 
-    max = max.multiply(maxScale);
-    const newMax = max.add(maxOffset);
+  max = max.multiply(maxScale);
+  const newMax = max.add(maxOffset);
 
-    // -- Box vertices
-    const centerXy = new Vector3(center.x, center.y, 0);
-    const p1 = new Vector3(min.x, min.y, 0).add(centerXy);
-    const p2 = new Vector3(newMax.x, min.y, 0).add(centerXy);
-    const p3 = new Vector3(newMax.x, newMax.y, 0).add(centerXy);
-    const p4 = new Vector3(min.x, newMax.y, 0).add(centerXy);
-    return [
-      p1, p2, p3, p4,
-    ];
-  }
+  // -- Box vertices
+  const centerXy = new Vector3(center.x, center.y, 0);
+  const p1 = new Vector3(min.x, min.y, 0).add(centerXy);
+  const p2 = new Vector3(newMax.x, min.y, 0).add(centerXy);
+  const p3 = new Vector3(newMax.x, newMax.y, 0).add(centerXy);
+  const p4 = new Vector3(min.x, newMax.y, 0).add(centerXy);
+  return [
+    p1, p2, p3, p4,
+  ];
+}
 
-  interface BoxZoneOptions {
-    box: {x: number, y: number, z: number, l: number, w: number}
-    options?: {
+interface BoxZoneOptions {
+  box: {x: number, y: number, z: number, l: number, w: number}
+  options?: {
     name?: string
     heading?: number
     scale?: [number?, number?, number?]

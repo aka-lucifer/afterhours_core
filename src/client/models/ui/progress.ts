@@ -14,7 +14,7 @@ interface ProgressDisablers {
 interface ProgressOptions {
   startPercentage?: number,
   stopPercentage?: number,
-  duratation?: number,
+  duration?: number,
   colour?: string,
   backgroundColour?: string,
   x?: number,
@@ -33,7 +33,7 @@ export class Progress {
   private disablers: ProgressDisablers;
 
   private options: ProgressOptions = {
-    duratation: 5000,
+    duration: 5000,
     colour: "white",
     backgroundColour: "rgba(255, 255, 255, 0.35)",
     x: 0.5,
@@ -60,7 +60,7 @@ export class Progress {
   private cancelled: boolean = false;
 
   constructor(duration: number, disablers: ProgressDisablers, onCancel?: CallableFunction, onStart?: CallableFunction, onFinish?: CallableFunction) {
-    this.options.duratation = duration;
+    this.options.duration = duration;
     this.options.controlDisablers = disablers;
     this.onCancel = onCancel;
     this.onStart = onStart;

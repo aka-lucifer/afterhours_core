@@ -68,7 +68,6 @@ import { SystemTypes } from "../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 
-
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
 
@@ -245,6 +244,7 @@ export class Client {
 
     // [Managers] Vehicle
     this.vehicleManager = new VehicleManager(client);
+    this.vehicleManager.init();
 
     // [Controllers] Police
     // this.cuffing = new CuffingStuff();
@@ -313,22 +313,6 @@ export class Client {
     this.weaponRemovers.start();
     // this.weaponRecoil.init();
     this.weaponDisablers.start();
-
-    RegisterCommand("progress_ui", () => {
-      const progress = new Progress(4000, {
-        mouse: true,
-        movement: true,
-        combat: true
-      }, () => {
-        console.log("cancelled!");
-      }, () => {
-        console.log("started!");
-      }, () => {
-        console.log("finished!");
-      })
-
-      progress.start();
-    }, false);
   }
 
   private registerStates(): void {

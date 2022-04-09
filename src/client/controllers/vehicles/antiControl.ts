@@ -56,6 +56,7 @@ export class AntiControl {
         if (currVeh.Model.IsCar) {
           if (currVeh.IsInAir) {
             Game.disableControlThisFrame(InputMode.GamePad, Control.VehicleMoveUpDown);
+            Game.disableControlThisFrame(InputMode.GamePad, Control.VehicleMoveLeftRight);
           } else {
             await Delay(500);
           }

@@ -8,6 +8,7 @@ import { VehicleWeapon } from "../controllers/vehicles/vehWeapon";
 import { AntiControl } from "../controllers/vehicles/antiControl";
 import { LeaveDoorOpen } from "../controllers/vehicles/leaveDoorOpen";
 import { CruiseControl } from "../controllers/vehicles/cruiseControl";
+import { RepairShops } from "../controllers/vehicles/repairShops";
 
 export class VehicleManager {
   private client: Client;
@@ -18,6 +19,7 @@ export class VehicleManager {
   private antiControl: AntiControl;
   private leaveDoorOpen: LeaveDoorOpen;
   private cruiseControl: CruiseControl;
+  private repairShops: RepairShops;
 
   constructor(client: Client) {
     this.client = client;
@@ -28,13 +30,20 @@ export class VehicleManager {
   }
 
   // Methods
-  public start(): void {
+  public init(): void {
     this.speedZones = new Speedzones(this.client);
     this.speedZones.init();
     this.weapon = new VehicleWeapon();
     this.antiControl = new AntiControl();
     this.leaveDoorOpen = new LeaveDoorOpen();
     this.cruiseControl = new CruiseControl();
+    this.repairShops = new RepairShops();
+    this.repairShops.init();
+  }
+
+  public start(): void {
+    this.speedZones.start();
+    this.repairShops.start();
   }
 
   // Events
