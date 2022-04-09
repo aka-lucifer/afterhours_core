@@ -78,43 +78,45 @@ export class WeaponModes {
       if (GetWeaponDamageType(currWeapon) == 3) {
         const index = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == currWeapon);
         if (index !== -1) {
-          // If current weapon undefined, set it
-          if (this.currentWeapon === undefined) {
-            this.currentWeapon = currWeapon;
+          if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+            // If current weapon undefined, set it
+            if (this.currentWeapon === undefined) {
+              this.currentWeapon = currWeapon;
+            }
+
+            // Update weapon state
+            const oldState = this.currentState;
+            if ((this.currentState + 1) > (Object.keys(Modes).length / 2) - 1) {
+              this.currentState = 0;
+            } else {
+              this.currentState++;
+            }
+
+            // console.log("update state", oldState, this.currentState, Object.keys(Modes).length / 2);
+
+            // If a weapon entry doesn't exist in the array, create it, if it does update the weapons state in there
+            const [weaponEntry, weaponIndex] = await this.weaponExists();
+            // console.log("weapon findIndex data", weaponEntry, weaponIndex, this.weapons[weaponIndex]);
+            if (weaponEntry) {
+              this.weapons[weaponIndex].state = this.currentState;
+              // console.log("set to next weapon state in weapons array!");
+            } else {
+              // console.log("weapon not found, insert it!");
+              this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
+            }
+
+            // if (this.currentState == Modes.Automatic) {
+            //   console.log("automatic firing mode init!");
+            // } else if (this.currentState == Modes.Burst) {
+            //   console.log("initiate burst tick, maybe make a method and have the tick run it");
+            // } else if (this.currentState == Modes.Single) {
+            //   console.log("initiate single tick, maybe make a method and have the tick run it");
+            // }
+
+            const notify = new Notification("Firing Modes", `Firing mode switched to ${Modes[this.currentState]}`, NotificationTypes.Info);
+            await notify.send();
+            PlaySoundFrontend(-1, "Place_Prop_Success", "DLC_Dmod_Prop_Editor_Sounds", false);
           }
-
-          // Update weapon state
-          const oldState = this.currentState;
-          if ((this.currentState + 1) > (Object.keys(Modes).length / 2) - 1) {
-            this.currentState = 0;
-          } else {
-            this.currentState++;
-          }
-
-          // console.log("update state", oldState, this.currentState, Object.keys(Modes).length / 2);
-
-          // If a weapon entry doesn't exist in the array, create it, if it does update the weapons state in there
-          const [weaponEntry, weaponIndex] = await this.weaponExists();
-          // console.log("weapon findIndex data", weaponEntry, weaponIndex, this.weapons[weaponIndex]);
-          if (weaponEntry) {
-            this.weapons[weaponIndex].state = this.currentState;
-            // console.log("set to next weapon state in weapons array!");
-          } else {
-            // console.log("weapon not found, insert it!");
-            this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
-          }
-
-          // if (this.currentState == Modes.Automatic) {
-          //   console.log("automatic firing mode init!");
-          // } else if (this.currentState == Modes.Burst) {
-          //   console.log("initiate burst tick, maybe make a method and have the tick run it");
-          // } else if (this.currentState == Modes.Single) {
-          //   console.log("initiate single tick, maybe make a method and have the tick run it");
-          // }
-
-          const notify = new Notification("Firing Modes", `Firing mode switched to ${Modes[this.currentState]}`, NotificationTypes.Info);
-          await notify.send();
-          PlaySoundFrontend(-1, "Place_Prop_Success", "DLC_Dmod_Prop_Editor_Sounds", false);
         } else {
           console.log("this weapon doesn't support multiple firing modes!");
         }
@@ -134,43 +136,45 @@ export class WeaponModes {
       if (GetWeaponDamageType(currWeapon) == 3) {
         const index = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == currWeapon);
         if (index !== -1) {
-          // If current weapon undefined, set it
-          if (this.currentWeapon === undefined) {
-            this.currentWeapon = currWeapon;
+          if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+            // If current weapon undefined, set it
+            if (this.currentWeapon === undefined) {
+              this.currentWeapon = currWeapon;
+            }
+
+            // Update weapon state
+            const oldState = this.currentState;
+            if ((this.currentState - 1) < 0) {
+              this.currentState = (Object.keys(Modes).length / 2) - 1;
+            } else {
+              this.currentState--;
+            }
+
+            // console.log("update state", oldState, this.currentState, Object.keys(Modes).length / 2);
+
+            // If a weapon entry doesn't exist in the array, create it, if it does update the weapons state in there
+            const [weaponEntry, weaponIndex] = await this.weaponExists();
+            // console.log("weapon findIndex data", weaponEntry, weaponIndex, this.weapons[weaponIndex]);
+            if (weaponEntry) {
+              this.weapons[weaponIndex].state = this.currentState;
+              // console.log("set to next weapon state in weapons array!");
+            } else {
+              // console.log("weapon not found, insert it!");
+              this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
+            }
+
+            // if (this.currentState == Modes.Automatic) {
+            //   console.log("automatic firing mode init!");
+            // } else if (this.currentState == Modes.Burst) {
+            //   console.log("initiate burst tick, maybe make a method and have the tick run it");
+            // } else if (this.currentState == Modes.Single) {
+            //   console.log("initiate single tick, maybe make a method and have the tick run it");
+            // }
+
+            const notify = new Notification("Firing Modes", `Firing mode switched to ${Modes[this.currentState]}`, NotificationTypes.Info);
+            await notify.send();
+            PlaySoundFrontend(-1, "Place_Prop_Success", "DLC_Dmod_Prop_Editor_Sounds", false);
           }
-
-          // Update weapon state
-          const oldState = this.currentState;
-          if ((this.currentState - 1) < 0) {
-            this.currentState = (Object.keys(Modes).length / 2) - 1;
-          } else {
-            this.currentState--;
-          }
-
-          // console.log("update state", oldState, this.currentState, Object.keys(Modes).length / 2);
-
-          // If a weapon entry doesn't exist in the array, create it, if it does update the weapons state in there
-          const [weaponEntry, weaponIndex] = await this.weaponExists();
-          // console.log("weapon findIndex data", weaponEntry, weaponIndex, this.weapons[weaponIndex]);
-          if (weaponEntry) {
-            this.weapons[weaponIndex].state = this.currentState;
-            // console.log("set to next weapon state in weapons array!");
-          } else {
-            // console.log("weapon not found, insert it!");
-            this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
-          }
-
-          // if (this.currentState == Modes.Automatic) {
-          //   console.log("automatic firing mode init!");
-          // } else if (this.currentState == Modes.Burst) {
-          //   console.log("initiate burst tick, maybe make a method and have the tick run it");
-          // } else if (this.currentState == Modes.Single) {
-          //   console.log("initiate single tick, maybe make a method and have the tick run it");
-          // }
-
-          const notify = new Notification("Firing Modes", `Firing mode switched to ${Modes[this.currentState]}`, NotificationTypes.Info);
-          await notify.send();
-          PlaySoundFrontend(-1, "Place_Prop_Success", "DLC_Dmod_Prop_Editor_Sounds", false);
         } else {
           console.log("this weapon doesn't support multiple firing modes!");
         }
@@ -188,63 +192,65 @@ export class WeaponModes {
     if (this.currentWeapon !== Weapons.Unarmed) {
       // Shoots bullets
       if (GetWeaponDamageType(this.currentWeapon) == 3) {
-        this.safetyActive = !this.safetyActive;
-        const [weaponEntry, weaponIndex] = await this.weaponExists();
-        let wepIndex = weaponIndex;
-        // console.log("weapon findIndex data", weaponEntry, wepIndex, this.weapons[wepIndex]);
-        if (weaponEntry) {
-          this.weapons[wepIndex].safety = this.safetyActive;
-          // console.log("set safety to", this.safetyActive);
-        } else {
-          // console.log("weapon not found, insert it!");
-          this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
-          wepIndex = this.weapons.length - 1;
-          console.log("index", wepIndex, this.weapons);
-        }
+        if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+          this.safetyActive = !this.safetyActive;
+          const [weaponEntry, weaponIndex] = await this.weaponExists();
+          let wepIndex = weaponIndex;
+          // console.log("weapon findIndex data", weaponEntry, wepIndex, this.weapons[wepIndex]);
+          if (weaponEntry) {
+            this.weapons[wepIndex].safety = this.safetyActive;
+            // console.log("set safety to", this.safetyActive);
+          } else {
+            // console.log("weapon not found, insert it!");
+            this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
+            wepIndex = this.weapons.length - 1;
+            console.log("index", wepIndex, this.weapons);
+          }
 
-        if (this.weapons[wepIndex].safety) {
-          const notify = new Notification("Weapon", `Safety toggled!`, NotificationTypes.Info);
-          await notify.send();
+          if (this.weapons[wepIndex].safety) {
+            const notify = new Notification("Weapon", `Safety toggled!`, NotificationTypes.Info);
+            await notify.send();
+            
+            // console.log("safety on")
+            if (this.safetyTick === undefined) this.safetyTick = setTick(async() => {
+              // console.log("running safety tick!");
+              this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
           
-          // console.log("safety on")
-          if (this.safetyTick === undefined) this.safetyTick = setTick(async() => {
-            // console.log("running safety tick!");
-            this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-        
-            if (this.currentWeapon !== Weapons.Unarmed) {
-              // Shoots bullets
-              if (GetWeaponDamageType(this.currentWeapon) == 3) {
-                const currWeapData = await this.getWeaponFromHash();
-                if (currWeapData) {
-                  if (currWeapData.safety) {
-                    if (this.safetyActive !== currWeapData.safety) {
-                      this.safetyActive = currWeapData.safety;
-                    }
-                    
-                    // console.log("disable thing!");
-                    DisablePlayerFiring(Game.Player.Handle, true);
+              if (this.currentWeapon !== Weapons.Unarmed) {
+                // Shoots bullets
+                if (GetWeaponDamageType(this.currentWeapon) == 3) {
+                  const currWeapData = await this.getWeaponFromHash();
+                  if (currWeapData) {
+                    if (currWeapData.safety) {
+                      if (this.safetyActive !== currWeapData.safety) {
+                        this.safetyActive = currWeapData.safety;
+                      }
+                      
+                      // console.log("disable thing!");
+                      DisablePlayerFiring(Game.Player.Handle, true);
 
-                    if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
-                      PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
-                      Screen.showSubtitle("~y~Safety Active", 2000);
+                      if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                        PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                        Screen.showSubtitle("~y~Safety Active", 2000);
+                      }
+                    } else {
+                      // console.log("current weapon doesn't have safety toggled!");
                     }
                   } else {
-                    // console.log("current weapon doesn't have safety toggled!");
+                    this.weapons.push(new Weapon(this.currentWeapon, Modes.Automatic, false));
+                    wepIndex = this.weapons.length - 1;
+                    console.log("index 2", wepIndex, this.weapons);
                   }
-                } else {
-                  this.weapons.push(new Weapon(this.currentWeapon, Modes.Automatic, false));
-                  wepIndex = this.weapons.length - 1;
-                  console.log("index 2", wepIndex, this.weapons);
                 }
               }
-            }
-          });
-        } else {
-          clearTick(this.safetyTick);
-          this.safetyTick = undefined;
-          
-          const notify = new Notification("Weapon", `Safety disabled!`, NotificationTypes.Info);
-          await notify.send();
+            });
+          } else {
+            clearTick(this.safetyTick);
+            this.safetyTick = undefined;
+            
+            const notify = new Notification("Weapon", `Safety disabled!`, NotificationTypes.Info);
+            await notify.send();
+          }
         }
       }
     }
