@@ -1,4 +1,4 @@
-import {Entity, Game, VehicleSeat, World} from "fivem-js"
+import {Entity, Game, Vehicle, VehicleSeat, World} from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -31,16 +31,16 @@ import {Warnings} from "./managers/ui/warnings";
 import {Commends} from "./managers/ui/commends";
 import { MenuManager } from "./managers/ui/menu";
 
-// [Managers] Jobs
+// [Managers] Job
 import { JobManager } from "./managers/job";
+
+// [Managers] Vehicle
+import { VehicleManager } from "./managers/vehicle";
 
 // [Controllers] Police
 // import {CuffingStuff} from "./controllers/jobs/police/cuffing";
 // import {HelicamManager} from "./controllers/jobs/police/helicam";
 import { Grabbing } from "./controllers/jobs/police/grabbing";
-
-// [Controllers] Vehicle
-import { Speedzones } from "./controllers/vehicles/speedzones";
 
 // [Controllers] Weapon
 import { WeaponRemovers } from "./controllers/weapons/removers";
@@ -118,16 +118,16 @@ export class Client {
   private commends: Commends;
   public menuManager: MenuManager;
 
-  // [Managers] Jobs
+  // [Managers] Job
   private jobManager: JobManager;
+
+  // [Managers] Vehicle
+  public vehicleManager: VehicleManager;
 
   // [Controllers] Police
   // private cuffing: CuffingStuff;
   // private helicam: HelicamManager;
   private grabbing: Grabbing;
-
-  // [Controllers] Vehicle
-  private speedZones: Speedzones;
 
   // [Controllers] Weapons
   private weaponRemovers: WeaponRemovers;
@@ -240,17 +240,16 @@ export class Client {
     this.commends = new Commends(client);
     this.menuManager = new MenuManager(client);
 
-    // [Managers] Jobs
+    // [Managers] Job
     this.jobManager = new JobManager(client);
+
+    // [Managers] Vehicle
+    this.vehicleManager = new VehicleManager(client);
 
     // [Controllers] Police
     // this.cuffing = new CuffingStuff();
     // this.helicam = new HelicamManager(client);
     this.grabbing = new Grabbing();
-
-    // [Controllers] Vehicle
-    this.speedZones = new Speedzones(client);
-    this.speedZones.init();
     
     // [Controllers] Weapon
     this.weaponRemovers = new WeaponRemovers(client);
@@ -307,18 +306,13 @@ export class Client {
 
     // Managers Inits
     this.aopManager.init();
-    this.safezoneManager.start();
-
-    // Controllers Inits
+    this.vehicleManager.start();
     this.safezoneManager.start();
 
     // Weapons
     this.weaponRemovers.start();
-    this.weaponRecoil.init();
+    // this.weaponRecoil.init();
     this.weaponDisablers.start();
-
-    // Vehicles
-    this.speedZones.init();
 
     RegisterCommand("progress_ui", () => {
       const progress = new Progress(4000, {
@@ -391,6 +385,7 @@ export class Client {
   private EVENT_resourceStop(resourceName: string): void{
     if (resourceName == GetCurrentResourceName()) {
       this.grabbing.stop();
+      // this.vehicleWeapon.stop();
     }
   }
 

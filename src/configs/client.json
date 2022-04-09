@@ -274,9 +274,18 @@
                 "aimedShotMult": 0.5,
                 "silencerSubtractor": 0.5,
                 "gripSubtractor": 0.5,
-                "crouchSubtractor": 0.25
+                "crouchSubtractor": 0.25,
+                "vehRecoil": 0.75
             },
             "disablers": {
+                "antiRolling": {
+                    "damageTypes": [
+                        3,
+                        5,
+                        6,
+                        12
+                    ]
+                },
                 "antiPunch": {
                     "time": 2500
                 }
