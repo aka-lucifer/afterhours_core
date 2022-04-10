@@ -1,5 +1,6 @@
 import { client } from "./client";
-import { Vector3, Ped, World, Font, Game, Vehicle } from "fivem-js";
+import { Vector3, Ped, World, Font, Game, Vehicle, VehicleSeat } from "fivem-js";
+import { NuiMessages } from "../shared/enums/ui/nuiMessages";
 
 /**
  * @param reference Title for organisation logs
@@ -469,4 +470,77 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
   DoScreenFadeIn(500);
   SetGameplayCamRelativePitch(0.0, 1.0);
   return success;
+}
+
+const seats = [
+  -1,
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14
+]
+
+const seatsList = {
+  "-1": "Driver",
+  "0": "Passenger",
+  "1": "Rear Left",
+  "2": "Rear Right", 
+  "3": "ExtraSeat1",
+  "4": "ExtraSeat2",
+  "5": "ExtraSeat3", 
+  "6": "ExtraSeat4", 
+  "7": "ExtraSeat5", 
+  "8": "ExtraSeat6", 
+  "9": "ExtraSeat7", 
+  "10": "ExtraSeat8", 
+  "11": "ExtraSeat9", 
+  "12": "ExtraSeat10", 
+  "13": "ExtraSeat11", 
+  "14": "ExtraSeat12",
+  "15": "ExtraSeat13",
+  "16": "ExtraSeat14"
+}
+
+interface Passenger {
+  seat: number,
+  playerId: number,
+  netId: number
+}
+
+/**
+ * 
+ * @param vehicle Vehicle to return the current passengers
+ * @returns The current passengers inside a vehicle, containing the seat label, player & server ID
+ */
+export async function getVehPassengers(vehicle: Vehicle): Promise<Passenger[]> {
+  const passengers: Passenger[] = [];
+  const maxSeats = GetVehicleMaxNumberOfPassengers(vehicle.Handle) + 1; // Get all passenger seats, plus driver seat
+
+  // Loop through all seats and all vehicle seats.
+  for (let i = 0; i < seats.length && i < maxSeats; i++) {
+    const seatFree = vehicle.isSeatFree(seats[i]);
+    if (!seatFree) {
+      const passenger = vehicle.getPedOnSeat(seats[i]);
+      const player = NetworkGetPlayerIndexFromPed(passenger.Handle);
+
+      passengers.push({
+        seat: seatsList[seats[i]],
+        playerId: player,
+        netId: GetPlayerServerId(player)
+      })
+    }
+  }
+
+  return passengers;
 }
