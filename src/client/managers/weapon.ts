@@ -13,6 +13,7 @@ import { SpamPreventor } from "../controllers/weapons/spamPreventor";
 import { WeaponRecoil } from "../controllers/weapons/recoil";
 import { WeaponDisablers } from "../controllers/weapons/disablers";
 import { WeaponJamming } from "../controllers/weapons/jamming";
+import { Taser } from "../controllers/weapons/taser";
 
 export class WeaponManager {
   private client: Client;
@@ -26,6 +27,7 @@ export class WeaponManager {
   public recoil: WeaponRecoil;
   public disablers: WeaponDisablers;
   public jamming: WeaponJamming;
+  private taser: Taser;
 
   constructor(client: Client) {
     this.client = client;
@@ -41,6 +43,7 @@ export class WeaponManager {
     this.recoil = new WeaponRecoil(this.client);
     this.disablers = new WeaponDisablers();
     this.jamming = new WeaponJamming();
+    this.taser = new Taser();
   }
 
   public start(): void {

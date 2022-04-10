@@ -209,7 +209,7 @@
                 ]
             },
             "spamPreventor": {
-                "holdCount": 100
+                "holdCount": 40
             },
             "recoil": {
                 "baseRecoil": 0.5,
@@ -241,8 +241,38 @@
                 }
             },
             "jamming": {
+                "weaponWhitelist": [
+                  "WEAPON_STUNGUN",
+                  "WEAPON_FLAREGUN",
+                  "WEAPON_RAYPISTOL",
+                  "WEAPON_RAYCARBINE",
+                  "WEAPON_MUSKET",
+
+                  "WEAPON_MINIGUN",
+                  "WEAPON_RPG",
+                  "WEAPON_STINGER",
+                  "WEAPON_FIREWORK",
+                  "WEAPON_HOMINGLAUNCHER",
+                  "WEAPON_GRENADELAUNCHER",
+                  "WEAPON_RAILGUN",
+                  "WEAPON_COMPACTLAUNCHER",
+                  "WEAPON_RAYMINIGUN",
+                  "WEAPON_FLAREGUN",
+                  "WEAPON_DBSHOTGUN",
+                  "WEAPON_MUSKET"
+
+                ],
                 "blockPercentage": 5,
                 "timeBetween": 20000
+            },
+            "taser": {
+              "laser": {
+                "colour": {
+                  "r": 255,
+                  "g": 0,
+                  "b": 0
+                }
+              }
             }
         },
         "vehicles": {
