@@ -78,7 +78,10 @@ export enum Weapons {
   X26Tazer = 911657153,
   SwitchBlade = -538741184,
   VintagePistol = 137902532,
-  Wrench = 419712736
+  Wrench = 419712736,
+  UpNAtomizer = 2939590305,
+  UnholyHellbringer = 1198256469,
+  Widowmaker = 3056410471
 }
 
 export enum AddonWeapons {
