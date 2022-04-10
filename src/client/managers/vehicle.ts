@@ -12,6 +12,7 @@ import { LeaveDoorOpen } from "../controllers/vehicles/leaveDoorOpen";
 import { CruiseControl } from "../controllers/vehicles/cruiseControl";
 import { RepairShops } from "../controllers/vehicles/repairShops";
 import { GPS } from "../controllers/vehicles/gps";
+import { KeepWheel } from "../controllers/vehicles/keepWheel";
 
 export class VehicleManager {
   private client: Client;
@@ -24,6 +25,7 @@ export class VehicleManager {
   private cruiseControl: CruiseControl;
   private repairShops: RepairShops;
   private gps: GPS;
+  private keepWheel: KeepWheel;
 
   constructor(client: Client) {
     this.client = client;
@@ -36,14 +38,16 @@ export class VehicleManager {
   // Methods
   public init(): void {
     this.speedZones = new Speedzones(this.client);
-    this.speedZones.init();
     this.weapon = new VehicleWeapon();
     this.antiControl = new AntiControl();
     this.leaveDoorOpen = new LeaveDoorOpen();
     this.cruiseControl = new CruiseControl();
     this.repairShops = new RepairShops();
-    this.repairShops.init();
     this.gps = new GPS();
+    this.keepWheel = new KeepWheel();
+
+    this.speedZones.init();
+    this.repairShops.init();
     this.gps.init();
   }
 
@@ -57,11 +61,13 @@ export class VehicleManager {
     if (!this.antiControl.RollStarted) this.antiControl.startRoll();
     if (!this.antiControl.AirStarted) this.antiControl.startAir();
     if(!this.leaveDoorOpen.Started) this.leaveDoorOpen.start();
+    if (!this.keepWheel.Started) this.keepWheel.start();
   }
   
   private EVENT_leftVeh(): void {
     if (this.antiControl.RollStarted) this.antiControl.stopRoll();
     if (this.antiControl.AirStarted) this.antiControl.stopAir();
     if(this.leaveDoorOpen.Started) this.leaveDoorOpen.stop();
+    // if (this.keepWheel.Started) this.keepWheel.start();
   }
 }
