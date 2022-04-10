@@ -235,6 +235,32 @@ export class MenuManager {
     }
   }
 
+  public UpdateState(checkboxHandle: string, newState: boolean): void {
+    for (const [key, value] of Object.entries(components)) {
+      if (key == checkboxHandle) {
+        value.state = newState;
+        break;
+      }
+    }
+
+    for (const [key, value] of Object.entries(menus)) {
+      const componentIndex = value.components.findIndex(foundMenu => foundMenu.index == checkboxHandle);
+      if (componentIndex != -1) {
+        value.components[componentIndex].state = newState;
+
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.SetCheckboxState,
+          data: {
+            id: checkboxHandle,
+            state: newState
+          }
+        }))
+              
+        return;
+      }
+    }
+  }
+
   public hide(): void {
     this.menuHidden = true;
 
