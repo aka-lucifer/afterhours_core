@@ -12,6 +12,7 @@ export enum SystemTypes {
   Error = "error",
   Success = "success",
   Dispatch = "dispatch", // Red dispatch message
+  GPS = "gps", // Yellow GPS message
   Announcement = "announcement",
   Admin = "adminAction",
   Advert = "advert", // Requires you to pass player name param to client
