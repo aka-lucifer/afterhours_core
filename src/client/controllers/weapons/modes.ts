@@ -1,6 +1,6 @@
-import { Control, Game, InputMode, Screen } from "fivem-js";
+import { Color, Control, Entity, Game, InputMode, MarkerType, Ped, Screen, Vector3, World } from "fivem-js";
 
-import { GetHash, Delay, Inform } from "../../utils";
+import { GetHash, Delay, Inform, NumToVector3 } from "../../utils";
 import { Client } from "../../client";
 
 import { Notification } from "../../models/ui/notification";
@@ -80,7 +80,7 @@ export class WeaponModes {
       if (GetWeaponDamageType(currWeapon) == 3) {
         const index = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == currWeapon);
         if (index !== -1) {
-          if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+          if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false) && !IsPauseMenuActive()) {
             // If current weapon undefined, set it
             if (this.currentWeapon === undefined) {
               this.currentWeapon = currWeapon;
@@ -138,7 +138,7 @@ export class WeaponModes {
       if (GetWeaponDamageType(currWeapon) == 3) {
         const index = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == currWeapon);
         if (index !== -1) {
-          if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+          if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false) && !IsPauseMenuActive()) {
             // If current weapon undefined, set it
             if (this.currentWeapon === undefined) {
               this.currentWeapon = currWeapon;
@@ -194,7 +194,7 @@ export class WeaponModes {
     if (this.currentWeapon !== Weapons.Unarmed) {
       // Shoots bullets
       if (GetWeaponDamageType(this.currentWeapon) == 3) {
-        if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+        if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false) && !IsPauseMenuActive()) {
           this.safetyActive = !this.safetyActive;
           const [weaponEntry, weaponIndex] = await this.weaponExists();
           let wepIndex = weaponIndex;
