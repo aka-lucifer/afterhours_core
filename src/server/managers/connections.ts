@@ -135,6 +135,11 @@ export class ConnectionsManager {
         "version": "1.3",
         "body": [
           {
+              "type":"Image",
+              "url": "https://i.imgur.com/ca5O3ag.png",
+              "horizontalAlignment":"Center"
+          },
+          {
             "type": "Container",
             "items": [
               {
@@ -144,12 +149,6 @@ export class ConnectionsManager {
                 "size": "Large",
                 "weight": "Bolder",
                 "color": "Light"
-              },
-              {
-                "type": "Image",
-                "url": "https://i.imgur.com/Miq0Jd4.png",
-                "size": "300px",
-                "horizontalAlignment": "center"
               },
               {
                 "type": "TextBlock",
