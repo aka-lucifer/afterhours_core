@@ -66,26 +66,26 @@ export class WeaponRemovers {
         // If the weapon is a roll weapon
         if (this.rollArmed) {
           // If the combat roll disabler tick isn't running, and we're armed with a roll weapon, start it
-          if (!this.client.weaponDisablers.RollActive) {
+          if (!this.client.weaponManager.disablers.RollActive) {
             await Delay(200); // Wait 0.2 seconds as we may not have access to this weapon, due to our rank
 
             // If the weapon is still on our ped
             if (GetSelectedPedWeapon(myPed.Handle) !== Weapons.Unarmed) {
-              this.client.weaponDisablers.startRoll();
+              this.client.weaponManager.disablers.startRoll();
             }
           }
 
-          if (this.client.weaponDisablers.PunchActive) {
-            this.client.weaponDisablers.stopPunch();
+          if (this.client.weaponManager.disablers.PunchActive) {
+            this.client.weaponManager.disablers.stopPunch();
           }
         } else {
           // If the combat roll disabler tick is running
-          if (this.client.weaponDisablers.RollActive) {
-            this.client.weaponDisablers.stopRoll();
+          if (this.client.weaponManager.disablers.RollActive) {
+            this.client.weaponManager.disablers.stopRoll();
           }
 
-          if (!this.client.weaponDisablers.PunchActive) {
-            this.client.weaponDisablers.startPunch();
+          if (!this.client.weaponManager.disablers.PunchActive) {
+            this.client.weaponManager.disablers.startPunch();
           }
         }
 

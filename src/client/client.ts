@@ -37,20 +37,13 @@ import { JobManager } from "./managers/job";
 // [Managers] Vehicle
 import { VehicleManager } from "./managers/vehicle";
 
+// [Managers] Vehicle
+import { WeaponManager } from "./managers/weapon";
+
 // [Controllers] Police
 // import {CuffingStuff} from "./controllers/jobs/police/cuffing";
 // import {HelicamManager} from "./controllers/jobs/police/helicam";
 import { Grabbing } from "./controllers/jobs/police/grabbing";
-
-// [Controllers] Weapon
-import { WeaponRemovers } from "./controllers/weapons/removers";
-import { Disarmer } from "./controllers/weapons/disarmer";
-import { Reloading } from "./controllers/weapons/reloading";
-import { WeaponModes } from "./controllers/weapons/modes";
-import { SpamPreventor } from "./controllers/weapons/spamPreventor";
-import { WeaponRecoil } from "./controllers/weapons/recoil";
-import { WeaponDisablers } from "./controllers/weapons/disablers";
-import { WeaponJamming } from "./controllers/weapons/jamming";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
@@ -124,20 +117,13 @@ export class Client {
   // [Managers] Vehicle
   public vehicleManager: VehicleManager;
 
+  // [Managers] Weapon
+  public weaponManager: WeaponManager;
+
   // [Controllers] Police
   // private cuffing: CuffingStuff;
   // private helicam: HelicamManager;
   private grabbing: Grabbing;
-
-  // [Controllers] Weapons
-  private weaponRemovers: WeaponRemovers;
-  private weaponDisamers: Disarmer;
-  private weaponReloading: Reloading;
-  private weaponModes: WeaponModes;
-  private weaponSpamPreventor: SpamPreventor;
-  private weaponRecoil: WeaponRecoil;
-  public weaponDisablers: WeaponDisablers;
-  private weaponJamming: WeaponJamming;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -248,20 +234,14 @@ export class Client {
     this.vehicleManager = new VehicleManager(client);
     this.vehicleManager.init();
 
+    // [Managers] Weapon
+    this.weaponManager = new WeaponManager(client);
+    this.weaponManager.init();
+
     // [Controllers] Police
     // this.cuffing = new CuffingStuff();
     // this.helicam = new HelicamManager(client);
     this.grabbing = new Grabbing();
-    
-    // [Controllers] Weapon
-    this.weaponRemovers = new WeaponRemovers(client);
-    this.weaponDisamers = new Disarmer(client);
-    this.weaponReloading = new Reloading(client);
-    this.weaponModes = new WeaponModes(client);
-    this.weaponSpamPreventor = new SpamPreventor(client);
-    this.weaponRecoil = new WeaponRecoil(client);
-    this.weaponDisablers = new WeaponDisablers();
-    this.weaponJamming = new WeaponJamming();
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
@@ -311,11 +291,6 @@ export class Client {
     this.aopManager.init();
     this.vehicleManager.start();
     this.safezoneManager.start();
-
-    // Weapons
-    this.weaponRemovers.start();
-    // this.weaponRecoil.init();
-    this.weaponDisablers.start();
   }
 
   private registerStates(): void {
