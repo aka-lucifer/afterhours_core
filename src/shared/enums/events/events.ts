@@ -43,6 +43,9 @@ export enum Events {
   setAOP = "astrid:server:setAOP",
   setCycling = "astrid:server:setCycling",
 
+  // Astrid Server ([Vehicle] - GPS)
+  syncGPS = "astrid:server:syncGPS",
+
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
 
@@ -93,6 +96,12 @@ export enum Events {
   syncAOPCycling = "astrid:client:syncAOPCycling",
   updateCycling = "astrid:client:updateCycling",
   aopMenu = "astrid:client:aopMenu",
+
+  // Astrid Client ([Vehicle] - GPS)
+  setGPS = "astrid:client:setGPS",
+  listStreets = "astrid:client:listStreets",
+  clearGPS = "astrid:client:clearGPS",
+  updateGPS = "astrid:client:updateGPS",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

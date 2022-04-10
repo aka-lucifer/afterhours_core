@@ -1,8 +1,12 @@
+import { VehicleSeat } from "fivem-js";
+
 import { Server } from "../server";
 import { Delay, GetHash } from "../utils";
 
 import { Command } from "../models/ui/chat/command";;
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
+
+import { GPS } from "../controllers/vehicles/gps";
 
 import { LogTypes } from "../enums/logTypes";
 
@@ -11,18 +15,20 @@ import { Events } from "../../shared/enums/events/events";
 import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
 import { EmbedColours } from "../../shared/enums/logging/embedColours";
 import { ErrorCodes } from "../../shared/enums/logging/errors";
+import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
+import { Jobs } from "../../shared/enums/jobs/jobs";
+import { SystemTypes } from "../../shared/enums/ui/chat/types";
+import { Message } from "../../shared/models/ui/chat/message";
 
 import serverConfig from "../../configs/server.json";
 import sharedConfig from "../../configs/shared.json";
-import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
-import { Jobs } from "../../shared/enums/jobs/jobs";
-import { VehicleSeat } from "fivem-js";
-import { Message } from "../../shared/models/ui/chat/message";
-import { SystemTypes } from "../../shared/enums/ui/chat/types";
 
 export class VehicleManager {
   public server: Server;
   private worldVehicles: number[] = [];
+
+  // Controllers
+  private gps: GPS;
 
   constructor(server: Server) {
     this.server = server;
@@ -34,6 +40,8 @@ export class VehicleManager {
 
   // Methods
   public async init(): Promise<void> {
+    this.gps = new GPS(this.server);
+    this.gps.init();
 
     this.registerCommands();
   }
