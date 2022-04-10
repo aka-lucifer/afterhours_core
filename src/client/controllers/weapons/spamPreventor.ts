@@ -34,21 +34,23 @@ export class SpamPreventor {
       if (GetWeaponDamageType(this.currentWeapon) == 3) {
         // const configIndex = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == this.currentWeapon);
         const weaponData = sharedConfig.weapons[this.currentWeapon];
-        if (weaponData.ammoType == "AMMO_PISTOL" || weaponData.ammoType == "AMMO_SHOTGUN" || weaponData.ammoType == "AMMO_SNIPER") {
-          while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
-            await Delay(10);
-            if (this.holdCount < this.holdMaxCount) {
-              this.holdCount++;
-            } else {
-              Screen.displayHelpTextThisFrame("~r~Release the trigger to fire again!");
+        if (weaponData !== undefined) {
+          if (weaponData.ammoType == "AMMO_PISTOL" || weaponData.ammoType == "AMMO_SHOTGUN" || weaponData.ammoType == "AMMO_SNIPER") {
+            while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
+              await Delay(10);
+              if (this.holdCount < this.holdMaxCount) {
+                this.holdCount++;
+              } else {
+                Screen.displayHelpTextThisFrame("~r~Release the trigger to fire again!");
+              }
+
+              DisablePlayerFiring(Game.Player.Handle, true);
+              // console.log("still holding fire button!");
             }
 
-            DisablePlayerFiring(Game.Player.Handle, true);
-            // console.log("still holding fire button!");
+            this.holdCount = 0;
+            // console.log("released trigger")
           }
-
-          this.holdCount = 0;
-          // console.log("released trigger")
         }
       }
     }
