@@ -1,3 +1,5 @@
+import { Game } from "fivem-js";
+
 import { Client } from "../client";
 
 import { LXEvents } from "../../shared/enums/events/lxEvents";
@@ -9,6 +11,7 @@ import { AntiControl } from "../controllers/vehicles/antiControl";
 import { LeaveDoorOpen } from "../controllers/vehicles/leaveDoorOpen";
 import { CruiseControl } from "../controllers/vehicles/cruiseControl";
 import { RepairShops } from "../controllers/vehicles/repairShops";
+import { GPS } from "../controllers/vehicles/gps";
 
 export class VehicleManager {
   private client: Client;
@@ -20,6 +23,7 @@ export class VehicleManager {
   private leaveDoorOpen: LeaveDoorOpen;
   private cruiseControl: CruiseControl;
   private repairShops: RepairShops;
+  private gps: GPS;
 
   constructor(client: Client) {
     this.client = client;
@@ -39,6 +43,8 @@ export class VehicleManager {
     this.cruiseControl = new CruiseControl();
     this.repairShops = new RepairShops();
     this.repairShops.init();
+    this.gps = new GPS();
+    this.gps.init();
   }
 
   public start(): void {
