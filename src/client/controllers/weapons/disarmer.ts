@@ -1,6 +1,7 @@
 import { Bone, Game, Ped } from "fivem-js";
 
 import { Client } from "../../client";
+import { Inform } from "../../utils";
 
 import { Notification } from "../../models/ui/notification";
 
@@ -16,6 +17,8 @@ export class Disarmer {
 
     // Events
     onNet(Events.gameEventTriggered, this.gameEvent.bind(this));
+    
+    Inform("Weapon | Disarmer Controller", "Started!");
   }
 
   // Events

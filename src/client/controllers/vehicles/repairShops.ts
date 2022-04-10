@@ -1,4 +1,6 @@
-import { BlipSprite, Control, Game, InputMode, Screen, Vector3, VehicleDoorIndex, World } from "fivem-js";
+import { Control, Game, InputMode, Screen, Vector3, VehicleDoorIndex, World } from "fivem-js";
+
+import { Inform } from "../../utils";
 
 import { PolyZone } from "../../helpers/PolyZone";
 import { BoxZone } from "../../helpers/boxZone";
@@ -6,10 +8,10 @@ import { BoxZone } from "../../helpers/boxZone";
 import { Progress } from "../../models/ui/progress";
 import { Notification } from "../../models/ui/notification";
 
+import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { Sounds } from "../../../shared/enums/sounds";
 
 import clientConfig from "../../../configs/client.json";
-import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 
 export class RepairShops {
   private shops: PolyZone[] = [];
@@ -18,7 +20,7 @@ export class RepairShops {
   private tick: number = undefined;
 
   constructor() {
-    console.log("repair shops");
+    Inform("Vehicle | Repair Shops Controller", "Started!");
   }
 
   public init(): void {

@@ -1,6 +1,6 @@
 import { Control, Game, InputMode, Ped, Screen, Vehicle } from "fivem-js";
 
-import { NumToVector3, Delay } from "../../utils";
+import { NumToVector3, Delay, Inform } from "../../utils";
 
 export class CruiseControl {
   // Player Data
@@ -20,7 +20,6 @@ export class CruiseControl {
   private tick: number = undefined;
 
   constructor() {
-    
     // Key Mapping Commands
     RegisterCommand("+start_cruise", () => {
       if (!this.active) {
@@ -34,6 +33,8 @@ export class CruiseControl {
 
       this.active = !this.active;
     }, false);
+    
+    Inform("Vehicle | Cruise Control Controller", "Started!");
   }
 
   // Methods

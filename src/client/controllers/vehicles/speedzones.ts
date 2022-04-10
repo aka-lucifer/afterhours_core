@@ -1,14 +1,16 @@
 import { Game, Vector3 } from "fivem-js";
 
 import { Client } from "../../client";
-import { insideVeh, Delay } from "../../utils";
+import { insideVeh, Delay, Inform } from "../../utils";
 
 import { PolyZone } from "../../helpers/polyZone";
+
 import { Notification } from "../../models/ui/notification";
+
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+import { Ranks } from "../../../shared/enums/ranks";
 
 import clientConfig from "../../../configs/client.json";
-import { Ranks } from "../../../shared/enums/ranks";
 
 export class Speedzones {
   private client: Client;
@@ -17,6 +19,8 @@ export class Speedzones {
 
   constructor(client: Client) {
     this.client = client;
+
+    Inform("Vehicle | Speedzones Controller", "Started!");
   }
 
   public init(): void {

@@ -1,7 +1,7 @@
 import { AmmoType, Game, Prop } from "fivem-js";
 
 import { Client } from "../../client";
-import { GetHash, Inform, insideVeh } from "../../utils";
+import { GetHash, Inform } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { Weapons } from "../../../shared/enums/weapons";
@@ -38,6 +38,8 @@ export class WeaponRecoil {
     
     // Events
     onNet(LXEvents.Gunshot_Cl, this.gunshot.bind(this));
+    
+    Inform("Weapon | Recoil Controller", "Started!");
   }
 
   // Methods

@@ -1,7 +1,7 @@
 import { Control, Game, InputMode, Screen } from "fivem-js";
 
 import { Client } from "../../client";
-import { Delay } from "../../utils";
+import { Delay, Inform } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { Weapons } from "../../../shared/enums/weapons";
@@ -20,6 +20,8 @@ export class SpamPreventor {
 
     // Events
     onNet(LXEvents.Gunshot_Cl, this.gunshot.bind(this));
+    
+    Inform("Weapon | SpamPreventor Controller", "Started!");
   }
   
   // Events

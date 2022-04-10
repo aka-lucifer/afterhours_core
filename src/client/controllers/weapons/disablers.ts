@@ -1,8 +1,7 @@
 import { Control, Game, InputMode, Ped } from "fivem-js";
 
-import { Delay } from "../../utils";
+import { Delay, Inform } from "../../utils";
 
-import { Events } from "../../../shared/enums/events/events";
 import { Weapons } from "../../../shared/enums/weapons";
 
 import clientConfig from "../../../configs/client.json";
@@ -14,7 +13,7 @@ export class WeaponDisablers {
   private stanceFixerTick: number = undefined;
 
   constructor() {
-    console.log("started!");
+    Inform("Weapon | Disablers Controller", "Started!");
   }
 
   // Getters

@@ -1,6 +1,6 @@
 import { Control, Game, InputMode, Screen } from "fivem-js";
 
-import { GetHash, Delay } from "../../utils";
+import { GetHash, Delay, Inform } from "../../utils";
 import { Client } from "../../client";
 
 import { Notification } from "../../models/ui/notification";
@@ -57,6 +57,8 @@ export class WeaponModes {
 
     // Events
     onNet(LXEvents.Gunshot_Cl, this.gunshot.bind(this));
+    
+    Inform("Weapon | Modes Controller", "Started!");
   }
 
   // Methods

@@ -21,6 +21,8 @@ export class Reloading {
 
     // Key Bindings
     RegisterCommand("+reload_weapon", this.reloadWeapon.bind(this), false);
+    
+    Inform("Weapon | Recoil Controller", "Started!");
   }
 
   // Methods

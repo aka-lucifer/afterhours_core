@@ -1,7 +1,7 @@
 import { Game } from "fivem-js";
 
 import { Client } from "../../client";
-import { Delay, insideVeh, LoadAnim, PlayAnim } from "../../utils";
+import { Delay, Inform, LoadAnim, PlayAnim } from "../../utils";
 
 import { Events } from "../../../shared/enums/events/events";
 import { Weapons } from "../../../shared/enums/weapons";
@@ -19,6 +19,8 @@ export class WeaponRemovers {
 
   constructor(client: Client) {
     this.client = client;
+    
+    Inform("Weapon | Removers Controller", "Started!");
   }
 
   // Methods

@@ -1,11 +1,11 @@
-import { Bone, EntityBone, Game, Model, Prop, Vector3, VehicleSeat, World } from "fivem-js";
+import { Bone, Game, Model, Prop, VehicleSeat, World } from "fivem-js";
 
-import { Delay, GetHash, randomBetween } from "../../utils";
+import { Delay, Inform } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
+import { Weapons } from "../../../shared/enums/weapons";
 
 import sharedConfig from "../../../configs/shared.json";
-import { Weapons } from "../../../shared/enums/weapons";
 
 export class VehicleWeapon {
   private currentWeapon: number;
@@ -24,6 +24,8 @@ export class VehicleWeapon {
     // Events
     onNet(LXEvents.EnteredVeh_Cl, this.EVENT_enteredVeh.bind(this));
     onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
+
+    Inform("Vehicle | Weapon Controller", "Started!");
   }
 
   // Methods

@@ -1,12 +1,12 @@
 import { Control, Game, InputMode, VehicleClass } from "fivem-js";
 
-import { Delay } from "../../utils";
+import { Delay, Inform } from "../../utils";
 
 export class LeaveDoorOpen {
   private tick: number = undefined;
 
   constructor() {
-    console.log("started door open!");
+    Inform("Vehicle | LeaveDoorOpen Controller", "Started!");
   }
 
   // Getters

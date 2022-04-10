@@ -1,6 +1,6 @@
 import { AmmoType, Control, Game, InputMode, Screen } from "fivem-js";
 
-import { randomBetween, LoadAnim, PlayAnim } from "../../utils";
+import { randomBetween, LoadAnim, PlayAnim, Inform } from "../../utils";
 
 import { Notification } from "../../models/ui/notification";
 import { Progress } from "../../models/ui/progress";
@@ -24,6 +24,8 @@ export class WeaponJamming {
 
     // Events
     onNet(LXEvents.Gunshot_Cl, this.EVENT_gunshot.bind(this));
+    
+    Inform("Weapon | Jamming Controller", "Started!");
   }
 
   // Methods

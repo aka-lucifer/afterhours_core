@@ -1,13 +1,13 @@
 import { Control, Game, InputMode } from "fivem-js";
 
-import { Delay } from "../../utils";
+import { Delay, Inform } from "../../utils";
 
 export class AntiControl {
   private rollTick: number = undefined;
   private airTick: number = undefined;
 
   constructor() {
-    console.log("started anticontrol");
+    Inform("Vehicle | AntiControl Controller", "Started!");
   }
 
   // Getters
