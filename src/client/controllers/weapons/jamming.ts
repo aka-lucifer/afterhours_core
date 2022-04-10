@@ -1,6 +1,6 @@
 import { AmmoType, Control, Game, InputMode, Screen } from "fivem-js";
 
-import { randomBetween, LoadAnim, PlayAnim, Inform } from "../../utils";
+import { randomBetween, LoadAnim, PlayAnim, Inform, GetHash } from "../../utils";
 
 import { Notification } from "../../models/ui/notification";
 import { Progress } from "../../models/ui/progress";
@@ -108,49 +108,53 @@ export class WeaponJamming {
 
     if (jammedIndex === -1) {
       if (this.weapon !== Weapons.Unarmed) {
-        // Shoots bullets
-        if (GetWeaponDamageType(this.weapon) == 3) {
-          if (!this.jamAttempted) {
-            // console.log("not ran jam attempt");
-            this.jamAttempted = true;
-            const jamChance = randomBetween(1, 100);
-            if (jamChance <= clientConfig.controllers.weapons.jamming.blockPercentage) {
-              this.jammedWeapons.push(this.weapon);
-              const notify = new Notification("Weapon", "Your weapon has jammed!", NotificationTypes.Info);
-              await notify.send();
+        const weaponIndex = clientConfig.controllers.weapons.jamming.weaponWhitelist.findIndex(weapon => GetHash(weapon) == this.weapon);
+  
+        // If the current weapon doesn't exist in the whitelist, run the reloader, otherwise don't run the jam chancer
+        if (weaponIndex === -1) {
+          if (GetWeaponDamageType(this.weapon) == 3) {
+            if (!this.jamAttempted) {
+              // console.log("not ran jam attempt");
+              this.jamAttempted = true;
+              const jamChance = randomBetween(1, 100);
+              if (jamChance <= clientConfig.controllers.weapons.jamming.blockPercentage) {
+                this.jammedWeapons.push(this.weapon);
+                const notify = new Notification("Weapon", "Your weapon has jammed!", NotificationTypes.Info);
+                await notify.send();
 
-              if (this.jamTick == undefined) this.jamTick = setTick(async() => {
-                this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-                const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
+                if (this.jamTick == undefined) this.jamTick = setTick(async() => {
+                  this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+                  const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
 
-                if (jammedIndex !== -1) {
-                  DisablePlayerFiring(Game.Player.Handle, true);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Aim);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Reload);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
+                  if (jammedIndex !== -1) {
+                    DisablePlayerFiring(Game.Player.Handle, true);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Aim);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Reload);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
 
-                  if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
-                    PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
-                    Screen.showSubtitle("~r~Weapon Jammed", 2000);
+                    if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                      PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                      Screen.showSubtitle("~r~Weapon Jammed", 2000);
+                    }
+
+                    if (!this.unjammingWeapon) {
+                      Screen.displayHelpTextThisFrame("~y~Unjam your weapon");
+                    }
                   }
+                });
+              }
 
-                  if (!this.unjammingWeapon) {
-                    Screen.displayHelpTextThisFrame("~y~Unjam your weapon");
-                  }
-                }
-              });
+              setTimeout(() => {
+                // console.log("set jam attempted back to false")
+                this.jamAttempted = false;
+              }, clientConfig.controllers.weapons.jamming.timeBetween);
             }
-
-            setTimeout(() => {
-              // console.log("set jam attempted back to false")
-              this.jamAttempted = false;
-            }, clientConfig.controllers.weapons.jamming.timeBetween);
+            // else {
+            //   console.log("can't run jam attempt until 20 second timeout is finished!");
+            // }
           }
-          // else {
-          //   console.log("can't run jam attempt until 20 second timeout is finished!");
-          // }
         }
       }
     }
