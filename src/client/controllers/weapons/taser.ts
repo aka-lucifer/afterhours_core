@@ -1,4 +1,4 @@
-import { Vector3, Ped, Game, Entity, World, MarkerType, Color, RaycastResult } from "fivem-js";
+import { Vector3, Ped, Game, Entity, World, MarkerType, Color, RaycastResult, Model, WeaponHash } from "fivem-js";
 
 import { Delay, Inform, NumToVector3 } from "../../utils";
 
@@ -7,11 +7,105 @@ import { Notification } from "../../models/ui/notification";
 import clientConfig from "../../../configs/client.json";
 import { Weapons } from "../../../shared/enums/weapons";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+import { Menu } from "../../models/ui/menu/menu";
+import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
+import { Submenu } from "../../models/ui/menu/submenu";
+
+const screenEffects = [
+  "SwitchHUDIn",
+  "SwitchHUDOut",
+  "FocusIn",
+  "FocusOut",
+  "MinigameEndNeutral",
+  "MinigameEndTrevor",
+  "MinigameEndFranklin",
+  "MinigameEndMichael",
+  "MinigameTransitionOut",
+  "MinigameTransitionIn",
+  "SwitchShortNeutralIn",
+  "SwitchShortFranklinIn",
+  "SwitchShortTrevorIn",
+  "SwitchShortMichaelIn",
+  "SwitchOpenMichaelIn",
+  "SwitchOpenFranklinIn",
+  "SwitchOpenTrevorIn",
+  "SwitchHUDMichaelOut",
+  "SwitchHUDFranklinOut",
+  "SwitchHUDTrevorOut",
+  "SwitchShortFranklinMid",
+  "SwitchShortMichaelMid",
+  "SwitchShortTrevorMid",
+  "DeathFailOut",
+  "CamPushInNeutral",
+  "CamPushInFranklin",
+  "CamPushInMichael",
+  "CamPushInTrevor",
+  "SwitchOpenMichaelIn",
+  "SwitchSceneFranklin",
+  "SwitchSceneTrevor",
+  "SwitchSceneMichael",
+  "SwitchSceneNeutral",
+  "MP_Celeb_Win",
+  "MP_Celeb_Win_Out",
+  "MP_Celeb_Lose",
+  "MP_Celeb_Lose_Out",
+  "DeathFailNeutralIn",
+  "DeathFailMPDark",
+  "DeathFailMPIn",
+  "MP_Celeb_Preload_Fade",
+  "PeyoteEndOut",
+  "PeyoteEndIn",
+  "PeyoteIn",
+  "PeyoteOut",
+  "MP_race_crash",
+  "SuccessFranklin",
+  "SuccessTrevor",
+  "SuccessMichael",
+  "DrugsMichaelAliensFightIn",
+  "DrugsMichaelAliensFight",
+  "DrugsMichaelAliensFightOut",
+  "DrugsTrevorClownsFightIn",
+  "DrugsTrevorClownsFight",
+  "DrugsTrevorClownsFightOut",
+  "HeistCelebPass",
+  "HeistCelebPassBW",
+  "HeistCelebEnd",
+  "HeistCelebToast",
+  "MenuMGHeistIn",
+  "MenuMGTournamentIn",
+  "MenuMGSelectionIn",
+  "ChopVision",
+  "DMT_flight_intro",
+  "DMT_flight",
+  "DrugsDrivingIn",
+  "DrugsDrivingOut",
+  "SwitchOpenNeutralFIB5",
+  "HeistLocate",
+  "MP_job_load",
+  "RaceTurbo",
+  "MP_intro_logo",
+  "HeistTripSkipFade",
+  "MenuMGHeistOut",
+  "MP_corona_switch",
+  "MenuMGSelectionTint",
+  "SuccessNeutral",
+  "ExplosionJosh3",
+  "SniperOverlay",
+  "RampageOut",
+  "Rampage",
+  "Dont_tazeme_bro",
+  "DeathFailOut"
+]
 
 export class Taser {
   // Laser Sight
   private laserToggled: boolean = false;
   private laserTick: number = undefined;
+
+  // Taser Effect
+  private stunTick: number = undefined;
+  private effectTick: number = undefined;
+  private appliedEffect: boolean = false;
   
   // Cartridges
   private cartridges: number = 3;
@@ -23,6 +117,64 @@ export class Taser {
   }
 
   // Methods
+  private startEffect(): void {
+    if (this.effectTick === undefined) this.effectTick = setTick(async() => {
+      const myPed = Game.PlayerPed;
+      SetPedMinGroundTimeForStungun(myPed.Handle, 10000);
+
+      if (!this.appliedEffect) {
+        this.appliedEffect = true;
+
+        if (!HasAnimSetLoaded("move_m@drunk@moderatedrunk")) {
+          RequestAnimSet("move_m@drunk@moderatedrunk") 
+          while (!HasAnimSetLoaded("move_m@drunk@moderatedrunk")) {
+            await Delay(0);
+          }
+        }
+        
+        // Tase Effect
+        SetTimecycleModifier("damage");
+        SetPedMotionBlur(myPed.Handle, true);
+        SetPedMovementClipset(myPed.Handle, "move_m@drunk@moderatedrunk", 1.0);
+        SetPedIsDrunk(myPed.Handle, true);
+        ShakeGameplayCam("DRUNK_SHAKE", 3.0);
+        
+        AnimpostfxPlay("DMT_flight_intro", 15000, false);
+        await Delay(15000);
+        AnimpostfxPlay("Dont_tazeme_bro", 10000, false);
+        await Delay(10000);
+
+        // Remove Effect
+        this.appliedEffect = false;
+        SetPedMotionBlur(myPed.Handle, false);
+        ResetPedMovementClipset(myPed.Handle, 1.0);
+        SetPedIsDrunk(myPed.Handle, false)
+        AnimpostfxStopAll();
+        ShakeGameplayCam("DRUNK_SHAKE", 0.0);
+        ClearTimecycleModifier();
+        ClearExtraTimecycleModifier();
+        
+        if (this.effectTick !== undefined) {
+          console.log("CLEARED EFFECT TICK!");
+          clearTick(this.effectTick);
+          this.effectTick = undefined;
+          this.appliedEffect = false;
+        }
+      }
+    });
+  }
+
+  public init(): void {
+    if (this.stunTick === undefined) this.stunTick = setTick(async() => {
+      const myPed = Game.PlayerPed;
+      if (myPed.IsBeingStunned) {
+        if (this.effectTick === undefined) this.startEffect();
+      }
+
+      await Delay(500);
+    });
+  }
+
   private rotationToDirection(rotation: Vector3): Vector3 {
     const adjustedRotation = new Vector3(
       (Math.PI / 180) * rotation.x,
@@ -83,7 +235,6 @@ export class Taser {
         });
       } else {
         if (!this.laserTick !== undefined) {
-          console.log("laser disabled!");
           clearTick(this.laserTick);
           this.laserTick = undefined;
           const notify = new Notification("Laser Sight", "The laser sight has been disabled!", NotificationTypes.Info);

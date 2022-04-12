@@ -50,5 +50,6 @@ export class WeaponManager {
     this.removers.start();
     this.recoil.init();
     this.disablers.start();
+    this.taser.init();
   }
 }
