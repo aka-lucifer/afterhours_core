@@ -13,6 +13,7 @@ import { CruiseControl } from "../controllers/vehicles/cruiseControl";
 import { RepairShops } from "../controllers/vehicles/repairShops";
 import { GPS } from "../controllers/vehicles/gps";
 import { KeepWheel } from "../controllers/vehicles/keepWheel";
+import { Rolling } from "../controllers/vehicles/rolling";
 
 export class VehicleManager {
   private client: Client;
@@ -26,6 +27,7 @@ export class VehicleManager {
   private repairShops: RepairShops;
   private gps: GPS;
   private keepWheel: KeepWheel;
+  private rolling: Rolling;
 
   constructor(client: Client) {
     this.client = client;
@@ -45,10 +47,12 @@ export class VehicleManager {
     this.repairShops = new RepairShops();
     this.gps = new GPS();
     this.keepWheel = new KeepWheel();
+    this.rolling = new Rolling();
 
     this.speedZones.init();
     this.repairShops.init();
     this.gps.init();
+    this.rolling.init();
   }
 
   public start(): void {
@@ -68,6 +72,5 @@ export class VehicleManager {
     if (this.antiControl.RollStarted) this.antiControl.stopRoll();
     if (this.antiControl.AirStarted) this.antiControl.stopAir();
     if(this.leaveDoorOpen.Started) this.leaveDoorOpen.stop();
-    // if (this.keepWheel.Started) this.keepWheel.start();
   }
 }
