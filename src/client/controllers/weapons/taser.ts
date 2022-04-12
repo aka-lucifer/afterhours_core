@@ -1,101 +1,15 @@
-import { Vector3, Ped, Game, Entity, World, MarkerType, Color, RaycastResult, Model, WeaponHash } from "fivem-js";
+import { Vector3, Ped, Game, Entity, World, MarkerType, Color, RaycastResult, Control, Screen } from "fivem-js";
 
-import { Delay, Inform, NumToVector3 } from "../../utils";
+import { Delay, Inform, LoadAnim, NumToVector3, PlayAnim } from "../../utils";
 
 import { Notification } from "../../models/ui/notification";
+import { Progress } from "../../models/ui/progress";
 
-import clientConfig from "../../../configs/client.json";
 import { Weapons } from "../../../shared/enums/weapons";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
-import { Menu } from "../../models/ui/menu/menu";
-import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
-import { Submenu } from "../../models/ui/menu/submenu";
+import { LXEvents } from "../../../shared/enums/events/lxEvents";
 
-const screenEffects = [
-  "SwitchHUDIn",
-  "SwitchHUDOut",
-  "FocusIn",
-  "FocusOut",
-  "MinigameEndNeutral",
-  "MinigameEndTrevor",
-  "MinigameEndFranklin",
-  "MinigameEndMichael",
-  "MinigameTransitionOut",
-  "MinigameTransitionIn",
-  "SwitchShortNeutralIn",
-  "SwitchShortFranklinIn",
-  "SwitchShortTrevorIn",
-  "SwitchShortMichaelIn",
-  "SwitchOpenMichaelIn",
-  "SwitchOpenFranklinIn",
-  "SwitchOpenTrevorIn",
-  "SwitchHUDMichaelOut",
-  "SwitchHUDFranklinOut",
-  "SwitchHUDTrevorOut",
-  "SwitchShortFranklinMid",
-  "SwitchShortMichaelMid",
-  "SwitchShortTrevorMid",
-  "DeathFailOut",
-  "CamPushInNeutral",
-  "CamPushInFranklin",
-  "CamPushInMichael",
-  "CamPushInTrevor",
-  "SwitchOpenMichaelIn",
-  "SwitchSceneFranklin",
-  "SwitchSceneTrevor",
-  "SwitchSceneMichael",
-  "SwitchSceneNeutral",
-  "MP_Celeb_Win",
-  "MP_Celeb_Win_Out",
-  "MP_Celeb_Lose",
-  "MP_Celeb_Lose_Out",
-  "DeathFailNeutralIn",
-  "DeathFailMPDark",
-  "DeathFailMPIn",
-  "MP_Celeb_Preload_Fade",
-  "PeyoteEndOut",
-  "PeyoteEndIn",
-  "PeyoteIn",
-  "PeyoteOut",
-  "MP_race_crash",
-  "SuccessFranklin",
-  "SuccessTrevor",
-  "SuccessMichael",
-  "DrugsMichaelAliensFightIn",
-  "DrugsMichaelAliensFight",
-  "DrugsMichaelAliensFightOut",
-  "DrugsTrevorClownsFightIn",
-  "DrugsTrevorClownsFight",
-  "DrugsTrevorClownsFightOut",
-  "HeistCelebPass",
-  "HeistCelebPassBW",
-  "HeistCelebEnd",
-  "HeistCelebToast",
-  "MenuMGHeistIn",
-  "MenuMGTournamentIn",
-  "MenuMGSelectionIn",
-  "ChopVision",
-  "DMT_flight_intro",
-  "DMT_flight",
-  "DrugsDrivingIn",
-  "DrugsDrivingOut",
-  "SwitchOpenNeutralFIB5",
-  "HeistLocate",
-  "MP_job_load",
-  "RaceTurbo",
-  "MP_intro_logo",
-  "HeistTripSkipFade",
-  "MenuMGHeistOut",
-  "MP_corona_switch",
-  "MenuMGSelectionTint",
-  "SuccessNeutral",
-  "ExplosionJosh3",
-  "SniperOverlay",
-  "RampageOut",
-  "Rampage",
-  "Dont_tazeme_bro",
-  "DeathFailOut"
-]
+import clientConfig from "../../../configs/client.json";
 
 export class Taser {
   // Laser Sight
@@ -109,11 +23,19 @@ export class Taser {
   
   // Cartridges
   private cartridges: number = 3;
+  private maxCartridges: number = clientConfig.controllers.weapons.taser.cartridges.max;
+  private reloadingCartridges: boolean = false;
+  private cartridgeTick: number = undefined;
 
   constructor() {
     Inform("Weapon | Taser Controller", "Started!");
 
+    // Events
+    onNet(LXEvents.Gunshot_Cl, this.gunshot.bind(this));
+
+    // Keybinds
     RegisterCommand("+toggle_laser", this.toggleLaser.bind(this), false);
+    RegisterCommand("+reload_cartridges", this.reloadCartridges.bind(this), false);
   }
 
   // Methods
@@ -254,6 +176,80 @@ export class Taser {
     } else {
       const notify = new Notification("Laser Sight", "The laser sight is only supported on the taser!", NotificationTypes.Error);
       await notify.send();
+    }
+  }
+
+  private reloadCartridges(): void {
+    const weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
+
+    // if we aren't unarmed
+    if (weapon === Weapons.X26Tazer) {
+      if (this.cartridges <= 0) {
+        
+        const progress = new Progress(clientConfig.controllers.weapons.taser.cartridges.refillLength, {
+          combat: true
+        }, async() => {
+          ClearPedTasks(Game.PlayerPed.Handle);
+          this.reloadingCartridges = false;
+          const notify = new Notification("Weapon", "You stopped refilling your tazers cartridges!", NotificationTypes.Error);
+          await notify.send();
+        }, async() => {
+          const loadedAnim = await LoadAnim("weapons@first_person@aim_rng@generic@pistol@pistol_50@str");
+          if (loadedAnim) {
+            PlayAnim(Game.PlayerPed, "weapons@first_person@aim_rng@generic@pistol@pistol_50@str", "reload_aim", 49, clientConfig.controllers.weapons.taser.cartridges.refillLength, 8.0, -8.0, 0.0, false, false, false);
+          }
+        }, async() => {
+          StopAnimTask(Game.PlayerPed.Handle, "weapons@first_person@aim_rng@generic@pistol@pistol_50@str", "reload_aim", 1.0);
+          clearTick(this.cartridgeTick);
+          this.cartridgeTick = undefined;
+          this.cartridges = this.maxCartridges;
+          this.reloadingCartridges = false;
+          const notify = new Notification("Weapon", "You've reloaded your tazers cartridges!", NotificationTypes.Info);
+          await notify.send();
+        })
+
+        progress.start();
+      }
+    }
+  }
+
+  // Events
+  private async gunshot(): Promise<void> {
+    const weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
+
+    // if we aren't unarmed
+    if (weapon === Weapons.X26Tazer) {
+      if (this.cartridges - 1 < 0) {
+        this.cartridges = 0;
+      } else {
+        this.cartridges--;
+      }
+
+      if (this.cartridges <= 0) {
+        if (this.cartridgeTick === undefined) this.cartridgeTick = setTick(() => {
+          const weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
+      
+          // if we aren't unarmed
+          if (weapon === Weapons.X26Tazer) {
+            if (this.cartridges <= 0) {
+              DisableControlAction(0, Control.Reload, true);
+              DisableControlAction(0, Control.MeleeAttackLight, true);
+              DisableControlAction(0, Control.MeleeAttackHeavy, true);
+              DisableControlAction(0, Control.MeleeAttackAlternate, true);
+              DisablePlayerFiring(Game.Player.Handle, true);
+
+              if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                Screen.showSubtitle("~r~Reload tazer catridges!");
+              }
+
+              if (!this.reloadingCartridges) {
+                Screen.displayHelpTextThisFrame("~y~Reload Tazer Cartridges");
+              }
+            }
+          }
+        });
+      }
     }
   }
 }
