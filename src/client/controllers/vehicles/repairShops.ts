@@ -73,7 +73,7 @@ export class RepairShops {
               SetVehicleDoorOpen(currVeh.Handle, VehicleDoorIndex.Hood, false, false);
               currVeh.IsEngineRunning = false;
               currVeh.IsDriveable = false;
-              global.exports["xsound"].PlayUrlPos("veh_repair", Sounds.Repair, 1, Game.PlayerPed.Position, false);
+              global.exports["xsound"].PlayUrlPos("veh_repair", Sounds.Repair, 0.15, Game.PlayerPed.Position, false);
             }, async() => {
               if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
               currVeh.repair();
