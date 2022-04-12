@@ -14,6 +14,7 @@ import { WeaponRecoil } from "../controllers/weapons/recoil";
 import { WeaponDisablers } from "../controllers/weapons/disablers";
 import { WeaponJamming } from "../controllers/weapons/jamming";
 import { Taser } from "../controllers/weapons/taser";
+import { OnBack } from "../controllers/weapons/onBack";
 
 export class WeaponManager {
   private client: Client;
@@ -28,6 +29,7 @@ export class WeaponManager {
   public disablers: WeaponDisablers;
   public jamming: WeaponJamming;
   private taser: Taser;
+  private onBack: OnBack;
 
   constructor(client: Client) {
     this.client = client;
@@ -44,6 +46,7 @@ export class WeaponManager {
     this.disablers = new WeaponDisablers();
     this.jamming = new WeaponJamming();
     this.taser = new Taser();
+    this.onBack = new OnBack();
   }
 
   public start(): void {
@@ -51,5 +54,6 @@ export class WeaponManager {
     this.recoil.init();
     this.disablers.start();
     this.taser.init();
+    this.onBack.start();
   }
 }
