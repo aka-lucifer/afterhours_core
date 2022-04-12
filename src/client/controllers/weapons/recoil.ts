@@ -32,6 +32,7 @@ export class WeaponRecoil {
   private tickHandler: number;
   private currentRecoil: number;
   private vehRecoil: number;
+  private hipFireRecoil: number;
 
   constructor(client: Client) {
     this.client = client;
@@ -58,6 +59,7 @@ export class WeaponRecoil {
     this.crouchSubractor = clientConfig.controllers.weapons.recoil.crouchSubtractor;
     this.longGunsMult = clientConfig.controllers.weapons.recoil.longGunsMult;
     this.vehRecoil = clientConfig.controllers.weapons.recoil.vehRecoil;
+    this.hipFireRecoil = clientConfig.controllers.weapons.recoil.hipFireRecoil;
   }
 
   public init(): void {
@@ -132,6 +134,11 @@ export class WeaponRecoil {
           if (IsPedInAnyVehicle(myPed.Handle, false)) {
             this.currentRecoil = this.currentRecoil + 1; // Fix veh height shooting below
             this.currentRecoil = this.currentRecoil + this.vehRecoil;
+          } else {
+            if (!IsPlayerFreeAiming(Game.Player.Handle)) {
+              console.log("add hip fire recoil!");
+              this.currentRecoil = this.currentRecoil + this.hipFireRecoil;
+            }
           }
           
           // const windDirection = GetWindDirection();

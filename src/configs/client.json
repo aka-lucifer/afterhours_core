@@ -213,6 +213,7 @@
             },
             "recoil": {
                 "baseRecoil": 0.5,
+                "hipFireRecoil": 0.5,
                 "pistolAmmoRecoil": 0.1,
                 "smgAmmoRecoil": 0.2,
                 "lmgAmmoRecoil": 2.0,
@@ -272,6 +273,10 @@
                   "g": 0,
                   "b": 0
                 }
+              },
+              "cartridges": {
+                "max": 3,
+                "refillLength": 5000
               }
             }
         },
