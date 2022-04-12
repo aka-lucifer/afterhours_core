@@ -32,7 +32,7 @@ export class OnBack {
   private attachTick: number = undefined;
 
   constructor() {
-    Inform("Weapon | Recoil Controller", "Started!");
+    Inform("Weapon | On Back Controller", "Started!");
     
     // Events
     on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
@@ -125,8 +125,8 @@ export class OnBack {
       }
 
       // Remove from back, if weapon is in hand
+      
       if (this.attachedWeapons.length > 0) {
-        const myPed = Game.PlayerPed;
         if (this.attached) {
 
           // If we have changed our ped, reattach the weapons to our new ped and update our attached model
@@ -136,13 +136,15 @@ export class OnBack {
           }
         }
 
-        for (let i = 0; i < this.attachedWeapons.length; i++) {
-          if (GetSelectedPedWeapon(myPed.Handle) == this.attachedWeapons[i].hash || !HasPedGotWeapon(myPed.Handle, this.attachedWeapons[i].hash, false)) {
-            // console.log("detach", this.attachedWeapons[i].model, this.attachedWeapons[i].entity.Handle);
-            this.attachedWeapons[i].entity.delete();
-            this.attachedWeapons.splice(i, 1);
+        this.attachedWeapons.forEach((weapon, index) => {
+          const currWeapon = GetSelectedPedWeapon(myPed.Handle);
+          const hasWeapon = HasPedGotWeapon(myPed.Handle, weapon.hash, false);
+
+          if (currWeapon == weapon.hash || !hasWeapon) {
+            weapon.entity.delete();
+            this.attachedWeapons.splice(index, 1);
           }
-        }
+        });
       }
 
       await Delay(500);
@@ -164,25 +166,33 @@ export class OnBack {
       if (this.hasWeapon) {
         if (this.attachTick === undefined) this.startAttaching();
       } else {
-        if (this.attachTick !== undefined) this.stopAttaching();
+        if (this.attachedWeapons.length <= 0) {
+          if (this.attachTick !== undefined) this.stopAttaching();
+        }
       }
 
       await Delay(1000);
     });
   }
 
+  public clearWeapons(): void {
+    if (this.attachedWeapons.length > 0) {
+      // console.log("WEAPONS ARE ATTACHED!");
+
+      this.attachedWeapons.forEach((weapon, index) => {
+        console.log(index + 1, this.attachedWeapons.length);
+        // console.log(`DELETING OBJECT (${this.attachedWeapons[index].entity.Handle})`);
+        this.attachedWeapons[index].entity.delete();
+        // this.attachedWeapons.splice(index, 1);
+        // console.log("DELETED");
+      });
+    }
+  }
+
   // Events
   private EVENT_resourceStop(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
-      if (this.attachedWeapons.length > 0) {
-        // console.log("WEAPONS ARE ATTACHED!");
-        for (let i = 0; i < this.attachedWeapons.length; i++) {
-          // console.log(`DELETING OBJECT (${this.attachedWeapons[i].entity.Handle})`);
-          this.attachedWeapons[i].entity.delete();
-          this.attachedWeapons.splice(i, 1);
-          // console.log("DELETED");
-        }
-      }
+      this.clearWeapons();
     }
   }
 }
