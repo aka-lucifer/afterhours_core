@@ -1,6 +1,6 @@
 import { Control, Game, InputMode, Ped, Screen, Vehicle } from "fivem-js";
 
-import { NumToVector3, Delay, Inform } from "../../utils";
+import { NumToVector3, Delay, Inform, speedToMph } from "../../utils";
 
 export class CruiseControl {
   // Player Data
@@ -38,9 +38,6 @@ export class CruiseControl {
   }
 
   // Methods
-  private speedToMph(speed: number): number {
-    return speed * 2.236936;
-  } 
   private start(): void {
     this.ped = Game.PlayerPed;
     if (IsPedInAnyVehicle(this.ped.Handle, false)) {
@@ -50,7 +47,7 @@ export class CruiseControl {
           const speedVector = NumToVector3(GetEntitySpeedVector(this.vehicle.Handle, true));
           if (speedVector.y > 0) {
             this.speed = this.vehicle.Speed;
-            this.formattedSpeed = this.speedToMph(this.vehicle.Speed);
+            this.formattedSpeed = speedToMph(this.vehicle.Speed);
             if (!this.sentNotify) {
               this.sentNotify = true;
               Screen.showNotification(`Cruise control set to ~y~${Math.ceil(this.formattedSpeed)}~w~MPH`);
@@ -84,7 +81,7 @@ export class CruiseControl {
 
                     if (!this.vehicle.HasCollided) {
                       this.speed = this.vehicle.Speed;
-                      this.formattedSpeed = this.speedToMph(this.vehicle.Speed);
+                      this.formattedSpeed = speedToMph(this.vehicle.Speed);
                       SetVehicleForwardSpeed(this.vehicle.Handle, this.speed);
                     }
                   }
