@@ -7,6 +7,7 @@ import { Command } from "../models/ui/chat/command";;
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
 
 import { GPS } from "../controllers/vehicles/gps";
+import { Seatbelt } from "../controllers/vehicles/seatbelt";
 
 import { LogTypes } from "../enums/logTypes";
 
@@ -29,6 +30,7 @@ export class VehicleManager {
 
   // Controllers
   private gps: GPS;
+  private seatbelt: Seatbelt;
 
   constructor(server: Server) {
     this.server = server;
@@ -41,6 +43,8 @@ export class VehicleManager {
   // Methods
   public async init(): Promise<void> {
     this.gps = new GPS(this.server);
+    this.seatbelt = new Seatbelt(this.server);
+
     this.gps.init();
 
     this.registerCommands();

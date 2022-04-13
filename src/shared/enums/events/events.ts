@@ -46,6 +46,10 @@ export enum Events {
   // Astrid Server ([Vehicle] - GPS)
   syncGPS = "astrid:server:syncGPS",
 
+  // Astrid Server ([Vehicle] - Seatbelt)
+  ejectPassengers = "astrid:server:ejectPassengers",
+  harmPassengers = "astrid:server:harmPassengers",
+
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
 
@@ -102,6 +106,13 @@ export enum Events {
   listStreets = "astrid:client:listStreets",
   clearGPS = "astrid:client:clearGPS",
   updateGPS = "astrid:client:updateGPS",
+
+  // Astrid Client ([Vehicle] - Flip Vehicle)
+  flipVehicle = "astrid:client:flipVehicle",
+
+  // Astrid Client ([Vehicle] - Seatbelt)
+  ejectFromVeh = "astrid:client:ejectFromVeh",
+  harmPassenger = "astrid:client:harmPassenger",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

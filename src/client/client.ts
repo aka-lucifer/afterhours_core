@@ -140,8 +140,9 @@ export class Client {
     // on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
     on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
 
-    // NUI Ready
+    // NUI/Game Ready
     RegisterNuiCallback(NuiCallbacks.Ready, this.nuiLoaded.bind(this));
+    on(Events.playerSpawned, this.EVENT_disableLoading.bind(this));
 
     // (Player Data)
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
@@ -274,6 +275,13 @@ export class Client {
     emitNet(Events.playerConnected, undefined, true);
   }
 
+  private EVENT_disableLoading(): void {
+    if (!this.started) {
+		  ShutdownLoadingScreenNui();
+      this.started = true;
+    }
+  }
+
   private startUI(): void {
     this.chatManager.init();
   }
@@ -290,6 +298,7 @@ export class Client {
     // Managers Inits
     this.aopManager.init();
     this.vehicleManager.start();
+    this.weaponManager.start();
     this.safezoneManager.start();
   }
 
@@ -297,10 +306,19 @@ export class Client {
     let paused = false;
     
     this.playerStates = Player(GetPlayerServerId(Game.Player.Handle));
+
+    // Staff
     this.playerStates.state.set("rankVisible", true, true);
+    
+    // UI
     this.playerStates.state.set("chatOpen", false, true);
+    
+    // Player Name
     this.playerStates.state.set("afk", false, true);
     this.playerStates.state.set("paused", false, true);
+    
+    // Vehicle
+    this.playerStates.state.set("seatbelt", false, true);
 
     this.statesTick = setTick(async() => {
 
@@ -344,7 +362,7 @@ export class Client {
   }
 
   // Events
-  private EVENT_resourceStop(resourceName: string): void{
+  private EVENT_resourceStop(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
       this.grabbing.stop();
       // this.vehicleWeapon.stop();
@@ -367,6 +385,7 @@ export class Client {
 
   private EVENT_setCharacter(character: any): void {
     Game.PlayerPed.removeAllWeapons();
+    this.weaponManager.onBack.clearWeapons();
     this.character = new Character(character);
 
     // console.log("Character Set To", this.Character);
