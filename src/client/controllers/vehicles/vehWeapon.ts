@@ -1,6 +1,6 @@
-import { Bone, Game, Model, Prop, VehicleSeat, World } from "fivem-js";
+import { Bone, Game, Model, Prop, Vehicle, VehicleSeat, World } from "fivem-js";
 
-import { Delay, Inform } from "../../utils";
+import { Delay, Inform, rightHandVehicle } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { Weapons } from "../../../shared/enums/weapons";
@@ -56,6 +56,8 @@ export class VehicleWeapon {
   // Events
   private EVENT_enteredVeh(vehNet: number, vehSeat: VehicleSeat, vehName: string): void {
     console.log("entered veh", vehNet, vehSeat, vehName);
+    const vehicleHandle = NetToVeh(vehNet);
+    const currVeh = new Vehicle(vehicleHandle);
 
     if (this.propTick === undefined) this.propTick = setTick(async() => {
       if (!this.hasAttached) {
@@ -69,9 +71,13 @@ export class VehicleWeapon {
               if (loadedModel) {
                 this.attachedWeaponHash = this.currentWeapon;
                 this.attachedWeapon = await World.createProp(weaponModel, Game.PlayerPed.Position, false, false);
-                // console.log(this.attachedWeapon);
-                AttachEntityToEntity(this.attachedWeapon.Handle, PlayerPedId(), GetPedBoneIndex(Game.PlayerPed.Handle, Bone.SKEL_R_Hand), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
-                // this.attachedWeapon.attachToBone(new EntityBone(Game.PlayerPed, GetPedBoneIndex(Game.PlayerPed.Handle, Bone.SKEL_R_Hand)), new Vector3(0.18, 0.035, -0.001), new Vector3(-82.2, -2.6449, -7.71));
+
+
+                const rightHandVeh = await rightHandVehicle(currVeh);
+                const boneToAttach = !rightHandVeh ? Bone.SKEL_R_Hand : Bone.SKEL_L_Hand;
+                console.log("vehs 1", rightHandVeh, boneToAttach);
+
+                AttachEntityToEntity(this.attachedWeapon.Handle, PlayerPedId(), GetPedBoneIndex(Game.PlayerPed.Handle, boneToAttach), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
                 this.hasAttached = true;
               } else {
                 console.log("model not loaded 1, it timed out!");
@@ -88,44 +94,68 @@ export class VehicleWeapon {
         }
       } else {
         if (this.attachedWeaponHash !== this.currentWeapon) {
-          const currWeapData = sharedConfig.weapons[this.currentWeapon];
-          if (currWeapData) {
-            if (currWeapData.type == "weapon") {
-              const weaponModel = new Model(currWeapData.attaching.model);
-              const loadedModel = await weaponModel.request(2000);
 
-              if (loadedModel) {
-                this.attachedWeaponHash = this.currentWeapon;
-                this.attachedWeapon = await World.createProp(weaponModel, Game.PlayerPed.Position, false, false);
-                console.log(this.attachedWeapon);
-                AttachEntityToEntity(this.attachedWeapon.Handle, PlayerPedId(), GetPedBoneIndex(Game.PlayerPed.Handle, Bone.SKEL_R_Hand), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
-                // this.attachedWeapon.attachToBone(new EntityBone(Game.PlayerPed, GetPedBoneIndex(Game.PlayerPed.Handle, Bone.SKEL_R_Hand)), new Vector3(0.18, 0.035, -0.001), new Vector3(-82.2, -2.6449, -7.71));
-                this.hasAttached = true;
+          // Delete current attached weapon
+          this.attachedWeapon.delete();
+          this.attachedWeaponHash = undefined;
+          this.attachedWeapon = undefined;
+          this.hasAttached = false;
+          
+          // If our new weapon isn't unarmed
+          if (this.currentWeapon !== Weapons.Unarmed) {
+            // console.log("not unarmed")
+            const currWeapData = sharedConfig.weapons[this.currentWeapon];
+            if (currWeapData) {
+              if (currWeapData.type == "weapon") {
+                // console.log("create model", currWeapData.attaching);
+                const weaponModel = new Model(currWeapData.attaching.model);
+                const loadedModel = await weaponModel.request(2000);
+
+                if (loadedModel) {
+                  this.attachedWeaponHash = this.currentWeapon;
+                  this.attachedWeapon = await World.createProp(weaponModel, Game.PlayerPed.Position, false, false);
+
+                  const rightHandVeh = await rightHandVehicle(currVeh);
+                  const boneToAttach = !rightHandVeh ? Bone.SKEL_R_Hand : Bone.SKEL_L_Hand;
+                  console.log("vehs 2", rightHandVeh, boneToAttach);
+
+                  AttachEntityToEntity(this.attachedWeapon.Handle, PlayerPedId(), GetPedBoneIndex(Game.PlayerPed.Handle, boneToAttach), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
+                  // this.attachedWeapon.attachToBone(new EntityBone(Game.PlayerPed, GetPedBoneIndex(Game.PlayerPed.Handle, Bone.SKEL_R_Hand)), new Vector3(0.18, 0.035, -0.001), new Vector3(-82.2, -2.6449, -7.71));
+                  this.hasAttached = true;
+                } else {
+                  console.log("model not loaded 2, it timed out!");
+                  await Delay(500);
+                }
               } else {
-                console.log("model not loaded 2, it timed out!");
                 await Delay(500);
               }
             } else {
               await Delay(500);
             }
-          } else {
-            await Delay(500);
           }
         }
       }
 
       if (IsPlayerFreeAiming(Game.Player.Handle)) {
         if (this.visible) {
-          this.attachedWeapon.IsVisible = false;
-          this.visible = false;
+          if (this.attachedWeapon !== undefined) {
+            this.attachedWeapon.IsVisible = false;
+            this.visible = false;
+          } else {
+            console.log("weapon model isn't attached!");
+          }
         } else {
           await Delay(500);
         }
       } else {
         if (!this.visible) {
-          await Delay(100);
-          this.attachedWeapon.IsVisible = true;
-          this.visible = true;
+          if (this.attachedWeapon !== undefined) {
+            await Delay(100);
+            this.attachedWeapon.IsVisible = true;
+            this.visible = true;
+          } else {
+            console.log("weapon model isn't attached!");
+          }
         } else {
           await Delay(500);
         }

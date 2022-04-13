@@ -1,6 +1,8 @@
+import { Vector3, Ped, World, Font, Game, Vehicle } from "fivem-js";
+
 import { client } from "./client";
-import { Vector3, Ped, World, Font, Game, Vehicle, VehicleSeat } from "fivem-js";
-import { NuiMessages } from "../shared/enums/ui/nuiMessages";
+
+import { RightHandsideVehs } from "../shared/enums/vehicles";
 
 /**
  * @param reference Title for organisation logs
@@ -543,4 +545,13 @@ export async function getVehPassengers(vehicle: Vehicle): Promise<Passenger[]> {
   }
 
   return passengers;
+}
+
+export function speedToMph(speed: number): number {
+  return speed * 2.236936;
+}
+
+export async function rightHandVehicle(vehicle: Vehicle): Promise<boolean> {
+  const vehIndex = RightHandsideVehs.findIndex(enumVeh => enumVeh === vehicle.DisplayName.toLowerCase());
+  return vehIndex !== -1;
 }
