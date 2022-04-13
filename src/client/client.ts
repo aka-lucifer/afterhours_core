@@ -365,7 +365,7 @@ export class Client {
   private EVENT_resourceStop(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
       this.grabbing.stop();
-      // this.vehicleWeapon.stop();
+      this.vehicleManager.weapon.stop();
     }
   }
 

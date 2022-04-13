@@ -16,7 +16,6 @@ export class VehicleWeapon {
 
   // Ticks
   private propTick: number = undefined;
-  private aimTick: number = undefined;
 
   constructor() {
     this.currentWeapon = Weapons.Unarmed;
@@ -30,27 +29,16 @@ export class VehicleWeapon {
 
   // Methods
   public stop(): void {
-    if (this.attachedWeapon != null && this.attachedWeapon.exists()) {
+    if (this.attachedWeapon !== undefined) {
       this.attachedWeapon.delete();
+      this.attachedWeaponHash = undefined;
       this.attachedWeapon = undefined;
+      this.hasAttached = false;
     }
   }
 
   public async changedWeapon(newWeapon: number): Promise<void> {
     this.currentWeapon = newWeapon;
-  }
-
-  private startAim(): void {
-    if (this.aimTick === undefined) this.aimTick = setTick(() => {
-      console.log("aim thing!");
-    });
-  }
-
-  private stopAim(): void {
-    if (this.aimTick !== undefined) {
-      clearTick(this.aimTick);
-      this.aimTick = undefined;
-    }
   }
 
   // Events
