@@ -8,6 +8,7 @@ import {Game, Ped} from "fivem-js";
 export class WorldManager {
   private client: Client;
   private clearerTick: number = undefined;
+  private slowTick: number = undefined;
 
   constructor(client: Client) {
     this.client = client;
@@ -43,6 +44,13 @@ export class WorldManager {
 
       await Delay(500);
     });
+
+    this.slowTick = setTick(async() => {
+      this.disableAmbients();
+      this.disableCoverAdvantage();
+
+      await Delay(2000);
+    })
   }
 
   // Disable Wondering Idle Cam (Don't call every frame, as it activates every 30 seconds)
@@ -138,5 +146,17 @@ export class WorldManager {
 
     // Disable spawning of trains
     SetRandomTrains(false);
+  }
+
+  // Disable PVP Cover Exploit
+  private disableCoverAdvantage(): void {
+    const myPlayer = Game.Player;
+    const roomKey = GetRoomKeyFromEntity(Game.PlayerPed.Handle);
+
+    if (roomKey !== 0) {
+      SetPlayerCanUseCover(myPlayer.Handle, false); // Disable cover when inside an interior
+    } else {
+      SetPlayerCanUseCover(myPlayer.Handle, true); // Enable cover when inside an interior
+    }
   }
 }
