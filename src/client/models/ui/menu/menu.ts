@@ -29,9 +29,8 @@ export class Menu {
     client.menuManager.CloseMenu();
   }
 
-  public async BindSubmenu(menuName: string): Promise<Submenu> {
-    const newHandle = client.menuManager.AddSubmenu(menuName, this.handle, this.resource, this.position)
-    return new Submenu(menuName, this.resource, newHandle, this.position);
+  public BindSubmenu(menuName: string): Submenu {
+    return new Submenu(menuName, this.resource, this.handle, this.position);
   }
 
   public BindButton(buttonLabel: string, callback: any): string {
