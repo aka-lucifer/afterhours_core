@@ -18,7 +18,7 @@ export class svPlayer {
     this.name = playerData.name;
     this.rank = playerData.rank;
     this.joinedAt = playerData.joinTime;
-    this.ped = Game.Player.Character;
+    this.ped = new Ped(GetPlayerFromServerId(this.netId));
     this.spawned = playerData.spawned;
     
     if (playerData.selectedCharacter !== undefined) {
