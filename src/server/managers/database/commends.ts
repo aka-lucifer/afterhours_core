@@ -20,7 +20,9 @@ export class CommendManager {
   public async loadCommends(): Promise<void> {
     const commendData = await Database.SendQuery("SELECT * FROM `player_commends`", {});
     for (let i = 0; i < Object.keys(commendData.data).length; i++) {
-      const commend = new Commend(commendData.data[i].id, commendData.data[i].player_id, commendData.data[i].reason, commendData.data[i].issued_by, new Date(commendData.data[i].issued_on));
+      const commend = new Commend(commendData.data[i].player_id, commendData.data[i].reason, commendData.data[i].issued_by);
+      commend.Id = commendData.data[i].id;
+      commend.IssuedOn = new Date(commendData.data[i].issued_on);
       this.playerCommends.push(commend);
     }
 
