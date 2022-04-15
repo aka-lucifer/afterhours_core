@@ -188,6 +188,25 @@ export class MenuManager {
     }
   }
 
+  public emptyMenu(menuIndex: string): void {
+    const menuFound = menus[menuIndex];
+    if (menuFound) {
+      if (menuFound.type === "submenu") {
+        console.log("empty submenu components");
+        menus[menuIndex].components = [];
+
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.EmptyMenu,
+          data: {
+            components: menus[menuIndex].components
+          }
+        }))
+      } else {
+        console.log("not submenu, so can't empty components");
+      }
+    }
+  }
+
   public async CloseMenu(): Promise<void> {
     if (openedMenu) {
       SendNuiMessage(JSON.stringify({
@@ -208,8 +227,10 @@ export class MenuManager {
   }
 
   public async IsMenuOpen(menuIndex: string): Promise<boolean> {
-    if (openedMenu.index == menuIndex) {
-      return true;
+    if (openedMenu !== null) {
+      if (openedMenu.index == menuIndex) {
+        return true;
+      }
     }
 
     return false;
