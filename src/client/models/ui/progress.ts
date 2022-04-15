@@ -11,9 +11,9 @@ interface ProgressDisablers {
   combat?: boolean
 }
 
-let onCancel;
-let onStart;
-let onFinish;
+let onCancel = undefined;
+let onStart = undefined;
+let onFinish = undefined;
 
 interface ProgressOptions {
   startPercentage?: number,
@@ -62,6 +62,12 @@ export class Progress {
   constructor(duration: number, disablers: ProgressDisablers, cancel?: CallableFunction, start?: CallableFunction, finish?: CallableFunction) {
     this.options.duration = duration;
     this.options.controlDisablers = disablers;
+
+    if (onStart !== undefined) {
+      clearTick(this.controlTick);
+      this.controlTick = undefined;
+    }
+
     onCancel = cancel;
     onStart = start;
     onFinish = finish;
