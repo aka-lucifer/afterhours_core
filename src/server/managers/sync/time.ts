@@ -55,7 +55,7 @@ export class TimeManager {
     this.registerCommands();
   }
 
-  private async changeTime(hour: number, minute: number, overTime: boolean, changedBy?: Player): Promise<void> {
+  public async changeTime(hour: number, minute: number, overTime: boolean, changedBy?: Player): Promise<void> {
     if (overTime) {
       setTimeout(() => {
         this.hour = hour;
@@ -64,29 +64,29 @@ export class TimeManager {
         emitNet(Events.syncTime, -1, this.hour, this.minute);
         this.setChanging(false);
       }, serverConfig.syncing.time.secondInterval);
-
-      if (changedBy !== undefined) {
-        const changersDisc = await changedBy.GetIdentifier("discord");
-        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Time Changed__",
-          description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
-          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-        }]}));
-      } else {
-        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Time Changed__",
-          description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: Console`,
-          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-        }]}));
-      }
     } else {
       this.hour = hour;
       this.minute = minute;
       this.setFormattedTime();
       emitNet(Events.syncTime, -1, this.hour, this.minute);
       this.setChanging(false);
+    }
+
+    if (changedBy !== undefined) {
+      const changersDisc = await changedBy.GetIdentifier("discord");
+      await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
+        color: EmbedColours.Green,
+        title: "__Time Changed__",
+        description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: ${changedBy.GetName}\n**Rank**: ${Ranks[changedBy.Rank]}\n**Discord**: ${changersDisc != "Unknown" ? `<@${changersDisc}>` : changersDisc}`,
+        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      }]}));
+    } else {
+      await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Time Logs", embeds: [{
+        color: EmbedColours.Green,
+        title: "__Time Changed__",
+        description: `The time has changed.\n\n**Time**: ${addZero(hour)}:${addZero(minute)}\n**Changed By**: Console`,
+        footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      }]}));
     }
   }
 
