@@ -21,14 +21,13 @@ export class Commend {
   private readonly receiver: number;
   private readonly reason: string;
   private readonly issuedBy: number;
-  public readonly issuedOn: Date;
+  public issuedOn: Date;
 
-  constructor(id: number, receiver: number, reason: string, issuedBy: number, issuedOn: Date) {
-    this.id = id;
+  constructor(receiver: number, reason: string, issuedBy: number) {
     this.receiver = receiver;
     this.reason = reason;
     this.issuedBy = issuedBy;
-    this.issuedOn = issuedOn;
+    this.issuedOn = new Date();
 
     // Inform("Commend Class", `Defined Commend Class Data: ${JSON.stringify((this))}`);
   }
@@ -36,6 +35,10 @@ export class Commend {
   // Getters & Setters Requests
   public get Id(): number {
     return this.id;
+  }
+
+  public set Id(newId: number) {
+    this.id = newId;
   }
 
   public get Receiver(): number {
@@ -52,6 +55,10 @@ export class Commend {
 
   public get IssuedOn(): Date {
     return this.issuedOn;
+  }
+
+  public set IssuedOn(newDate: Date) {
+    this.issuedOn = newDate;
   }
 
   // Methods
