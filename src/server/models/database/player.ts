@@ -108,6 +108,10 @@ export class Player {
     this.spawned = newValue;
   }
 
+  public get Position(): Vector3 {
+    return NumToVector3(GetEntityCoords(GetPlayerPed(this.Handle)));
+  }
+
   // Methods
   public async GetIdentifier(type : string): Promise<string> {
     // const identifiers : string[] = []; OLD VERSION
@@ -286,10 +290,6 @@ export class Player {
     const currTime = await Utils.GetTimestamp();
     const currentPlaytime = (new Date(currTime).getTime() / 1000) - (new Date(this.joinTime).getTime() / 1000);
     return this.playtime + currentPlaytime;
-  }
-
-  public Position(): Vector3 {
-    return NumToVector3(GetEntityCoords(GetPlayerPed(this.Handle)));
   }
 
   public async TriggerEvent(eventName: Events | PoliceEvents | JobEvents, ...args: any[]): Promise<void> {
