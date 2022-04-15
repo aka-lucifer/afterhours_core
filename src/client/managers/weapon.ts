@@ -29,7 +29,7 @@ export class WeaponManager {
   public disablers: WeaponDisablers;
   public jamming: WeaponJamming;
   private taser: Taser;
-  private onBack: OnBack;
+  public onBack: OnBack;
 
   constructor(client: Client) {
     this.client = client;

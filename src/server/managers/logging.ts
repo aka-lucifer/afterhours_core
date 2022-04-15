@@ -24,7 +24,7 @@ export class LogManager {
   }
 
   // Methods
-  public async Send(type: LogTypes, message: WebhookMessage) {
+  public async Send(type: LogTypes, message: WebhookMessage): Promise<void> {
     let url;
 
     if (type == LogTypes.Connection) url = this.connectionsURL;

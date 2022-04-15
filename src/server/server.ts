@@ -93,8 +93,8 @@ export class Server {
   public weaponManager: WeaponsManager;
 
   // [Managers] Syncing
-  private timeManager: TimeManager;
-  private weatherManager: WeatherManager;
+  public timeManager: TimeManager;
+  public weatherManager: WeatherManager;
   private aopManager: AOPManager;
 
   // [Managers] Client Callbacks
@@ -509,7 +509,7 @@ export class Server {
 
       if (weaponData !== undefined) {
         if (!data.inVeh && weaponData.type == "weapon") {
-          const killDistance = Dist(player.Position(), killer.Position(), false);
+          const killDistance = Dist(player.Position, killer.Position, false);
           emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
         }
 
