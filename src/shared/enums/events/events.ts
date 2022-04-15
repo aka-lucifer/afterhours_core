@@ -43,12 +43,27 @@ export enum Events {
   setAOP = "astrid:server:setAOP",
   setCycling = "astrid:server:setCycling",
 
-  // Astrid Server ([Vehicle] - GPS)
+  // Astrid Server ([Controllers | Vehicle] - GPS)
   syncGPS = "astrid:server:syncGPS",
 
-  // Astrid Server ([Vehicle] - Seatbelt)
+  // Astrid Server ([Controllers | Vehicle] - Seatbelt)
   ejectPassengers = "astrid:server:ejectPassengers",
   harmPassengers = "astrid:server:harmPassengers",
+  
+  // Astrid Server ([Controllers] | Staff] - Menu)
+  changeWeather = "astrid:server:changeWeather",
+  changeTime = "astrid:server:changeTime",
+  bringAll = "astrid:server:bringAll",
+  freezeAll = "astrid:server:freezeAll",
+
+  banPlayer = "astrid:server:banPlayer",
+  kickPlayer = "astrid:server:kickPlayer",
+  warnPlayer = "astrid:server:warnPlayer",
+  commendPlayer = "astrid:server:commendPlayer",
+  freezePlayer = "astrid:server:freezePlayer",
+  tpToPlayer = "astrid:server:tpToPlayer",
+  tpToVehicle = "astrid:server:tpToVehicle",
+  spectatePlayer = "astrid:server:spectatePlayer",
 
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
@@ -79,6 +94,7 @@ export enum Events {
 
   // Astrid Client ([Staff] - Commands)
   teleportToMarker = "astrid:client:teleportToMarker",
+  teleportBack = "astrid:client:teleportToMarker",
   clearWorldVehs = "astrid:client:clearWorldVehs",
   showRank = "astrid:client:showRank",
   
@@ -89,6 +105,11 @@ export enum Events {
   holdPlayer = "astrid:client:holdPlayer",
   releasePlayer = "astrid:client:releasePlayer",
   getGravitied = "astrid:client:getGravitied",
+  
+  // Astrid Client ([Controllers] | Staff] - Menu)
+  receiveWarning = "astrid:client:receiveWarning",
+  goToPlayer = "astrid:client:goToPlayer",
+  startSpectating = "astrid:client:startSpectating",
 
   // Astrid Client (Syncers)
   syncTime = "astrid:client:syncTime",

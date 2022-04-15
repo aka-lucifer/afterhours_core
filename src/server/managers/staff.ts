@@ -5,6 +5,7 @@ import { Command } from "../models/ui/chat/command";
 import { Ban } from "../models/database/ban";
 
 import {Gravity} from "../controllers/staff/gravity";
+import { StaffMenu } from "../controllers/staff/menu";
 
 import {Ranks} from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";
@@ -17,6 +18,7 @@ export class StaffManager {
 
   // Controllers
   private gravityGun: Gravity;
+  private staffMenu: StaffMenu;
 
   constructor(server: Server) {
     this.server = server;
@@ -29,6 +31,15 @@ export class StaffManager {
       if (player) {
         if (player.Spawned) {
           await player.TriggerEvent(Events.teleportToMarker);
+        }
+      }
+    }, Ranks.Admin);
+    
+    new Command("goback", "Go back to your previous location, before you teleported.", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          await player.TriggerEvent(Events.teleportBack);
         }
       }
     }, Ranks.Admin);
@@ -141,6 +152,7 @@ export class StaffManager {
   
   public init(): void {
     this.gravityGun = new Gravity(this.server);
+    this.staffMenu = new StaffMenu(this.server);
     
     this.registerCommands();
     this.registerRCONCommands();

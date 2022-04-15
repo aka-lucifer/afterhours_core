@@ -35,6 +35,7 @@ export enum NuiMessages {
   // Astrid Menu
   OpenMenu = "OPEN_MENU",
   CloseMenu = "CLOSE_MENU",
+  EmptyMenu = "EMPTY_MENU",
   SetMenuOption = "SET_MENU_OPTION",
   SetCheckboxState = "SET_CHECKBOX_STATE",
   SetListItem = "SET_LIST_ITEM",

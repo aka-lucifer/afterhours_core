@@ -78,6 +78,10 @@ export class WeaponRemovers {
           if (this.client.weaponManager.disablers.PunchActive) {
             this.client.weaponManager.disablers.stopPunch();
           }
+
+          if (!this.client.staffManager.staffMenu.WeaponActive) {
+            this.client.staffManager.staffMenu.startWeapon();
+          }
         } else {
           // If the combat roll disabler tick is running
           if (this.client.weaponManager.disablers.RollActive) {
@@ -86,6 +90,10 @@ export class WeaponRemovers {
 
           if (!this.client.weaponManager.disablers.PunchActive) {
             this.client.weaponManager.disablers.startPunch();
+          }
+          
+          if (this.client.staffManager.staffMenu.WeaponActive) {
+            this.client.staffManager.staffMenu.stopWeapon();
           }
         }
 
