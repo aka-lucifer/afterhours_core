@@ -1,7 +1,5 @@
-import { Departments } from "./enums/jobs/departments";
 import { PoliceRanks, StateRanks, CountyRanks} from "./enums/jobs/ranks";
 import { Jobs } from "./enums/jobs/jobs";
-
 /**
  * 
  * @param rank Rank Enum

@@ -78,7 +78,7 @@ export class RepairShops {
               if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
               currVeh.repair();
               global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
-              SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false)
+              SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false);
               currVeh.IsEngineRunning = true;
               currVeh.IsDriveable = true;
               SetVehicleEngineOn(currVeh.Handle, true, false, true);

@@ -16,7 +16,6 @@ export class LeaveDoorOpen {
 
   // Methods
   public start(): void {
-    console.log("start leave door open!");
     if (this.tick === undefined) this.tick = setTick(async() => {
       const myPed = Game.PlayerPed;
       if (IsPedInAnyVehicle(myPed.Handle, false)) {

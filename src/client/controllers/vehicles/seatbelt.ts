@@ -31,7 +31,7 @@ export class Seatbelt {
   constructor(client: Client) {
     this.client = client;
 
-    Inform("Vehicle | Speedzones Controller", "Started!");
+    Inform("Vehicle | Seatbelt Controller", "Started!");
 
     // Keybindings
     RegisterCommand("+toggle_seatbelt", this.toggleSeatbelt.bind(this), false);

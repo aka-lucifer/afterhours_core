@@ -125,8 +125,6 @@ export class WeaponModes {
       } else {
         console.log("your current weapon, doesn't support firing modes. As it doesn't shoot bullets!");
       }
-    } else {
-      console.log("can't cycle firing mode as you're unarmed!");
     }
   }
   
@@ -183,8 +181,6 @@ export class WeaponModes {
       } else {
         console.log("your current weapon, doesn't support firing modes. As it doesn't shoot bullets!");
       }
-    } else {
-      console.log("can't cycle firing mode as you're unarmed!");
     }
   }
 

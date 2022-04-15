@@ -180,7 +180,6 @@ export class OnBack {
       // console.log("WEAPONS ARE ATTACHED!");
 
       this.attachedWeapons.forEach((weapon, index) => {
-        console.log(index + 1, this.attachedWeapons.length);
         // console.log(`DELETING OBJECT (${this.attachedWeapons[index].entity.Handle})`);
         this.attachedWeapons[index].entity.delete();
         // this.attachedWeapons.splice(index, 1);

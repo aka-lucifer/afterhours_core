@@ -1,4 +1,4 @@
-import { Audio, Control, Game, Screen } from "fivem-js";
+import { Audio, Control, Game, InputMode, Screen } from "fivem-js";
 
 import { Delay, GetHash, Inform } from "../../utils";
 import { Client } from "../../client";
@@ -108,10 +108,11 @@ export class Reloading {
 
                 // If your current weapon requires reloading
                 if (reloadIndex !== -1) {
-                  DisableControlAction(0, Control.Reload, true);
-                  DisableControlAction(0, Control.MeleeAttackLight, true);
-                  DisableControlAction(0, Control.MeleeAttackHeavy, true);
-                  DisableControlAction(0, Control.MeleeAttackAlternate, true);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Reload);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackLight);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy);
+                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
+
                   DisablePlayerFiring(Game.Player.Handle, true);
                   
                   if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
