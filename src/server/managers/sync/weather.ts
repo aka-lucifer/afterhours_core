@@ -47,9 +47,29 @@ export class WeatherManager {
     GlobalState.weatherChanging = newState;
   }
 
-  private async setWeather(newWeather: string, manually: boolean, changedBy?: Player): Promise<void> {
+  private isWinterWeather(weatherType: string): boolean {
+    const winterWeathers = Object.keys(WinterWeathers);
+    const weatherIndex = winterWeathers.findIndex(winterWeather => winterWeather.toUpperCase() == weatherType);
+    return weatherIndex !== -1;
+  }
+
+  public async setWeather(newWeather: string, manually: boolean, changedBy?: Player): Promise<void> {
     this.currentWeather = newWeather;
     GlobalState.Weather = newWeather;
+
+    if (this.isWinterWeather(this.currentWeather)) {
+      // If the new weather is a winter weather, and our winter weather bool and convar is false, set both to true
+      if (!this.winterWeather) {
+        SetConvar("xmas_weather", "true");
+        this.winterWeather = true;
+      }
+    } else {
+      // If the new weather is a winter weather, and our winter weather bool and convar are both true, set both to false
+      if (this.winterWeather) {
+        SetConvar("xmas_weather", "false");
+        this.winterWeather = false;
+      }
+    }
 
     if (manually) {
       emitNet(Events.syncWeather, -1, this.currentWeather); // Sync weather to all clients
