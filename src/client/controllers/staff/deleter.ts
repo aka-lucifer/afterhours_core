@@ -1,15 +1,16 @@
+import {Game, Entity, Bone, Prop, Ped, Vehicle, VehicleSeat} from "fivem-js";
+
 import {Client} from "../../client";
+import {Delay, GetHash, Inform} from "../../utils";
 
 import { Notification } from "../../models/ui/notification";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
 import {AddonWeapons} from "../../../shared/enums/weapons";
-import clientConfig from "../../../configs/client.json";
-
-import {Game, Entity, Bone, Prop, Ped, Vehicle, VehicleSeat} from "fivem-js";
-import {Delay, GetHash} from "../../utils";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+
+import clientConfig from "../../../configs/client.json";
 
 export class Deleter {
   private client: Client;
@@ -29,19 +30,14 @@ export class Deleter {
       onNet(Events.releasePlayer, this.EVENT_releasePlayer.bind(this));
       onNet(Events.getGravitied, this.EVENT_getGravitied.bind(this));
 
-      // Key Mappings
-      // RegisterKeyMapping("attach_entity", "Attach the entity to gravity gun", "KEYBOARD", "E");
-      // RegisterKeyMapping("shoot_attached_entity", "Shoot attached entity forward", "MOUSE_BUTTON", "MOUSE_LEFT");
-      // RegisterKeyMapping("scroll_attached_entity_forward", "Move attached entity forward", "MOUSE_WHEEL", "IOM_WHEEL_UP");
-      // RegisterKeyMapping("scroll_attached_entity_backward", "Move attached entity backward", "MOUSE_WHEEL", "IOM_WHEEL_DOWN");
-      // RegisterKeyMapping("delete_attached_entity", "Deletes the attached entity", "KEYBOARD", "DELETE");
-
       // Key Mapped Commands
       RegisterCommand("attach_entity", this.attachEntity.bind(this), false);
       RegisterCommand("shoot_attached_entity", this.shootEntity.bind(this), false);
       RegisterCommand("scroll_attached_entity_forward", this.scrollForward.bind(this), false);
       RegisterCommand("scroll_attached_entity_backward", this.scrollBackward.bind(this), false);
       RegisterCommand("delete_attached_entity", this.deleteEntity.bind(this), false);
+      
+      Inform("Staff | Deleter Controller", "Started!");
     }
   }
 

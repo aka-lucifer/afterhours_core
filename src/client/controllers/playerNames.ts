@@ -1,7 +1,7 @@
-import { Vector3, Game, Ped, VehicleSeat } from "fivem-js";
+import { Game, Ped, VehicleSeat } from "fivem-js";
 
 import { Client } from "../client";
-import { Delay, insideVeh } from "../utils";
+import { Inform, insideVeh } from "../utils";
 
 import clientConfig from "../../configs/client.json";
 
@@ -23,6 +23,8 @@ export class PlayerNames {
     
     RegisterCommand("+toggle_names", this.displayNames.bind(this), false);
     RegisterCommand("-toggle_names", this.hideNames.bind(this), false);
+    
+    Inform("Player Names | Disablers Controller", "Started!");
   }
 
   // Methods

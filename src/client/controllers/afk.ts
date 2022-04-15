@@ -1,7 +1,7 @@
 import { Vector3, Game, Ped, VehicleSeat, InputMode, Control } from "fivem-js";
 
 import { Client } from "../client";
-import { Delay } from "../utils";
+import { Inform } from "../utils";
 
 import { Events } from "../../shared/enums/events/events";
 import { Message } from "../../shared/models/ui/chat/message";
@@ -24,6 +24,8 @@ export class AFK {
 
     // Events
     onNet(Events.setAFK, this.EVENT_setAFK.bind(this));
+
+    Inform("AFK Controller", "Started!");
   }
 
   // Methods
