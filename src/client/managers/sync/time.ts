@@ -16,6 +16,15 @@ export class TimeManager {
     onNet(Events.syncTime, this.EVENT_syncTime.bind(this));
   }
 
+  // Getters
+  public get Hour(): number {
+    return this.hour;
+  }
+
+  public get Minute(): number {
+    return this.minute;
+  }
+
   // Methods
   public setupTime(): void {
     this.timeTick = setTick(async() => {
