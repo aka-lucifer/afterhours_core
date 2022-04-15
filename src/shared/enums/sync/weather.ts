@@ -1,5 +1,5 @@
 export enum Weathers {
-  Sunny = "EXTRASUNNY",
+  ExtraSunny = "EXTRASUNNY",
   Clear = "CLEAR",
   Smog = "SMOG",
   Foggy = "FOGGY",
@@ -13,7 +13,7 @@ export enum Weathers {
 export enum WinterWeathers
 {
   Snow = "SNOW",
-  Christmas = "XMAS",
+  XMAS = "XMAS",
   Blizzard = "BLIZZARD",
   Snowlight = "SNOWLIGHT"
 }
