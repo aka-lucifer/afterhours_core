@@ -213,7 +213,7 @@
             },
             "recoil": {
                 "baseRecoil": 0.5,
-                "hipFireRecoil": 0.5,
+                "hipFireRecoil": 0.9,
                 "pistolAmmoRecoil": 0.1,
                 "smgAmmoRecoil": 0.2,
                 "lmgAmmoRecoil": 2.0,
@@ -263,7 +263,7 @@
                   "WEAPON_MUSKET"
 
                 ],
-                "blockPercentage": 5,
+                "blockPercentage": 2,
                 "timeBetween": 20000
             },
             "taser": {
