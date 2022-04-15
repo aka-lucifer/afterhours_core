@@ -24,12 +24,13 @@ export class WeatherManager {
       //   await Delay(15000);
       // }
 
-      ClearOverrideWeather()
-      ClearWeatherTypePersist()
-      SetWeatherTypePersist(this.weather)
-      SetWeatherTypeNow(this.weather)
-      SetWeatherTypeNowPersist(this.weather)
-      if (this.weather == WinterWeathers.Christmas) {
+      ClearOverrideWeather();
+      ClearWeatherTypePersist();
+      SetWeatherTypePersist(this.weather);
+      SetWeatherTypeNow(this.weather);
+      SetWeatherTypeNowPersist(this.weather);
+
+      if (this.weather == WinterWeathers.XMAS) {
         SetForceVehicleTrails(true);
         SetForcePedFootstepsTracks(true);
       } else {
