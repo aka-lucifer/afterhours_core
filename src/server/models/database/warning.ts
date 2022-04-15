@@ -153,7 +153,8 @@ export class Warning {
 
   public async send(): Promise<void> {
     if (!this.systemWarning) {
-      await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3[${Ranks[this.warner.Rank]}] - ^3${this.warner.GetName}, ^0for ^3${this.warnReason}`, SystemTypes.Admin))
+      // await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3[${Ranks[this.warner.Rank]}] - ^3${this.warner.GetName}, ^0for ^3${this.warnReason}`, SystemTypes.Admin));
+      await this.player.TriggerEvent(Events.receiveWarning, this.warnReason);
       const svPlayers = server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < svPlayers.length; i++) {
@@ -162,7 +163,8 @@ export class Warning {
         }
       }
     } else {
-      await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3System, ^0for ^3${this.warnReason}`, SystemTypes.Admin))
+      // await this.player.TriggerEvent(Events.sendSystemMessage, new Message(`You've received a warning from ^3System, ^0for ^3${this.warnReason}`, SystemTypes.Admin));
+      await this.player.TriggerEvent(Events.receiveWarning, this.warnReason);
       const svPlayers = server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < svPlayers.length; i++) {
