@@ -1,9 +1,8 @@
-import {Entity, Game, Vehicle, VehicleSeat, World} from "fivem-js"
+import {Game, VehicleSeat, } from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
 import { Character } from "./models/character";
-import { Progress } from "./models/ui/progress";
 
 // [Managers] Client Data
 import {RichPresence} from "./managers/richPresence";
@@ -49,7 +48,7 @@ import { Grabbing } from "./controllers/jobs/police/grabbing";
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import {Delay, Inform, NumToVector3, RegisterNuiCallback, teleportToCoords} from "./utils";
+import {Delay, Inform, RegisterNuiCallback} from "./utils";
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -57,8 +56,6 @@ import {GameEvents} from "../shared/enums/events/gameEvents";
 import {Callbacks} from "../shared/enums/events/callbacks";
 import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
-import { Message } from "../shared/models/ui/chat/message";
-import { SystemTypes } from "../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 
@@ -79,6 +76,7 @@ export class Client {
   private usingKeyboard: boolean = false;
 
   // Player Data
+  private teleporting: boolean = false;
   private statesTick: number = undefined;
   public playerStates: EntityInterface;
   
@@ -87,14 +85,14 @@ export class Client {
 
   // [Managers]
   private richPresence: RichPresence;
-  private staffManager: StaffManager;
+  public staffManager: StaffManager;
 
   // [Managers] World
   private worldManager: WorldManager;
   public safezoneManager: SafezoneManager;
 
   // [Managers] Syncing
-  private timeManager: TimeManager;
+  public timeManager: TimeManager;
   private weatherManager: WeatherManager;
   public aopManager: AOPManager;
 
@@ -154,10 +152,6 @@ export class Client {
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
     onNet(Events.notify, this.EVENT_notify.bind(this));
 
-    // (General Methods)
-    onNet(Events.teleportToMarker, this.EVENT_tpm.bind(this));
-    onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
-
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
   }
@@ -197,6 +191,14 @@ export class Client {
   
   public get Character(): Character {
     return this.character;
+  }
+
+  public get Teleporting(): boolean {
+    return this.teleporting;
+  }
+
+  public set Teleporting(newState: boolean) {
+    this.teleporting = newState;
   }
 
   // Methods
@@ -309,6 +311,7 @@ export class Client {
 
     // Staff
     this.playerStates.state.set("rankVisible", true, true);
+    this.playerStates.state.set("frozen", false, true);
     
     // UI
     this.playerStates.state.set("chatOpen", false, true);
@@ -359,6 +362,12 @@ export class Client {
     });
 
     global.exports("usingKeyboard", this.UsingKeyboard);
+
+    global.exports("isTeleporting", this.Teleporting);
+
+    global.exports("teleporting", (newState: boolean) => {
+      this.Teleporting = newState;
+    });
   }
 
   // Events
@@ -404,61 +413,6 @@ export class Client {
     }
     
     Inform("Syncing Players", `Server players is now ${JSON.stringify(this.players)}`);
-  }
-
-  private async EVENT_tpm(): Promise<void> {
-    const myPed = Game.PlayerPed;
-
-    if (!IsWaypointActive()) {
-      const notify = new Notification("TPM", "You don't have a waypoint set!", NotificationTypes.Error);
-      return
-    }
-
-    const waypointHandle = GetFirstBlipInfoId(8);
-
-    if (DoesBlipExist(waypointHandle)) {
-      const waypointCoords = NumToVector3(GetBlipInfoIdCoord(waypointHandle));
-      const teleported = await teleportToCoords(waypointCoords);
-      if (teleported) {
-        emit(Events.sendSystemMessage, new Message("Teleported to waypoint.", SystemTypes.Interaction));
-        const notify = new Notification("Teleporter", "Teleported to waypoint", NotificationTypes.Success);
-        await notify.send();
-      }
-    }
-  }
-
-  private EVENT_clearVehs(): void {
-    const worldVehs = World.getAllVehicles();
-    
-    for (let i = 0; i < worldVehs.length; i++) {
-      if (!worldVehs[i].getPedOnSeat(VehicleSeat.Driver).IsPlayer) {
-        worldVehs[i].PreviouslyOwnedByPlayer = false;
-        SetEntityAsMissionEntity(worldVehs[i].Handle, false, false);
-        worldVehs[i].delete();
-        if (worldVehs[i].exists()) {
-          worldVehs[i].delete();
-        }
-      }
-    }
-  }
-
-  private EVENT_pedDied(damagedEntity: number, attackingEntity: number, weaponHash: number, isMelee: boolean): void {
-    if (IsPedAPlayer(damagedEntity) && damagedEntity == Game.PlayerPed.Handle) {
-      if (IsPedAPlayer(attackingEntity)) {
-        emitNet(Events.logDeath, {
-          type: GetEntityType(attackingEntity),
-          inVeh: IsPedInAnyVehicle(attackingEntity, false) && GetPedInVehicleSeat(GetVehiclePedIsIn(attackingEntity, false), VehicleSeat.Driver),
-          weapon: weaponHash,
-          attacker: GetPlayerServerId(NetworkGetPlayerIndexFromPed(attackingEntity))
-        });
-      } else {
-        if (attackingEntity == -1) {
-          emitNet(Events.logDeath, {
-            attacker: attackingEntity
-          });
-        }
-      }
-    }
   }
 
   private EVENT_gameEvent(eventName: string, eventArgs: any[]): void {

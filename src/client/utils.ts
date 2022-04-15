@@ -303,6 +303,7 @@ export async function keyboardInput(textEntry: string, maxStringLength: number):
 
 export async function teleportToCoords(coords: Vector3, heading?: number): Promise<boolean> {
   let success = false;
+  client.Teleporting = true;
 
   // Is player in a vehicle and the driver? Then we'll use that to teleport.
   const [currVeh, inside] = await insideVeh(Game.PlayerPed);
@@ -471,6 +472,7 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
   // Fade screen in and reset the camera angle.
   DoScreenFadeIn(500);
   SetGameplayCamRelativePitch(0.0, 1.0);
+  client.Teleporting = false;
   return success;
 }
 
@@ -554,4 +556,13 @@ export function speedToMph(speed: number): number {
 export async function rightHandVehicle(vehicle: Vehicle): Promise<boolean> {
   const vehIndex = RightHandsideVehs.findIndex(enumVeh => enumVeh === vehicle.DisplayName.toLowerCase());
   return vehIndex !== -1;
+}
+
+/**
+ *
+ * @param i Integer to add zero to
+ */
+ export function addZero(i): string {
+  if (i < 10) {i = "0" + i}
+  return i;
 }
