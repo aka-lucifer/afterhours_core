@@ -17,7 +17,7 @@ export class StaffManager {
   // Controllers
   private deleter: Deleter;
   public staffMenu: StaffMenu;
-  private noclip: NoClip;
+  public noclip: NoClip;
 
   constructor(client: Client) {
     this.client = client;

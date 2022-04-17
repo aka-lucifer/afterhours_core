@@ -39,6 +39,17 @@ export class StaffMenu {
     onNet(Events.freezeAll, this.EVENT_freezeAll.bind(this));
   }
 
+  // Methods
+  private havePermission(rank: Ranks): boolean {
+    let havePermission = rank >= Ranks.Admin;
+
+    if (!this.server.Developing) { // If this server is the development server
+      if (rank == Ranks.Developer) havePermission = false; // Check if we're a dev, if we are, disable banning on public server
+    }
+
+    return havePermission;
+  }
+
   // Events  [Connected Players]
   private async EVENT_banPlayer(playerId: number, banReason: string, banPermanent: boolean, banType?: string, banLength?: number): Promise<void> {
     if (playerId > 0) {
@@ -46,10 +57,13 @@ export class StaffMenu {
         if (banReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
-            if (player.Rank >= Ranks.Admin) {
+            const havePerm = this.havePermission(player.Rank);
+            console.log("have permission!", havePerm);
+
+            if (havePerm) {
               if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
-                
+
                 if (foundPlayer) {
                   let banSeconds = 0;
                   if (!banPermanent) {
@@ -72,7 +86,7 @@ export class StaffMenu {
 
                   const currDate = new Date();
                   const newDate = new Date(currDate.setSeconds(currDate.getSeconds() + banSeconds));
-                  
+
                   if (!banPermanent) {
                     const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, player.Id, newDate);
                     const saved = await ban.save();
@@ -89,10 +103,10 @@ export class StaffMenu {
                     }
                   }
                 } else {
-                  await player.Notify("Ban", "You can't ban yourself!", NotificationTypes.Error);
+                  await player.Notify("Ban", "Player not found!", NotificationTypes.Error);
                 }
               } else {
-                console.log("you can't ban yourself!");
+                await player.Notify("Ban", "You can't ban yourself!", NotificationTypes.Error);
               }
             }
           }
@@ -113,10 +127,13 @@ export class StaffMenu {
         if (kickReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
-            if (player.Rank >= Ranks.Admin) {
+            const havePerm = this.havePermission(player.Rank);
+            console.log("have permission!", havePerm);
+
+            if (havePerm) {
               if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
-                
+
                 if (foundPlayer) {
                   const kick = new Kick(foundPlayer.Id, kickReason, player.Id);
                   const saved = await kick.save();
@@ -125,10 +142,10 @@ export class StaffMenu {
                     await player.Notify("Kick", `You've kicked ${foundPlayer.GetName}, for ${kickReason}.`, NotificationTypes.Info, 5000);
                   }
                 } else {
-                  await player.Notify("Kick", "You can't kick yourself!", NotificationTypes.Error);
+                  await player.Notify("Kick", "Player not found!", NotificationTypes.Error);
                 }
               } else {
-                console.log("you can't kick yourself!");
+                await player.Notify("Kick", "You can't kick yourself!", NotificationTypes.Error);
               }
             }
           }
@@ -149,10 +166,13 @@ export class StaffMenu {
         if (warnReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
-            if (player.Rank >= Ranks.Admin) {
+            const havePerm = this.havePermission(player.Rank);
+            console.log("have permission!", havePerm);
+
+            if (havePerm) {
               if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
-                
+
                 if (foundPlayer) {
                   const warning = new Warning(foundPlayer.Id, warnReason, player.Id);
                   const saved = await warning.save();
@@ -161,10 +181,10 @@ export class StaffMenu {
                     await player.Notify("Warn", `You've warned ${foundPlayer.GetName}, for ${warnReason}.`, NotificationTypes.Info, 5000);
                   }
                 } else {
-                  await player.Notify("Warn", "You can't warn yourself!", NotificationTypes.Error);
+                  await player.Notify("Warn", "Player not found!", NotificationTypes.Error);
                 }
               } else {
-                console.log("you can't warn yourself!");
+                await player.Notify("Warn", "You can't warn yourself!", NotificationTypes.Error);
               }
             }
           }
@@ -185,10 +205,13 @@ export class StaffMenu {
         if (commendReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
-            if (player.Rank >= Ranks.Admin) {
+            const havePerm = this.havePermission(player.Rank);
+            console.log("have permission!", havePerm);
+
+            if (havePerm) {
               if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
-                
+
                 if (foundPlayer) {
                   const commend = new Commend(foundPlayer.Id, commendReason, player.Id);
                   const saved = await commend.save();
@@ -196,10 +219,10 @@ export class StaffMenu {
                     await player.Notify("Commend", `You've commended ${foundPlayer.GetName}, for ${commendReason}.`, NotificationTypes.Info, 5000);
                   }
                 } else {
-                  await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
+                  await player.Notify("Commend", "Player not found!", NotificationTypes.Error);
                 }
               } else {
-                console.log("you can't commend yourself!");
+                await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
               }
             }
           }
@@ -218,18 +241,21 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
-        if (player.Rank >= Ranks.Admin) {
+        const havePerm = this.havePermission(player.Rank);
+        console.log("have permission!", havePerm);
+
+        if (havePerm) {
           if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
-            
+
             if (foundPlayer) {
               const ped = GetPlayerPed(foundPlayer.Handle);
               const states = Player(foundPlayer.Handle);
-    
+
               if (ped > 0) {
                 states.state.frozen = !states.state.frozen;
                 FreezeEntityPosition(ped, states.state.frozen);
-    
+
                 if (states.state.frozen) {
                   await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin));
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've frozen ${foundPlayer.GetName}.`, SystemTypes.Admin));
@@ -239,7 +265,7 @@ export class StaffMenu {
                 }
               }
             } else {
-              console.log("player not found!");
+              await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
           } else {
             await player.Notify("Staff Menu", "You can't freeze yourself!", NotificationTypes.Error);
@@ -255,14 +281,17 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
-        if (player.Rank >= Ranks.Admin) {
+        const havePerm = this.havePermission(player.Rank);
+        console.log("have permission!", havePerm);
+
+        if (havePerm) {
           if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
-            
+
             if (foundPlayer) {
               await player.TriggerEvent(Events.goToPlayer, Object.assign({}, foundPlayer), foundPlayer.Position);
             } else {
-              console.log("player not found!");
+              await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
           } else {
             await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
@@ -278,16 +307,19 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
-        if (player.Rank >= Ranks.Admin) {
+        const havePerm = this.havePermission(player.Rank);
+        console.log("have permission!", havePerm);
+
+        if (havePerm) {
           if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
-            
+
             if (foundPlayer) {
               const ped = GetPlayerPed(foundPlayer.Handle);
-    
+
               if (ped > 0) {
                 const currVeh = GetVehiclePedIsIn(ped, false)
-              
+
                 if (currVeh != 0) {
                   const myPed = GetPlayerPed(player.Handle);
                   SetPedIntoVehicle(myPed, currVeh, 0); // See if this places u into other seats, if that seat is full
@@ -296,7 +328,7 @@ export class StaffMenu {
                 }
               }
             } else {
-              console.log("player not found!");
+              await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
           } else {
             await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
@@ -312,14 +344,17 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
-        if (player.Rank >= Ranks.Admin) {
+        const havePerm = this.havePermission(player.Rank);
+        console.log("have permission!", havePerm);
+
+        if (havePerm) {
           if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
-            
+
             if (foundPlayer) {
               await player.TriggerEvent(Events.startSpectating, Object.assign({}, foundPlayer), foundPlayer.Position);
             } else {
-              console.log("player not found!");
+              await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
           } else {
             await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
@@ -341,11 +376,14 @@ export class StaffMenu {
       }
     }
   }
-  
+
   private async EVENT_changeTime(newHour: number, newMinute: number): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
-      if (player.Rank >= Ranks.Admin) {
+      const havePerm = this.havePermission(player.Rank);
+      console.log("have permission!", havePerm);
+
+      if (havePerm) {
         emitNet(Events.sendSystemMessage, -1, new Message(`A server administrator has changed the time to ${addZero(newHour)}:${addZero(newMinute)}.`, SystemTypes.Announcement));
         await this.server.timeManager.changeTime(newHour, newMinute, false, player);
       }
@@ -356,21 +394,26 @@ export class StaffMenu {
   private async EVENT_bringAll(): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
-      const myPos = player.Position;
-      const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+      const havePerm = this.havePermission(player.Rank);
+      console.log("have permission!", havePerm);
 
-      for (let i = 0; i < svPlayers.length; i++) {
-        if (svPlayers[i].Handle !== player.Handle) {
-          const ped = GetPlayerPed(svPlayers[i].Handle);
-          console.log("players ped!", ped);
-          if (ped > 0) {
-            SetEntityCoords(ped, myPos.x, myPos.y, myPos.z, false, false, false, false);
-            await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been brought to ${player.GetName}.`, SystemTypes.Admin));
+      if (havePerm) {
+        const myPos = player.Position;
+        const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+
+        for (let i = 0; i < svPlayers.length; i++) {
+          if (svPlayers[i].Handle !== player.Handle) {
+            const ped = GetPlayerPed(svPlayers[i].Handle);
+            console.log("players ped!", ped);
+            if (ped > 0) {
+              SetEntityCoords(ped, myPos.x, myPos.y, myPos.z, false, false, false, false);
+              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been brought to ${player.GetName}.`, SystemTypes.Admin));
+            } else {
+              console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
+            }
           } else {
-            console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
+            console.log("can't bring yourself!");
           }
-        } else {
-          console.log("can't bring yourself!");
         }
       }
     }
@@ -379,25 +422,30 @@ export class StaffMenu {
   private async EVENT_freezeAll(): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
-      const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+      const havePerm = this.havePermission(player.Rank);
+      console.log("have permission!", havePerm);
 
-      for (let i = 0; i < svPlayers.length; i++) {
-        if (svPlayers[i].Handle !== player.Handle) {
-          const ped = GetPlayerPed(svPlayers[i].Handle);
-          const states = Player(svPlayers[i].Handle);
+      if (havePerm) {
+        const svPlayers = this.server.connectedPlayerManager.GetPlayers;
 
-          if (ped > 0) {
-            states.state.frozen = !states.state.frozen;
-            FreezeEntityPosition(ped, states.state.frozen);
+        for (let i = 0; i < svPlayers.length; i++) {
+          if (svPlayers[i].Handle !== player.Handle) {
+            const ped = GetPlayerPed(svPlayers[i].Handle);
+            const states = Player(svPlayers[i].Handle);
 
-            states.state.frozen ?
-            await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin)) :
-            await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been unfrozen by ${player.GetName}.`, SystemTypes.Admin));
+            if (ped > 0) {
+              states.state.frozen = !states.state.frozen;
+              FreezeEntityPosition(ped, states.state.frozen);
+
+              states.state.frozen ?
+              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin)) :
+              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been unfrozen by ${player.GetName}.`, SystemTypes.Admin));
+            } else {
+              console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
+            }
           } else {
-            console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
+            console.log("can't bring yourself!");
           }
-        } else {
-          console.log("can't bring yourself!");
         }
       }
     }
