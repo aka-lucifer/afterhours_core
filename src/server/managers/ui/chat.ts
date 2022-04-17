@@ -296,40 +296,6 @@ export class ChatManager {
       }
     }, Ranks.Admin);
 
-    new Command("ban", "Freezes the chat", [{name: "server_id", help: "Players server ID"}], true, async(source: string, args: any) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          if (args[0]) {
-            const banDate = new Date();
-            banDate.setFullYear(2022, 1, 18);
-            banDate.setHours(21, 15, 0);
-
-            const banningPlayer = await this.server.connectedPlayerManager.GetPlayer(args[0]);
-            const ban = new Ban(banningPlayer.Id, banningPlayer.HardwareId, "Testing ban", player.Id, banDate);
-            ban.Banner = player;
-            await ban.save();
-            ban.drop();
-          }
-        }
-      }
-    }, Ranks.Admin);
-
-    new Command("kick", "Kick player", [{name: "server_id", help: "Players server ID"}], true, async(source: string, args: any) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          if (args[0]) {
-            const kickedPlayer = await this.server.connectedPlayerManager.GetPlayer(args[0]);
-            const kick = new Kick(kickedPlayer.Id,"Testing kick", player.Id);
-            kick.Kicker = player;
-            await kick.save();
-            kick.drop();
-          }
-        }
-      }
-    }, Ranks.Admin);
-
     new Command("warnings", "Display all of your warnings", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
