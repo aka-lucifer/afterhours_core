@@ -43,7 +43,7 @@ export class WeatherManager {
   }
 
   // Events
-  public EVENT_syncWeather(newWeather: string) {
+  public EVENT_syncWeather(newWeather: string): void {
     if (!GlobalState.weatherFrozen) {
       console.log("Recieved New Weather", newWeather);
       this.weather = newWeather;

@@ -32,8 +32,13 @@ export class WeatherManager {
   constructor(server: Server) {
     this.server = server;
     this.winterWeather = (GetConvar('xmas_weather', 'false') === "true");
+    GlobalState.winterWeather = this.winterWeather;
     this.setFrozen(false);
     this.setChanging(false);
+  }
+
+  public get WinterWeather(): boolean {
+    return this.winterWeather;
   }
 
   // Methods
@@ -62,12 +67,14 @@ export class WeatherManager {
       if (!this.winterWeather) {
         SetConvar("xmas_weather", "true");
         this.winterWeather = true;
+        GlobalState.winterWeather = true;
       }
     } else {
       // If the new weather is a winter weather, and our winter weather bool and convar are both true, set both to false
       if (this.winterWeather) {
         SetConvar("xmas_weather", "false");
         this.winterWeather = false;
+        GlobalState.winterWeather = false;
       }
     }
 
