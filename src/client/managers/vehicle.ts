@@ -59,7 +59,6 @@ export class VehicleManager {
     this.repairShops.init();
     this.gps.init();
     this.rolling.init();
-    // this.seatbelt.init();
   }
 
   public start(): void {
