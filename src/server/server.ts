@@ -268,7 +268,7 @@ export class Server {
     new Command("dev", "Toggle development mode", [], false, async(source: string) => {
       this.developmentMode = !this.developmentMode;
       SetConvar("development_server", this.developmentMode.toString());
-      emitNet(Events.developmentMode, -1, this.developmentMode);
+      emitNet(Events.changeDevMode, -1, this.developmentMode);
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, Ranks.Developer);
 
@@ -287,6 +287,7 @@ export class Server {
     RegisterCommand("dev", () => {
       this.developmentMode = !this.developmentMode;
       SetConvar("development_server", this.developmentMode.toString());
+      emitNet(Events.changeDevMode, -1, this.developmentMode);
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, false);
 

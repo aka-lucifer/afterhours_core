@@ -145,7 +145,7 @@ export class Client {
     // (Player Data)
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
     onNet(Events.setCharacter, this.EVENT_setCharacter.bind(this));
-    onNet(Events.developmentMode, this.EVENT_developmentMode.bind(this));
+    onNet(Events.changeDevMode, this.EVENT_changeDevMode.bind(this));
     onNet(Events.syncPlayers, this.EVENT_syncPlayers.bind(this));
     
     // (General Event Listeners)
@@ -400,7 +400,7 @@ export class Client {
     // console.log("Character Set To", this.Character);
   }
 
-  private EVENT_developmentMode(newState: boolean): void {
+  private EVENT_changeDevMode(newState: boolean): void {
     this.developmentMode = newState;
   }
 
