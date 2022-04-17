@@ -120,124 +120,128 @@ export class Seatbelt {
         const currVeh = myPed.CurrentVehicle;
 
         // If we aren't driving any kind of bike (something that doesn't have a belt)
-        if (!currVeh.Model.IsBike && !currVeh.Model.IsQuadbike && !currVeh.Model.IsBicycle && currVeh.Driver.Handle == myPed.Handle) {
-          // console.log("is car!");
-          // If our last vehicle is different, re-define it
-          if (this.lastVehicle === undefined || this.lastVehicle !== currVeh) {
-            this.lastVehicle = currVeh;
-          }
+        if (!currVeh.Model.IsBike && !currVeh.Model.IsQuadbike && !currVeh.Model.IsBicycle) {
+          if (currVeh.Driver.Handle == myPed.Handle) {
+            // console.log("is car!");
+            // If our last vehicle is different, re-define it
+            if (this.lastVehicle === undefined || this.lastVehicle !== currVeh) {
+              this.lastVehicle = currVeh;
+            }
 
-          if (currVeh.EngineHealth < 0.0) {
-            currVeh.EngineHealth = 0.0;
-          }
-
-          this.currBodyHealth = currVeh.BodyHealth;
-
-          // If our vehicle doesn't have any damage, reset the frame difference
-          if (this.currBodyHealth == 1000 && this.frameDiff !== 0) {
-            this.frameDiff = 0;
-          }
-
-          if (this.frameDiff !== 0) {
-            // console.log("THREE", this.frameDiff, this.oldFrameSpeed, this.oldFrameSpeed * 0.75, this.damaged);
-            if (this.oldFrameSpeed > 100 && this.frameDiff < (this.oldFrameSpeed * 0.75) && !this.damaged) {
-              console.log("FOUR!");
-              if (this.frameDiff > 18.0) { //If vehicle has less damage basically (if it is faster)
-                console.log("SEATBELT ONE!", this.oldFrameSpeed);
-
-                if (!this.seatbeltToggled) {
-                  if (Math.ceil(this.oldFrameSpeed) > 100) {
-                    console.log("SEATBELT EJECT 1!");
-                    await this.ejectPassengers(currVeh);
-                  }
-                } else {
-                  if (Math.ceil(this.oldFrameSpeed) > 80) {
-                    console.log("HARM PASSENGERS 1!");
-                    await this.harmPassengers(currVeh);
-                  }
-                }
-              } else {
-                console.log("SEATBELT TWO!");
-                
-                if (!this.seatbeltToggled) {
-                  if (Math.ceil(this.oldFrameSpeed) > 80) {
-                    console.log("SEATBELT EJECT 2!");
-                    await this.ejectPassengers(currVeh);
-                  }
-                } else {
-                  if (Math.ceil(this.oldFrameSpeed) > 60) {
-                    console.log("HARM PASSENGERS 2!");
-                    await this.harmPassengers(currVeh);
-                  }
-                }
-              }
-              
-              this.damaged = true;
-              console.log("DAMAGE VEH 1");
+            if (currVeh.EngineHealth < 0.0) {
               currVeh.EngineHealth = 0.0;
-              currVeh.IsEngineRunning = false;
-              await Delay(1000);
-              // do chance server LEO dispatch notification
             }
 
-            if (this.currBodyHealth < 550.0 && !this.damaged) {
-              this.damaged = true;
-              console.log("DAMAGE VEH 2");
-              currVeh.BodyHealth = 945.0;
-              currVeh.EngineHealth = 0.0;
-              currVeh.IsEngineRunning = false;
-              await Delay(1000);
-            }
-          }
+            this.currBodyHealth = currVeh.BodyHealth;
 
-          this.frameDiff = this.newBodyHealth - this.currBodyHealth;
-          if (this.ticks > 0) {
-            this.ticks = this.ticks - 1;
-
-            if (this.ticks === 1) {
-              this.oldFrameSpeed = speedToMph(currVeh.Speed);
-            }
-          } else {
-            if (this.damaged) {
-              this.damaged = false;
+            // If our vehicle doesn't have any damage, reset the frame difference
+            if (this.currBodyHealth == 1000 && this.frameDiff !== 0) {
               this.frameDiff = 0;
-              this.oldFrameSpeed = speedToMph(currVeh.Speed);
             }
 
-            this.newFrameSpeed = speedToMph(currVeh.Speed);
-            if (this.newFrameSpeed > this.oldFrameSpeed) {
-              this.oldFrameSpeed = speedToMph(currVeh.Speed);
+            if (this.frameDiff !== 0) {
+              // console.log("THREE", this.frameDiff, this.oldFrameSpeed, this.oldFrameSpeed * 0.75, this.damaged);
+              if (this.oldFrameSpeed > 100 && this.frameDiff < (this.oldFrameSpeed * 0.75) && !this.damaged) {
+                console.log("FOUR!");
+                if (this.frameDiff > 18.0) { //If vehicle has less damage basically (if it is faster)
+                  console.log("SEATBELT ONE!", this.oldFrameSpeed);
+
+                  if (!this.seatbeltToggled) {
+                    if (Math.ceil(this.oldFrameSpeed) > 100) {
+                      console.log("SEATBELT EJECT 1!");
+                      await this.ejectPassengers(currVeh);
+                    }
+                  } else {
+                    if (Math.ceil(this.oldFrameSpeed) > 80) {
+                      console.log("HARM PASSENGERS 1!");
+                      await this.harmPassengers(currVeh);
+                    }
+                  }
+                } else {
+                  console.log("SEATBELT TWO!");
+
+                  if (!this.seatbeltToggled) {
+                    if (Math.ceil(this.oldFrameSpeed) > 80) {
+                      console.log("SEATBELT EJECT 2!");
+                      await this.ejectPassengers(currVeh);
+                    }
+                  } else {
+                    if (Math.ceil(this.oldFrameSpeed) > 60) {
+                      console.log("HARM PASSENGERS 2!");
+                      await this.harmPassengers(currVeh);
+                    }
+                  }
+                }
+
+                this.damaged = true;
+                console.log("DAMAGE VEH 1");
+                currVeh.EngineHealth = 0.0;
+                currVeh.IsEngineRunning = false;
+                await Delay(1000);
+                // do chance server LEO dispatch notification
+              }
+
+              if (this.currBodyHealth < 550.0 && !this.damaged) {
+                this.damaged = true;
+                console.log("DAMAGE VEH 2");
+                currVeh.BodyHealth = 945.0;
+                currVeh.EngineHealth = 0.0;
+                currVeh.IsEngineRunning = false;
+                await Delay(1000);
+              }
             }
 
-            if (this.newFrameSpeed < this.oldFrameSpeed) {
-              this.ticks = 25;
+            this.frameDiff = this.newBodyHealth - this.currBodyHealth;
+            if (this.ticks > 0) {
+              this.ticks = this.ticks - 1;
+
+              if (this.ticks === 1) {
+                this.oldFrameSpeed = speedToMph(currVeh.Speed);
+              }
+            } else {
+              if (this.damaged) {
+                this.damaged = false;
+                this.frameDiff = 0;
+                this.oldFrameSpeed = speedToMph(currVeh.Speed);
+              }
+
+              this.newFrameSpeed = speedToMph(currVeh.Speed);
+              if (this.newFrameSpeed > this.oldFrameSpeed) {
+                this.oldFrameSpeed = speedToMph(currVeh.Speed);
+              }
+
+              if (this.newFrameSpeed < this.oldFrameSpeed) {
+                this.ticks = 25;
+              }
+
+              this.newBodyHealth = currVeh.BodyHealth;
             }
 
-            this.newBodyHealth = currVeh.BodyHealth;
+            this.vehVelocity = currVeh.Velocity;
+          } else {
+            if (this.lastVehicle.Handle > 0) {
+              await Delay(200);
+              this.newBodyHealth = this.lastVehicle.BodyHealth;
+              if (!this.damaged && this.newBodyHealth < this.currBodyHealth) {
+                console.log("DAMAGE VEH 3");
+                this.damaged = true;
+                this.lastVehicle.EngineHealth = 0.0;
+                this.lastVehicle.IsEngineRunning = false;
+                await Delay(1000);
+              }
+
+              this.lastVehicle = undefined;
+            }
+
+            this.oldFrameSpeed = 0;
+            this.newFrameSpeed = 0;
+            this.newBodyHealth = 0;
+            this.currBodyHealth = 0;
+            this.frameDiff = 0;
+
+            await Delay(1000);
           }
-
-          this.vehVelocity = currVeh.Velocity;
         } else {
-          if (this.lastVehicle.Handle > 0) {
-            await Delay(200);
-            this.newBodyHealth = this.lastVehicle.BodyHealth;
-            if (!this.damaged && this.newBodyHealth < this.currBodyHealth) {
-              console.log("DAMAGE VEH 3");
-              this.damaged = true;
-              this.lastVehicle.EngineHealth = 0.0;
-              this.lastVehicle.IsEngineRunning = false;
-              await Delay(1000);
-            }
-
-            this.lastVehicle = undefined;
-          }
-
-          this.oldFrameSpeed = 0;
-          this.newFrameSpeed = 0;
-          this.newBodyHealth = 0;
-          this.currBodyHealth = 0;
-          this.frameDiff = 0;
-
           await Delay(1000);
         }
       } else {
