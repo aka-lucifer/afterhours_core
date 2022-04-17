@@ -1,3 +1,4 @@
 export const RightHandsideVehs = [
-  "skyline"
+  "skyline",
+  "350gt"
 ]
