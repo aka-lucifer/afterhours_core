@@ -15,9 +15,10 @@ import { GPS } from "../controllers/vehicles/gps";
 import { KeepWheel } from "../controllers/vehicles/keepWheel";
 import { Rolling } from "../controllers/vehicles/rolling";
 import { Seatbelt } from "../controllers/vehicles/seatbelt";
+import { ReverseBraking } from '../controllers/vehicles/reverseBraking';
 
 export class VehicleManager {
-  private client: Client;
+  private readonly client: Client;
 
   // Controllers
   public speedZones: Speedzones;
@@ -30,6 +31,7 @@ export class VehicleManager {
   private keepWheel: KeepWheel;
   private rolling: Rolling;
   private seatbelt: Seatbelt;
+  private reverseBraking: ReverseBraking;
 
   constructor(client: Client) {
     this.client = client;
@@ -51,6 +53,7 @@ export class VehicleManager {
     this.keepWheel = new KeepWheel();
     this.rolling = new Rolling();
     this.seatbelt = new Seatbelt(this.client);
+    this.reverseBraking = new ReverseBraking();
 
     this.speedZones.init();
     this.repairShops.init();
@@ -71,6 +74,7 @@ export class VehicleManager {
     if(!this.leaveDoorOpen.Started) this.leaveDoorOpen.start();
     if (!this.keepWheel.Started) this.keepWheel.start();
     if (!this.seatbelt.Started) this.seatbelt.start();
+    if (!this.reverseBraking.Started) this.reverseBraking.start();
   }
   
   private EVENT_leftVeh(): void {
@@ -78,5 +82,6 @@ export class VehicleManager {
     if (this.antiControl.AirStarted) this.antiControl.stopAir();
     if(this.leaveDoorOpen.Started) this.leaveDoorOpen.stop();
     if (this.seatbelt.Started) this.seatbelt.stop();
+    if (this.reverseBraking.Started) this.reverseBraking.stop();
   }
 }
