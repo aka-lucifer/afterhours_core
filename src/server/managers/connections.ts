@@ -64,6 +64,8 @@ export class ConnectionsManager {
                 deferrals.done(`[${sharedConfig.serverName}]: You were permanently banned from ${sharedConfig.serverName}.\n\nBan Id: #${banData.Id}\n\nBy: System\n\nReason: ${banData.Reason}.`);
               }
             }
+
+            await server.connectedPlayerManager.Remove(player.handle);
           }
         }
 
