@@ -45,9 +45,13 @@ export class Spawner {
 
       const teleported = await teleportToCoords(this.spawnPosition, this.spawnHeading);
       if (teleported) {
+        // Set teleport heading and fade screen in
         Game.PlayerPed.Heading = this.spawnHeading;
-        SetNuiFocus(false, false);
-        DoScreenFadeIn(800);
+        DoScreenFadeIn(1200);
+
+        // Display character selector UI and enable NUI focus
+        this.client.characters.displayCharacters(false);
+
         // Get random location from AOP positions array
         const randomModel = sharedConfig.aop.spawnModels[Math.floor(Math.random() * sharedConfig.aop.spawnModels.length)];
         const spawnModel = new Model(randomModel);
@@ -87,10 +91,6 @@ export class Spawner {
               }
             }
           });
-          
-          // add spawn poly to safezones here
-
-          // this.client.characters.displayCharacters(false);  
         }
       }
       cb("ok");
