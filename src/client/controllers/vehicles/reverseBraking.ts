@@ -69,7 +69,6 @@ export class ReverseBraking {
 
       if (IsPedInAnyVehicle(myPed.Handle, false)) {
         let factor = 1.0;
-
         const currVeh = myPed.CurrentVehicle;
 
         if (currVeh.ClassType !== VehicleClass.Boats) {

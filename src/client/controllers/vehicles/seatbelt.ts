@@ -73,27 +73,6 @@ export class Seatbelt {
     this.client.playerStates.state.set("seatbelt", newState, true);
   }
 
-  public stop(): void {
-    if (this.tick !== undefined) {
-      clearTick(this.tick);
-      this.tick = undefined;
-      
-      this.updateState(false);
-      global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false); // Do seatbelt off sound, when u exit vehicle
-      this.ticks = 0;
-      this.oldFrameSpeed = 0;
-      this.newFrameSpeed = 0;
-      this.currBodyHealth = 0;
-      this.currEngineHealth = 0;
-      this.newBodyHealth = 0;
-      this.newEngineHealth = 0;
-      this.frameDiff = 0;
-      this.vehVelocity = undefined;
-      this.damaged = false;
-      this.lastVehicle = undefined;;
-    }
-  }
-
   private async ejectPassengers(vehicle: Vehicle): Promise<void> {
     if (vehicle.exists()) {
       const passengers = await getVehPassengers(vehicle);
@@ -248,6 +227,27 @@ export class Seatbelt {
         await Delay(1000);
       }
     });
+  }
+
+  public stop(): void {
+    if (this.tick !== undefined) {
+      clearTick(this.tick);
+      this.tick = undefined;
+
+      this.updateState(false);
+      global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false); // Do seatbelt off sound, when u exit vehicle
+      this.ticks = 0;
+      this.oldFrameSpeed = 0;
+      this.newFrameSpeed = 0;
+      this.currBodyHealth = 0;
+      this.currEngineHealth = 0;
+      this.newBodyHealth = 0;
+      this.newEngineHealth = 0;
+      this.frameDiff = 0;
+      this.vehVelocity = undefined;
+      this.damaged = false;
+      this.lastVehicle = undefined;;
+    }
   }
 
   // Events
