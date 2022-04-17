@@ -22,26 +22,26 @@ export class Menu {
   }
 
   public async Open(): Promise<void> {
-    client.menuManager.OpenMenu(this.handle);
+    await client.menuManager.OpenMenu(this.handle);
   }
 
   public async Close(): Promise<void> {
-    client.menuManager.CloseMenu();
+    await client.menuManager.CloseMenu();
   }
 
   public BindSubmenu(menuName: string): Submenu {
     return new Submenu(menuName, this.resource, this.handle, this.position);
   }
 
-  public BindButton(buttonLabel: string, callback: any): string {
+  public BindButton(buttonLabel: string, callback: CallableFunction): string {
     return client.menuManager.AddButton(buttonLabel, this.handle, callback, this.resource);
   }
 
-  public BindCheckbox(checkboxLabel: string, checkState: boolean, callback: any): string {
+  public BindCheckbox(checkboxLabel: string, checkState: boolean, callback: CallableFunction): string {
     return client.menuManager.AddCheckbox(checkboxLabel, this.handle, checkState, callback, this.resource)
   }
 
-  public BindList(listName: string, menuList: Record<number, any>, callback: any): string {
+  public BindList(listName: string, menuList: Record<number, any>, callback: CallableFunction): string {
     return client.menuManager.AddList(listName, this.handle, menuList, callback, this.resource);
   }
 

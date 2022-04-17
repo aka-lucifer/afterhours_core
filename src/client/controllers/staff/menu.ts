@@ -106,11 +106,6 @@ export class StaffMenu {
       // Key Mapped Commands
       RegisterCommand("+toggle_menu", this.toggleMenu.bind(this), false);
 
-      RegisterCommand("open_admin", async() => {
-        this.refreshPlayers();
-        await this.menu.Open();
-      }, false);
-
       Inform("Staff | Menu Controller", "Started!");
     }
   }
@@ -146,6 +141,16 @@ export class StaffMenu {
     for (let i = 0; i < 60; i++) {
       this.timeMinutes.push(i);
     }
+  }
+
+  private havePermission(): boolean {
+    let havePermission = this.client.player.Rank >= Ranks.Admin;
+
+    if (!this.client.Developing) { // If this server is the development server
+      if (this.client.player.Rank == Ranks.Developer) havePermission = false; // Check if we're a dev, if we are, disable banning on public server
+    }
+
+    return havePermission;
   }
 
   public init(): void {
@@ -212,6 +217,10 @@ export class StaffMenu {
         SetEntityCanBeDamaged(myPed.Handle, !this.godmode);
       });
 
+      this.playerActionsMenu.BindCheckbox("NoClip", this.client.staffManager.noclip.Active, () => {
+        this.client.staffManager.noclip.toggleNoclip();
+      });
+
       this.playerActionsMenu.BindCheckbox("Invisible", this.visible, (newState: boolean) => {
         this.visible = newState;
 
@@ -252,8 +261,11 @@ export class StaffMenu {
           currVeh.repair();
           global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
           currVeh.DirtLevel = 0.0;
+
+          const notify = new Notification("Staff Menu", "Vehicle fixed!", NotificationTypes.Success);
+          await notify.send();
         } else {
-          const notify = new Notification("Mechanic", "Your vehicle isn't damaged!", NotificationTypes.Error);
+          const notify = new Notification("Staff Menu", "Your vehicle isn't damaged!", NotificationTypes.Error);
           await notify.send();
         }
       }
@@ -269,7 +281,6 @@ export class StaffMenu {
     for (let i = 0; i < this.client.Players.length; i++) {
       let menu: Submenu;
       const playerData = this.client.Players[i];
-      console.log("char", playerData.Character === undefined)
 
       if (playerData.Character !== undefined) {
         menu = this.playersMenu.BindSubmenu(`[${playerData.NetworkId}] ${playerData.Name} | ${playerData.character.firstName} ${playerData.character.lastName}`);
@@ -296,7 +307,6 @@ export class StaffMenu {
 
       banMenu.BindList("Type", banTypes, (newType: string) => {
         this.banLengthType = newType;
-        console.log("set length type", this.banLengthType);
       });
 
       banMenu.BindButton("Length", async() => {
@@ -318,11 +328,41 @@ export class StaffMenu {
         this.banPermanent = newState;
       });
 
-      banMenu.BindButton("Ban", () => {
-        if (!this.banPermanent) {
-          emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent, this.banLengthType.toUpperCase(), this.banLength);
+      banMenu.BindButton("Ban", async() => {
+        if (this.banReason != null) {
+          if (this.banReason.length > 0) {
+            if (!this.banPermanent) {
+              if (!this.banLengthType !== undefined) {
+                if (this.banLength !== undefined && this.banLength > 0) {
+                  emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent, this.banLengthType.toUpperCase(), this.banLength);
+
+                  this.banReason = undefined;
+                  this.banLengthType = undefined;
+                  this.banLength = undefined;
+                  this.banPermanent = false;
+                } else {
+                  const notify = new Notification("Staff", `You haven't entered a ban length!`, NotificationTypes.Error);
+                  await notify.send();
+                }
+              } else {
+                const notify = new Notification("Staff", `You haven't entered a ban length type!`, NotificationTypes.Error);
+                await notify.send();
+              }
+            } else {
+              emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent);
+
+              this.banReason = undefined;
+              this.banLengthType = undefined;
+              this.banLength = undefined;
+              this.banPermanent = false;
+            }
+          } else {
+            const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
+            await notify.send();
+          }
         } else {
-          emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent);
+          const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
+          await notify.send();
         }
       });
 
@@ -331,7 +371,6 @@ export class StaffMenu {
         if (kickReason != null) {
           if (kickReason.length > 0) {
             this.kickReason = kickReason;
-            console.log(`Kick (${playerData.NetworkId} | ${playerData.Name} | ${this.kickReason})`);
             emitNet(Events.kickPlayer, playerData.Id, this.kickReason);
           } else {
             const notify = new Notification("Staff", `You haven't entered a kick reason!`, NotificationTypes.Error);
@@ -347,7 +386,6 @@ export class StaffMenu {
         const warnReason = await keyboardInput("Warn Reason", 250);
         if (warnReason != null) {
           if (warnReason.length > 0) {
-            console.log(`Warn (${playerData.NetworkId} | ${playerData.Name} | ${warnReason})`);
             emitNet(Events.warnPlayer, playerData.Id, warnReason);
           } else {
             const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
@@ -363,7 +401,6 @@ export class StaffMenu {
         const commendReason = await keyboardInput("Commend Reason", 250);
         if (commendReason != null) {
           if (commendReason.length > 0) {
-            console.log(`Commend (${playerData.Id} | ${playerData.NetworkId}) for ${commendReason}`);
             emitNet(Events.commendPlayer, playerData.Id, commendReason);
           } else {
             const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
@@ -376,22 +413,18 @@ export class StaffMenu {
       });
 
       menu.BindButton("Freeze", () => {
-        console.log(`Freeze (${playerData.NetworkId} | ${playerData.Name})`);
         emitNet(Events.freezePlayer, playerData.Id);
       });
 
       menu.BindButton("Teleport To", () => {
-        console.log(`Teleport To (${playerData.NetworkId} | ${playerData.Name})`);
         emitNet(Events.tpToPlayer, playerData.Id);
       });
 
       menu.BindButton("Teleport Inside Vehicle", () => {
-        console.log(`Teleport Inside Vehicle (${playerData.NetworkId} | ${playerData.Name})`);
         emitNet(Events.tpToVehicle, playerData.Id);
       });
 
       menu.BindButton("Spectate", () => {
-        console.log(`Spectate (${playerData.NetworkId} | ${playerData.Name})`);
         emitNet(Events.spectatePlayer, playerData.Id);
       });
 
@@ -436,7 +469,9 @@ export class StaffMenu {
   }
 
   private async toggleMenu(): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    const havePerm = this.havePermission();
+
+    if (havePerm) {
       if (!await this.client.menuManager.IsMenuOpen(this.menu.handle)) {
         this.refreshPlayers();
         await this.menu.Open();
@@ -451,6 +486,7 @@ export class StaffMenu {
 
       if (!IsWaypointActive()) {
         const notify = new Notification("TPM", "You don't have a waypoint set!", NotificationTypes.Error);
+        await notify.send();
         return
       }
 
@@ -529,8 +565,6 @@ export class StaffMenu {
         if (this.spectateTarget !== undefined && this.spectateTarget.Handle !== foundPlayer.Ped.Handle) this.spectatingPlayer = false;
 
         this.spectatingPlayer = !this.spectatingPlayer;
-
-        console.log("spectate", this.spectatingPlayer);
 
         if (this.spectatingPlayer) {
           this.spectateLastPos = Game.PlayerPed.Position;

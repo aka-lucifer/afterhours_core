@@ -390,7 +390,6 @@ export class MenuManager {
       const selected = openedMenu.components[hoveredIndex];
       if (selected) {
         if (selected.type == "submenu") {
-          console.log("this open menu!");
           await this.OpenMenu(selected.index);
         } else {
           const component = components[selected.index];
