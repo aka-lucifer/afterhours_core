@@ -26,6 +26,11 @@ export class NoClip {
     }
   }
 
+  // Getters
+  public get Active(): boolean {
+    return this.noClipTarget !== undefined;
+  }
+
   // Methods
   private enable(): void {
     if (this.client.player.Rank >= Ranks.Admin) {
@@ -72,9 +77,8 @@ export class NoClip {
     }
   }
 
-  private toggleNoclip(): void {
+  public toggleNoclip(): void {
     if (this.client.player.Rank >= Ranks.Admin) {
-      console.log("toggle noclip!");
 
       if (freecam.IsEnabled()) {
         this.disable();
