@@ -1,5 +1,5 @@
 import { Server } from "../server";
-import {Delay, Error, Inform, Log} from "../utils";
+import {Error, Inform, Log} from "../utils";
 
 import { Player } from "../models/database/player";
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
