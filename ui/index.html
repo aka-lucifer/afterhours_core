@@ -27,9 +27,6 @@
     
     <!-- Material -->
     <link rel="stylesheet" href="./libraries/css/material.css">
-    
-    <!-- Disptatch Map -->
-    <link rel="stylesheet" href="./libraries/css/leaflet.css">
 
     <!-- Default -->
     <link rel="stylesheet" href="style.css">
@@ -584,6 +581,7 @@
             <div id="Chat-Message" class="fault" v-if="message.notificationType == 'error'">[System Error]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="successMsg" v-if="message.notificationType == 'success'">[System]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="dispatch" v-if="message.notificationType == 'dispatch'">[Dispatch]: <span v-html="message.contents"></span></div>
+            <div id="Chat-Message" class="gps" v-if="message.notificationType == 'gps'">[GPS]: <span style="color: white;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): <span v-html="message.contents"></div>
@@ -629,7 +627,7 @@
           style="text-transform: uppercase; padding: 10px;">
           {{ chatTypes[currentType] }}
         </span>
-        <input ref="input" type="text" v-model="chatMessage" style="padding: 5px; color: white; width: 90%; outline: none;" placeholder="Enter chat message...">
+        <input id="chatInput" ref="input" type="text" v-model="chatMessage" style="padding: 5px; color: white; width: 90%; outline: none;" placeholder="Enter chat message...">
         <span style="float: right; padding: 10px;"><v-icon color="white">mdi-arrow-right-bold</v-icon></span>
       </div>
 
@@ -736,10 +734,8 @@
           <div id="astrid_menu_body">
             <div v-for="(comp, compIndex) in menuComponents">
               <!-- List -->
-              <div :id="compIndex" v-if="comp.type == 'list'" class="astrid_menu_list" v-bind:class="{ 'astrid_menu_list_hovered': compIndex == menuOption }">
-                <i style="margin-top: 5px;" class="fa fa-arrow-left fa-1x astrid_menu_list_icon_left"></i>
-                {{ comp.list[comp.listIndex] }}
-                <i style="margin-top: 5px;" class="fa fa-arrow-right fa-1x astrid_menu_list_icon_right"></i>
+              <div :id="compIndex" v-if="comp.type === 'list'" class="astrid_menu_list" v-bind:class="{ 'astrid_menu_list_hovered': compIndex == menuOption }">
+                <span><v-icon color="white" style="margin-bottom: 5px; margin-right: 50px;">mdi-arrow-left</v-icon> {{ comp.list[comp.listIndex] }} <v-icon color="white"  style="margin-bottom: 5px; margin-left: 50px;">mdi-arrow-right</v-icon></span>
               </div>
   
               <!-- Checkbox -->
@@ -756,147 +752,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Dispatch Map -->
-      <div id="Dispatch-Map_Container">
-        <div id="Active_Calls" v-if="activeCalls.length > 0">
-          <v-menu v-model="activeCallsMenu" absolute offset-y style="max-width: 600px">
-            <template v-slot:activator="{ on, attrs }">
-              <div class="active_card" v-for="(call, index) in activeCalls" :key="call.id" @click="clickActiveCall(index)" v-bind="attrs" v-on="on">
-                <div class="active_card_title_container">
-                  <span class="active_card_title_code" v-bind:class="{ 'callUrgent': call.priority == 'urgent', 'callNormal': call.priority == 'normal', 'callLow': call.priority == 'low' }">{{ call.code }}</span>
-                  <span class="active_card_title"> {{ call.type }} | {{ call.id }} | {{ call.callId }}</span>
-                </div>
-                <v-divider class="activeCardDivider"></v-divider>
-    
-                <div class="active_card_body">
-                  <v-icon color="white">mdi-map-marker</v-icon> <span class="dispatchCallText">{{ call.street }}</span><br><br>
-                  <v-icon color="white">mdi-clock</v-icon> <span class="dispatchCallText">{{ call.timestamp }}</span><br><br>
-                  <v-icon color="white">mdi-police-badge</v-icon> <span class="dispatchCallText"><b>Police</b>: ({{ call.activeOfficers }})</span><br><br>
-                  <v-icon color="white">mdi-ambulance</v-icon> <span class="dispatchCallText"><b>EMS</b>: ({{ call.activeEms }})</span>
-                </div>
-              </div>
-            </template>
-
-            <v-list dark>
-              <v-list-item @click="attachToActiveCall()" v-if="!attachedToCall">
-                <v-list-item-title>Assign To Call (Sets GPS)</v-list-item-title>
-              </v-list-item>
-              
-              <v-list-item @click="removeFromActiveCall()" v-if="attachedToCall">
-                <v-list-item-title>Remove From Call</v-list-item-title>
-              </v-list-item>
-              
-              <v-list-item @click="clearActiveCall('calls')">
-                <v-list-item-title>Clear From Map & List</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-
-        <div id="Calls" v-if="calls.length > 0">
-          <v-menu v-model="callsMenu" absolute offset-y style="max-width: 600px">
-            <template v-slot:activator="{ on, attrs }">
-              <div class="active_card" v-for="(call, index) in calls" :key="call.id" @click="clickCall(index)" v-bind="attrs" v-on="on">
-                <div class="active_card_title_container">
-                  <span class="active_card_title_code" v-bind:class="{ 'callUrgent': call.priority == 'urgent', 'callNormal': call.priority == 'normal', 'callLow': call.priority == 'low' }">{{ call.code }}</span>
-                  <span class="active_card_title"> {{ call.type }} | {{ call.id }}</span>
-                </div>
-                <v-divider class="activeCardDivider"></v-divider>
-    
-                <div class="active_card_body">
-                  <v-icon color="white">mdi-map-marker</v-icon> <span class="dispatchCallText">{{ call.street }}</span><br><br>
-                  <v-icon color="white">mdi-clock</v-icon> <span class="dispatchCallText">{{ call.timestamp }}</span><br><br>
-                </div>
-              </div>
-            </template>
-
-            <v-list dark>
-              <v-list-item @click="createActiveCall()">
-                <v-list-item-title>Create Call</v-list-item-title>
-              </v-list-item>
-
-              <v-list-item @click="">
-                <v-list-item-title>Set GPS</v-list-item-title>
-              </v-list-item>
-              
-              <v-list-item @click="">
-                <v-list-item-title>Clear From List (Only after 1 hour)</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-
-        <v-card id="Dispatch-Call" dark v-show="Object.keys(clickedActiveCall).length > 0">
-          <v-card-title class="justify-center" style="font-size: 2em; font-family: 'PT-Sans';">{{ clickedActiveCall.code }} | {{ clickedActiveCall.type }} | {{ clickedActiveCall.callId }}</v-card-title>
-          <v-divider></v-divider>
-                
-          <v-card-text style="padding-top: 20px;">
-            <v-icon>mdi-map-marker</v-icon> <span class="dispatchCallText">{{ clickedActiveCall.street }}</span><br><br>
-            <v-icon>mdi-clock</v-icon> <span class="dispatchCallText">{{ clickedActiveCall.timestamp }}</span>
-          </v-card-text>
-                
-          <v-card-actions>
-            <div id="Dispatch-Buttons">
-              <v-tooltip top>
-                <template #activator="data">
-                  <v-btn class="mx-2" small fab dark color="success" v-on="data.on" @click=""><v-icon dark>mdi-map-marker</v-icon></v-btn>
-                </template>
-                <span>Set GPS Location</span>
-              </v-tooltip>
-              
-              <v-tooltip top>
-                <template #activator="data">
-                  <v-btn class="mx-2" small fab dark color="primary" v-on="data.on" @click="clickedActiveCall = {};"><v-icon dark>mdi-eye-off</v-icon></v-btn>
-                </template>
-                <span>Close</span>
-              </v-tooltip>
-                  
-              <v-tooltip top>
-                <template #activator="data">
-                  <v-btn class="mx-2" small fab dark color="red" v-on="data.on" @click="clearActiveCall('marker')"><v-icon dark>mdi-close</v-icon></v-btn>
-                </template>
-                <span>Remove From Map & List</span>
-              </v-tooltip>
-            </div>
-          </v-card-actions>
-        </v-card>
-        
-        <v-card id="Dispatch-Units" dark>
-          <v-card-title class="justify-center" style="font-size: 2em; font-family: 'PT-Sans';">Active Units</v-card-title>
-          <v-divider></v-divider>
-
-          
-          <v-menu v-model="unitsMenu" absolute offset-y style="max-width: 600px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-card-text v-for="(unit, index) in activeUnits" :key="index" v-bind="attrs" v-on="on" @click="setUnitClicked(index)">
-                <div style="border: 1px solid white; padding: 5px;" v-if="unit.multiple">
-                  <span><v-icon v-if="unit.type == 'leo'">mdi-police-badge</v-icon> <span class="leoCallsign">{{ unit.callsign }}</span> <span class="leoName">{{ unit.name }}</span> <v-icon style="margin-bottom: 5px;" v-if="unit.worldType == 'car'">mdi-car</v-icon><v-icon style="margin-bottom: 5px;" v-if="unit.worldType == 'heli'">mdi-helicopter</v-icon><v-icon v-if="unit.worldType == 'boat'">mdi-ferry</v-icon><v-icon style="margin-bottom: 5px;" v-if="unit.worldType == 'bike'">mdi-motorbike</v-icon></span>
-                  <div v-for="(attachedUnit, attachedIndex) in unit.attached" :key="attachedIndex">
-                    <span><v-icon v-if="attachedUnit.type == 'leo'">mdi-police-badge</v-icon> <span class="leoCallsign">{{ attachedUnit.callsign }}</span> <span class="leoName">{{ attachedUnit.name }}</span></span>
-                  </div>
-                </div>
-    
-                <div style="border: 1px solid white; padding: 5px;" v-else>
-                  <span><v-icon v-if="unit.type == 'leo'">mdi-police-badge</v-icon> <span class="leoCallsign">{{ unit.callsign }}</span> <span class="leoName">{{ unit.name }}</span> <v-icon style="margin-bottom: 5px;" v-if="unit.worldType == 'car'">mdi-car</v-icon><v-icon style="margin-bottom: 5px;" v-if="unit.worldType == 'heli'">mdi-helicopter</v-icon><v-icon v-if="unit.worldType == 'boat'">mdi-ferry</v-icon><v-icon style="margin-bottom: 5px;" v-if="unit.worldType == 'bike'">mdi-motorbike</v-icon></span>
-                </div>
-              </v-card-text>
-            </template>
-
-            <v-list dark>
-              <v-list-item @click="testUnit()" v-if="Object.keys(attachedTo).length <= 0">
-                <v-list-item-title>Attach To Unit</v-list-item-title>
-              </v-list-item>
-              
-              <v-list-item @click="removeFromUnit()" v-else-if="Object.keys(attachedTo).length > 0 && attachedTo.id == activeUnits[unitClickedIndex].id">
-                <v-list-item-title>Remove From Unit</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-card>
-
-        <div id="Dispatch-Map"></div>
       </div>
     </v-app>
 
@@ -922,9 +777,6 @@
 
     <!-- Progress Bar -->
     <script src="./libraries/js/radialProgress.js"></script>
-    
-    <!-- Disptatch Map -->
-    <script src="./libraries/js/leaflet.js"></script>
 
     <!-- Moment JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

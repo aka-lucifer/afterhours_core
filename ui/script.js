@@ -1,81 +1,3 @@
-// Dispatch Map Data
-const center_x = 117.3;
-const center_y = 172.8;
-const scale_x = 0.02072;
-const scale_y = 0.0205;
-
-CUSTOM_CRS = L.extend({}, L.CRS.Simple, {
-  projection: L.Projection.LonLat,
-  scale: function(zoom) {
-    return Math.pow(2, zoom);
-  },
-
-  zoom: function(sc) {
-    return Math.log(sc) / 0.6931471805599453;
-  },
-
-	distance: function(pos1, pos2) {
-    var x_difference = pos2.lng - pos1.lng;
-    var y_difference = pos2.lat - pos1.lat;
-    return Math.sqrt(x_difference * x_difference + y_difference * y_difference);
-  },
-	transformation: new L.Transformation(scale_x, center_x, -scale_y, center_y), infinite: true
-});
-
-const activeCall = new L.Icon({
-  iconUrl: "./assets/img/leaflet/icons/active_call.png",
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [22, 32], // The width and height of the image
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-var bluePoint = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-var car = new L.Icon({
-  iconUrl: "./assets/img/leaflet/icons/car.png",
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [35, 30], // The width and height of the image
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-var heli = new L.Icon({
-  iconUrl: "./assets/img/leaflet/icons/heli.png",
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [30, 30], // The width and height of the image
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-var bike = new L.Icon({
-  iconUrl: "./assets/img/leaflet/icons/bike.png",
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [40, 25], // The width and height of the image
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-var boat = new L.Icon({
-  iconUrl: "./assets/img/leaflet/icons/boat.png",
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [30, 30], // The width and height of the image
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
 const HUD = new Vue({
   el: "#HUD",
   vuetify: new Vuetify(),
@@ -276,69 +198,7 @@ const HUD = new Vue({
     progressElement: null,
     runningProgress: false,
     progressBar: false,
-    staticProgressBar: false,
-
-    // Dispatch Map
-    showMap: false,
-    map: null,
-    layerController: null,
-
-    // [Dispatch Map] - Call Data
-    activeCalls: [],
-    calls: [
-      {id: 1, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 2, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 3, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 4, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 5, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 6, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 7, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 8, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 9, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 10, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 11, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 12, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-      {id: 13, code: "10-13", type: "Shots Fired", priority: "urgent", street: "East Joshua, Marina Dr", timestamp: new Date("2022-03-31 21:05:40")},
-    ],
-    clickedActiveCall: {},
-    clickedCall: {},
-    attachedToCall: false,
-
-    // [Dispatch Map] - Units
-    myData: {
-      callsign: "1C-01", name: "D. Dixie", job: {
-        name: "state"
-      }
-    },
-    unitClickedIndex: null,
-    activeUnits: [
-      {id: 1, type: "leo", callsign: "1C-01", name: "D. Dixie", worldType: "boat", position: [4112.195122, 1535.955598], multiple: false},
-      {id: 2, type: "leo", callsign: "1C-01", name: "D. Dixie", worldType: "car", position: [3686.890244, 1599.300193], multiple: false},
-      {id: 3, type: "leo", callsign: "1C-01", name: "D. Dixie", worldType: "car", position: [3819.512195, 1804.416023], multiple: false},
-      {id: 4, type: "leo", callsign: "1C-01", name: "D. Dixie", worldType: "car", position: [3817.987805, 2196.549228], multiple: false},
-      {id: 5, type: "leo", callsign: "1C-01", name: "D. Dixie", worldType: "bike", position: [3543.597561, 2846.585425], multiple: false},
-      {id: 6, type: "leo", callsign: "1C-01", name: "D. Dixie", worldType: "heli", position: [3289.02439, 1716.940154], multiple: false}
-    ],
-    attachedTo: {},
-
-    // [Dispatch Map] - Markers
-    dispatchMarkers: [],
-    vehicleMarkers: [],
-
-    // [Dispatch Map] - Map Data
-    sateliteStyle: L.tileLayer('assets/mapStyles/styleSatelite/{z}/{x}/{y}.jpg', { minZoom: 3, maxZoom: 5, noWrap: true, continuousWorld: true, attribution: "Astrid Dispatch Map",id: 'SateliteStyle map'}),
-    
-    // [Dispatch Map] - Icon Groups
-    groups: {
-      "calls": L.layerGroup(),
-      "active_calls": L.layerGroup(),
-      "units": L.layerGroup()
-    },
-
-    // [Dispatch Map] - Menus
-    activeCallsMenu: false,
-    callsMenu: false,
-    unitsMenu: false
+    staticProgressBar: false
   },
   methods: {
     // Spawn UI
@@ -709,7 +569,7 @@ const HUD = new Vue({
     closeVehicles() {
       this.Post("CLOSE_VEHICLES", {}, (callbackData) => {
         if (callbackData) {
-          console.log("close vehs init bruv!");
+          // console.log("close vehs init bruv!");
           this.showVehicles = false;
         }
       });
@@ -803,7 +663,7 @@ const HUD = new Vue({
 
       // console.log("CLOSE TIMEOUT");
 
-      if (this.closeTimeout === undefined) {
+      if (this.closeTimeout !== null) { // changed from "this.closeTimeout === undefined"
         clearTimeout(this.closeTimeout);
         this.closeTimeout = undefined;
       }
@@ -861,14 +721,14 @@ const HUD = new Vue({
       if (this.chatMessage.length > 0 && this.chatMessage[0] !== " ") { // If chat message has content and isn't a space
         this.CloseChat();
         this.Post("SEND_MESSAGE", {message: this.chatMessage, type: this.currentType}, (callbackData) => {
-          this.chatMessage = "";
           // this.sentMessages.push(this.chatMessage);
           // this.cycledMessage = this.sentMessages.length;
-          console.log("cb", callbackData)
+          // console.log("cb", callbackData)
           if (callbackData) {
             this.sentMessages.push(this.chatMessage);
             this.cycledMessage = this.sentMessages.length;
           }
+          this.chatMessage = "";
         });
       }
     },
@@ -878,15 +738,24 @@ const HUD = new Vue({
       this.chatMessages.push(data);
 
       if (this.chatToggled) {
+        // If not visible slide into view
         if (!$('#Chat-Messages').is(":visible")) {
           $("#Chat-Messages").css("display", "block");
           $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
+        } else {
+          // console.log("is visible!");
+          if (this.closeTimeout !== null) { // changed from "this.closeTimeout === undefined"
+            // console.log("clear timeout init!");
+            clearTimeout(this.closeTimeout);
+            this.closeTimeout = undefined;
+          }
         }
 
         setTimeout(() => {
           $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight; // Scroll to bottom of messages
         }, 10);
 
+        // console.log("closetimeout", this.closeTimeout);
         if (this.closeTimeout == undefined) {
           this.closeTimeout = setTimeout(() => {
             if (!this.showInput) { // Double check if chat isn't toggled
@@ -899,7 +768,7 @@ const HUD = new Vue({
                 $("#Chat-Messages").css("display", "none");
               }, 500);
             }
-          }, 2500);
+          }, 3200);
         }
       } else {
         console.log("ADDED CHAT MESSAGE BUT NOT DISPLAYING AS CHAT IS DISABLED!");
@@ -960,10 +829,6 @@ const HUD = new Vue({
       });
     },
 
-    SetCompass(data) {
-      $(".mapdirections").css("transform", `rotate(${data.rotation}deg)`);
-    },
-
     // ASTRID MENU
     OpenMenu(data) {
       this.menuPosition = data.position;
@@ -980,8 +845,13 @@ const HUD = new Vue({
       this.menuVisible = false;
     },
 
+    EmptyMenu(data) {
+      this.menuComponents = data.components;
+      this.menuOption = 0;
+    },
+
     SetMenuOption(data) {
-      console.log("set menu option", JSON.stringify(data));
+      // console.log("set menu option", JSON.stringify(data));
       this.menuOption = data.option;
       const element = document.getElementById(`${this.menuOption}`);
       element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
@@ -990,11 +860,11 @@ const HUD = new Vue({
     SetCheckboxState(data) {
       const comp = this.GetMenuIndexById(data.id)
 
-      console.log("comp", JSON.stringify(comp), JSON.stringify(data))
+      // console.log("comp", JSON.stringify(comp), JSON.stringify(data))
       if (comp != null) {
-        console.log("set value", this.menuComponents[comp].state);
+        // console.log("set value", this.menuComponents[comp].state);
         this.menuComponents[comp].state = data.state
-        console.log("setted value", this.menuComponents[comp].state)
+        // console.log("setted value", this.menuComponents[comp].state)
       }
     },
 
@@ -1131,209 +1001,6 @@ const HUD = new Vue({
       }
 
       HUD.Post("PROGRESS_CANCELLED");
-    },
-
-    SetupMap() {
-      // Map Creation
-
-      // Format timestamp of active calls
-      for (let i = 0; i < this.calls.length; i++) {
-        this.calls[i].timestamp = moment(this.calls[i].timestamp).fromNow();
-      }
-
-      // this.activeCalls.sort(function(a, b) {
-      //   return a.id - b.id;
-      // });
-
-      this.map = L.map("Dispatch-Map", {
-        crs: CUSTOM_CRS,
-        minZoom: 3, // How far you can zoom out (lower the number, further out it is)
-        maxZoom: 5,
-        Zoom: 8,
-        maxNativeZoom: 8,
-        preferCanvas: true,
-        layers: [this.sateliteStyle],
-        center: [1600, 0],
-        zoom: 2, // How far you're zoomed in by default
-      });
-      
-      // this.dispatchMarkers = L.layerGroup().addTo(this.map);
-
-      var popup = L.popup();
-      this.map.on('click', (e) => {
-        popup.setLatLng(e.latlng).setContent("You clicked the map at " + e.latlng.toString()).openOn(this.map);
-      });
-
-      // Format on duty LEO units
-      for (let i = 0; i < this.activeUnits.length; i++) {
-        let icon;
-
-        if (this.activeUnits[i].worldType == "car") {
-          icon = car;
-        } else if (this.activeUnits[i].worldType == "heli") {
-          icon = heli;
-        } else if (this.activeUnits[i].worldType == "bike") {
-          icon = bike;
-        } else if (this.activeUnits[i].worldType == "boat") {
-          icon = boat;
-        }
-
-        const marker = new L.marker(this.activeUnits[i].position, {icon: icon}).addTo(this.map);
-  
-        this.vehicleMarkers.push({
-          id: i,
-          markerData: marker,
-          type: "police"
-        });
-  
-        // setTimeout(() => {
-        //   marker.setLatLng(new L.LatLng(22.256098, 809.000965));
-        // }, 2000);
-      }
-    },
-
-    ShowMap(data) {
-      const element = $("#Dispatch-Map");
-      data.show ? element.css("display", "block") : element.css("display", "none");
-      this.map.invalidateSize()
-    },
-
-    clickActiveCall(callIndex) {
-      this.clickedActiveCall = callIndex;
-      console.log("clicked active call!", JSON.stringify(this.activeCalls[this.clickedActiveCall]));
-    },
-
-    clickCall(callIndex) {
-      this.clickedCall = callIndex;
-      console.log("clicked call!", JSON.stringify(this.calls[this.clickedCall]));
-    },
-    
-    createActiveCall() {
-      const index = this.activeCalls.length + 1;
-      console.log("create active call, selected call!", index, JSON.stringify(this.calls[this.clickedCall]))
-      this.activeCalls.push({
-        id: index,
-        callId: this.calls[this.clickedCall].id,
-        code: this.calls[this.clickedCall].code,
-        type: this.calls[this.clickedCall].type,
-        priority: this.calls[this.clickedCall].priority,
-        location: [-201.829268, 686.83639],
-        street: this.calls[this.clickedCall].street,
-        timestamp: this.calls[this.clickedCall].timestamp,
-        activeOfficers: 0,
-        activeEms: 0
-      });
-
-      const marker = new L.marker([-201.829268, 686.83639], {icon: bluePoint}).on('click', () => {
-        this.clickedActiveCall = this.activeCalls[index - 1]; // first entry
-      }).addTo(this.map);
-
-      this.dispatchMarkers.push({
-        activeCallId: index,
-        callId: this.calls[this.clickedCall].id,
-        markerData: marker,
-        type: "active_call"
-      });
-    },
-
-    attachToActiveCall() {
-      this.activeCalls[this.clickedActiveCall].activeOfficers = this.activeCalls[this.clickedActiveCall].activeOfficers + 1;
-      this.attachedToCall = true;
-
-      // sync to all clients on their UI and update your priority status
-    },
-    
-    removeFromActiveCall() {
-      this.activeCalls[this.clickedActiveCall].activeOfficers = this.activeCalls[this.clickedActiveCall].activeOfficers - 1;
-      this.attachedToCall = false;
-    },
-
-    clearActiveCall(type) {
-      // Clear active call via active calls menu
-      if (type == "calls") {
-        // console.log("index 1", this.activeCalls[this.clickedActiveCall].id)
-        const markerIndex = this.dispatchMarkers.findIndex(marker => marker.activeCallId == this.activeCalls[this.clickedActiveCall].id)
-
-        if (markerIndex !== -1) {
-          // console.log("CLICKED MENU OPTION YE DADDY BITCH", this.dispatchMarkers[markerIndex]);
-
-          // Remove marker from map
-          this.map.removeLayer(this.dispatchMarkers[markerIndex].markerData);
-
-          // Remove marker from dispatch markers array
-          this.dispatchMarkers.splice(markerIndex, 1);
-
-          // Remove call from active call array
-          this.activeCalls.splice(this.clickedActiveCall, 1);
-          
-          // Set clicked call object back to empty
-          this.clickedActiveCall = {};
-        }
-      } else if (type == "marker") {
-        
-        // Clear active call via marker clicking in map
-        const markerIndex = this.dispatchMarkers.findIndex(marker => marker.activeCallId == this.clickedActiveCall.id)
-
-        if (markerIndex !== -1) {
-
-          // Remove marker from map
-          this.map.removeLayer(this.dispatchMarkers[markerIndex].markerData);
-
-          // Remove marker from dispatch markers array
-          this.dispatchMarkers.splice(markerIndex, 1);
-
-          // Remove call from active call array
-          this.activeCalls.splice(this.clickedActiveCall, 1);
-          
-          // Set clicked call object back to empty
-          this.clickedActiveCall = {};
-        }
-      }
-    },
-
-    setUnitClicked(unitIndex) {
-      console.log("clicked unit", unitIndex, this.activeUnits[unitIndex]);
-      this.unitClickedIndex = unitIndex;
-    },
-
-    testUnit() {
-      console.log("test unit thing", this.unitClickedIndex, this.activeUnits[this.unitClickedIndex]);
-      this.attachedTo = this.activeUnits[this.unitClickedIndex];
-      this.activeUnits[this.unitClickedIndex].multiple = true;
-      if (this.activeUnits[this.unitClickedIndex].attached !== undefined) {
-        this.activeUnits[this.unitClickedIndex].attached.push({
-          id: 1,
-          type: "leo",
-          callsign: "1C-01",
-          name: "D. Dixie"
-        })
-      } else {
-        this.activeUnits[this.unitClickedIndex].attached = [
-          {
-            id: 1,
-            type: "leo",
-            callsign: "1C-01",
-            name: "D. Dixie"
-          }
-        ]
-      }
-
-      // sync to all clients here
-      console.log("attached yourself to", this.attachedTo);
-    },
-
-    removeFromUnit() {
-      if (this.attachedTo.id == this.activeUnits[this.unitClickedIndex].id) {
-        const attachedIndex = this.activeUnits[this.unitClickedIndex].attached.findIndex(unit => unit.callsign == this.myData.callsign && unit.name == this.myData.name);
-        if (attachedIndex !== -1) {
-          this.activeUnits[this.unitClickedIndex].attached.splice(attachedIndex, 1);
-          this.attachedTo = {};
-
-          // sync to all clients
-        } else {
-          console.log("attached index not found!");
-        }
-      }
     }
   },
 
@@ -1477,6 +1144,7 @@ const HUD = new Vue({
     // ASTRID MENU Events
     RegisterEvent("OPEN_MENU", this.OpenMenu);
     RegisterEvent("CLOSE_MENU", this.CloseMenu);
+    RegisterEvent("EMPTY_MENU", this.EmptyMenu);
     RegisterEvent("SET_MENU_OPTION", this.SetMenuOption);
     RegisterEvent("SET_CHECKBOX_STATE", this.SetCheckboxState);
     RegisterEvent("SET_LIST_ITEM", this.SetListItem);
@@ -1487,29 +1155,8 @@ const HUD = new Vue({
     RegisterEvent("PROGRESS_START", this.StartProgress);
     RegisterEvent("CANCEL_PROGRESS", this.CancelProgress);
 
-    // Dispatch Map
-    setTimeout(() => {
-      HUD.SetupMap();
-    }, 0);
-
     // HUD Events
     RegisterEvent("SET_COMPASS", this.SetCompass);
-
-    
-
-    // Mouse Scrolling
-    window.addEventListener("wheel", function(event) {
-      if (event.deltaY < 0) { // Increase Chat Mode
-        if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
-          console.log("modes", HUD.chatTypes);
-          HUD.CycleMode("right");
-        }
-      } else if (event.deltaY > 0) { // Decrease Chat Mode
-        if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
-          HUD.CycleMode("left");
-        }
-      }
-    });
 
     // Key Presses
     window.addEventListener("keydown", function(event) {
@@ -1518,6 +1165,7 @@ const HUD = new Vue({
           if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
             HUD.CloseChat();
           } else if ($("#warnings_container").is(":visible")) {
+            HUD.CloseChat();
             HUD.CloseWarnings();
           } else if ($("#commends_container").is(":visible")) {
             HUD.CloseCommends();
@@ -1545,6 +1193,18 @@ const HUD = new Vue({
               HUD.cycledMessage++;
               HUD.chatMessage = HUD.sentMessages[HUD.cycledMessage];
             }
+          }
+          break;
+
+        case "PageUp":
+          if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
+            HUD.CycleMode("right");
+          }
+          break;
+
+        case "PageDown":
+          if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
+            HUD.CycleMode("left");
           }
           break;
 
@@ -1577,4 +1237,30 @@ const HUD = new Vue({
 
 function isDateValid(date) {
   return date.getTime() === date.getTime(); // If the date object is invalid, it will return 'NaN' on getTime() and NaN is never equal to itself.
+}
+
+async function Delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function setCaretPosition(elemId, caretPos) {
+  var elem = document.getElementById(elemId);
+
+  if(elem != null) {
+    if(elem.createTextRange) {
+      console.log("ONE!");
+      var range = elem.createTextRange();
+      range.move('character', caretPos);
+      range.select();
+    }
+    else {
+      console.log("TWO!");
+      if(elem.selectionStart) {
+        elem.focus();
+        elem.setSelectionRange(caretPos, caretPos);
+      }
+      else
+        elem.focus();
+    }
+  }
 }
