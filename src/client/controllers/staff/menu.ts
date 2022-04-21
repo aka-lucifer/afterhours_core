@@ -261,6 +261,7 @@ export class StaffMenu {
           currVeh.repair();
           global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
           currVeh.DirtLevel = 0.0;
+          currVeh.IsEngineRunning = true;
 
           const notify = new Notification("Staff Menu", "Vehicle fixed!", NotificationTypes.Success);
           await notify.send();
@@ -441,13 +442,18 @@ export class StaffMenu {
         const myPed = Game.PlayerPed;
         const currWeapon = GetSelectedPedWeapon(myPed.Handle);
         
-        // Not unarmed
-        if (currWeapon !== Weapons.Unarmed) {
-          // Shoots bullets
-          if (GetWeaponDamageType(currWeapon) === 3) {
-            // [No Reload]
-            if (currWeapon !== Weapons.MiniGun) {
-              PedSkipNextReloading(myPed.Handle);
+        // [No Reload]
+        if (this.noReload) {
+          // Not unarmed
+          if (currWeapon !== Weapons.Unarmed) {
+            // Shoots bullets
+            if (GetWeaponDamageType(currWeapon) === 3) {
+
+              if (currWeapon !== Weapons.MiniGun && currWeapon !== Weapons.DoubleAction) {
+                PedSkipNextReloading(myPed.Handle);
+              }
+            } else {
+              await Delay(500);
             }
           } else {
             await Delay(500);
@@ -578,7 +584,7 @@ export class StaffMenu {
           }
         } else {
           Game.PlayerPed.IsVisible = true;
-          const teleported = await teleportToCoords(playerPos);
+          const teleported = await teleportToCoords(this.spectateLastPos);
           if (teleported) {
             NetworkSetInSpectatorMode(false, foundPlayer.Ped.Handle);
             this.spectateTarget = undefined;
