@@ -110,7 +110,7 @@ export class MenuManager {
     return index;
   }
 
-  public AddButton(buttonLabel: string, parentMenu: string, buttonCallback: any, menuResource: string): string {
+  public AddButton(buttonLabel: string, parentMenu: string, buttonCallback: CallableFunction, menuResource: string): string {
     const index = CreateUUID();
 
     components[index] = {
@@ -128,7 +128,7 @@ export class MenuManager {
     return index;
   }
 
-  public AddCheckbox(checkboxLabel: string, parentMenu: string, checkState: boolean, checkboxCallback: any, menuResource: string): string {
+  public AddCheckbox(checkboxLabel: string, parentMenu: string, checkState: boolean, checkboxCallback: CallableFunction, menuResource: string): string {
     const index = CreateUUID();
 
     components[index] = {
@@ -148,7 +148,7 @@ export class MenuManager {
     return index;
   }
 
-  public AddList(listLabel: string, parentMenu: string, menuList: Record<number, any>, listCallback: any, menuResource: string): string {
+  public AddList(listLabel: string, parentMenu: string, menuList: Record<number, any>, listCallback: CallableFunction, menuResource: string): string {
     const index = CreateUUID();
 
     components[index] = {
@@ -301,59 +301,65 @@ export class MenuManager {
   // Controls
   private GoUp(): void {
     if (openedMenu != undefined) {
-      let prev = hoveredIndex - 1;
-      if (prev < 0) {
-        prev = openedMenu.components.length - 1;
-      }
-
-      hoveredIndex = prev;
-      SendNuiMessage(JSON.stringify({
-        event: NuiMessages.SetMenuOption,
-        data: {
-          option: hoveredIndex
+      if (!IsPauseMenuActive()) {
+        let prev = hoveredIndex - 1;
+        if (prev < 0) {
+          prev = openedMenu.components.length - 1;
         }
-      }))
+
+        hoveredIndex = prev;
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.SetMenuOption,
+          data: {
+            option: hoveredIndex
+          }
+        }))
+      }
     }
   }
 
   private GoDown(): void {
     if (openedMenu != undefined) {
-      let next = hoveredIndex + 1;
-      if (next > openedMenu.components.length - 1) {
-        next = 0;
-      }
-
-      hoveredIndex = next;
-      SendNuiMessage(JSON.stringify({
-        event: NuiMessages.SetMenuOption,
-        data: {
-          option: hoveredIndex
+      if (!IsPauseMenuActive()) {
+        let next = hoveredIndex + 1;
+        if (next > openedMenu.components.length - 1) {
+          next = 0;
         }
-      }))
+
+        hoveredIndex = next;
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.SetMenuOption,
+          data: {
+            option: hoveredIndex
+          }
+        }))
+      }
     }
   }
 
   private GoLeft(): void {
     if (openedMenu != undefined) {
-      const selected = openedMenu.components[hoveredIndex];
-      if (selected) {
-        if (selected.type == "list") {
-          const comp = components[selected.index];
-          let next = selected.listIndex - 1;
+      if (!IsPauseMenuActive()) {
+        const selected = openedMenu.components[hoveredIndex];
+        if (selected) {
+          if (selected.type == "list") {
+            const comp = components[selected.index];
+            let next = selected.listIndex - 1;
 
-          if (next < 0) {
-            next = selected.list.length - 1;
-          }
-
-          selected.listIndex = next;
-          comp.listIndex = next;
-          SendNuiMessage(JSON.stringify({
-            event: NuiMessages.SetListItem,
-            data: {
-              index: selected.index,
-              listIndex: next
+            if (next < 0) {
+              next = selected.list.length - 1;
             }
-          }))
+
+            selected.listIndex = next;
+            comp.listIndex = next;
+            SendNuiMessage(JSON.stringify({
+              event: NuiMessages.SetListItem,
+              data: {
+                index: selected.index,
+                listIndex: next
+              }
+            }))
+          }
         }
       }
     }
@@ -361,57 +367,61 @@ export class MenuManager {
 
   private GoRight(): void {
     if (openedMenu != undefined) {
-      const selected = openedMenu.components[hoveredIndex];
-      if (selected) {
-        if (selected.type == "list") {
-          const comp = components[selected.index];
-          let next = selected.listIndex + 1;
+      if (!IsPauseMenuActive()) {
+        const selected = openedMenu.components[hoveredIndex];
+        if (selected) {
+          if (selected.type == "list") {
+            const comp = components[selected.index];
+            let next = selected.listIndex + 1;
 
-          if (next > selected.list.length - 1) {
-            next = 0;
-          }
-
-          selected.listIndex = next;
-          comp.listIndex = next;
-          SendNuiMessage(JSON.stringify({
-            event: NuiMessages.SetListItem,
-            data: {
-              index: selected.index,
-              listIndex: next
+            if (next > selected.list.length - 1) {
+              next = 0;
             }
-          }))
+
+            selected.listIndex = next;
+            comp.listIndex = next;
+            SendNuiMessage(JSON.stringify({
+              event: NuiMessages.SetListItem,
+              data: {
+                index: selected.index,
+                listIndex: next
+              }
+            }))
+          }
         }
       }
     }
   }
 
   private async Enter(): Promise<void> {
-    if (openedMenu != undefined) {
-      const selected = openedMenu.components[hoveredIndex];
-      if (selected) {
-        if (selected.type == "submenu") {
-          await this.OpenMenu(selected.index);
-        } else {
-          const component = components[selected.index];
-          
-          if (selected.type == "checkbox") {
-            const newState = !component.state;
-            component.state = newState;
-            selected.state = newState;
-            component.action(newState);
+    if (!IsPauseMenuActive()) {
+      if (openedMenu != undefined) {
+        const selected = openedMenu.components[hoveredIndex];
+        if (selected) {
+          if (selected.type == "submenu") {
+            await this.OpenMenu(selected.index);
+          } else {
+            const component = components[selected.index];
+            
+            if (selected.type == "checkbox") {
+              const newState = !component.state;
+              component.state = newState;
+              selected.state = newState;
+              component.action(newState);
 
-            SendNuiMessage(JSON.stringify({
-              event: NuiMessages.SetCheckboxState,
-              data: {
-                id: selected.index,
-                state: newState
-              }
-            }))
-          } else if (selected.type == "list") {
-            const comp = components[selected.index];
-            comp.action(comp.list[comp.listIndex]);
-          } else if (selected.type == "button") {
-            components[selected.index].action();
+              SendNuiMessage(JSON.stringify({
+                event: NuiMessages.SetCheckboxState,
+                data: {
+                  id: selected.index,
+                  state: newState
+                }
+              }))
+            } else if (selected.type == "list") {
+              const comp = components[selected.index];
+              comp.action(comp.list[comp.listIndex]);
+            } else if (selected.type == "button") {
+              components[selected.index].action();
+            }
           }
         }
       }
@@ -420,10 +430,12 @@ export class MenuManager {
 
   private async Backspace(): Promise<void> {
     if (openedMenu) {
-      if (!openedMenu.parent) {
-        await this.CloseMenu();
-      } else {
-        await this.OpenMenu(openedMenu.parent);
+      if (!IsPauseMenuActive()) {
+        if (!openedMenu.parent) {
+          await this.CloseMenu();
+        } else {
+          await this.OpenMenu(openedMenu.parent);
+        }
       }
     }
   }

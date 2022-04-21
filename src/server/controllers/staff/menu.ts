@@ -33,10 +33,11 @@ export class StaffMenu {
     // [Server Management]
     onNet(Events.changeWeather, this.EVENT_changeWeather.bind(this));
     onNet(Events.changeTime, this.EVENT_changeTime.bind(this));
-
-    // [Player Actions]
     onNet(Events.bringAll, this.EVENT_bringAll.bind(this));
     onNet(Events.freezeAll, this.EVENT_freezeAll.bind(this));
+
+    // [Player Actions]
+    onNet(Events.toggleBlips, this.EVENT_toggleBlips.bind(this));
   }
 
   // Methods
@@ -65,42 +66,50 @@ export class StaffMenu {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  let banSeconds = 0;
-                  if (!banPermanent) {
-                    if (banType == "SECONDS") {
-                      banSeconds = Number(banLength);
-                    } else if (banType == "MINUTES") {
-                      banSeconds = Number(banLength) * 60;
-                    } else if (banType == "HOURS") {
-                      banSeconds = Number(banLength) * 3600;
-                    } else if (banType == "DAYS") {
-                      banSeconds = Number(banLength) * 86400;
-                    } else if (banType == "WEEKS") {
-                      banSeconds = Number(banLength) * 604800;
-                    } else if (banType == "MONTHS") {
-                      banSeconds = Number(banLength) * 2628000;
-                    } else {
-                      banSeconds = Number(banLength);
+                  if (foundPlayer.Rank < player.Rank) {
+                    let banSeconds = 0;
+                    if (!banPermanent) {
+                      if (banType == "SECONDS") {
+                        banSeconds = Number(banLength);
+                      } else if (banType == "MINUTES") {
+                        banSeconds = Number(banLength) * 60;
+                      } else if (banType == "HOURS") {
+                        banSeconds = Number(banLength) * 3600;
+                      } else if (banType == "DAYS") {
+                        banSeconds = Number(banLength) * 86400;
+                      } else if (banType == "WEEKS") {
+                        banSeconds = Number(banLength) * 604800;
+                      } else if (banType == "MONTHS") {
+                        banSeconds = Number(banLength) * 2628000;
+                      } else {
+                        banSeconds = Number(banLength);
+                      }
                     }
-                  }
 
-                  const currDate = new Date();
-                  const newDate = new Date(currDate.setSeconds(currDate.getSeconds() + banSeconds));
+                    const currDate = new Date();
+                    const newDate = new Date(currDate.setSeconds(currDate.getSeconds() + banSeconds));
 
-                  if (!banPermanent) {
-                    const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, player.Id, newDate);
-                    const saved = await ban.save();
-                    if (saved) {
-                      ban.drop();
-                      await player.Notify("Ban", `You've banned ${foundPlayer.GetName}, for ${banReason}, until ${newDate.toUTCString()}.`, NotificationTypes.Info, 5000);
+                    if (!banPermanent) {
+                      const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, player.Id, newDate);
+                      ban.Banner = player;
+                      const saved = await ban.save();
+                      
+                      if (saved) {
+                        ban.drop();
+                        await player.Notify("Ban", `You've banned ${foundPlayer.GetName}, for ${banReason}, until ${newDate.toUTCString()}.`, NotificationTypes.Info, 5000);
+                      }
+                    } else {
+                      const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, player.Id);
+                      ban.Banner = player;
+                      const saved = await ban.save();
+
+                      if (saved) {
+                        ban.drop();
+                        await player.Notify("Ban", `You've permanently banned ${foundPlayer.GetName}, for ${banReason}.`, NotificationTypes.Info, 5000);
+                      }
                     }
                   } else {
-                    const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, player.Id);
-                    const saved = await ban.save();
-                    if (saved) {
-                      ban.drop();
-                      await player.Notify("Ban", `You've permanently banned ${foundPlayer.GetName}, for ${banReason}.`, NotificationTypes.Info, 5000);
-                    }
+                    await player.Notify("Ban", "You can't ban someone who has a higher rank than you!", NotificationTypes.Error);
                   }
                 } else {
                   await player.Notify("Ban", "Player not found!", NotificationTypes.Error);
@@ -135,11 +144,17 @@ export class StaffMenu {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  const kick = new Kick(foundPlayer.Id, kickReason, player.Id);
-                  const saved = await kick.save();
-                  if (saved) {
-                    kick.drop();
-                    await player.Notify("Kick", `You've kicked ${foundPlayer.GetName}, for ${kickReason}.`, NotificationTypes.Info, 5000);
+                  if (foundPlayer.Rank < player.Rank) {
+                    const kick = new Kick(foundPlayer.Id, kickReason, player.Id);
+                    kick.Kicker = player;
+  
+                    const saved = await kick.save();
+                    if (saved) {
+                      kick.drop();
+                      await player.Notify("Kick", `You've kicked ${foundPlayer.GetName}, for ${kickReason}.`, NotificationTypes.Info, 5000);
+                    }
+                  } else {
+                    await player.Notify("Kick", "You can't kick someone who has a higher rank than you!", NotificationTypes.Error);
                   }
                 } else {
                   await player.Notify("Kick", "Player not found!", NotificationTypes.Error);
@@ -174,11 +189,17 @@ export class StaffMenu {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  const warning = new Warning(foundPlayer.Id, warnReason, player.Id);
-                  const saved = await warning.save();
-                  if (saved) {
-                    await warning.send();
-                    await player.Notify("Warn", `You've warned ${foundPlayer.GetName}, for ${warnReason}.`, NotificationTypes.Info, 5000);
+                  if (foundPlayer.Rank < player.Rank) {
+                    const warning = new Warning(foundPlayer.Id, warnReason, player.Id);
+                    warning.Warner = player;
+                    
+                    const saved = await warning.save();
+                    if (saved) {
+                      await warning.send();
+                      await player.Notify("Warn", `You've warned ${foundPlayer.GetName}, for ${warnReason}.`, NotificationTypes.Info, 5000);
+                    }
+                  } else {
+                    await player.Notify("Warn", "You can't warn someone who has a higher rank than you!", NotificationTypes.Error);
                   }
                 } else {
                   await player.Notify("Warn", "Player not found!", NotificationTypes.Error);
@@ -255,6 +276,11 @@ export class StaffMenu {
               if (ped > 0) {
                 states.state.frozen = !states.state.frozen;
                 FreezeEntityPosition(ped, states.state.frozen);
+                
+                const currVeh = GetVehiclePedIsIn(ped, false);
+                if (GetVehiclePedIsIn(ped, false) > 0) {
+                  FreezeEntityPosition(currVeh, states.state.frozen);
+                }
 
                 if (states.state.frozen) {
                   await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin));
@@ -436,6 +462,11 @@ export class StaffMenu {
             if (ped > 0) {
               states.state.frozen = !states.state.frozen;
               FreezeEntityPosition(ped, states.state.frozen);
+                
+              const currVeh = GetVehiclePedIsIn(ped, false);
+              if (GetVehiclePedIsIn(ped, false) > 0) {
+                FreezeEntityPosition(currVeh, states.state.frozen);
+              }
 
               states.state.frozen ?
               await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin)) :
@@ -446,6 +477,23 @@ export class StaffMenu {
           } else {
             console.log("can't bring yourself!");
           }
+        }
+      }
+    }
+  }
+
+  private async EVENT_toggleBlips(toggledState: boolean): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      if (player.Rank >= Ranks.Admin) {
+        const states = Player(player.Handle);
+        states.state.playerBlips = toggledState;
+        console.log("states", states.state.playerBlips);
+    
+        if (states.state.playerBlips) {
+          console.log("Enable player blips!");
+        } else {
+          console.log("Disable player blips!");
         }
       }
     }
