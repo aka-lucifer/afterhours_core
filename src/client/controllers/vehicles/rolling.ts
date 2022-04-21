@@ -39,9 +39,8 @@ export class Rolling {
     // console.log("flip veh data", data);
     if (data.entity > 0) {
       const vehicle = new Vehicle(data.entity);
-      // console.log(`Vehicle - (Handle: ${vehicle.Handle} | Net Id: ${vehicle.NetworkId} | Roll: ${vehicle.Rotation.x})`);
+      const loadedAnim = await LoadAnim("missfinale_c2ig_11");
 
-      const loadedAnim = LoadAnim("missfinale_c2ig_11");
       if (loadedAnim) {
         const myPed = Game.PlayerPed;
         const vehRoll = vehicle.Rotation.x;
@@ -60,6 +59,7 @@ export class Rolling {
           StopAnimTask(Game.PlayerPed.Handle, "missfinale_c2ig_11", "pushcar_offcliff_m", 1.0);
           ClearPedTasks(myPed.Handle);
           vehicle.Rotation = new Vector3(vehicle.Rotation.x, -0, vehicle.Heading);
+          vehicle.placeOnGround();
 
           const notify = new Notification("Vehicle", "You flipped your vehicle!", NotificationTypes.Success);
           await notify.send();
