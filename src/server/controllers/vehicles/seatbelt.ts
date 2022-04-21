@@ -1,3 +1,4 @@
+import { Vector3 } from "fivem-js";
 import { Events } from "../../../shared/enums/events/events";
 import { Server } from "../../server";
 
@@ -19,7 +20,7 @@ export class Seatbelt {
   }
 
   // Events
-  private async EVENT_ejectPassengers(passengers: Passenger[]): Promise<void> {
+  private async EVENT_ejectPassengers(passengers: Passenger[], velocitySpeed: Vector3): Promise<void> {
     console.log("eject all passengers", passengers);
     for (let i = 0; i < passengers.length; i++) {
       const player = await this.server.connectedPlayerManager.GetPlayer(passengers[i].netId.toString());
@@ -28,7 +29,7 @@ export class Seatbelt {
 
         if (!playerStates.state.seatbelt) {
           console.log(`eject (${player.Handle}) from the vehicle, as they don't have seatbelt toggled!`);
-          await player.TriggerEvent(Events.ejectFromVeh);
+          await player.TriggerEvent(Events.ejectFromVeh, velocitySpeed);
         } else {
           console.log(`don't eject (${player.Handle}) from the vehicle, as they have seatbelt toggled!`);
         }
@@ -37,7 +38,7 @@ export class Seatbelt {
   }
   
   private async EVENT_harmPassengers(passengers: Passenger[]): Promise<void> {
-    console.log("eject all passengers", passengers);
+    console.log("harm all passengers", passengers);
     for (let i = 0; i < passengers.length; i++) {
       const player = await this.server.connectedPlayerManager.GetPlayer(passengers[i].netId.toString());
       if (player) {
