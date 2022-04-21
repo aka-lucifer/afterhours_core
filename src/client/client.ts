@@ -48,7 +48,7 @@ import { Grabbing } from "./controllers/jobs/police/grabbing";
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import {Delay, Inform, RegisterNuiCallback} from "./utils";
+import {Delay, GetHash, Inform, RegisterNuiCallback} from "./utils";
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -61,6 +61,7 @@ import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
+import { Ranks } from '../shared/enums/ranks';
 
 let takingScreenshot = false;
 
@@ -154,6 +155,19 @@ export class Client {
 
     // Callbacks
     onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
+
+    RegisterCommand("hash", () => {
+      if (this.developmentMode) {
+        if (this.player.Spawned) {
+          if (this.player.Rank >= Ranks.Developer) {
+            const myPed = Game.PlayerPed;
+            if (IsPedInAnyVehicle(myPed.Handle, false)) {
+              console.log(`Vehicle Hash: ${myPed.CurrentVehicle.Model.Hash}`);
+            }
+          }
+        }
+      }
+    }, false);
   }
 
   // Getters & Setters 
