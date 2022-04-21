@@ -20,10 +20,14 @@ export class LeaveDoorOpen {
       const myPed = Game.PlayerPed;
       if (IsPedInAnyVehicle(myPed.Handle, false)) {
         const currVeh = myPed.CurrentVehicle;
-        if (currVeh.ClassType == VehicleClass.Emergency) {
-          if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Enter)) {
-            currVeh.IsEngineRunning = true;
-            TaskLeaveVehicle(myPed.Handle, currVeh.Handle, 256);
+        if (currVeh.Model.IsCar) {
+          if (currVeh.ClassType == VehicleClass.Emergency) {
+            if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Enter)) {
+              currVeh.IsEngineRunning = true;
+              TaskLeaveVehicle(myPed.Handle, currVeh.Handle, 256);
+            }
+          } else {
+            await Delay(500);
           }
         } else {
           await Delay(500);
