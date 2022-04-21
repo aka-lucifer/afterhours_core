@@ -32,7 +32,6 @@ export class SpamPreventor {
     if (this.currentWeapon != Weapons.Unarmed) {
       // If our gun shoots bullets
       if (GetWeaponDamageType(this.currentWeapon) == 3) {
-        // const configIndex = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == this.currentWeapon);
         const weaponData = sharedConfig.weapons[this.currentWeapon];
         if (weaponData !== undefined) {
           if (weaponData.ammoType == "AMMO_PISTOL" || weaponData.ammoType == "AMMO_SHOTGUN" || weaponData.ammoType == "AMMO_SNIPER") {
