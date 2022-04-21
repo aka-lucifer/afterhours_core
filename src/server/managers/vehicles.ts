@@ -58,16 +58,43 @@ export class VehicleManager {
     }, Ranks.Admin);
   }
 
-  private async hasPermission(myRank: Ranks, vehRanks: number[] | number): Promise<boolean> {
-    if (typeof vehRanks == "object") {
-      for (let i = 0; i < vehRanks.length; i++) {
-        if (myRank >= vehRanks[i]) {
-          return true;
+  private async hasPermission(myRank: Ranks, vehRanks: number[] | number, donatorAsset: boolean): Promise<boolean> {
+    // If the asset is a donator package or whatever, only the donators of that rank or above, or admin and above can drive the vehicle (disables honor & trusted from accesing)
+    if (donatorAsset) {
+      if (vehRanks !== undefined) {
+        if (typeof vehRanks == "object") {
+          for (let i = 0; i < vehRanks.length; i++) {
+            if (myRank == vehRanks[i] || myRank >= Ranks.Admin) {
+              return true;
+            }
+          }
+        } else if (typeof vehRanks == "number") {
+          if (myRank == vehRanks || myRank >= Ranks.Admin) {
+            return true;
+          }
         }
+
+        return false;
+      } else {
+        return true; // for fun debugging
       }
-    } else if (typeof vehRanks == "number") {
-      if (myRank >= vehRanks) {
-        return true;
+    } else { // If it's not a donator package, any rank that is equal or above can drive it.
+      if (vehRanks !== undefined) {
+        if (typeof vehRanks == "object") {
+          for (let i = 0; i < vehRanks.length; i++) {
+            if (myRank >= vehRanks[i]) {
+              return true;
+            }
+          }
+        } else if (typeof vehRanks == "number") {
+          if (myRank >= vehRanks) {
+            return true;
+          }
+        }
+
+        return false;
+      } else {
+        return true; // for fun debugging
       }
     }
 
@@ -172,13 +199,19 @@ export class VehicleManager {
                   }
                 }
               } else { // General vehicles
-                const hasPermission = await this.hasPermission(player.Rank, vehData.rank);
+                const donatorAsset = vehData.donatorAsset !== undefined && true ? true : false;
+                const hasPermission = await this.hasPermission(player.Rank, vehData.rank, donatorAsset);
                 
                 if (hasPermission) {
                   // console.log("has spawn permission!", vehData);
                   this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
                 } else {
+                  // Cancel the event
                   CancelEvent();
+
+                  // Delete the entity, incase cancelling the event, hasn't prevented the entity from being spawned
+                  DeleteEntity(entity);
+                  
                   await player.Notify("Vehicles", "You aren't the correct rank to spawn this vehicle!", NotificationTypes.Error, 4000);
 
                   await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({

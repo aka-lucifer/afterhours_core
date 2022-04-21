@@ -22,23 +22,44 @@ export class WeaponsManager {
   }
 
   // Methods
-  private async hasPermission(myRank: Ranks, weaponRanks: number[] | number): Promise<boolean> {
-    if (weaponRanks !== undefined) {
-      if (typeof weaponRanks == "object") {
-        for (let i = 0; i < weaponRanks.length; i++) {
-          if (myRank >= weaponRanks[i]) {
+  private async hasPermission(myRank: Ranks, weaponRanks: number[] | number, donatorAsset: boolean): Promise<boolean> {
+    // If the asset is a donator package or whatever, only the donators of that rank or above, or admin and above can drive the vehicle (disables honor & trusted from accesing)
+    if (donatorAsset) {
+      if (weaponRanks !== undefined) {
+        if (typeof weaponRanks == "object") {
+          for (let i = 0; i < weaponRanks.length; i++) {
+            if (myRank == weaponRanks[i] || myRank >= Ranks.Admin) {
+              return true;
+            }
+          }
+        } else if (typeof weaponRanks == "number") {
+          if (myRank == weaponRanks || myRank >= Ranks.Admin) {
             return true;
           }
         }
-      } else if (typeof weaponRanks == "number") {
-        if (myRank >= weaponRanks) {
-          return true;
-        }
-      }
 
-      return false;
-    } else {
-      return true; // for fun debugging
+        return false;
+      } else {
+        return true; // for fun debugging
+      }
+    } else { // If it's not a donator package, any rank that is equal or above can drive it.
+      if (weaponRanks !== undefined) {
+        if (typeof weaponRanks == "object") {
+          for (let i = 0; i < weaponRanks.length; i++) {
+            if (myRank >= weaponRanks[i]) {
+              return true;
+            }
+          }
+        } else if (typeof weaponRanks == "number") {
+          if (myRank >= weaponRanks) {
+            return true;
+          }
+        }
+
+        return false;
+      } else {
+        return true; // for fun debugging
+      }
     }
   }
 
@@ -49,10 +70,10 @@ export class WeaponsManager {
       // console.log("curr weapon!", currentWeapon);
       const weaponData = sharedConfig.weapons[currentWeapon];
       // console.log("weap data", JSON.stringify(weaponData, null, 4));
-      const discord = await player.GetIdentifier("discord");
 
       if (weaponData !== undefined) {
-        const hasPermission = await this.hasPermission(player.Rank, weaponData.rank);
+        const donatorAsset = weaponData.donatorAsset !== undefined && true ? true : false;
+        const hasPermission = await this.hasPermission(player.Rank, weaponData.rank, donatorAsset);
         
         if (!hasPermission) {
           // Remove weapon from ped and set to unarmed
@@ -62,6 +83,7 @@ export class WeaponsManager {
 
           await player.Notify("Weapons", "You aren't the correct rank to equip this weapon!", NotificationTypes.Error, 4000);
 
+          const discord = await player.GetIdentifier("discord");
           await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
             username: "Vehicle Logs", embeds: [{
               color: EmbedColours.Green,
@@ -72,6 +94,7 @@ export class WeaponsManager {
           }));
         }
       } else {
+        const discord = await player.GetIdentifier("discord");
         await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
           username: "Weapon Logs", embeds: [{
             color: EmbedColours.Green,
