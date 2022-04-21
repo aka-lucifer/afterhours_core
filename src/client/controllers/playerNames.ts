@@ -65,7 +65,7 @@ export class PlayerNames {
                 }
 
                 // Whether or not to display staffs ranks in their name
-                name = svPlayers[i].Rank >= Ranks.Admin && playerStates.state.rankVisible ? `${name} | ${Ranks[svPlayers[i].Rank]}`: name;
+                name = svPlayers[i].Rank >= Ranks.Moderator && playerStates.state.rankVisible || svPlayers[i].Rank >= Ranks.Basic && svPlayers[i].Rank <= Ranks.Platinum ? `${name} | ${Ranks[svPlayers[i].Rank]}`: name;
 
                 // Displaying AFK or paused in player name
                 if (playerStates.state.afk && !playerStates.state.paused) {
@@ -111,6 +111,21 @@ export class PlayerNames {
                       break;
                     case Ranks.Moderator:
                       SetMpGamerTagColour(tag, tagIcons.Name, 9);
+                      break;
+                    case Ranks.Platinum:
+                      SetMpGamerTagColour(tag, tagIcons.Name, 110);
+                      break;
+                    case Ranks.Diamond:
+                      SetMpGamerTagColour(tag, tagIcons.Name, 111);
+                      break;
+                    case Ranks.Gold:
+                      SetMpGamerTagColour(tag, tagIcons.Name, 109);
+                      break;
+                    case Ranks.Silver:
+                      SetMpGamerTagColour(tag, tagIcons.Name, 108);
+                      break;
+                    case Ranks.Basic:
+                      SetMpGamerTagColour(tag, tagIcons.Name, 113);
                       break;
                     default: // Set default colour (white)
                       SetMpGamerTagColour(tag, tagIcons.Name, 1);
