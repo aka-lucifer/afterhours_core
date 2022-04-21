@@ -79,7 +79,11 @@
         "canAttach": false,
         "model": "w_pi_pistol"
       },
-      "rank": 7
+
+      "DONATOR_WEAPON_EXAMPLE_BELOW": {
+        "rank": [4, 5],
+        "donatorAsset": true
+      }
     },
     "-1075685676": {
       "name": "weapon_pistol_mk2", "label": "Pistol Mk II", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -122,7 +126,8 @@
         "canAttach": false,
         "model": "w_pi_pistolmk2"
       },
-      "rank": 7
+      "test   rank": [4, 5],
+      "test   donatorAsset": true
     },
     "-1716589765": {
       "name": "weapon_pistol50", "label": "Desert Eagle", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -137,7 +142,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_pistol50"
-      }
+      },
+      "rank": 6
     },
     "1593441988": {
       "name": "weapon_combatpistol", "label": "Glock 17", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -167,7 +173,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_appistol"
-      }
+      },
+      "rank": 6
     },
     "-1076751822": {
       "name": "weapon_snspistol", "label": "SNS Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -222,8 +229,7 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_sns_pistolmk2"
-      },
-      "rank": 7
+      }
     },
     "-771403250": {
       "name": "weapon_heavypistol", "label": "M1911", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -238,7 +244,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_heavypistol"
-      }
+      },
+      "rank": 6
     },
     "137902532": {
       "name": "weapon_vintagepistol", "label": "Vintage Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -274,7 +281,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_revolver"
-      }
+      },
+      "rank": 7
     },
     "-879347409": {
       "name": "weapon_revolver_mk2", "label": "Heavy Revolver Mk II", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -315,7 +323,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_wep1_gun"
-      }
+      },
+      "rank": 7
     },
     "-1853920116": {
       "name": "weapon_navyrevolver", "label": "Navy Revolver", "ammoType": "AMMO_PISTOL",
@@ -324,7 +333,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_wep2_gun"
-      }
+      },
+      "rank": 7
     },
     "1470379660": {
       "name": "weapon_gadgetpistol", "label": "Perico Pistol", "ammoType": "AMMO_PISTOL",
@@ -333,7 +343,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_singleshoth4"
-      }
+      },
+      "rank": 7
     },
     "-598887786": {
       "name": "weapon_marksman", "label": "Marksman Pistol", "ammoType": "AMMO_PISTOL",
@@ -342,7 +353,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_singleshot"
-      }
+      },
+      "rank": 7
     },
     "727643628": {
       "name": "weapon_ceramicpistol", "label": "Ceramic Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
@@ -366,7 +378,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_pi_raygun"
-      }
+      },
+      "rank": 12
     },
     "736523883": {
       "name": "weapon_smg", "label": "MP5", "ammoType": "AMMO_SMG", "attachments": [
@@ -383,7 +396,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_sb_smg"
-      }
+      },
+      "rank": 6
     },
     "2024373456": {
       "name": "weapon_smg_mk2", "label": "SMG Mark II", "ammoType": "AMMO_SMG",
@@ -393,6 +407,7 @@
         "canAttach": false,
         "model": "w_sb_smgmk2"
       },
+      "rank": 6,
       "note": "NEED_TO_ADD_ATTACHMENTS"
     },
     "-270015777": {
@@ -453,7 +468,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_sb_pdw"
-      }
+      },
+      "rank": 6
     },
     "1198256469": {
       "name": "weapon_raycarbine", "label": "Unholy Hellbringer", "ammoType": "AMMO_SMG",
@@ -462,7 +478,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_ar_srifle"
-      }
+      },
+      "rank": 12
     },
     "487013001": {
       "name": "weapon_pumpshotgun", "label": "Remington 870", "ammoType": "AMMO_SHOTGUN", "attachments": [
@@ -532,7 +549,8 @@
         "yRotation": 180.0,
         "zRotation": 10.0,
         "model": "w_sg_assaultshotgun"
-      }
+      },
+      "rank": 7
     },
     "-1654528753": {
       "name": "weapon_bullpupshotgun", "label": "Bullpup Shotgun", "ammoType": "AMMO_SHOTGUN", "attachments": [
@@ -552,7 +570,8 @@
         "yRotation": 180.0,
         "zRotation": 10.0,
         "model": "w_sg_bullpupshotgun"
-      }
+      },
+      "rank": 6
     },
     "317205821": {
       "name": "weapon_autoshotgun", "label": "Sweeper Shotgun", "ammoType": "AMMO_SHOTGUN",
@@ -561,7 +580,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_sg_sweeper"
-      }
+      },
+      "rank": 7
     },
     "984333226": {
       "name": "weapon_heavyshotgun", "label": "Heavy Shotgun", "ammoType": "AMMO_SHOTGUN", "attachments": [
@@ -584,7 +604,8 @@
         "yRotation": 180.0,
         "zRotation": 10.0,
         "model": "w_sg_heavyshotgun"
-      }
+      },
+      "rank": 7
     },
     "-275439685": {
       "name": "weapon_dbshotgun", "label": "Double Barrel Shotgun", "ammoType": "AMMO_SHOTGUN",
@@ -593,7 +614,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_sg_doublebarrel"
-      }
+      },
+      "rank": 6
     },
     "94989220": {
       "name": "weapon_combatshotgun", "label": "Combat Shotgun", "ammoType": "AMMO_SHOTGUN", "attachments": [
@@ -744,7 +766,8 @@
         "yRotation": 215.0,
         "zRotation": 0.0,
         "model": "w_ar_specialcarbine"
-      }
+      },
+      "rank": 6
     },
     "-1768145561": {
       "name": "weapon_specialcarbine_mk2", "label": "Special Rifle Mark II", "ammoType": "AMMO_RIFLE",
@@ -761,6 +784,7 @@
         "zRotation": 0.0,
         "model": "w_ar_specialcarbinemk2"
       },
+      "rank": 6,
       "note": "NEED_TO_ADD_ATTACHMENTS"
     },
     "2132975508": {
@@ -785,7 +809,8 @@
         "yRotation": 215.0,
         "zRotation": 0.0,
         "model": "w_ar_bullpuprifle"
-      }
+      },
+      "rank": 6
     },
     "-2066285827": {
       "name": "weapon_bullpuprifle_mk2", "label": "Bullpup Rifle Mark II", "ammoType": "AMMO_RIFLE",
@@ -802,6 +827,7 @@
         "zRotation": 0.0,
         "model": "w_ar_bullpupriflemk2"
       },
+      "rank": 6,
       "note": "NEED_TO_ADD_ATTACHMENTS"
     },
     "1649403952": {
@@ -838,7 +864,8 @@
         "yRotation": 215.0,
         "zRotation": 0.0,
         "model": "w_ar_bullpuprifleh4"
-      }
+      },
+      "rank": 6
     },
     "-1466123874": {
       "name": "weapon_musket", "label": "Musket", "ammoType": "AMMO_SHOTGUN",
@@ -854,7 +881,8 @@
         "yRotation": 215.0,
         "zRotation": 0.0,
         "model": "w_ar_musket"
-      }
+      },
+      "rank": 6
     },
     "1834241177": {
       "name": "weapon_railgun", "label": "Rail Gun", "ammoType": "AMMO_RAILGUN",
@@ -863,7 +891,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_ar_railgun"
-      }
+      },
+      "rank": 12
     },
     "-1660422300": {
       "name": "weapon_mg", "label": "PKM", "ammoType": "AMMO_MG","attachments": [
@@ -884,7 +913,8 @@
         "yRotation": 215.0,
         "zRotation": 0.0,
         "model": "w_mg_mg"
-      }
+      },
+      "rank": 7
     },
     "2144741730": {
       "name": "weapon_combatmg", "label": "M249E1", "ammoType": "AMMO_MG","attachments": [
@@ -906,7 +936,8 @@
         "yRotation": 215.0,
         "zRotation": 0.0,
         "model": "w_mg_combatmg"
-      }
+      },
+      "rank": 7
     },
     "-608341376": {
       "name": "weapon_combatmg_mk2", "label": "Combat MG Mark II", "ammoType": "AMMO_MG",
@@ -923,6 +954,7 @@
         "zRotation": 0.0,
         "model": "w_mg_combatmgmk2"
       },
+      "rank": 7,
       "note": "NEED_TO_ADD_ATTACHMENTS"
     },
     "1627465347": {
@@ -942,7 +974,8 @@
         "yRotation": 215.0,
         "zRotation": 0.0,
         "model": "w_sb_gusenberg"
-      }
+      },
+      "rank": 7
     },
     "100416529": {
       "name": "weapon_sniperrifle", "label": "M70 Tundra", "ammoType": "AMMO_SNIPER","attachments": [
@@ -963,7 +996,8 @@
         "yRotation": 180.0,
         "zRotation": 0.0,
         "model": "w_sr_sniperrifle"
-      }
+      },
+      "rank": 7
     },
     "205991906": {
       "name": "weapon_heavysniper", "label": "Barreta M82 Heavy Sniper", "ammoType": "AMMO_SNIPER","attachments": [
@@ -982,7 +1016,8 @@
         "yRotation": 180.0,
         "zRotation": 0.0,
         "model": "w_sr_heavysniper"
-      }
+      },
+      "rank": 7
     },
     "177293209": {
       "name": "weapon_heavysniper_mk2", "label": "Heavy Sniper Mark II", "ammoType": "AMMO_SNIPER",
@@ -999,6 +1034,7 @@
         "zRotation": 0.0,
         "model": "w_sr_heavysnipermk2"
       },
+      "rank": 7,
       "note": "NEED_TO_ADD_ATTACHMENTS"
     },
     "-952879014": {
@@ -1023,7 +1059,8 @@
         "yRotation": 180.0,
         "zRotation": 0.0,
         "model": "w_sr_marksmanrifle"
-      }
+      },
+      "rank": 7
     },
     "1785463520": {
       "name": "weapon_marksmanrifle_mk2", "label": "Marksman Rifle Mark II", "ammoType": "AMMO_SNIPER",
@@ -1040,6 +1077,7 @@
         "zRotation": 0.0,
         "model": "w_sr_marksmanriflemk2"
       },
+      "rank": 7,
       "note": "NEED_TO_ADD_ATTACHMENTS"
     },
     "101631238": {
@@ -1066,7 +1104,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_mg_minigun"
-      }
+      },
+      "rank": 7
     },
     "-1238556825": {
       "name": "weapon_rayminigun", "label": "Widowmaker", "ammoType": "AMMO_MINIGUN",
@@ -1075,7 +1114,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_mg_sminigun"
-      }
+      },
+      "rank": 12
     },
     "911657153": {
       "name": "weapon_stungun", "label": "X26 Tazer",
@@ -1093,7 +1133,8 @@
       "attaching": {
         "canAttach": false,
         "model": ""
-      }
+      },
+      "rank": 7
     },
     "-1312131151": {
       "name": "weapon_rpg", "label": "RPG-7", "ammoType": "AMMO_RPG",
@@ -1102,7 +1143,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_lr_rpg"
-      }
+      },
+      "rank": 10
     },
     "1672152130": {
       "name": "weapon_hominglauncher", "label": "Homing Launcher", "ammoType": "AMMO_HOMINGLAUNCHER",
@@ -1111,7 +1153,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_lr_homing_rocket"
-      }
+      },
+      "rank": 12
     },
     "-1568386805": {
       "name": "weapon_grenadelauncher", "label": "Gernade Launcher", "ammoType": "AMMO_GERNADELAUNCHER",
@@ -1120,7 +1163,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_lr_grenadelauncher"
-      }
+      },
+      "rank": 10
     },
     "125959754": {
       "name": "weapon_compactlauncher", "label": "Compact Launcher", "ammoType": "AMMO_GERNADELAUNCHER",
@@ -1129,7 +1173,8 @@
       "attaching": {
         "canAttach": false,
         "model": "w_lr_compactgl"
-      }
+      },
+      "rank": 10
     },
     "-72657034": {
       "name": "gadget_parachute", "label": "Parachute",
@@ -1344,7 +1389,8 @@
       "attaching": {
         "canAttach": false,
         "model": ""
-      }
+      },
+      "rank": 7
     },
     "741814745": {
       "name": "weapon_stickybomb", "label": "Sticky Bomb", "ammoType": "AMMO_STICKYBOMB",
@@ -1353,7 +1399,8 @@
       "attaching": {
         "canAttach": false,
         "model": ""
-      }
+      },
+      "rank": 7
     },
     "-1169823560": {
       "name": "weapon_pipebomb", "label": "Pipe Bomb", "ammoType": "AMMO_PIPEBOMB",
@@ -1362,7 +1409,8 @@
       "attaching": {
         "canAttach": false,
         "model": ""
-      }
+      },
+      "rank": 7
     },
     "-37975472": {
       "name": "weapon_smokegrenade", "label": "Smoke Grenade", "ammoType": "AMMO_SMOKEGRENADE",
@@ -1393,7 +1441,8 @@
       "attaching": {
         "canAttach": false,
         "model": ""
-      }
+      },
+      "rank": 7
     },
     "600439132": {
       "name": "weapon_ball", "label": "Baseball", "ammoType": "AMMO_BALL",
