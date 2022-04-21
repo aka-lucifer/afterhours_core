@@ -81,7 +81,8 @@ export enum Weapons {
   Wrench = 419712736,
   UpNAtomizer = 2939590305,
   UnholyHellbringer = 1198256469,
-  Widowmaker = 3056410471
+  Widowmaker = 3056410471,
+  DoubleAction = -1746263880
 }
 
 export enum AddonWeapons {
