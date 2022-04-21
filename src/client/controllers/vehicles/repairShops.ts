@@ -17,7 +17,10 @@ export class RepairShops {
   private shops: PolyZone[] = [];
   private showNotify: boolean = false;
   private repairing: boolean = false;
+  
+  // Ticks
   private tick: number = undefined;
+  private cancelTick: number = undefined;
 
   constructor() {
     Inform("Vehicle | Repair Shops Controller", "Started!");
@@ -53,46 +56,66 @@ export class RepairShops {
       if (IsPedInAnyVehicle(myPed.Handle, false)) {
         const currVeh = myPed.CurrentVehicle;
 
-        Screen.displayHelpTextThisFrame("~INPUT_PICKUP~ Repair Vehicle");
-        if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Pickup)) {
-          if (currVeh.Health < currVeh.MaxHealth) {
-            const progress = new Progress(20000, {
-              vehicle: true
-            }, async() => {
-              if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
-              SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false)
-              currVeh.IsEngineRunning = true;
-              currVeh.IsDriveable = true;
-              SetVehicleEngineOn(currVeh.Handle, true, false, true);
-              SetVehicleUndriveable(currVeh.Handle, false);
-              this.repairing = false;
-              const notify = new Notification("Mechanic", "You cancelled repairing your vehicle!", NotificationTypes.Error);
+        if (currVeh.Driver.Handle == myPed.Handle) {
+          Screen.displayHelpTextThisFrame("~INPUT_PICKUP~ Repair Vehicle");
+          if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Pickup)) {
+            if (currVeh.Health < currVeh.MaxHealth) {
+              const progress = new Progress(20000, {
+                vehicle: true
+              }, async() => {
+                if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
+                SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false)
+                currVeh.IsEngineRunning = true;
+                currVeh.IsDriveable = true;
+                SetVehicleEngineOn(currVeh.Handle, true, false, true);
+                SetVehicleUndriveable(currVeh.Handle, false);
+                this.repairing = false;
+                const notify = new Notification("Mechanic", "You cancelled repairing your vehicle!", NotificationTypes.Error);
+                await notify.send();
+                
+                if (this.cancelTick !== undefined) {
+                  clearTick(this.cancelTick);
+                  this.cancelTick = undefined;
+                }
+              }, () => {
+                this.repairing = true;
+                SetVehicleDoorOpen(currVeh.Handle, VehicleDoorIndex.Hood, false, false);
+                currVeh.IsEngineRunning = false;
+                currVeh.IsDriveable = false;
+                global.exports["xsound"].PlayUrlPos("veh_repair", Sounds.Repair, 0.15, Game.PlayerPed.Position, false);
+
+                this.cancelTick = setTick(() => {
+                  if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Enter) || Game.isDisabledControlJustPressed(InputMode.MouseAndKeyboard, Control.Enter)) { // Exiting vehicle
+                    progress.cancel();
+                    clearTick(this.cancelTick);
+                    this.cancelTick = undefined;
+                  };
+                });
+              }, async() => {
+                if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
+                currVeh.repair();
+                global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
+                SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false);
+                currVeh.IsEngineRunning = true;
+                currVeh.IsDriveable = true;
+                SetVehicleEngineOn(currVeh.Handle, true, false, true);
+                SetVehicleUndriveable(currVeh.Handle, false);
+                currVeh.DirtLevel = 0.0;
+                const notify = new Notification("Mechanic", "Your vehicle has been repaired", NotificationTypes.Info);
+                await notify.send();
+                this.repairing = false;
+                
+                if (this.cancelTick !== undefined) {
+                  clearTick(this.cancelTick);
+                  this.cancelTick = undefined;
+                }
+              })
+              
+              progress.start();
+            } else {
+              const notify = new Notification("Mechanic", "Your vehicle isn't damaged!", NotificationTypes.Error);
               await notify.send();
-            }, () => {
-              this.repairing = true;
-              SetVehicleDoorOpen(currVeh.Handle, VehicleDoorIndex.Hood, false, false);
-              currVeh.IsEngineRunning = false;
-              currVeh.IsDriveable = false;
-              global.exports["xsound"].PlayUrlPos("veh_repair", Sounds.Repair, 0.15, Game.PlayerPed.Position, false);
-            }, async() => {
-              if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
-              currVeh.repair();
-              global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
-              SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false);
-              currVeh.IsEngineRunning = true;
-              currVeh.IsDriveable = true;
-              SetVehicleEngineOn(currVeh.Handle, true, false, true);
-              SetVehicleUndriveable(currVeh.Handle, false);
-              currVeh.DirtLevel = 0.0;
-              const notify = new Notification("Mechanic", "Your vehicle has been repaired", NotificationTypes.Info);
-              await notify.send();
-              this.repairing = false;
-            })
-            
-            progress.start();
-          } else {
-            const notify = new Notification("Mechanic", "Your vehicle isn't damaged!", NotificationTypes.Error);
-            await notify.send();
+            }
           }
         }
       }
