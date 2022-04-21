@@ -1,10 +1,10 @@
 import { createPool, MysqlError, PoolConnection } from "mysql";
 import { DBResult, DBMeta } from "../../models/database/database"
-import { Delay, Error} from "../../utils"
+import { Delay } from "../../utils"
 import DBConfig from "../../../configs/database.json"
 
 const pool = createPool(DBConfig);
-const storedQueries: Record<string, string> = {};
+
 /**
  * Database query formatter
  */
@@ -76,32 +76,4 @@ export async function SendQuery(query: string, data: Record<string, any>): Promi
       }
     })
   })
-}
-
-/**
- * 
- * @param name name of the stored query
- * @param query the query string you are wanting to store
- */
-export function StoreQuery(name: string, query: string): void {
-  if (storedQueries[name]) {
-    storedQueries[name] = query;
-  } else {
-    Error("Database Manager", `There is already a stored query with the name (${name})`);
-  }
-}
-
-/**
- * 
- * @param name the name of the stored query
- * @param data the data to pass to the query to be embedded into the query
- * @returns a 'DBResult' class object
- */
-export async function CallQuery(name: string, data: Record<string, any>): Promise<DBResult> {
-  if (storedQueries[name]) {
-    return await SendQuery(storedQueries[name], data)
-  } else {
-    Error("Database Manager", `There is no stored query by the name (${name})`);
-    return null;
-  }
 }
