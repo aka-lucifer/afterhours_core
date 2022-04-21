@@ -1,19 +1,20 @@
-import { Capitalize, keyboardInput } from "../utils";
-import { Client } from "../client";
+import { Capitalize, keyboardInput } from '../utils';
+import { Client } from '../client';
 
-import { Notification } from "../models/ui/notification";
-import { ServerCallback } from "../models/serverCallback";
+import { Notification } from '../models/ui/notification';
+import { ServerCallback } from '../models/serverCallback';
 
-import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
-import { JobCallbacks } from "../../shared/enums/events/jobs/jobCallbacks";
+import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
+import { JobCallbacks } from '../../shared/enums/events/jobs/jobCallbacks';
 
 // Jobs
-import { PoliceJob } from "../controllers/jobs/policeJob";
-import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
+import { PoliceJob } from '../controllers/jobs/policeJob';
+import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
 
 // Controllers
-import { JobBlips } from "../controllers/jobs/features/jobBlips";
-import { Callbacks } from "../../shared/enums/events/callbacks";
+import { JobBlips } from '../controllers/jobs/features/jobBlips';
+import { Weapons } from '../../shared/enums/weapons';
+import { AmmoType, Game } from 'fivem-js';
 
 export class JobManager {
   private client: Client;
@@ -54,16 +55,53 @@ export class JobManager {
             
             if (data.state) {
               if (this.client.Character.isLeoJob()) {
+                const myPed = Game.PlayerPed;
+
                 global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
                 global.exports["pma-voice"].setRadioChannel(1, "[State Trooper] - RTO");
+
+                // Apply Weapons & Armour
+                if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                  const [_1, arAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
+                  myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
+                }
+
+                if (!HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
+                  const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
+                  myPed.giveWeapon(Weapons.BerettaM9, pistolAmmo, false, false);
+                }
+
+                if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                  myPed.giveWeapon(Weapons.Nightstick, 0, false, false);
+                }
+
+                SetPedArmour(myPed.Handle, 100);
               }
 
               const notify = new Notification("Job", `You've gone on duty`, NotificationTypes.Success);
               await notify.send();
             } else {
               if (this.client.Character.isLeoJob()) {
+                const myPed = Game.PlayerPed;
+
                 global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
                 global.exports["pma-voice"].setRadioChannel(0);
+
+                if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                  myPed.removeWeapon(Weapons.AR15);
+                }
+
+                if (HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
+                  myPed.removeWeapon(Weapons.BerettaM9);
+                }
+
+                if (HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                  myPed.removeWeapon(Weapons.Nightstick);
+                }
+
+                if (GetPedArmour(myPed.Handle) > 0) {
+                  SetPedArmour(myPed.Handle, 100);
+                }
               }
 
               const notify = new Notification("Job", `You've gone off duty`, NotificationTypes.Success);
@@ -94,7 +132,7 @@ export class JobManager {
           console.log("result", cbData, passedData);
 
           if (cbData) {
-            this.client.Character.Job.Callsign = callsign; 
+            this.client.Character.Job.Callsign = callsign;
             const notify = new Notification("Job", `You've set your callsign to (${callsign})`, NotificationTypes.Success);
             await notify.send();
           } else {
