@@ -50,12 +50,7 @@ export enum Events {
   ejectPassengers = "astrid:server:ejectPassengers",
   harmPassengers = "astrid:server:harmPassengers",
   
-  // Astrid Server ([Controllers] | Staff] - Menu)
-  changeWeather = "astrid:server:changeWeather",
-  changeTime = "astrid:server:changeTime",
-  bringAll = "astrid:server:bringAll",
-  freezeAll = "astrid:server:freezeAll",
-
+  // Astrid Server ([Controllers] | Staff] - Menu | [Connected Players])
   banPlayer = "astrid:server:banPlayer",
   kickPlayer = "astrid:server:kickPlayer",
   warnPlayer = "astrid:server:warnPlayer",
@@ -64,6 +59,14 @@ export enum Events {
   tpToPlayer = "astrid:server:tpToPlayer",
   tpToVehicle = "astrid:server:tpToVehicle",
   spectatePlayer = "astrid:server:spectatePlayer",
+
+  // Astrid Server ([Controllers] | Staff] - Menu | [Server Management])
+  changeWeather = "astrid:server:changeWeather",
+  changeTime = "astrid:server:changeTime",
+  bringAll = "astrid:server:bringAll",
+  freezeAll = "astrid:server:freezeAll",
+
+  // Astrid Server ([Controllers] | Staff] - Menu | [Player Management])
 
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
