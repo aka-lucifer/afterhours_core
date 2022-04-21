@@ -181,6 +181,16 @@
           "rank": 2
         },
 
+        "DIAMOND!": "Diamond Donator Vehicles",
+        "-984243759": {
+          "name": "765lt",
+          "brand": "McLaren",
+          "model": "765LT",
+          "type": "super",
+          "rank": [4, 5],
+          "donatorAsset": true
+        },
+
         
         "COMMENT_1": "SASP Vehicles",
         "-1530015901": {
