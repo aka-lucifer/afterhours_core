@@ -120,6 +120,21 @@ export class Progress {
     })
   }
 
+  public cancel(): void {
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.CancelProgress
+    }))
+
+    this.cancelled = true;
+    if (onCancel !== undefined) {
+      onCancel();
+      onCancel = undefined;
+    }
+
+    clearTick(this.controlTick);
+    this.controlTick = undefined;
+  }
+
   public start(): void {
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.StartProgress,
