@@ -28,32 +28,36 @@ export class KeepWheel {
       if (IsPedInAnyVehicle(myPed.Handle, false)) {
         const currVeh = myPed.CurrentVehicle;
 
-        // If the vehicle is stationary
-        if (currVeh.Speed < 1) {
-          const wheelAngle = currVeh.SteeringAngle;
+        if (currVeh.Model.IsCar || currVeh.Model.IsBike || currVeh.Model.IsBicycle || currVeh.Model.IsQuadbike) {
+          // If the vehicle is stationary
+          if (currVeh.Speed < 1) {
+            const wheelAngle = currVeh.SteeringAngle;
 
-          if (wheelAngle < -0.1 || wheelAngle > 0.1) {
-            if (this.savedAngle !== undefined) {
-              currVeh.SteeringAngle = this.savedAngle;
-            }
-
-            if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.VehicleMoveLeftOnly) || Game.isControlPressed(InputMode.MouseAndKeyboard, Control.VehicleMoveRightOnly) || Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.VehicleMoveRightOnly)) {
-              if (wheelAngle < 0) {
-                this.savedAngle = wheelAngle + -10; // Add -10 to wheel angle to get the correct measurement
-              } else {
-                this.savedAngle = wheelAngle + 10; // Add 10 to wheel angle to get the correct measurement
+            if (wheelAngle < -0.1 || wheelAngle > 0.1) {
+              if (this.savedAngle !== undefined) {
+                currVeh.SteeringAngle = this.savedAngle;
               }
-            }
 
-            if (GetIsTaskActive(Game.PlayerPed.Handle, 2)) {
-              this.angle = currVeh.SteeringAngle;
-              await Delay(100);
-              currVeh.SteeringAngle = this.angle;
-
-              if (this.tick !== undefined) {
-                clearTick(this.tick);
-                this.tick = undefined;
+              if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.VehicleMoveLeftOnly) || Game.isControlPressed(InputMode.MouseAndKeyboard, Control.VehicleMoveRightOnly) || Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.VehicleMoveRightOnly)) {
+                if (wheelAngle < 0) {
+                  this.savedAngle = wheelAngle + -10; // Add -10 to wheel angle to get the correct measurement
+                } else {
+                  this.savedAngle = wheelAngle + 10; // Add 10 to wheel angle to get the correct measurement
+                }
               }
+
+              if (GetIsTaskActive(Game.PlayerPed.Handle, 2)) {
+                this.angle = currVeh.SteeringAngle;
+                await Delay(100);
+                currVeh.SteeringAngle = this.angle;
+
+                if (this.tick !== undefined) {
+                  clearTick(this.tick);
+                  this.tick = undefined;
+                }
+              }
+            } else {
+              await Delay(500);
             }
           } else {
             await Delay(500);
