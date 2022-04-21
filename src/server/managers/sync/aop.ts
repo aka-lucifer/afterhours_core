@@ -128,7 +128,7 @@ export class AOPManager {
     }
   }
 
-  public async init(): Promise<void> {
+  public init(): void {
     this.registerCommands();
 
     // Get first AOP
