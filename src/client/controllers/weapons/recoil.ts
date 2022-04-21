@@ -4,7 +4,7 @@ import { Client } from "../../client";
 import { GetHash, Inform } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
-import { Weapons } from "../../../shared/enums/weapons";
+import { AddonWeapons, Weapons } from "../../../shared/enums/weapons";
 
 import clientConfig from "../../../configs/client.json";
 
@@ -72,7 +72,7 @@ export class WeaponRecoil {
       this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
 
       // if we aren't unarmed
-      if (this.currentWeapon != Weapons.Unarmed) {
+      if (this.currentWeapon != Weapons.Unarmed && this.currentWeapon != AddonWeapons.GravityGun) {
         // If our gun shoots bullets
         if (GetWeaponDamageType(this.currentWeapon) == 3) {
           const myPed = Game.PlayerPed;
