@@ -22,15 +22,15 @@ export class Submenu {
     return new Submenu(menuName, this.resource, this.handle, this.position);
   }
 
-  public BindButton(buttonLabel: string, callback: any): string {
+  public BindButton(buttonLabel: string, callback: CallableFunction): string {
     return client.menuManager.AddButton(buttonLabel, this.handle, callback, this.resource);
   }
 
-  public BindCheckbox(checkboxLabel: string, checkState: boolean, callback: any): string {
+  public BindCheckbox(checkboxLabel: string, checkState: boolean, callback: CallableFunction): string {
     return client.menuManager.AddCheckbox(checkboxLabel, this.handle, checkState, callback, this.resource)
   }
 
-  public BindList(listLabel: string, menuList: Record<number, any>, callback: any): string {
+  public BindList(listLabel: string, menuList: Record<number, any>, callback: CallableFunction): string {
     return client.menuManager.AddList(listLabel, this.handle, menuList, callback, this.resource);
   }
 
