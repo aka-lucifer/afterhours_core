@@ -1,7 +1,12 @@
+import { Game } from "fivem-js";
+
 import {Client} from "../../client";
 import {RegisterNuiCallback} from "../../utils";
 
 import {ServerCallback} from "../../models/serverCallback";
+import { Notification } from "../../models/ui/notification";
+
+import {ChatStates} from "../../enums/ui/chat/chatStates";
 
 import {Message} from "../../../shared/models/ui/chat/message";
 import {NuiCallbacks} from "../../../shared/enums/ui/nuiCallbacks";
@@ -10,9 +15,7 @@ import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
 import {Callbacks} from "../../../shared/enums/events/callbacks";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
-import {ChatTypes} from "../../../shared/enums/ui/chat/types";
-import {ChatStates} from "../../enums/ui/chat/chatStates";
-import { Game } from "fivem-js";
+import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 
 export class ChatManager {
   private client: Client;
@@ -117,8 +120,8 @@ export class ChatManager {
     }, false);
 
     // Chat Visibility Toggling
-    // RegisterKeyMapping("toggle_chat", "Toggles chat", "keyboard", "insert");
-    RegisterCommand("toggle_chat", () => {
+    // RegisterKeyMapping("toggle_chat", "Toggles chat", "keyboard", "home");
+    RegisterCommand("toggle_chat", async() => {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {
           this.chatState = ChatStates.Hidden;
@@ -128,7 +131,10 @@ export class ChatManager {
             data: {
               state: false
             }
-          }))
+          }));
+
+          const notify = new Notification("Chat", "You have hidden the chat!", NotificationTypes.Error);
+          await notify.send();
         } else {
           this.chatState = ChatStates.Closed;
           // console.log("CHAT SHOWING!");
@@ -137,7 +143,10 @@ export class ChatManager {
             data: {
               state: true
             }
-          }))
+          }));
+
+          const notify = new Notification("Chat", "You have toggled the chat!", NotificationTypes.Success);
+          await notify.send();
         }
       }
     }, false);
