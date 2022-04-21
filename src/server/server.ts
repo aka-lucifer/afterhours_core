@@ -1,62 +1,61 @@
-import {Player} from "./models/database/player";
-import {Ban} from "./models/database/ban";
-import WebhookMessage from "./models/webhook/discord/webhookMessage";
-import {ClientCallback} from "./models/clientCallback";
+import { Player } from './models/database/player';
+import { Ban } from './models/database/ban';
+import WebhookMessage from './models/webhook/discord/webhookMessage';
+import { ClientCallback } from './models/clientCallback';
 
 // [Managers] Server Data
-import { StaffManager } from "./managers/staff";
+import { StaffManager } from './managers/staff';
 
 // [Managers] Player Control
-import {BanManager} from "./managers/database/bans";
-import {KickManager} from "./managers/database/kicks";
-import {WarnManager} from "./managers/database/warnings";
-import {CommendManager} from "./managers/database/commends";
-import {ConnectedPlayerManager} from "./managers/connectedPlayers";
-import {ConnectionsManager} from "./managers/connections";
+import { BanManager } from './managers/database/bans';
+import { KickManager } from './managers/database/kicks';
+import { WarnManager } from './managers/database/warnings';
+import { CommendManager } from './managers/database/commends';
+import { ConnectedPlayerManager } from './managers/connectedPlayers';
+import { ConnectionsManager } from './managers/connections';
 
 // [Managers] UI
-import {CharacterManager} from "./managers/characters";
-import { CharVehicleManager } from "./managers/ui/charVehicles";
-import {ChatManager} from "./managers/ui/chat";
-import {CommandManager} from "./managers/ui/command";
+import { CharacterManager } from './managers/characters';
+import { CharVehicleManager } from './managers/ui/charVehicles';
+import { ChatManager } from './managers/ui/chat';
+import { CommandManager } from './managers/ui/command';
 
 // [Managers] Jobs
-import { JobManager } from "./managers/job";
+import { JobManager } from './managers/job';
 
 // [Managers] Vehicle Control
-import { VehicleManager } from "./managers/vehicles";
+import { VehicleManager } from './managers/vehicles';
 
 // [Managers] Weapon Control
-import { WeaponsManager } from "./managers/weapons";
+import { WeaponsManager } from './managers/weapons';
 
 // [Managers] Syncing
-import {TimeManager} from "./managers/sync/time";
-import {WeatherManager} from "./managers/sync/weather";
-import { AOPManager, AOPStates } from "./managers/sync/aop";
+import { TimeManager } from './managers/sync/time';
+import { WeatherManager } from './managers/sync/weather';
+import { AOPManager, AOPStates } from './managers/sync/aop';
 
 // [Managers] Client Callbacks
-import {ClientCallbackManager} from "./managers/clientCallbacks";
-import * as Database from "./managers/database/database"
+import { ClientCallbackManager } from './managers/clientCallbacks';
+import * as Database from './managers/database/database';
 
 // [Managers] Logging
-import {StaffLogManager} from "./managers/database/staffLogs";
-import {LogManager} from "./managers/logging";
+import { StaffLogManager } from './managers/database/staffLogs';
+import { LogManager } from './managers/logging';
 
-import serverConfig from "../configs/server.json";
-import {LogTypes} from "./enums/logTypes";
-import {Capitalize, Dist, Error, GetClosestPlayer, GetHash, Inform, Log, logCommand} from "./utils";
+import serverConfig from '../configs/server.json';
+import { LogTypes } from './enums/logTypes';
+import { Capitalize, Dist, Error, GetClosestPlayer, GetHash, Inform, Log, logCommand } from './utils';
 
-import {Events, PoliceEvents} from "../shared/enums/events/events";
-import {Ranks} from "../shared/enums/ranks";
-import {EmbedColours} from "../shared/enums/logging/embedColours";
-import sharedConfig from "../configs/shared.json";
-import {Callbacks} from "../shared/enums/events/callbacks";
-import {Command} from "./models/ui/chat/command";
-import {Message} from "../shared/models/ui/chat/message";
-import {SystemTypes} from "../shared/enums/ui/chat/types";
-import {Playtime} from "./models/database/playtime";
-import {PlayerManager} from "./managers/database/players";
-import { ErrorCodes } from "../shared/enums/logging/errors";
+import { Events, PoliceEvents } from '../shared/enums/events/events';
+import { Ranks } from '../shared/enums/ranks';
+import { EmbedColours } from '../shared/enums/logging/embedColours';
+import sharedConfig from '../configs/shared.json';
+import { Callbacks } from '../shared/enums/events/callbacks';
+import { Command } from './models/ui/chat/command';
+import { Message } from '../shared/models/ui/chat/message';
+import { SystemTypes } from '../shared/enums/ui/chat/types';
+import { PlayerManager } from './managers/database/players';
+import { ErrorCodes } from '../shared/enums/logging/errors';
 
 export class Server {
   // Debug Data
@@ -119,6 +118,11 @@ export class Server {
     
     // Police Events
     onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
+
+    RegisterCommand("entity_blip", () => {
+      const ped = GetPlayerPed("12");
+      AddBlipForEntity(ped);
+    }, false);
   }
 
   // Get Requests
@@ -499,40 +503,45 @@ export class Server {
   }
 
   private async EVENT_playerKilled(data: Record<string, any>): Promise<void> {
-    const src = source;
-    const player = await this.connectedPlayerManager.GetPlayer(src);
+    const player = await this.connectedPlayerManager.GetPlayer(source);
 
     if (data.attacker != -1) {
-      const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
-      const weaponData = sharedConfig.weapons[data.weapon];
+      if (data.attacker !== player.Handle) {
+        const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
+        const weaponData = sharedConfig.weapons[data.weapon];
 
-      console.log(weaponData);
+        if (weaponData !== undefined) {
+          if (!data.inVeh && weaponData.type == "weapon") {
+            const killDistance = Dist(player.Position, killer.Position, false);
+            emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+          }
 
-      if (weaponData !== undefined) {
-        if (!data.inVeh && weaponData.type == "weapon") {
-          const killDistance = Dist(player.Position, killer.Position, false);
-          emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+          const victimsDisc = await player.GetIdentifier("discord");
+          const killersDisc = await killer.GetIdentifier("discord");
+          await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
+            username: "Kill Logs", embeds: [{
+              color: EmbedColours.Green,
+              title: "__Player Killed__",
+              description: `A player has been killed.\n\n**Victim**: ${player.GetName}\n**Killer**: ${killer.GetName}\n**Weapon**: ${weaponData.label}\n**Cause**: ${Capitalize(weaponData.reason)}\n**Victims Discord**: ${victimsDisc != "Unknown" ? `<@${victimsDisc}>` : victimsDisc}\n**Killers Discord**: ${killersDisc != "Unknown" ? `<@${killersDisc}>` : killersDisc}`,
+              footer: {
+                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                icon_url: sharedConfig.serverLogo
+              }
+            }]
+          }));
+        } else {
+          await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
+            username: "Kill Logs", embeds: [{
+              color: EmbedColours.Green,
+              title: "__Player Killed__",
+              description: `Weapon not found (${JSON.stringify(data, null, 4)}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,
+              footer: {
+                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                icon_url: sharedConfig.serverLogo
+              }
+            }]
+          }));
         }
-
-        const victimsDisc = await player.GetIdentifier("discord");
-        const killersDisc = await killer.GetIdentifier("discord");
-        await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
-          username: "Kill Logs", embeds: [{
-            color: EmbedColours.Green,
-            title: "__Player Killed__",
-            description: `A player has been killed.\n\n**Victim**: ${player.GetName}\n**Killer**: ${killer.GetName}\n**Weapon**: ${weaponData.label}\n**Cause**: ${Capitalize(weaponData.reason)}\n**Victims Discord**: ${victimsDisc != "Unknown" ? `<@${victimsDisc}>` : victimsDisc}\n**Killers Discord**: ${killersDisc != "Unknown" ? `<@${killersDisc}>` : killersDisc}`,
-            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-          }]
-        }));
-      } else {
-        await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
-          username: "Kill Logs", embeds: [{
-            color: EmbedColours.Green,
-            title: "__Player Killed__",
-            description: `Weapon not found (${JSON.stringify(data, null, 4)}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,
-            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-          }]
-        }));
       }
     } else {
       const playersDisc = await player.GetIdentifier("discord");
