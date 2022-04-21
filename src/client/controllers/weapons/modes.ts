@@ -78,49 +78,38 @@ export class WeaponModes {
     if (currWeapon !== Weapons.Unarmed) {
       // Shoots bullets
       if (GetWeaponDamageType(currWeapon) == 3) {
-        const index = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == currWeapon);
-        if (index !== -1) {
-          if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false) && !IsPauseMenuActive()) {
+        if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false) && !IsPauseMenuActive()) {
+          const index = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == currWeapon);
+          if (index !== -1) {
             // If current weapon undefined, set it
             if (this.currentWeapon === undefined) {
               this.currentWeapon = currWeapon;
             }
 
             // Update weapon state
-            const oldState = this.currentState;
             if ((this.currentState + 1) > (Object.keys(Modes).length / 2) - 1) {
               this.currentState = 0;
             } else {
               this.currentState++;
             }
 
-            // console.log("update state", oldState, this.currentState, Object.keys(Modes).length / 2);
-
             // If a weapon entry doesn't exist in the array, create it, if it does update the weapons state in there
             const [weaponEntry, weaponIndex] = await this.weaponExists();
-            // console.log("weapon findIndex data", weaponEntry, weaponIndex, this.weapons[weaponIndex]);
             if (weaponEntry) {
               this.weapons[weaponIndex].state = this.currentState;
-              // console.log("set to next weapon state in weapons array!");
+              // Set to next weapon state in weapons array!
             } else {
-              // console.log("weapon not found, insert it!");
+              // Weapon not found, insert it!
               this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
             }
 
-            // if (this.currentState == Modes.Automatic) {
-            //   console.log("automatic firing mode init!");
-            // } else if (this.currentState == Modes.Burst) {
-            //   console.log("initiate burst tick, maybe make a method and have the tick run it");
-            // } else if (this.currentState == Modes.Single) {
-            //   console.log("initiate single tick, maybe make a method and have the tick run it");
-            // }
-
+            // Send notification and play success sound
             const notify = new Notification("Firing Modes", `Firing mode switched to ${Modes[this.currentState]}`, NotificationTypes.Info);
             await notify.send();
             PlaySoundFrontend(-1, "Place_Prop_Success", "DLC_Dmod_Prop_Editor_Sounds", false);
+          } else {
+            console.log("this weapon doesn't support multiple firing modes!");
           }
-        } else {
-          console.log("this weapon doesn't support multiple firing modes!");
         }
       } else {
         console.log("your current weapon, doesn't support firing modes. As it doesn't shoot bullets!");
