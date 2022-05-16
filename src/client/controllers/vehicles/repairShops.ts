@@ -13,8 +13,17 @@ import { Sounds } from "../../../shared/enums/sounds";
 
 import clientConfig from "../../../configs/client.json";
 
+interface ShopLocation {
+  name: string,
+  position: {x: number, y: number, z: number, l: number, w: number};
+}
+
 export class RepairShops {
+  private shopLocations: ShopLocation[] = [];
   private shops: PolyZone[] = [];
+
+  private createdShops: boolean = false;
+
   private showNotify: boolean = false;
   private repairing: boolean = false;
   
@@ -26,6 +35,12 @@ export class RepairShops {
     Inform("Vehicle | Repair Shops Controller", "Started!");
   }
 
+  // Getters
+  public get Started(): boolean {
+    return this.createdShops;
+  }
+
+  // Methods
   public init(): void {
     const shops = clientConfig.controllers.vehicles.repairing.shopLocations;
 
@@ -37,16 +52,10 @@ export class RepairShops {
       blip.IsShortRange = true;
       blip.Name = "Repair Shop";
 
-      const zone = new BoxZone({
-        box: shops[i].location,
-        options: {
-          name: shops[i].name,
-          heading: 0,
-          debugPoly: false
-        }
-      }).create();
-
-      this.shops.push(zone);
+      this.shopLocations.push({
+        name: shops[i].name,
+        position: shops[i].location
+      });
     }
   }
 
@@ -123,7 +132,21 @@ export class RepairShops {
   }
 
   public start(): void {
-    for (let i = 0; i < this.shops.length; i++) {
+    console.log("create repair shops!");
+    this.createdShops = true;
+    
+    for (let i = 0; i < this.shopLocations.length; i++) {
+      const zone = new BoxZone({
+        box: this.shopLocations[i].position,
+        options: {
+          name: this.shopLocations[i].name,
+          heading: 0,
+          debugPoly: false
+        }
+      }).create();
+  
+      this.shops.push(zone);
+
       this.shops[i].onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
         if (isInside) {
           if (this.tick === undefined) this.tick = setTick(this.interactTask);
@@ -135,6 +158,31 @@ export class RepairShops {
           }
         }
       }, 1000);
+    }
+  }
+
+  public stop(): void {
+    for (let i = 0; i < this.shops.length; i++) {
+      const shopName = this.shops[i].options.name;
+      this.shops[i].destroy();
+      
+      if (this.tick !== undefined) {
+        clearTick(this.tick);
+        this.tick = undefined;
+      }
+      
+      if (this.cancelTick !== undefined) {
+        clearTick(this.tick);
+        this.tick = undefined;
+      }
+
+      // console.log(`destroyed speedzone (${i} | ${shopName}) and cleared ticks!`);
+      
+      if (i == (this.shops.length - 1)) {
+        // console.log("clear shops array as on final entry!");
+        this.shops = [];
+        this.createdShops = false;
+      }
     }
   }
 }
