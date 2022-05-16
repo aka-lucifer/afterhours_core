@@ -294,6 +294,7 @@ type PolyObj = {
 
 export class PolyZone {
   destroyed = false;
+  tick: number = -1;
 
   points: PolyZoneOptions["points"] = [];
 
@@ -522,7 +523,7 @@ export class PolyZone {
   public onPlayerInOut(onPointInOutCb: (isCurrInside: boolean, pedPos: Cfx.Vector3) => void, waitInMS = 500) {
     let isInside = false;
 
-    setTick(async () => {
+    this.tick = setTick(async () => {
       await Delay(waitInMS);
       if (!this.destroyed) {
         const pos = Cfx.Game.PlayerPed.Position;
@@ -530,6 +531,12 @@ export class PolyZone {
         if (currInside !== isInside) {
           onPointInOutCb(currInside, pos);
           isInside = currInside;
+        }
+      } else { // If our polyzone is destroyed, clear it's tick.
+        if (this.tick !== -1) {
+          // console.log(`cleared tick (${this.tick}) on polyzone, as it was destroyed!`);
+          clearTick(this.tick);
+          this.tick = -1;
         }
       }
     });
