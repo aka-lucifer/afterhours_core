@@ -118,7 +118,15 @@ export class WeatherManager {
   }
 
   public async init(): Promise<void> {
-    await this.setWeather(this.randomWeather(), false);
+    if (this.server.Developing) { // If server is development server, then select random weather (sunny / xmas if winter weather toggled)
+      if (this.winterWeather) {
+        await this.setWeather(WinterWeathers.XMAS, false);
+      } else {
+        await this.setWeather(Weathers.ExtraSunny, false);
+      }
+    } else { // If normal server, select a random weather type
+      await this.setWeather(this.randomWeather(), false);
+    }
     this.registerCommands();
   }
 

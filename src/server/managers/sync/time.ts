@@ -49,8 +49,13 @@ export class TimeManager {
   }
 
   public async init(): Promise<void> {
-    this.hour = randomBetween(serverConfig.syncing.time.starter.hour.minimum, serverConfig.syncing.time.starter.hour.maxium);
-    this.minute = randomBetween(serverConfig.syncing.time.starter.time.minimum, serverConfig.syncing.time.starter.time.maxium);
+    if (this.server.Developing) { // If development mode, set to day time.
+      this.hour = serverConfig.syncing.time.commands.day.hour;
+      this.minute = serverConfig.syncing.time.commands.day.minute;
+    } else { // If normal server, set a random time between our min and max values.
+      this.hour = randomBetween(serverConfig.syncing.time.starter.hour.minimum, serverConfig.syncing.time.starter.hour.maxium);
+      this.minute = randomBetween(serverConfig.syncing.time.starter.time.minimum, serverConfig.syncing.time.starter.time.maxium);
+    }
     this.setFormattedTime();
     this.registerCommands();
   }
