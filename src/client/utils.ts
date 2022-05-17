@@ -1,4 +1,4 @@
-import { Vector3, Ped, World, Font, Game, Vehicle } from "fivem-js";
+import { Vector3, Ped, World, Font, Game, Vehicle, RaycastResult } from "fivem-js";
 
 import { client } from "./client";
 
@@ -565,4 +565,45 @@ export async function rightHandVehicle(vehicle: Vehicle): Promise<boolean> {
  export function addZero(i): string {
   if (i < 10) {i = "0" + i}
   return i;
+}
+
+/**
+ * 
+ * @param rotation The rotation Vec3 to get the direction of
+ * @returns The direction of the specificed rotation, in the worlds 3D space
+ */
+export function rotationToDirection(rotation: Vector3): Vector3 {
+  const adjustedRotation = new Vector3(
+    (Math.PI / 180) * rotation.x,
+    (Math.PI / 180) * rotation.y,
+    (Math.PI / 180) * rotation.z
+  );
+
+  const direction = new Vector3(
+    -Math.sin(adjustedRotation.z) * Math.abs(Math.cos(adjustedRotation.x)),
+    Math.cos(adjustedRotation.z) * Math.abs(Math.cos(adjustedRotation.x)),
+    Math.sin(adjustedRotation.x)
+  );
+
+  return direction;
+}
+
+/**
+ * 
+ * @param pos The position Vec3 from where to start from
+ * @param ped The ped from what to start from
+ * @param distance The distance to shoot the raycast (Default - 15000)
+ * @returns 
+ */
+export function screenToWorld(pos: Vector3, ped: Ped, distance: number = 15000): [boolean, Vector3] {
+  const camRot = NumToVector3(GetGameplayCamRot(2));
+  const direction = rotationToDirection(camRot);
+  const destination = new Vector3(
+    pos.x + direction.x * distance,
+    pos.y + direction.y * distance,
+    pos.z + direction.z * distance,
+  );
+
+  const result = new RaycastResult(StartShapeTestRay(pos.x, pos.y, pos.z, destination.x, destination.y, destination.z, -1, ped.Handle, 1));
+  return [result.DidHit, result.HitPosition];
 }
