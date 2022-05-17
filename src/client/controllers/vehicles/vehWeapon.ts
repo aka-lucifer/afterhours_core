@@ -20,32 +20,36 @@ export class VehicleWeapon {
   constructor() {
     this.currentWeapon = Weapons.Unarmed;
 
-    // Events
-    onNet(LXEvents.EnteredVeh_Cl, this.EVENT_enteredVeh.bind(this));
-    onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
-
     Inform("Vehicle | Weapon Controller", "Started!");
   }
 
-  // Methods
-  public stop(): void {
-    if (this.attachedWeapon !== undefined) {
-      this.attachedWeapon.delete();
-      this.attachedWeaponHash = undefined;
-      this.attachedWeapon = undefined;
-      this.hasAttached = false;
-    }
+  // Getters
+  public get Started(): boolean {
+    return this.propTick !== undefined;
   }
 
+  // Methods
   public async changedWeapon(newWeapon: number): Promise<void> {
     this.currentWeapon = newWeapon;
   }
 
-  // Events
-  private EVENT_enteredVeh(vehNet: number, vehSeat: VehicleSeat, vehName: string): void {
-    console.log("entered veh", vehNet, vehSeat, vehName);
-    const vehicleHandle = NetToVeh(vehNet);
-    const currVeh = new Vehicle(vehicleHandle);
+  public stop(): void {
+    console.log("stop veh weapon prop!");
+    if (this.propTick !== undefined) {
+      clearTick(this.propTick);
+      this.propTick = undefined;
+      if (this.attachedWeapon != null && this.attachedWeapon.exists()) {
+        this.attachedWeapon.delete();
+        this.attachedWeapon = undefined;
+      }
+      this.hasAttached = false;
+    }
+  }
+
+  public start(): void {
+    console.log("start veh weapon prop!");
+    const myPed = Game.PlayerPed;
+    const currVeh = myPed.CurrentVehicle;
 
     if (this.propTick === undefined) this.propTick = setTick(async() => {
       if (!this.hasAttached) {
@@ -58,17 +62,17 @@ export class VehicleWeapon {
 
               if (loadedModel) {
                 this.attachedWeaponHash = this.currentWeapon;
-                this.attachedWeapon = await World.createProp(weaponModel, Game.PlayerPed.Position, false, false);
+                this.attachedWeapon = await World.createProp(weaponModel, myPed.Position, false, false);
 
 
                 const rightHandVeh = await rightHandVehicle(currVeh);
                 const boneToAttach = !rightHandVeh ? Bone.SKEL_R_Hand : Bone.SKEL_L_Hand;
-                console.log("vehs 1", rightHandVeh, boneToAttach);
+                // console.log("vehs 1", rightHandVeh, boneToAttach);
 
-                AttachEntityToEntity(this.attachedWeapon.Handle, PlayerPedId(), GetPedBoneIndex(Game.PlayerPed.Handle, boneToAttach), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
+                AttachEntityToEntity(this.attachedWeapon.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, boneToAttach), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
                 this.hasAttached = true;
               } else {
-                console.log("model not loaded 1, it timed out!");
+                // console.log("model not loaded 1, it timed out!");
                 await Delay(500);
               }
             } else {
@@ -101,17 +105,17 @@ export class VehicleWeapon {
 
                 if (loadedModel) {
                   this.attachedWeaponHash = this.currentWeapon;
-                  this.attachedWeapon = await World.createProp(weaponModel, Game.PlayerPed.Position, false, false);
+                  this.attachedWeapon = await World.createProp(weaponModel, myPed.Position, false, false);
 
                   const rightHandVeh = await rightHandVehicle(currVeh);
                   const boneToAttach = !rightHandVeh ? Bone.SKEL_R_Hand : Bone.SKEL_L_Hand;
-                  console.log("vehs 2", rightHandVeh, boneToAttach);
+                  // console.log("vehs 2", rightHandVeh, boneToAttach);
 
-                  AttachEntityToEntity(this.attachedWeapon.Handle, PlayerPedId(), GetPedBoneIndex(Game.PlayerPed.Handle, boneToAttach), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
-                  // this.attachedWeapon.attachToBone(new EntityBone(Game.PlayerPed, GetPedBoneIndex(Game.PlayerPed.Handle, Bone.SKEL_R_Hand)), new Vector3(0.18, 0.035, -0.001), new Vector3(-82.2, -2.6449, -7.71));
+                  AttachEntityToEntity(this.attachedWeapon.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, boneToAttach), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
+                  // this.attachedWeapon.attachToBone(new EntityBone(myPed, GetPedBoneIndex(myPed.Handle, Bone.SKEL_R_Hand)), new Vector3(0.18, 0.035, -0.001), new Vector3(-82.2, -2.6449, -7.71));
                   this.hasAttached = true;
                 } else {
-                  console.log("model not loaded 2, it timed out!");
+                  // console.log("model not loaded 2, it timed out!");
                   await Delay(500);
                 }
               } else {
@@ -149,19 +153,5 @@ export class VehicleWeapon {
         }
       }
     });
-  }
-  
-  private EVENT_leftVeh(vehNet: number, vehSeat: VehicleSeat, vehName: string): void {
-    console.log("left veh", vehNet, vehSeat, vehName);
-
-    if (this.propTick !== undefined) {
-      clearTick(this.propTick);
-      this.propTick = undefined;
-      if (this.attachedWeapon != null && this.attachedWeapon.exists()) {
-        this.attachedWeapon.delete();
-        this.attachedWeapon = undefined;
-      }
-      this.hasAttached = false;
-    }
   }
 }

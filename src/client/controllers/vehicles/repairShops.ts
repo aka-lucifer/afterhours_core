@@ -133,7 +133,6 @@ export class RepairShops {
 
   public start(): void {
     console.log("create repair shops!");
-    this.createdShops = true;
     
     for (let i = 0; i < this.shopLocations.length; i++) {
       const zone = new BoxZone({
@@ -147,7 +146,7 @@ export class RepairShops {
   
       this.shops.push(zone);
 
-      this.shops[i].onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
+      zone.onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
         if (isInside) {
           if (this.tick === undefined) this.tick = setTick(this.interactTask);
         } else {
@@ -158,12 +157,17 @@ export class RepairShops {
           }
         }
       }, 1000);
+
+      if (i == (this.shopLocations.length - 1)) { // if last entry, set created to true
+        this.createdShops = true;
+        console.log("created repair shops!");
+      }
     }
   }
 
   public stop(): void {
     for (let i = 0; i < this.shops.length; i++) {
-      const shopName = this.shops[i].options.name;
+      // const shopName = this.shops[i].options.name;
       this.shops[i].destroy();
       
       if (this.tick !== undefined) {
@@ -176,7 +180,7 @@ export class RepairShops {
         this.tick = undefined;
       }
 
-      // console.log(`destroyed speedzone (${i} | ${shopName}) and cleared ticks!`);
+      // console.log(`destroyed repair shop (${i} | ${shopName}) and cleared ticks!`);
       
       if (i == (this.shops.length - 1)) {
         // console.log("clear shops array as on final entry!");

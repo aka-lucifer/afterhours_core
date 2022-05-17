@@ -43,44 +43,58 @@ export class VehicleManager {
 
   // Methods
   public init(): void {
-    this.speedZones = new Speedzones(this.client);
-    this.weapon = new VehicleWeapon();
-    this.antiControl = new AntiControl();
-    this.leaveDoorOpen = new LeaveDoorOpen();
-    this.cruiseControl = new CruiseControl();
-    this.repairShops = new RepairShops();
-    this.gps = new GPS();
-    this.keepWheel = new KeepWheel();
-    this.rolling = new Rolling();
-    this.seatbelt = new Seatbelt(this.client);
-    this.reverseBraking = new ReverseBraking();
+    console.log("veh manager init!");
+    this.speedZones = new Speedzones(this.client); // done (0.01ms-0.02ms)
+    this.weapon = new VehicleWeapon(); // done (0.01ms-0.03ms)
 
-    this.speedZones.init();
-    this.repairShops.init();
-    this.gps.init();
-    this.rolling.init();
+    this.antiControl = new AntiControl(); // done (0.02ms)
+
+    this.leaveDoorOpen = new LeaveDoorOpen(); // done - (0.07ms)
+    this.cruiseControl = new CruiseControl(); // done
+    this.repairShops = new RepairShops(); // done
+    this.gps = new GPS(); // done
+    this.keepWheel = new KeepWheel(); // done - (0.10ms)
+    this.rolling = new Rolling(); // done
+    this.seatbelt = new Seatbelt(this.client); // done - (0.10ms)
+    this.reverseBraking = new ReverseBraking(); // done - (0.10ms)
+    
+
+    this.speedZones.init(); // done (0.01ms-0.02ms)
+    this.repairShops.init(); // done
+    this.gps.init(); // done
+    this.rolling.init(); // done
   }
 
   public start(): void {
+    console.log("start veh manager!");
     this.speedZones.start();
-    this.repairShops.start();
   }
 
   // Events
   private EVENT_enteredVeh(): void {
-    if (!this.antiControl.RollStarted) this.antiControl.startRoll();
-    if (!this.antiControl.AirStarted) this.antiControl.startAir();
-    if(!this.leaveDoorOpen.Started) this.leaveDoorOpen.start();
-    if (!this.keepWheel.Started) this.keepWheel.start();
-    if (!this.seatbelt.Started) this.seatbelt.start();
-    if (!this.reverseBraking.Started) this.reverseBraking.start();
+    console.log("entered veh!");
+
+    if (!this.speedZones.Started) this.speedZones.start(); // done (0.01ms-0.02ms)
+    if (!this.weapon.Started) this.weapon.start(); // done (0.01ms-0.03ms)
+    if (!this.antiControl.RollStarted) this.antiControl.startRoll(); // done (0.01ms)
+    if (!this.antiControl.AirStarted) this.antiControl.startAir(); // done (0.01ms)
+    if(!this.leaveDoorOpen.Started) this.leaveDoorOpen.start(); // done - (0.07ms)
+    if (!this.keepWheel.Started) this.keepWheel.start(); // done - (0.10ms)
+    if (!this.seatbelt.Started) this.seatbelt.start(); // done - (0.10ms)
+    if (!this.reverseBraking.Started) this.reverseBraking.start(); // done - (0.10ms)
+    if (!this.repairShops.Started) this.repairShops.start(); // done
   }
   
   private EVENT_leftVeh(): void {
-    if (this.antiControl.RollStarted) this.antiControl.stopRoll();
-    if (this.antiControl.AirStarted) this.antiControl.stopAir();
-    if(this.leaveDoorOpen.Started) this.leaveDoorOpen.stop();
-    if (this.seatbelt.Started) this.seatbelt.stop();
-    if (this.reverseBraking.Started) this.reverseBraking.stop();
+    console.log("left veh!");
+    
+    if (this.speedZones.Started) this.speedZones.stop(); // done (0.01ms-0.02ms)
+    if (this.weapon.Started) this.weapon.stop(); // done (0.01ms-0.03ms)
+    if (this.antiControl.RollStarted) this.antiControl.stopRoll(); // done (0.01ms)
+    if (this.antiControl.AirStarted) this.antiControl.stopAir(); // done (0.01ms)
+    if(this.leaveDoorOpen.Started) this.leaveDoorOpen.stop(); // done - (0.07ms)
+    if (this.seatbelt.Started) this.seatbelt.stop(); // done - (0.10ms)
+    if (this.reverseBraking.Started) this.reverseBraking.stop(); // done - (0.10ms)
+    if (this.repairShops.Started) this.repairShops.stop(); // done
   }
 }

@@ -46,6 +46,7 @@ export class KeepWheel {
                 }
               }
 
+              // Auto stops it below (If exitting vehicle, clear data and stop tick)
               if (GetIsTaskActive(Game.PlayerPed.Handle, 2)) {
                 this.angle = currVeh.SteeringAngle;
                 await Delay(100);
