@@ -1,17 +1,28 @@
 {
     "debug": true,
     "richPresence": {
-        "appId": "",
+        "appId": "976173038540320828",
         "largeImage": {
-            "display": false,
-            "image": "",
-            "text": ""
+            "display": true,
+            "image": "large_image",
+            "text": "Getting Player Count"
         },
         "smallImage": {
-            "display": false,
-            "image": "",
-            "text": ""
-        }
+            "display": true,
+            "image": "small_image",
+            "text": "Apply at https://forum.astridnetwork.com/"
+        },
+        "buttons": {
+          "first": {
+            "label": "Discord",
+            "action": "https://discord.gg/TpYtmZBMYt"
+          },
+          "second": {
+            "label": "Website",
+            "action": "https://forum.astridnetwork.com"
+          }
+        },
+        "intervalTimer": 5000
     },
     "world": {
         "stunTimer": 10,
