@@ -1,4 +1,4 @@
-import {Game, VehicleSeat, } from "fivem-js"
+import {Game, Ped, VehicleSeat, } from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -48,7 +48,7 @@ import { Grabbing } from "./controllers/jobs/police/grabbing";
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import {Delay, GetHash, Inform, RegisterNuiCallback} from "./utils";
+import {Delay, Inform, RegisterNuiCallback} from "./utils";
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -70,6 +70,7 @@ export class Client {
   private debugging: boolean;
   private initialSpawn: boolean;
   private developmentMode: boolean = false;
+  private readonly maxPlayers: number;
   private players: svPlayer[] = [];
   private richPresenceData: Record<string, any>;
   private nuiReady: boolean = false;
@@ -131,7 +132,7 @@ export class Client {
   constructor() {
     this.debugging = clientConfig.debug;
     this.developmentMode = (GetConvar('development_server', 'false') === "true");
-    this.richPresenceData = clientConfig.richPresence;
+    this.maxPlayers = GetConvarInt("sv_maxclients", 32);
     this.initialSpawn = true;
     
     // Events
@@ -179,8 +180,8 @@ export class Client {
     return this.developmentMode;
   }
 
-  public get Discord(): Record<string, any> {
-    return this.richPresenceData;
+  public get MaxPlayers(): number {
+    return this.maxPlayers;
   }
 
   public get UsingKeyboard(): boolean {
@@ -219,6 +220,8 @@ export class Client {
   public async initialize(): Promise<void> {
     // [Managers] Server Data
     this.richPresence = new RichPresence(client);
+    this.richPresence.init();
+    
     this.staffManager = new StaffManager(client);
 
     // [Managers] World
@@ -248,10 +251,10 @@ export class Client {
     this.jobManager = new JobManager(client);
 
     // [Managers] Vehicle
-    this.vehicleManager = new VehicleManager(client);
-    this.vehicleManager.init();
-
-    // [Managers] Weapon
+    this.vehicleManager = new VehicleManager(client); // done
+    this.vehicleManager.init(); // done
+    //
+    // // [Managers] Weapon
     this.weaponManager = new WeaponManager(client);
     this.weaponManager.init();
 
@@ -268,10 +271,19 @@ export class Client {
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
-    RegisterCommand("pistol", () => {
-      const currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-      if (currWeapon == Weapons.BerettaM9) {
-        console.log(`Pistol Data: ${JSON.stringify(sharedConfig.weapons[currWeapon])}`)
+    RegisterCommand("playerBlipsInit", () => {
+      for (let i = 0; i < this.players.length; i++) {
+        console.log(this.players[i].NetworkId, GetPlayerFromServerId(this.players[i].NetworkId), GetPlayerPed(GetPlayerFromServerId(this.players[i].NetworkId)));
+        const ped = new Ped(GetPlayerPed(GetPlayerFromServerId(this.players[i].NetworkId)));
+        const pedBlip = GetBlipFromEntity(ped.Handle);
+
+        if (DoesBlipExist(pedBlip)) {
+          console.log("delete blip");
+          RemoveBlip(GetBlipFromEntity(ped.Handle));
+        } else {
+          console.log("make blip!");
+          const pedBlip = ped.attachBlip();
+        }
       }
     }, false);
 
@@ -313,9 +325,9 @@ export class Client {
 
     // Managers Inits
     this.aopManager.init();
-    this.vehicleManager.start();
     this.weaponManager.start();
     this.safezoneManager.start();
+    this.richPresence.start();
   }
 
   private registerStates(): void {
@@ -397,7 +409,7 @@ export class Client {
 
     // Manager Inits
     this.staffManager.init();
-    await this.worldManager.init();
+    // await this.worldManager.init();
     this.jobManager.init();
 
     this.setupUI();
