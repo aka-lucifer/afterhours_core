@@ -63,22 +63,16 @@ export class SafezoneManager {
   }
 
   public start(): void {
-    this.safezoneTick = setTick(async () => {
-      for (let i = 0; i < this.registeredZones.length; i++) {
-        if (await this.registeredZones[i].near()) {
-          this.registeredZones[i].onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
-            if (this.enteredState != isInside) {
-              this.enteredState = isInside;
+    for (let i = 0; i < this.registeredZones.length; i++) {
+      this.registeredZones[i].onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
+        if (this.enteredState != isInside) {
+          this.enteredState = isInside;
 
-              SetCanAttackFriendly(Game.PlayerPed.Handle, !isInside, true);
-              SetPedSuffersCriticalHits(Game.PlayerPed.Handle, !isInside);
-              NetworkSetFriendlyFireOption(!isInside);
-            }
-          });
+          SetCanAttackFriendly(Game.PlayerPed.Handle, !isInside, true);
+          SetPedSuffersCriticalHits(Game.PlayerPed.Handle, !isInside);
+          NetworkSetFriendlyFireOption(!isInside);
         }
-      }
-
-      await Delay(1000);
-    });
+      });
+    }
   }
 }
