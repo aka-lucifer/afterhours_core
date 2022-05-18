@@ -2,6 +2,7 @@ import { Player } from './models/database/player';
 import { Ban } from './models/database/ban';
 import WebhookMessage from './models/webhook/discord/webhookMessage';
 import { ClientCallback } from './models/clientCallback';
+import { Command } from './models/ui/chat/command';
 
 // [Managers] Server Data
 import { StaffManager } from './managers/staff';
@@ -42,20 +43,21 @@ import * as Database from './managers/database/database';
 import { StaffLogManager } from './managers/database/staffLogs';
 import { LogManager } from './managers/logging';
 
-import serverConfig from '../configs/server.json';
 import { LogTypes } from './enums/logTypes';
 import { Capitalize, Dist, Error, GetClosestPlayer, GetHash, Inform, Log, logCommand } from './utils';
+
+import serverConfig from '../configs/server.json';
+import sharedConfig from '../configs/shared.json';
 
 import { Events, PoliceEvents } from '../shared/enums/events/events';
 import { Ranks } from '../shared/enums/ranks';
 import { EmbedColours } from '../shared/enums/logging/embedColours';
-import sharedConfig from '../configs/shared.json';
 import { Callbacks } from '../shared/enums/events/callbacks';
-import { Command } from './models/ui/chat/command';
 import { Message } from '../shared/models/ui/chat/message';
 import { SystemTypes } from '../shared/enums/ui/chat/types';
 import { PlayerManager } from './managers/database/players';
 import { ErrorCodes } from '../shared/enums/logging/errors';
+import { Weapon } from "../shared/interfaces/weapon";
 
 export class Server {
   // Debug Data
@@ -508,7 +510,7 @@ export class Server {
     if (data.attacker != -1) {
       if (data.attacker !== player.Handle) {
         const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
-        const weaponData = sharedConfig.weapons[data.weapon];
+        const weaponData: Weapon = sharedConfig.weapons[data.weapon];
 
         if (weaponData !== undefined) {
           if (!data.inVeh && weaponData.type == "weapon") {
