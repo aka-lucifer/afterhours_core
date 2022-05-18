@@ -1,11 +1,10 @@
 import { Client } from "../client";
 
-import { svPlayer } from "../models/player"
-
-import { Delay } from "../utils";
+import { insideVeh, speedToMph } from "../utils";
 
 import clientConfig from "../../configs/client.json";
 import { getRankFromValue } from "../../shared/utils";
+import { Game } from "fivem-js";
 
 interface RichPresenceConfig {
   appId: string;
@@ -45,7 +44,7 @@ export class RichPresence {
   // Rich Presence Data
   private config: RichPresenceConfig;
   public appId: string;
-  public statusText: string = "Eating Patrick's, Star... ;)";
+  public statusText: string = undefined;
   public text: string;
 
   // Cycle Data
@@ -147,7 +146,122 @@ export class RichPresence {
           this.text = "Selecting Character";
         }
       } else if (this.cycleState == CycleStates.Status) {
-        this.text = this.statusText;
+
+        // If we have set our status action then display it, if not display info about your current server action
+        if (this.statusText !== undefined) {
+          this.text = this.statusText; // Display if reloading, unjamming weapon, in jail, handcuffed, etc
+        } else {
+          const myPed = Game.PlayerPed;
+          const myPos = myPed.Position;
+          // get location, if on foot, etc
+          const [streetHash, crossingHash] = GetStreetNameAtCoord(myPos.x, myPos.y, myPos.z);
+          const postal = await this.client.vehicleManager.gps.getNearestPostal(myPed);
+          const [currVeh, inVeh] = await insideVeh(myPed);
+          
+          // Vehicle Information
+          if (myPed.IsInWater) {
+            if (myPed.IsSwimmingUnderWater) {
+              if (crossingHash > 0) {
+                this.text = `Under Water At ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+              } else {
+                this.text = `Under Water At ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+              }
+            } else {
+              if (crossingHash > 0) {
+                this.text = `Swimming At ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+              } else {
+                this.text = `Swimming At ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+              }
+            }
+          } else {
+            if (myPed.IsOnFoot) {
+              if (IsPedStill(myPed.Handle)) {
+                if (crossingHash > 0) {
+                  this.text = `Chilling At ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                } else {
+                  this.text = `Chilling At ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                }
+              } else if (myPed.IsWalking) {
+                if (crossingHash > 0) {
+                  this.text = `Walking Down ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                } else {
+                  this.text = `Walking Down ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                }
+              } else if (myPed.IsSprinting) {
+                if (crossingHash > 0) {
+                  this.text = `Sprinting Down ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                } else {
+                  this.text = `Sprinting Down ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                }
+              }
+            }
+          } 
+          
+          if (inVeh) {
+            const vehSpeed = speedToMph(currVeh.Speed);
+            if (currVeh.Model.IsCar || currVeh.Model.IsBike || currVeh.Model.IsQuadbike) {
+              if (vehSpeed > 0 && vehSpeed < 80) {
+                if (currVeh.Driver.Handle == myPed.Handle) {
+                  if (crossingHash > 0) {
+                    this.text = `Driving Down ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                  } else {
+                    this.text = `Driving Down ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                  }
+                } else {
+                  if (crossingHash > 0) {
+                    this.text = `Cruising Down ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                  } else {
+                    this.text = `Cruising Down ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                  }
+                }
+              } else if (vehSpeed > 80) {
+                if (crossingHash > 0) {
+                  this.text = `Speeding Down ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                } else {
+                  this.text = `Speeding Down ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                }
+              } else {
+                if (crossingHash > 0) {
+                  this.text = `Parked On ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                } else {
+                  this.text = `Parked On ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                }
+              }
+            } else if (currVeh.Model.IsPlane || currVeh.Model.IsHelicopter) {
+              if (currVeh.IsInAir) {
+                if (crossingHash > 0) {
+                  this.text = `Cruising The Skies At ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                } else {
+                  this.text = `Cruising The Skies At ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                }
+              } else {
+                if (crossingHash > 0) {
+                  this.text = `Parked On ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                } else {
+                  this.text = `Parked On ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                }
+              }
+            } else if (currVeh.Model.IsBoat) {
+              if (currVeh.IsEngineRunning) {
+                if (vehSpeed > 0) {
+                  if (crossingHash > 0) {
+                    this.text = `Cruising The Waters At ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                  } else {
+                    this.text = `Cruising The Waters At ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                  }
+                } else {
+                  if (crossingHash > 0) {
+                    this.text = `Chilling The Waters At ${GetStreetNameFromHashKey(streetHash)}, ${GetStreetNameFromHashKey(crossingHash)} at Postal ${postal.code}`;
+                  } else {
+                    this.text = `Chilling The Waters At ${GetStreetNameFromHashKey(streetHash)}, at Postal ${postal.code}`;
+                  }
+                }
+              } else {
+                this.text = `Parked On The Waters`;
+              }
+            }
+          }
+        }
       }
 
       SetRichPresence(this.text);
