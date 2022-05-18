@@ -11,7 +11,6 @@ export class SafezoneManager {
   private client: Client;
 
   private registeredZones: PolyZone[] = [];
-  private safezoneTick: number = undefined;
   private enteredState: boolean;
 
   constructor(client: Client) {
