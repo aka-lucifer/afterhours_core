@@ -87,11 +87,11 @@ export class WorldManager {
 
   // Disable PVP
   private disablePVP(ped: Ped): void {
-    if (!this.client.safezoneManager.inSafezone) {
-      SetCanAttackFriendly(ped.Handle, true, true);
-      SetPedSuffersCriticalHits(ped.Handle, false);
-      NetworkSetFriendlyFireOption(true);
-    }
+    // if (!this.client.safezoneManager.inSafezone) {
+    //   SetCanAttackFriendly(ped.Handle, true, true);
+    //   SetPedSuffersCriticalHits(ped.Handle, false);
+    //   NetworkSetFriendlyFireOption(true);
+    // }
 
     if (IsPedBeingStunned(ped.Handle, 0)) {
       SetPedMinGroundTimeForStungun(ped.Handle, clientConfig.world.stunTimer * 1000);
