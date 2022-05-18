@@ -77,11 +77,11 @@ export class WeaponRemovers {
               this.client.weaponManager.disablers.stopPunch();
             }
           
-            // if (this.client.player.Rank >= Ranks.Admin) {
-            //   if (!this.client.staffManager.staffMenu.WeaponActive) {
-            //     this.client.staffManager.staffMenu.startWeapon();
-            //   }
-            // }
+            if (this.client.player.Rank >= Ranks.Admin) {
+              if (!this.client.staffManager.staffMenu.WeaponActive) {
+                this.client.staffManager.staffMenu.startWeapon();
+              }
+            }
           } else {
             // If the combat roll disabler tick is running
             if (this.client.weaponManager.disablers.RollActive) {
@@ -92,15 +92,15 @@ export class WeaponRemovers {
               this.client.weaponManager.disablers.startPunch();
             }
           
-            // if (this.client.player.Rank >= Ranks.Admin) {
-            //   if (this.client.staffManager.staffMenu.WeaponActive) {
-            //     this.client.staffManager.staffMenu.stopWeapon();
-            //   }
-            // }
+            if (this.client.player.Rank >= Ranks.Admin) {
+              if (this.client.staffManager.staffMenu.WeaponActive) {
+                this.client.staffManager.staffMenu.stopWeapon();
+              }
+            }
           }
 
           // [WEAPON IN VEHICLE]
-          // await this.client.vehicleManager.weapon.changedWeapon(this.currentWeapon);
+          await this.client.vehicleManager.weapon.changedWeapon(this.currentWeapon);
 
           // [CHANGE WEAPON IN VEH ANIM]
           if (IsPedInAnyVehicle(myPed.Handle, false)) {
@@ -126,8 +126,6 @@ export class WeaponRemovers {
         await Delay(500);
       }
     });
-
-
   }
 
   public stop(): void {
