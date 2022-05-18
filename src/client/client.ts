@@ -318,15 +318,16 @@ export class Client {
     
     if (!this.Developing) {
       this.spawner.requestUI();
+      this.richPresence.Text = "Viewing Changelog, Keybinds, Commands & Rules";
     } else {
       this.characters.displayCharacters(true);
+      this.richPresence.Text = "Selecting Character";
     }
 
     // Managers Inits
     this.aopManager.init();
     this.weaponManager.start();
     this.safezoneManager.start();
-    this.richPresence.start();
   }
 
   private registerStates(): void {
@@ -422,6 +423,9 @@ export class Client {
     this.weaponManager.onBack.clearWeapons();
     this.character = new Character(character);
 
+    this.richPresence.Text = "Loading In As Character";
+    this.richPresence.start();
+    this.jobManager.start();
     // console.log("Character Set To", this.Character);
   }
 

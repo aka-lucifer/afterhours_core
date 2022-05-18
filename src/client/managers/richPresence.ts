@@ -48,6 +48,7 @@ export class RichPresence {
   public text: string;
 
   // Cycle Data
+  private cycleInterval: NodeJS.Timeout = undefined;
   private cycleState: number;
   
   constructor(client: Client) {
@@ -113,9 +114,10 @@ export class RichPresence {
   }
 
   public start(): void {
-    setInterval(async() => {
+    if (this.cycleInterval === undefined) this.cycleInterval = setInterval(async() => {
       // Large Image Text
-      SetDiscordRichPresenceAssetText(`Players Online (${this.client.Players.length}/${this.client.MaxPlayers})`);
+      const playerCount: number[] = GetActivePlayers();
+      SetDiscordRichPresenceAssetText(`Players Online (${playerCount.length}/${this.client.MaxPlayers})`);
 
       if (this.cycleState !== undefined) {
         if (this.cycleState + 1 > 3) {
@@ -128,7 +130,7 @@ export class RichPresence {
       }
       
       if (this.cycleState == CycleStates.PlayerCount) {
-        this.text = `${this.client.Players.length}/${this.client.MaxPlayers} Players Online`;
+        this.text = `${playerCount.length}/${this.client.MaxPlayers} Players Online`;
       } else if (this.cycleState == CycleStates.AOP) {
         this.text = `Current AOP - ${this.client.aopManager.AOP.name}`;
       } else if (this.cycleState == CycleStates.SelectedCharacter) {
