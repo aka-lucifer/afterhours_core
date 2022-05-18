@@ -44,14 +44,14 @@ export class GPS {
       }
     }, Ranks.User);
     
-    new Command("streets", "List all street names.", [], false, async(source: string) => {
+    new Command("streets", "List all GPS street names.", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         await player.TriggerEvent(Events.listStreets);
       }
     }, Ranks.User);
     
-    new Command("cleargps", "Clear your GPS.", [], false, async(source: string) => {
+    new Command("cleargps", "Clear your GPS route.", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         await player.TriggerEvent(Events.clearGPS);
