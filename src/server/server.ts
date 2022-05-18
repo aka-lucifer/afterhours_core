@@ -120,11 +120,6 @@ export class Server {
     
     // Police Events
     onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
-
-    RegisterCommand("entity_blip", () => {
-      const ped = GetPlayerPed("12");
-      AddBlipForEntity(ped);
-    }, false);
   }
 
   // Get Requests

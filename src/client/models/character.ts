@@ -53,6 +53,10 @@ export class Character {
   public isLeoJob(): boolean {
     return this.job.name == Jobs.State || this.job.name == Jobs.County || this.job.name == Jobs.Police
   }
+
+  public isSAFREMSJob(): boolean {
+    return this.job.name == Jobs.Fire || this.job.name == Jobs.EMS
+  }
 }
 
 interface SelectedCharacter {

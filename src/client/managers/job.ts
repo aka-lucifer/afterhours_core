@@ -43,6 +43,10 @@ export class JobManager {
     this.jobBlips = new JobBlips(this.client);
   }
 
+  public start(): void {
+    this.jobBlips.start();
+  }
+
   // Events
   public async EVENT_toggleDuty(data: Record<string, any>): Promise<void> {
     if (this.client.Character.Job.callsign != "NOT_SET") {
@@ -57,25 +61,25 @@ export class JobManager {
               if (this.client.Character.isLeoJob()) {
                 const myPed = Game.PlayerPed;
 
-                global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
-                global.exports["pma-voice"].setRadioChannel(1, "[State Trooper] - RTO");
+                // global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
+                // global.exports["pma-voice"].setRadioChannel(1, "[State Trooper] - RTO");
 
-                // Apply Weapons & Armour
-                if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
-                  const [_1, arAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
-                  myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
-                }
+                // // Apply Weapons & Armour
+                // if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                //   const [_1, arAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
+                //   myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
+                // }
 
-                if (!HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
-                  const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
-                  myPed.giveWeapon(Weapons.BerettaM9, pistolAmmo, false, false);
-                }
+                // if (!HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
+                //   const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
+                //   myPed.giveWeapon(Weapons.BerettaM9, pistolAmmo, false, false);
+                // }
 
-                if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
-                  myPed.giveWeapon(Weapons.Nightstick, 0, false, false);
-                }
+                // if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                //   myPed.giveWeapon(Weapons.Nightstick, 0, false, false);
+                // }
 
-                SetPedArmour(myPed.Handle, 100);
+                // SetPedArmour(myPed.Handle, 100);
               }
 
               const notify = new Notification("Job", `You've gone on duty`, NotificationTypes.Success);

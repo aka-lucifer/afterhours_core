@@ -3,7 +3,8 @@ export enum Jobs {
   County = "county",
   Police = "police",
   Fire = "fire",
-  EMS = "ems"
+  EMS = "ems",
+  Community = "cofficer"
 }
 
 export enum JobLabels {
@@ -11,5 +12,6 @@ export enum JobLabels {
   County = "Sheriffs Office",
   Police = "Police Department",
   Fire = "San Andreas Fire",
-  EMS = "San Andreas Emergency Service"
+  EMS = "San Andreas Emergency Service",
+  Community = "Community Officer"
 }
