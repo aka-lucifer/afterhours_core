@@ -72,7 +72,6 @@ export class Client {
   private developmentMode: boolean = false;
   private readonly maxPlayers: number;
   private players: svPlayer[] = [];
-  private richPresenceData: Record<string, any>;
   private nuiReady: boolean = false;
   private started: boolean = false;
   private usingKeyboard: boolean = false;
@@ -86,7 +85,7 @@ export class Client {
   public character: Character;
 
   // [Managers]
-  private richPresence: RichPresence;
+  public richPresence: RichPresence;
   public staffManager: StaffManager;
 
   // [Managers] World

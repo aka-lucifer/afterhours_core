@@ -2,7 +2,7 @@ import { VehicleSeat, World } from "fivem-js";
 
 import {Client} from "../client";
 
-import {Deleter} from "../controllers/staff/deleter";
+import {GravityGun} from "../controllers/staff/gravityGun";
 import { StaffMenu } from "../controllers/staff/menu";
 import { NoClip } from "../controllers/staff/noclip";
 
@@ -15,7 +15,7 @@ export class StaffManager {
   private readonly client: Client;
 
   // Controllers
-  private deleter: Deleter;
+  private gravityGun: GravityGun;
   public staffMenu: StaffMenu;
   public noclip: NoClip;
 
@@ -30,7 +30,7 @@ export class StaffManager {
   // Methods
   public init(): void {
     if (this.client.player.Rank >= Ranks.Admin) {
-      this.deleter = new Deleter(this.client);
+      this.gravityGun = new GravityGun(this.client);
       this.staffMenu = new StaffMenu(this.client);
       this.noclip = new NoClip(this.client);
 

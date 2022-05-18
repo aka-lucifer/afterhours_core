@@ -176,11 +176,6 @@
         ]
     },
     "controllers": {
-        "deleter": {
-            "propBlacklist": [
-                "stt_prop_track_slowdown_t1"
-            ]
-        },
         "weapons": {
             "manualReload": {
                 "weaponWhitelist": [

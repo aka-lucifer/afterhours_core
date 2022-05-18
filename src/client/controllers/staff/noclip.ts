@@ -82,8 +82,10 @@ export class NoClip {
 
       if (freecam.IsEnabled()) {
         this.disable();
+        this.client.richPresence.Status = undefined;
       } else {
         this.enable();
+        this.client.richPresence.Status = "Noclipping Around The World";
       }
     }
   }

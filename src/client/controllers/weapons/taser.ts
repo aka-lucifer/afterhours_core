@@ -1,6 +1,7 @@
 import { Vector3, Game, Entity, World, MarkerType, Color, Control, Screen } from "fivem-js";
 
-import { Delay, Inform, LoadAnim, PlayAnim, screenToWorld } from "../../utils";
+import { Client } from "../../client";
+import { Delay, Error, Inform, LoadAnim, PlayAnim, screenToWorld } from "../../utils";
 
 import { Notification } from "../../models/ui/notification";
 import { Progress } from "../../models/ui/progress";
@@ -8,10 +9,14 @@ import { Progress } from "../../models/ui/progress";
 import { Weapons } from "../../../shared/enums/weapons";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
+import { Weapon } from "../../../shared/interfaces/weapon";
 
 import clientConfig from "../../../configs/client.json";
+import sharedConfig from "../../../configs/shared.json";
 
 export class Taser {
+  private client: Client;
+
   // Laser Sight
   private laserToggled: boolean = false;
   private laserTick: number = undefined;
@@ -27,7 +32,9 @@ export class Taser {
   private reloadingCartridges: boolean = false;
   private cartridgeTick: number = undefined;
 
-  constructor() {
+  constructor(client: Client) {
+    this.client = client;
+    
     Inform("Weapon | Taser Controller", "Started!");
 
     // Events
@@ -55,6 +62,7 @@ export class Taser {
         }
         
         // Tase Effect
+        this.client.richPresence.Status = "Getting Tazed";
         SetTimecycleModifier("damage");
         SetPedMotionBlur(myPed.Handle, true);
         SetPedMovementClipset(myPed.Handle, "move_m@drunk@moderatedrunk", 1.0);
@@ -75,6 +83,7 @@ export class Taser {
         ShakeGameplayCam("DRUNK_SHAKE", 0.0);
         ClearTimecycleModifier();
         ClearExtraTimecycleModifier();
+        this.client.richPresence.Status = undefined;
         
         if (this.effectTick !== undefined) {
           console.log("CLEARED EFFECT TICK!");
@@ -164,10 +173,24 @@ export class Taser {
           this.reloadingCartridges = false;
           const notify = new Notification("Weapon", "You stopped refilling your tazers cartridges!", NotificationTypes.Error);
           await notify.send();
+          this.client.richPresence.Status = undefined;
         }, async() => {
           const loadedAnim = await LoadAnim("weapons@first_person@aim_rng@generic@pistol@pistol_50@str");
           if (loadedAnim) {
-            PlayAnim(Game.PlayerPed, "weapons@first_person@aim_rng@generic@pistol@pistol_50@str", "reload_aim", 49, clientConfig.controllers.weapons.taser.cartridges.refillLength, 8.0, -8.0, 0.0, false, false, false);
+            const weaponData: Weapon = sharedConfig.weapons[weapon];
+
+            if (weaponData !== undefined) {
+              if (weaponData.type == "weapon") {
+                this.client.richPresence.Status = `Reloading ${weaponData.label} Cartridges`;
+                PlayAnim(Game.PlayerPed, "weapons@first_person@aim_rng@generic@pistol@pistol_50@str", "reload_aim", 49, clientConfig.controllers.weapons.taser.cartridges.refillLength, 8.0, -8.0, 0.0, false, false, false);
+              } else {
+                progress.cancel();
+                Error("Weapons | Taser Controller", "Weapon not found, report this via a development support ticket on the forums!");
+              }
+            } else {
+              progress.cancel();
+              Error("Weapons | Taser Controller", "Weapon not found, report this via a development support ticket on the forums!");
+            }
           }
         }, async() => {
           StopAnimTask(Game.PlayerPed.Handle, "weapons@first_person@aim_rng@generic@pistol@pistol_50@str", "reload_aim", 1.0);
@@ -177,6 +200,7 @@ export class Taser {
           this.reloadingCartridges = false;
           const notify = new Notification("Weapon", "You've reloaded your tazers cartridges!", NotificationTypes.Info);
           await notify.send();
+          this.client.richPresence.Status = undefined;
         })
 
         progress.start();

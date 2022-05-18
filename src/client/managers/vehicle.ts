@@ -27,7 +27,7 @@ export class VehicleManager {
   private leaveDoorOpen: LeaveDoorOpen;
   private cruiseControl: CruiseControl;
   private repairShops: RepairShops;
-  private gps: GPS;
+  public gps: GPS;
   private keepWheel: KeepWheel;
   private rolling: Rolling;
   private seatbelt: Seatbelt;
@@ -46,9 +46,7 @@ export class VehicleManager {
     console.log("veh manager init!");
     this.speedZones = new Speedzones(this.client); // done (0.01ms-0.02ms)
     this.weapon = new VehicleWeapon(); // done (0.01ms-0.03ms)
-
     this.antiControl = new AntiControl(); // done (0.02ms)
-
     this.leaveDoorOpen = new LeaveDoorOpen(); // done - (0.07ms)
     this.cruiseControl = new CruiseControl(); // done
     this.repairShops = new RepairShops(); // done
@@ -57,17 +55,10 @@ export class VehicleManager {
     this.rolling = new Rolling(); // done
     this.seatbelt = new Seatbelt(this.client); // done - (0.10ms)
     this.reverseBraking = new ReverseBraking(); // done - (0.10ms)
-    
-
     this.speedZones.init(); // done (0.01ms-0.02ms)
     this.repairShops.init(); // done
     this.gps.init(); // done
     this.rolling.init(); // done
-  }
-
-  public start(): void {
-    console.log("start veh manager!");
-    this.speedZones.start();
   }
 
   // Events

@@ -1,5 +1,6 @@
 import { Control, Game, InputMode, Screen, Vector3, VehicleDoorIndex, World } from "fivem-js";
 
+import { client } from "../../client";
 import { Inform } from "../../utils";
 
 import { PolyZone } from "../../helpers/PolyZone";
@@ -19,6 +20,7 @@ interface ShopLocation {
 }
 
 export class RepairShops {
+
   private shopLocations: ShopLocation[] = [];
   private shops: PolyZone[] = [];
 
@@ -81,6 +83,7 @@ export class RepairShops {
                 this.repairing = false;
                 const notify = new Notification("Mechanic", "You cancelled repairing your vehicle!", NotificationTypes.Error);
                 await notify.send();
+                client.richPresence.Status = undefined;
                 
                 if (this.cancelTick !== undefined) {
                   clearTick(this.cancelTick);
@@ -92,6 +95,7 @@ export class RepairShops {
                 currVeh.IsEngineRunning = false;
                 currVeh.IsDriveable = false;
                 global.exports["xsound"].PlayUrlPos("veh_repair", Sounds.Repair, 0.15, Game.PlayerPed.Position, false);
+                client.richPresence.Status = "Repairing Vehicle At Shop";
 
                 this.cancelTick = setTick(() => {
                   if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Enter) || Game.isDisabledControlJustPressed(InputMode.MouseAndKeyboard, Control.Enter)) { // Exiting vehicle
@@ -113,6 +117,7 @@ export class RepairShops {
                 const notify = new Notification("Mechanic", "Your vehicle has been repaired", NotificationTypes.Info);
                 await notify.send();
                 this.repairing = false;
+                client.richPresence.Status = undefined;
                 
                 if (this.cancelTick !== undefined) {
                   clearTick(this.cancelTick);

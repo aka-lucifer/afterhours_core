@@ -1,6 +1,6 @@
 import { Audio, Control, Game, InputMode, Screen } from "fivem-js";
 
-import { Delay, GetHash, Inform } from "../../utils";
+import { Delay, Error, GetHash, Inform } from "../../utils";
 import { Client } from "../../client";
 
 import { Notification } from "../../models/ui/notification";
@@ -8,8 +8,10 @@ import { Notification } from "../../models/ui/notification";
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { Weapons } from "../../../shared/enums/weapons";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+import { Weapon } from "../../../shared/interfaces/weapon";
 
 import clientConfig from "../../../configs/client.json";
+import sharedConfig from "../../../configs/shared.json";
 
 export class Reloading {
   private client: Client;
@@ -49,25 +51,38 @@ export class Reloading {
             // If you aren't reloading your weapon
             // console.log("reloading", this.reloadingWeapon);
             if (!this.reloadingWeapon) {
-              this.reloadingWeapon = true;
-              const myPed = Game.PlayerPed;
+              const weaponData: Weapon = sharedConfig.weapons[this.currentWeapon];
 
-              // console.log("make reload, index", reloadIndex, myPed.Handle);
-              TaskReloadWeapon(myPed.Handle, false);
-              // MakePedReload(myPed.Handle);
-              DisablePlayerFiring(Game.Player.Handle, false);
-              this.reloadWeapons.splice(reloadIndex, 1);
+              if (weaponData !== undefined) {
+                if (weaponData.type == "weapon") {
+                  this.client.richPresence.Status = `Reloading ${weaponData.label}`;
+                  this.reloadingWeapon = true;
+                  const myPed = Game.PlayerPed;
+                  
+                  TaskReloadWeapon(myPed.Handle, false);
+                  DisablePlayerFiring(Game.Player.Handle, false);
+                  this.reloadWeapons.splice(reloadIndex, 1);
 
-              if (this.reloadWeapons.length <= 0) {
-                if (this.notifyTick !== undefined) {
-                  clearTick(this.notifyTick);
-                  this.notifyTick = undefined;
+                  if (this.reloadWeapons.length <= 0) {
+                    if (this.notifyTick !== undefined) {
+                      clearTick(this.notifyTick);
+                      this.notifyTick = undefined;
+                    }
+                  }
+                  this.reloadingWeapon = false;
+
+                  const notify = new Notification("Weapon", "You reloaded your weapon!", NotificationTypes.Info);
+                  await notify.send();
+
+                  setTimeout(() => {
+                    this.client.richPresence.Status = undefined;
+                  }, 2000);
+                } else {
+                  Error("Weapons | Reload Controller", "Weapon not found, report this via a development support ticket on the forums!");
                 }
+              } else {
+                Error("Weapons | Reload Controller", "Weapon not found, report this via a development support ticket on the forums!");
               }
-              this.reloadingWeapon = false;
-
-              const notify = new Notification("Weapon", "You reloaded your weapon!", NotificationTypes.Info);
-              await notify.send();
             }
           }
         }

@@ -1,24 +1,33 @@
 import { AmmoType, Control, Game, InputMode, Screen } from "fivem-js";
 
-import { randomBetween, LoadAnim, PlayAnim, Inform, GetHash } from "../../utils";
+import { Client } from "../../client";
+import { randomBetween, LoadAnim, PlayAnim, Inform, GetHash, Error } from "../../utils";
 
 import { Notification } from "../../models/ui/notification";
 import { Progress } from "../../models/ui/progress";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { Weapons } from "../../../shared/enums/weapons";
+import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+import { Weapon } from "../../../shared/interfaces/weapon";
 
 import clientConfig from "../../../configs/client.json";
-import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+import sharedConfig from "../../../configs/shared.json";
 
 export class WeaponJamming {
+  private client: Client;
+
   private weapon: number;
   private jammedWeapons: number[] = [];
+
   private jamTick: number = undefined;
+
   private unjammingWeapon: boolean = false;
   private jamAttempted: boolean = false;
 
-  constructor() {
+  constructor(client: Client) {
+    this.client = client;
+
     // Key Mapping
     RegisterCommand("+unjam_weapon", this.unjamWeapon.bind(this), false);
 
@@ -73,10 +82,24 @@ export class WeaponJamming {
               this.unjammingWeapon = false;
               const notify = new Notification("Weapon", "You stopped unjamming your weapon!", NotificationTypes.Error);
               await notify.send();
+              this.client.richPresence.Status = undefined;
             }, async() => {
               const loadedAnim = await LoadAnim(unjamDict);
               if (loadedAnim) {
-                PlayAnim(Game.PlayerPed, unjamDict, "reload_low_left", 49, unjamLength, 8.0, -8.0, 0.0, false, false, false);
+                const weaponData: Weapon = sharedConfig.weapons[this.weapon];
+  
+                if (weaponData !== undefined) {
+                  if (weaponData.type == "weapon") {
+                    this.client.richPresence.Status = `Unjamming ${weaponData.label}`;
+                    PlayAnim(Game.PlayerPed, unjamDict, "reload_low_left", 49, unjamLength, 8.0, -8.0, 0.0, false, false, false);
+                  } else {
+                    progress.cancel();
+                    Error("Weapons | Unjam Controller", "Weapon not found, report this via a development support ticket on the forums!");
+                  }
+                } else {
+                  progress.cancel();
+                  Error("Weapons | Unjam Controller", "Weapon not found, report this via a development support ticket on the forums!");
+                }
               }
             }, async() => {
               StopAnimTask(Game.PlayerPed.Handle, unjamDict, "reload_low_left", 1.0);
@@ -93,6 +116,7 @@ export class WeaponJamming {
               this.unjammingWeapon = false;
               const notify = new Notification("Weapon", "You unjammed your weapon!", NotificationTypes.Info);
               await notify.send();
+              this.client.richPresence.Status = undefined;
             })
 
             progress.start();

@@ -1,4 +1,4 @@
-import { Game, Vector3, Vehicle } from "fivem-js";
+import { Game, Ped, Vector3, Vehicle } from "fivem-js";
 
 import { getVehPassengers, insideVeh, Inform } from "../../utils";
 
@@ -73,6 +73,23 @@ export class GPS {
     if (vehPassengers.length > 0) {
       emitNet(Events.syncGPS, vehPassengers, position);
     }
+  }
+
+  public async getNearestPostal(ped: Ped): Promise<Postal> {
+    const pedPos = ped.Position;
+    let closestPostal;
+    let closestDistance;
+
+    for (let i = 0; i < this.postals.length; i++) {
+      const dist = pedPos.distance(this.postals[i].position); // Pythagorean Theorem
+
+      if (closestPostal == undefined || dist < closestDistance) {
+        closestPostal = this.postals[i];
+        closestDistance = dist;
+      }
+    }
+
+    return closestPostal;
   }
 
   // Events
