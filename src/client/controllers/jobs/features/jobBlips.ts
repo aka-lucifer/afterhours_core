@@ -1,72 +1,159 @@
+import { Blip, BlipColor, BlipSprite, Game, Ped, Vector3, VehicleClass } from "fivem-js";
+
 import { Client } from "../../../client";
-import { Delay } from "../../../utils";
+import { Delay, insideVeh } from "../../../utils";
 
 import { Jobs } from "../../../../shared/enums/jobs/jobs";
-import { Blip, Game, Ped } from "fivem-js";
+import { JobEvents } from "../../../../shared/enums/events/jobs/jobEvents";
 
-class JobBlip {
-  private netId: number;
-  private blip: Blip;
+interface ActiveUnit {
+  netId: string;
+  coords: Vector3;
+  heading: number;
+  firstName: string;
+  lastName: string;
+  job: Jobs;
+  callsign: string;
+  inVeh: boolean;
+  sirenOn?: boolean
+}
+
+interface JobBlip {
+  netId: number;
+  blip: Blip;
+  tick: number;
 }
 
 export class JobBlips {
   private client: Client;
 
-  private createdBlips: Blip[] = [];
+  private createdBlips: JobBlip[] = [];
   private blipTick: number = undefined;
 
   constructor(client: Client) {
     this.client = client;
+
+    // Events
+    onNet(JobEvents.refreshBlipData, this.EVENT_refreshBlipData.bind(this));
   }
 
-  public start(): void {
-    console.log("starting job blips!");
-    if (this.blipTick === undefined) this.blipTick = setTick(async() => {
-      if (this.client.Character.isLeoJob() || this.client.Character.isSAFREMSJob() || this.client.Character.Job.name == "cofficer") {
+  private formatFirstName(name: string): string {
+    return name.slice(0, name.indexOf(name[1])); // Convers first name, to first letter (Lucy -> L)
+  }
+
+  private deleteBlips(): void {
+    if (this.createdBlips.length > 0) { // If off duty and have blips created
+      for (let i = 0; i < this.createdBlips.length; i++) {
+        this.createdBlips[i].blip.delete();
+        if (this.createdBlips[i].tick !== undefined) {
+          clearTick(this.createdBlips[i].tick);
+          this.createdBlips[i].tick = undefined;
+        }
+        
+        this.createdBlips.splice(i, 1);
+      }
+    }
+  }
+
+  // Events
+  private EVENT_refreshBlipData(units: ActiveUnit[]): void {
+    if (this.client.Player.Spawned) {
+      if (this.client.Character.isLeoJob() || this.client.Character.isSAFREMSJob() || this.client.Character.Job.name == Jobs.Community) {
         if (this.client.Character.Job.status) {
-          const myPed = Game.PlayerPed;
-          const svPlayers = this.client.Players;
-          // Loop through all players
-          for(let i = 0; i < svPlayers.length; i++) {
-            const netId = svPlayers[i].NetworkId;
-  
-            // If the other connected players aren't you
-            
-            // if (this.client.player.NetworkId != netId) {
-              if (svPlayers[i].spawned) {
-                const playerStates = Player(netId);
-                const playerId = GetPlayerFromServerId(netId);
-                
-                // If they're inside your scope or not (THIS IS HOW U BEAT ONESYNC INFINITY PLAYER ID NOT FOUND BS)
-                if (playerId != -1) {
-                  const ped = new Ped(GetPlayerPed(playerId));
+          this.deleteBlips(); // delete all active blips
 
-                  if (!ped.AttachedBlip) {
-                    console.log("blip doesn't exist on", netId);
-                    const blip = ped.attachBlip();
-                    blip.Scale = 0.7;
-                    blip.IsShortRange = true;
-                    blip.Display = 4;
+          for (let i = 0; i < units.length; i++) {
+            const netId = parseInt(units[i].netId);
+            // if (netId !== this.client.Player.NetworkId) {
+              if (units[i].coords !== undefined) {
+                const blipHandle = AddBlipForCoord(units[i].coords.x, units[i].coords.y, units[i].coords.z);
+                const blip = new Blip(blipHandle);
+                blip.IsShortRange = true;
+                blip.Display = 4;
+                let blipTick = undefined;
 
-                    if (svPlayers[i].Character.job.name == Jobs.State || svPlayers[i].Character.job.name == Jobs.County || svPlayers[i].Character.job.name == Jobs.Police) {
-                      blip.Color = 1;
-                      const firstName = svPlayers[i].Character.firstName;
-                      const newFirstName = firstName.slice(0, firstName.indexOf(firstName[1])); // Convers first name, to first letter (Lucy -> L)
-                      blip.Name = `[${svPlayers[i].Character.job.callsign}] | ${newFirstName}. ${svPlayers[i].Character.lastName}`;
-                    }
+                if (units[i].inVeh) {
+                  switch (units[i].job) {
+                    case Jobs.Police:
+                      blip.Sprite = BlipSprite.PoliceCar;
+                      blip.Color = BlipColor.Blue;
+                      break;
+                    case Jobs.County:
+                      blip.Sprite = BlipSprite.PoliceCar;
+                      blip.Color = BlipColor.Blue;
+                      break;
+                    case Jobs.State:
+                      blip.Sprite = BlipSprite.PoliceCar;
+                      blip.Color = BlipColor.Blue;
+                      break;
+                    case Jobs.Fire:
+                      blip.Sprite = BlipSprite.ArmoredTruck;
+                      blip.Color = BlipColor.Red;
+                      break;
+                    case Jobs.EMS:
+                      blip.Sprite = BlipSprite.Hospital;
+                      blip.Color = BlipColor.Red;
+                      break;
+                    case Jobs.Community:
+                      blip.Sprite = 58
+                      blip.Color = BlipColor.Green;
+                      break;
                   }
+
+                  blip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                  SetBlipShowCone(blip.Handle, true)
+
+                  if (units[i].sirenOn) {
+                    if (blipTick === undefined) blipTick = setTick(async() => {
+                      blip.Color = BlipColor.Red;
+                      await Delay(200);
+                      blip.Color = 38; // Police Blue
+                      await Delay(200);
+                      blip.Color = BlipColor.Red;
+                      await Delay(200);
+                      blip.Color = 38; // Police Blue
+                      await Delay(200);
+                    })
+                  }
+                } else {
+                  blip.Sprite = BlipSprite.Standard;
+                  
+                  switch (units[i].job) {
+                    case Jobs.Police:
+                      blip.Color = BlipColor.Blue;
+                      break;
+                    case Jobs.County:
+                      blip.Color = BlipColor.Blue;
+                      break;
+                    case Jobs.State:
+                      blip.Color = BlipColor.Blue;
+                      break;
+                    case Jobs.Fire:
+                      blip.Color = BlipColor.Red;
+                      break;
+                    case Jobs.EMS:
+                      blip.Color = BlipColor.Red;
+                      break;
+                    case Jobs.Community:
+                      blip.Color = BlipColor.Green;
+                      break;
+                  }
+
+                  blip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                  blip.Rotation = units[i].heading;
+                  blip.ShowHeadingIndicator = true;
                 }
+
+                this.createdBlips.push({
+                  netId: netId,
+                  blip: blip,
+                  tick: blipTick
+                });
               }
             // }
           }
-        } else {
-          console.log("can't create blips, as not on duty!")
         }
-      } else {
-        console.log("can't create blips, as not LEO/EMS/COfficer")
       }
-
-      await Delay(1000);
-    });
+    }
   }
 }

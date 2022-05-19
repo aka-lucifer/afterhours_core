@@ -36,6 +36,7 @@ export class JobManager {
     
     // Controllers
     this.jobBlips = new JobBlips(this.server);
+    this.jobBlips.init();
   }
 
   // Events

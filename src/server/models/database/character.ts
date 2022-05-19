@@ -5,6 +5,7 @@ import { Job } from "../jobs/job";
 import * as Database from "../../managers/database/database"
 import { Bloodtypes, Gender } from "../../../shared/enums/ui/characters";
 import { Delay, GetTimestamp, randomBetween, randomEnum } from "../../utils";
+import { Jobs } from "../../../shared/enums/jobs/jobs";
 
 export class Character {
   private id: number;
@@ -226,6 +227,14 @@ export class Character {
     });
 
     return foundNumber.data.length > 0
+  }
+
+  public isLeoJob(): boolean {
+    return this.job.name == Jobs.State || this.job.name == Jobs.County || this.job.name == Jobs.Police
+  }
+
+  public isSAFREMSJob(): boolean {
+    return this.job.name == Jobs.Fire || this.job.name == Jobs.EMS
   }
 
   // Formatters
