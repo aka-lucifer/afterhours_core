@@ -43,10 +43,6 @@ export class JobManager {
     this.jobBlips = new JobBlips(this.client);
   }
 
-  public start(): void {
-    this.jobBlips.start();
-  }
-
   // Events
   public async EVENT_toggleDuty(data: Record<string, any>): Promise<void> {
     if (this.client.Character.Job.callsign != "NOT_SET") {

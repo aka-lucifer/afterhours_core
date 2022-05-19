@@ -425,7 +425,6 @@ export class Client {
 
     this.richPresence.Text = "Loading In As Character";
     this.richPresence.start();
-    this.jobManager.start();
     // console.log("Character Set To", this.Character);
   }
 
