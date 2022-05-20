@@ -375,7 +375,7 @@ export class JobBlips {
 
                       foundBlip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
 
-                      if (units[i].sirenOn) {
+                      if (units[i].sirenOn && units[i].inVeh) {
                         if (blipData.tick === undefined) blipData.tick = setTick(async() => {
                           foundBlip.Color = BlipColor.Red;
                           await Delay(200);
@@ -393,6 +393,11 @@ export class JobBlips {
                         }
                       }
                     } else {
+                      if (blipData.tick !== undefined) {
+                        clearTick(blipData.tick);
+                        blipData.tick = undefined;
+                      }
+
                       foundBlip.Sprite = BlipSprite.Standard;
                       
                       switch (units[i].job) {
