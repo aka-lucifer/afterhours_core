@@ -53,7 +53,10 @@ export class JobManager {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} On Duty`);
           } else {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} Off Duty`);
+            emitNet(JobEvents.unitOffDuty, -1, player.Handle); // Remove this players on duty blip to all on duty players
           }
+
+          await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you
           await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
 
           // Resync all players & selected characters to all clients, as your on duty status has changed

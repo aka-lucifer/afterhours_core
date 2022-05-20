@@ -131,12 +131,12 @@ export class CharacterManager {
   }
 
   public async Exists(owner: Player): Promise<boolean> {
-    const charIndex = this.characters.findIndex(character => character.Owner.Id == owner.Id);
+    const charIndex = this.characters.findIndex(character => character.Owner.Handle == owner.Handle);
     return charIndex !== -1;
   }
 
   public async Get(owner: Player): Promise<Character> {
-    const charIndex = this.characters.findIndex(character => character.Owner.Id == owner.Id);
+    const charIndex = this.characters.findIndex(character => character.Owner.Handle == owner.Handle);
     if (charIndex != -1) {
       return this.characters[charIndex];
     }
@@ -168,7 +168,7 @@ export class CharacterManager {
   }
 
   public async Remove(owner: Player): Promise<void> {
-    const charIndex = this.characters.findIndex(character => character.Owner.Id == owner.Id);
+    const charIndex = this.characters.findIndex(character => character.Owner.Handle == owner.Handle);
 
     if (charIndex != -1) {
       const tempData = this.characters[charIndex];
@@ -184,7 +184,7 @@ export class CharacterManager {
   }
 
   public Disconnect(owner: Player): void {
-    const charIndex = this.characters.findIndex(character => character.Owner.Id == owner.Id);
+    const charIndex = this.characters.findIndex(character => character.Owner.Handle == owner.Handle);
 
     if (charIndex != -1) {
       const tempData = this.characters[charIndex];
@@ -295,6 +295,7 @@ export class CharacterManager {
   }
 
   private async CALLBACK_selectCharacter(data: Record<string, any>): Promise<void> {
+    console.log("select character", source);
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
 
     if (data.characterId !== undefined && data.characterId > 0) {

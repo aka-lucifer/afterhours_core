@@ -14,6 +14,7 @@ interface ActiveUnit {
   lastName: string;
   job: string;
   callsign: string;
+  status: boolean;
   inVeh: boolean;
   sirenOn?: boolean,
   vehType?: string
@@ -55,6 +56,7 @@ export class JobBlips {
                   lastName: character.lastName,
                   job: character.Job.name,
                   callsign: character.Job.Callsign,
+                  status: character.Job.Status,
                   inVeh: currVeh > 0,
                   sirenOn: currVeh > 0 && IsVehicleSirenOn(currVeh),
                   vehType: GetVehicleType(currVeh)
