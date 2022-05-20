@@ -15,7 +15,8 @@ interface ActiveUnit {
   job: string;
   callsign: string;
   inVeh: boolean;
-  sirenOn?: boolean
+  sirenOn?: boolean,
+  vehType?: string
 }
 
 export class JobBlips {
@@ -36,17 +37,17 @@ export class JobBlips {
       const svPlayers = this.server.connectedPlayerManager.GetPlayers;
       const activeUnits: ActiveUnit[] = [];
 
-      for (let i = 0; i < svPlayers.length; i++) {
+      for (let i = 0; i < svPlayers.length; i++) { // Loop through all server players
         if (svPlayers[i].Spawned) { // If selected their character
           const character = await this.server.characterManager.Get(svPlayers[i]);
 
-          if (character) {
-            if (character.isLeoJob() || character.isSAFREMSJob() || character.Job.name == Jobs.Community) {
-              if (character.Job.Status) {
-                const ped = GetPlayerPed(svPlayers[i].Handle);
-                const currVeh = GetVehiclePedIsIn(ped, false);
+          if (character) { // If their character has been loaded
+            if (character.isLeoJob() || character.isSAFREMSJob() || character.Job.name == Jobs.Community) { // If character is LEO, Fire/EMS or Community Officers
+              if (character.Job.Status) { // If character is on duty
+                const ped = GetPlayerPed(svPlayers[i].Handle); // Get their characters ped
+                const currVeh = GetVehiclePedIsIn(ped, false); // Check if they're inside a vehicle
 
-                activeUnits.push({
+                activeUnits.push({ // Push new element into active units array.
                   netId: svPlayers[i].Handle,
                   coords: svPlayers[i].Position,
                   heading: Math.ceil(GetEntityHeading(ped)),
@@ -55,17 +56,15 @@ export class JobBlips {
                   job: character.Job.name,
                   callsign: character.Job.Callsign,
                   inVeh: currVeh > 0,
-                  sirenOn: currVeh > 0 && IsVehicleSirenOn(currVeh)
+                  sirenOn: currVeh > 0 && IsVehicleSirenOn(currVeh),
+                  vehType: GetVehicleType(currVeh)
                 });
-                // console.log("active units", activeUnits);
-              } else {
-                console.log("off duty");
               }
             }
           }
         }
 
-        if (i == (svPlayers.length - 1)) {
+        if (i == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
           emitNet(JobEvents.refreshBlipData, -1, activeUnits);
         }
       }

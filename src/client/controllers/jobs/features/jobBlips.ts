@@ -15,7 +15,8 @@ interface ActiveUnit {
   job: Jobs;
   callsign: string;
   inVeh: boolean;
-  sirenOn?: boolean
+  sirenOn?: boolean;
+  vehType?: string;
 }
 
 interface JobBlip {
@@ -73,35 +74,117 @@ export class JobBlips {
                 let blipTick = undefined;
 
                 if (units[i].inVeh) {
-                  switch (units[i].job) {
-                    case Jobs.Police:
-                      blip.Sprite = BlipSprite.PoliceCar;
-                      blip.Color = BlipColor.Blue;
-                      break;
-                    case Jobs.County:
-                      blip.Sprite = BlipSprite.PoliceCar;
-                      blip.Color = BlipColor.Blue;
-                      break;
-                    case Jobs.State:
-                      blip.Sprite = BlipSprite.PoliceCar;
-                      blip.Color = BlipColor.Blue;
-                      break;
-                    case Jobs.Fire:
-                      blip.Sprite = BlipSprite.ArmoredTruck;
-                      blip.Color = BlipColor.Red;
-                      break;
-                    case Jobs.EMS:
-                      blip.Sprite = BlipSprite.Hospital;
-                      blip.Color = BlipColor.Red;
-                      break;
-                    case Jobs.Community:
-                      blip.Sprite = 58
-                      blip.Color = BlipColor.Green;
-                      break;
+                  if (units[i].vehType == "automobile") {
+                    switch (units[i].job) {
+                      case Jobs.Police:
+                        blip.Sprite = BlipSprite.PoliceCar;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.County:
+                        blip.Sprite = BlipSprite.PoliceCar;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.State:
+                        blip.Sprite = BlipSprite.PoliceCar;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.Fire:
+                        blip.Sprite = BlipSprite.ArmoredTruck;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.EMS:
+                        blip.Sprite = BlipSprite.Hospital;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.Community:
+                        blip.Sprite = 58
+                        blip.Color = BlipColor.Green;
+                        break;
+                    }
+                  } else if (units[i].vehType == "bike") {
+                    switch (units[i].job) {
+                      case Jobs.Police:
+                        blip.Sprite = 348;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.County:
+                        blip.Sprite = 348;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.State:
+                        blip.Sprite = 348;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.Fire:
+                        blip.Sprite = 348;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.EMS:
+                        blip.Sprite = 348;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.Community:
+                        blip.Sprite = 58
+                        blip.Color = BlipColor.Green;
+                        break;
+                    }
+                  } else if (units[i].vehType == "heli") {
+                    switch (units[i].job) {
+                      case Jobs.Police:
+                        blip.Sprite = BlipSprite.PoliceHelicopter;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.County:
+                        blip.Sprite = BlipSprite.PoliceHelicopter;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.State:
+                        blip.Sprite = BlipSprite.PoliceHelicopter;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.Fire:
+                        blip.Sprite = BlipSprite.PoliceHelicopter;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.EMS:
+                        blip.Sprite = BlipSprite.PoliceHelicopter;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.Community:
+                        blip.Sprite = 58
+                        blip.Color = BlipColor.Green;
+                        break;
+                    }
+                  } else if (units[i].vehType == "boat") {
+                    switch (units[i].job) {
+                      case Jobs.Police:
+                        blip.Sprite = BlipSprite.Speedboat;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.County:
+                        blip.Sprite = BlipSprite.Speedboat;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.State:
+                        blip.Sprite = BlipSprite.Speedboat;
+                        blip.Color = BlipColor.Blue;
+                        break;
+                      case Jobs.Fire:
+                        blip.Sprite = BlipSprite.Speedboat;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.EMS:
+                        blip.Sprite = BlipSprite.Speedboat;
+                        blip.Color = BlipColor.Red;
+                        break;
+                      case Jobs.Community:
+                        blip.Sprite = 58
+                        blip.Color = BlipColor.Green;
+                        break;
+                    }
                   }
 
                   blip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
-                  SetBlipShowCone(blip.Handle, true)
 
                   if (units[i].sirenOn) {
                     if (blipTick === undefined) blipTick = setTick(async() => {
