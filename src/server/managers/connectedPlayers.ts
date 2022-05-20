@@ -13,6 +13,7 @@ import { EmbedColours } from "../../shared/enums/logging/embedColours";
 import serverConfig from "../../configs/server.json";
 import sharedConfig from "../../configs/shared.json";
 import { Events } from "../../shared/enums/events/events";
+import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
 
 export class ConnectedPlayerManager {
   public server: Server;
@@ -132,6 +133,7 @@ export class ConnectedPlayerManager {
       }
 
       if (player) {
+        emitNet(JobEvents.unitOffDuty, -1, player.Handle); // Remove this players on duty blip to all on duty players
         this.server.characterManager.Disconnect(player);
         await player.Disconnect(disconnectReason);
       }
