@@ -7,10 +7,10 @@ import { Notification } from "../../models/ui/notification";
 import { Events } from "../../../shared/enums/events/events";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { Message } from "../../../shared/models/ui/chat/message";
+import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 
 import clientConfig from "../../../configs/client.json";
 import sharedConfig from "../../../configs/shared.json";
-import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 
 class Street {
   public name: string;
@@ -22,7 +22,7 @@ class Street {
   }
 }
 
-class Postal {
+export class Postal {
   public code: string;
   public position: Vector3;
 

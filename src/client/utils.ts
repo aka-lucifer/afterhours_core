@@ -2,7 +2,11 @@ import { Vector3, Ped, World, Font, Game, Vehicle, RaycastResult } from "fivem-j
 
 import { client } from "./client";
 
+import { Postal } from "./controllers/vehicles/gps";
+
 import { RightHandsideVehs } from "../shared/enums/vehicles";
+
+import clientConfig from "../configs/client.json";
 
 /**
  * @param reference Title for organisation logs
@@ -606,4 +610,37 @@ export function screenToWorld(pos: Vector3, ped: Ped, distance: number = 15000):
 
   const result = new RaycastResult(StartShapeTestRay(pos.x, pos.y, pos.z, destination.x, destination.y, destination.z, -1, ped.Handle, 1));
   return [result.DidHit, result.HitPosition];
+}
+
+/**
+ * 
+ * @param ped The ped to get the location of.
+ * @returns Return the street, crossing and postal of the passed ped.
+ */
+export async function getLocation(ped: Ped): Promise<[string, string, Postal]> {
+  const pedPos = ped.Position;
+  const [streetHash, crossingHash] = GetStreetNameAtCoord(pedPos.x, pedPos.y, pedPos.z);
+  const street = GetStreetNameFromHashKey(streetHash);
+  const crossing = GetStreetNameFromHashKey(crossingHash);
+  const postal = await client.vehicleManager.gps.getNearestPostal(ped);
+  return [street, crossing, postal];
+}
+
+/**
+ * 
+ * @param ped The ped to get the current zone.
+ * @returns Returns the current zone of the passed ped.
+ */
+export async function getZone(ped: Ped): Promise<string> {
+  if (ped.exists()) {
+    const zone = GetNameOfZone(ped.Position.x, ped.Position.y, ped.Position.z);
+    const matchedZone = clientConfig.world.zones[zone];
+    if (matchedZone === undefined) {
+      return "Zone N/A";
+    } else {
+      return matchedZone;
+    }
+  } else {
+    return "Zone N/A";
+  }
 }
