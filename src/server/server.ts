@@ -44,7 +44,7 @@ import { StaffLogManager } from './managers/database/staffLogs';
 import { LogManager } from './managers/logging';
 
 import { LogTypes } from './enums/logTypes';
-import { Capitalize, Dist, Error, GetClosestPlayer, GetHash, Inform, Log, logCommand } from './utils';
+import { Capitalize, Dist, Error, getClosestPlayer, GetHash, Inform, Log, logCommand } from './utils';
 
 import serverConfig from '../configs/server.json';
 import sharedConfig from '../configs/shared.json';
@@ -291,19 +291,6 @@ export class Server {
       emitNet(Events.changeDevMode, -1, this.developmentMode);
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, false);
-
-    RegisterCommand("grab", async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          const [closest, dist] = await GetClosestPlayer(player);
-          if (closest) {
-            console.log("Me", player.Handle, "Closest", closest.Handle, "Dist", dist);
-            await player.TriggerEvent(PoliceEvents.startGrabbing, closest.Handle);
-          }
-        }
-      }
-    }, false);
   }
 
   private async EVENT_grabPlayer(grabbeeId: number): Promise<void> {
@@ -510,7 +497,7 @@ export class Server {
         if (weaponData !== undefined) {
           if (!data.inVeh && weaponData.type == "weapon") {
             const killDistance = Dist(player.Position, killer.Position, false);
-            emitNet(Events.sendSystemMessage, -1, new Message(`${player.GetName} killed ${killer.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+            emitNet(Events.sendSystemMessage, -1, new Message(`${killer.GetName} killed ${player.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
           }
 
           const victimsDisc = await player.GetIdentifier("discord");
