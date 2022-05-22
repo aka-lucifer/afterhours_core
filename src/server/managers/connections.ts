@@ -28,6 +28,14 @@ export class ConnectionsManager {
       const player = new Player(src);
       const playerExists = await player.Exists();
 
+      // Restrict server only to developers, if development mode is enabled
+      if (this.server.Developing) {
+        if (player.Rank < Ranks.Developer) {
+          deferrals.done(`[${sharedConfig.serverName}]: Development mode is active and you are not a developer!`);
+          return;
+        }
+      }
+
       deferrals.update(`[${sharedConfig.serverName}]: Checking Player Data...`);
       await Delay(200);
 
