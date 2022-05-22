@@ -20,7 +20,7 @@ export class JobManager {
   private client: Client;
 
   // Jobs
-  private policeJob: PoliceJob;
+  public policeJob: PoliceJob;
 
   // Controllers
   private jobBlips: JobBlips;
@@ -84,24 +84,24 @@ export class JobManager {
               if (this.client.Character.isLeoJob()) {
                 const myPed = Game.PlayerPed;
 
-                global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
-                global.exports["pma-voice"].setRadioChannel(0);
+                // global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
+                // global.exports["pma-voice"].setRadioChannel(0);
 
-                if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
-                  myPed.removeWeapon(Weapons.AR15);
-                }
+                // if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                //   myPed.removeWeapon(Weapons.AR15);
+                // }
 
-                if (HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
-                  myPed.removeWeapon(Weapons.BerettaM9);
-                }
+                // if (HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
+                //   myPed.removeWeapon(Weapons.BerettaM9);
+                // }
 
-                if (HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
-                  myPed.removeWeapon(Weapons.Nightstick);
-                }
+                // if (HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                //   myPed.removeWeapon(Weapons.Nightstick);
+                // }
 
-                if (GetPedArmour(myPed.Handle) > 0) {
-                  SetPedArmour(myPed.Handle, 100);
-                }
+                // if (GetPedArmour(myPed.Handle) > 0) {
+                //   SetPedArmour(myPed.Handle, 100);
+                // }
               }
 
               const notify = new Notification("Job", `You've gone off duty`, NotificationTypes.Success);

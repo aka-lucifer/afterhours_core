@@ -24,5 +24,16 @@ export enum JobEvents {
 
   // LEO (Server | Calls)
   send911Call = "astrid:server:jobs:police:send911Call",
-  send311Call = "astrid:server:jobs:police:send311Call"
+  send311Call = "astrid:server:jobs:police:send311Call",
+
+  // LEO (Client | Cuffing)
+  cuffPlayer = "astrid:client:jobs:police:cuffPlayer",
+  playPerpBackAnim = "astrid:client:jobs:police:playPerpBackAnim",
+  playPerpFrontAnim = "astrid:client:jobs:police:playPerpFrontAnim",
+  setCuffed = "astrid:client:jobs:police:setCuffed",
+
+  // LEO (Server | Cuffing)
+  doPerpBackAnim = "astrid:server:jobs:police:doPerpBackAnim",
+  doPerpFrontAnim = "astrid:server:jobs:police:doPerpFrontAnim",
+  setFinished = "astrid:server:jobs:police:setFinished",
 }

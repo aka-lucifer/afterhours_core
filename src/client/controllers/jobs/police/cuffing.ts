@@ -339,8 +339,6 @@ export class Cuffing {
         await notify.send();
 
         this.cuffTick = setTick(async() => {
-          console.log("start tick on me!");
-          
           const cuffState = Player(this.client.Player.NetworkId).state.cuffState;
           if (cuffState == CuffState.BeingCuffed || cuffState == CuffState.Cuffed || cuffState == CuffState.Shackled) {
             const myPed = Game.PlayerPed;
@@ -360,6 +358,17 @@ export class Cuffing {
               }
             }
 
+            // Handles re-attaching handcuff prop if they fall of your body (change ped)
+            if (this.handcuffs !== undefined) {
+              if (this.handcuffs.exists()) {
+                if (!this.handcuffs.isAttached()) {
+                  console.log("no longer attached, reattach!");
+                  const bone = GetPedBoneIndex(Game.PlayerPed.Handle, 18905);
+                  AttachEntityToEntity(this.handcuffs.Handle, Game.PlayerPed.Handle, bone, 0.005, 0.060, 0.03, -180.0, 280.0, 70.0, true, true, false, true, 1, true)
+                }
+              }
+            }
+            
             // replay default arrested anim if not playing it!
             if (!IsEntityPlayingAnim(myPed.Handle, "mp_arresting", "idle", 3)) {
               const loadedAnim = await LoadAnim("mp_arresting");
