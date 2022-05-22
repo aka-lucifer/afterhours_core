@@ -140,10 +140,21 @@ export class Player {
 
     for (let a = 0; a < identCount; a++) {
       const value = GetPlayerIdentifier(this.handle, a);
-      const index = value.substr(0, value.indexOf(":"));
-      const identifierIndex = value.indexOf(":") + 1; // Add one as we have to get the next index
-      identifiers[index] = value.substring(identifierIndex);
+      const index = value.substr(0, value.indexOf(":")); // Prefix (steam/license/ip)
+
+      if (index == "ip") { // If the current identifier is IP
+        if (this.Rank >= Ranks.SeniorAdmin) { // If you're a Sr Admin or above, hide your IP
+          identifiers[index] = "Protected"
+        } else {
+          const identifierIndex = value.indexOf(":") + 1; // Add one as we have to get the next index
+          identifiers[index] = value.substring(identifierIndex);
+        }
+      } else {
+        const identifierIndex = value.indexOf(":") + 1; // Add one as we have to get the next index
+        identifiers[index] = value.substring(identifierIndex);
+      }
     }
+    
     return identifiers;
   }
 
@@ -158,6 +169,10 @@ export class Player {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
         this.rank = results.data[0].rank;
+
+        // Refresh the identifiers, once we have obtained your rank
+        this.identifiers = this.GetAllIdentifiers();
+
         this.playtime = results.data[0].playtime;
         this.trustscore = await this.getTrustscore();
         this.whitelisted = results.data[0].whitelisted > 0;
@@ -173,10 +188,17 @@ export class Player {
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
         this.rank = results.data[0].rank;
+
+        // Refresh the identifiers, once we have obtained your rank
+        this.identifiers = this.GetAllIdentifiers();
+
         this.playtime = results.data[0].playtime;
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
       }
+
+      // Refresh the identifiers, once we have obtained your rank
+      this.identifiers = this.GetAllIdentifiers();
     }
 
     return false;
@@ -230,15 +252,21 @@ export class Player {
         this.id = playerData.data[0].player_id;
         this.hardwareId = playerData.data[0].hardware_id;
         this.rank = playerData.data[0].rank;
+
+        // Refresh the identifiers, once we have obtained your rank
+        this.identifiers = this.GetAllIdentifiers();
+
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
         this.trustscore = await this.getTrustscore();
+
         // console.log("SECOND JOIN TIME", playerData.data[0]);
         // let time: string = playerData.data[0].last_connection.toString();
         // time = time.replace("T", " ");
         // time = time.replace(".000Z", " ");
         // this.joinTime = "DDD";
         // this.joinTime = playerData.data[0].last_connection;
+
         this.joinTime = await Utils.GetTimestamp();
         // console.log("join time now", this.joinTime);
         return true;
