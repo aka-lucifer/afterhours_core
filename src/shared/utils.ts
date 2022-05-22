@@ -61,3 +61,12 @@ function TwoDigits(d) {
 export function formatSQLDate(timestamp: Date): string {
   return `${timestamp.getFullYear()}-${TwoDigits(timestamp.getMonth() + 1)}-${TwoDigits(timestamp.getDate())} ${TwoDigits(timestamp.getHours())}:${TwoDigits(timestamp.getMinutes())}:${TwoDigits(timestamp.getSeconds())}`;
 }
+
+/**
+ * 
+ * @param name First name to convert to first char and full stop.
+ * @returns Name -> N.
+ */
+export function formatFirstName(name: string): string {
+  return name.slice(0, name.indexOf(name[1])); // Converts first name, to first letter (Lucy -> L)
+}

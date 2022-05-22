@@ -16,6 +16,7 @@ export enum JobEvents {
   // LEO (Client | Calls)
   start911Call = "astrid:client:jobs:police:start911Call",
   receive911Call = "astrid:client:jobs:police:receive911Call",
+  delete911Call = "astrid:client:jobs:police:delete911Call",
 
   start311Call = "astrid:client:jobs:police:start311Call",
 
