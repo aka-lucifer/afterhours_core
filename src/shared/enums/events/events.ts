@@ -92,6 +92,9 @@ export enum Events {
   changeDevMode = "astrid:client:changeDevMode",
   syncPlayers = "astrid:client:syncPlayers",
 
+  // Astrid Client (Utils)
+  soundFrontEnd = "astrid:client:soundFrontEnd",
+
   // Astrid Client ([Staff] - AFK)
   setAFK = "astrid:client:setAFK",
 

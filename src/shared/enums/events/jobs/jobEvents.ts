@@ -14,11 +14,13 @@ export enum JobEvents {
   setupMRAP = "astrid:client:jobs:police:setupMRAP",
 
   // LEO (Client | Calls)
+  deleteCall = "astrid:client:jobs:police:deleteCall",
+  
   start911Call = "astrid:client:jobs:police:start911Call",
   receive911Call = "astrid:client:jobs:police:receive911Call",
-  delete911Call = "astrid:client:jobs:police:delete911Call",
 
   start311Call = "astrid:client:jobs:police:start311Call",
+  receive311Call = "astrid:client:jobs:police:receive311Call",
 
   // LEO (Server | Calls)
   send911Call = "astrid:server:jobs:police:send911Call",

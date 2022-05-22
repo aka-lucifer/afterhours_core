@@ -1,4 +1,4 @@
-import { Vector3, Ped, World, Font, Game, Vehicle, RaycastResult } from "fivem-js";
+import { Vector3, Ped, World, Font, Game, Vehicle, RaycastResult, Audio } from "fivem-js";
 
 import { client } from "./client";
 
@@ -7,6 +7,7 @@ import { Postal } from "./controllers/vehicles/gps";
 import { RightHandsideVehs } from "../shared/enums/vehicles";
 
 import clientConfig from "../configs/client.json";
+import { Events } from "../shared/enums/events/events";
 
 /**
  * @param reference Title for organisation logs
@@ -644,3 +645,7 @@ export async function getZone(ped: Ped): Promise<string> {
     return "Zone N/A";
   }
 }
+
+onNet(Events.soundFrontEnd, (sound: string, set?: string) => {
+  Audio.playSoundFrontEnd(sound, set);
+})

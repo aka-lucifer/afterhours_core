@@ -174,14 +174,22 @@ export class PoliceJob {
                       const responderName = `${formatFirstName(character.firstName)}. ${character.lastName}`;
                       const message = concatArgs(1, args);
                       emitNet(Events.sendSystemMessage, this.activeCalls[callIndex].caller, new Message(`911 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                      emitNet(Events.soundFrontEnd, this.activeCalls[callIndex].caller, "Menu_Accept", "Phone_SoundSet_Default");
+
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message(`Dispatch Response "${message}" Sent!`, SystemTypes.Success));
                     } else if (this.activeCalls[callIndex].type == Calls.Normal) {
                       const responderName = `${formatFirstName(character.firstName)}. ${character.lastName}`;
                       const message = concatArgs(1, args);
                       emitNet(Events.sendSystemMessage, this.activeCalls[callIndex].caller, new Message(`311 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                      emitNet(Events.soundFrontEnd, this.activeCalls[callIndex].caller, "Menu_Accept", "Phone_SoundSet_Default");
+
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message(`Dispatch Response "${message}" Sent!`, SystemTypes.Success));
                     }
                   } else {
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`No call found with ID - ${callId}!`, SystemTypes.Error));
                   }
+                } else {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message("You aren't on duty!", SystemTypes.Error));
                 }
               }
             }
@@ -271,7 +279,11 @@ export class PoliceJob {
 
             if (character.isLeoJob() || character.isSAFREMSJob()) {
               if (character.Job.Status) {
-                await svPlayers[i].TriggerEvent(JobEvents.delete911Call, callId,  myPlayer.Position, myCharacter.Name);
+                await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId,  myPlayer.Position, myCharacter.Name);
+                const callIndex = this.activeCalls.findIndex(call => call.id == callId);
+                if (callIndex !== -1) {
+                  this.activeCalls.splice(callIndex, 1);
+                }
               }
             }
           }
@@ -311,6 +323,8 @@ export class PoliceJob {
               } else {
                 await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${character.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
               }
+
+              await svPlayers[i].TriggerEvent(JobEvents.receive311Call, callId,  myPlayer.Position, myCharacter.Name);
             }
           }
         }
@@ -321,7 +335,7 @@ export class PoliceJob {
 
             if (character.isLeoJob() || character.isSAFREMSJob()) {
               if (character.Job.Status) {
-                await svPlayers[i].TriggerEvent(JobEvents.delete911Call, callId,  myPlayer.Position, myCharacter.Name);
+                await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId,  myPlayer.Position, myCharacter.Name);
               }
             }
           }

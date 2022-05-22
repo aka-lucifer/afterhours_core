@@ -1,4 +1,4 @@
-import { Blip, BlipColor, Game, Vector3 } from "fivem-js";
+import { Audio, Blip, BlipColor, Game, Vector3 } from "fivem-js";
 
 import { Client } from "../../client";
 
@@ -22,11 +22,13 @@ export class PoliceJob {
     // Events
     onNet(JobEvents.setupMRAP, this.EVENT_setupMRAP.bind(this));
 
+    onNet(JobEvents.deleteCall, this.EVENT_deleteCall.bind(this));
+    
     onNet(JobEvents.start911Call, this.EVENT_start911Call.bind(this));
     onNet(JobEvents.receive911Call, this.EVENT_receive911Call.bind(this));
-    onNet(JobEvents.delete911Call, this.EVENT_delete911Call.bind(this));
 
     onNet(JobEvents.start311Call, this.EVENT_start311Call.bind(this));
+    onNet(JobEvents.receive311Call, this.EVENT_receive311Call.bind(this));
   }
 
   // Methods
@@ -74,6 +76,16 @@ export class PoliceJob {
     SetVehicleTyresCanBurst(handle, false);
   }
 
+  private EVENT_deleteCall(id: number): void {
+    console.log("try to delete 911 call blip with id", id);
+    const callIndex = this.callBlips.findIndex(call => call.id == id);
+    if (callIndex !== -1) {
+      console.log("call with id found", id, "call index", callIndex);
+      this.callBlips[callIndex].blip.delete();
+      this.callBlips.splice(callIndex, 1);
+    }
+  }
+
   private async EVENT_start911Call(callDescription: string): Promise<void> {
     const [street, crossing, postal] = await getLocation(Game.PlayerPed);
     const zone = await getZone(Game.PlayerPed);
@@ -94,6 +106,7 @@ export class PoliceJob {
           blip.IsShortRange = false;
           blip.Scale = 2.0;
           blip.Name = `911 Call | ${callersName}`;
+          Audio.playSoundFrontEnd("Menu_Accept", "Phone_SoundSet_Default");
 
           this.callBlips.push({
             id: id,
@@ -102,16 +115,6 @@ export class PoliceJob {
           });
         }
       }
-    }
-  }
-
-  private EVENT_delete911Call(id: number): void {
-    console.log("try to delete 911 call blip with id", id);
-    const callIndex = this.callBlips.findIndex(call => call.id == id);
-    if (callIndex !== -1) {
-      console.log("call with id found", id, "call index", callIndex);
-      this.callBlips[callIndex].blip.delete();
-      this.callBlips.splice(callIndex, 1);
     }
   }
 
@@ -135,6 +138,7 @@ export class PoliceJob {
           blip.IsShortRange = false;
           blip.Scale = 2.0;
           blip.Name = `311 Call | ${callersName}`;
+          Audio.playSoundFrontEnd("Menu_Accept", "Phone_SoundSet_Default");
 
           this.callBlips.push({
             id: id,
