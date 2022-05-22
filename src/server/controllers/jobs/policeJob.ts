@@ -1,13 +1,15 @@
 
 import { Server } from "../../server";
-import { Capitalize } from "../../utils";
+import { Capitalize, getClosestPlayer } from "../../utils";
 
 import { Command, JobCommand } from "../../models/ui/chat/command";
 
 import * as Database from "../../managers/database/database";
 
+import { Cuffing } from "./police/cuffing";
+
 import { Jobs } from "../../../shared/enums/jobs/jobs";
-import { Events } from "../../../shared/enums/events/events";
+import { Events, PoliceEvents } from "../../../shared/enums/events/events";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { Ranks } from "../../../shared/enums/ranks";
@@ -33,7 +35,11 @@ interface CallData {
 export class PoliceJob {
   private server: Server;
 
+  // 911/311 Calls
   private activeCalls: CallData[] = [];
+
+  // Controllers
+  private cuffing: Cuffing;
 
   constructor(server: Server) {
     this.server = server;
@@ -41,6 +47,22 @@ export class PoliceJob {
     // Events
     onNet(JobEvents.send911Call, this.EVENT_send911Call.bind(this));
     onNet(JobEvents.send311Call, this.EVENT_send311Call.bind(this));
+
+    // Controllers
+    this.cuffing = new Cuffing(this.server);
+
+    RegisterCommand("grab", async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const [closest, dist] = await getClosestPlayer(player);
+          if (closest) {
+            console.log("Me", player.Handle, "Closest", closest.Handle, "Dist", dist);
+            await player.TriggerEvent(PoliceEvents.startGrabbing, closest.Handle);
+          }
+        }
+      }
+    }, false);
   }
 
   // Methods
@@ -263,9 +285,9 @@ export class PoliceJob {
           if (character.isLeoJob() || character.isSAFREMSJob()) {
             if (character.Job.Status) {
               if (crossing.length > 0) {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${character.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
               } else {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${character.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
               }
 
               await svPlayers[i].TriggerEvent(JobEvents.receive911Call, callId,  myPlayer.Position, myCharacter.Name);
@@ -319,9 +341,9 @@ export class PoliceJob {
           if (character.isLeoJob() || character.isSAFREMSJob()) {
             if (character.Job.Status) {
               if (crossing.length > 0) {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${character.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
               } else {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${character.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
               }
 
               await svPlayers[i].TriggerEvent(JobEvents.receive311Call, callId,  myPlayer.Position, myCharacter.Name);
