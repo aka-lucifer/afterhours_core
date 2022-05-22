@@ -258,32 +258,47 @@ export async function enumMatches(passedEnums: any, enumValue: string | number):
   return [value, matches];
 }
 
-export async function GetClosestPlayer(myPlayer: Player): Promise<[Player, number]> {
+export async function getClosestPlayer(myPlayer: Player): Promise<[Player, number]> {
   let closestPlayer;
   let closestDistance = 1000;
-  let justStarted = true;
-  const players = server.connectedPlayerManager.GetPlayers;
+  
+  const svPlayers = server.connectedPlayerManager.GetPlayers;
+  for (let i = 0; i < svPlayers.length; i++) {
+    const player = svPlayers[i];
 
-  for (let i = 0; i < players.length; i++) {
-    const player = players[i];
+    if (myPlayer.Handle !== player.Handle) {
+      const dist = myPlayer.Position.distance(player.Position);
 
-    if (player.Handle != myPlayer.Handle) {
-      const pedDist = Dist(myPlayer.Position, player.Position, true);
-
-      if (pedDist <= serverConfig.maxClosestDistance) {
-        if (justStarted) {
-          closestPlayer = player;
-          closestDistance = pedDist;
-          justStarted = false;
-        }
-
-        if (closestDistance < pedDist) {
-          closestPlayer = player;
-          closestDistance = pedDist;
-        }
+      if (closestPlayer == undefined || dist < closestDistance) {
+        closestPlayer = player;
+        closestDistance = dist;
       }
     }
   }
+  
+  // let justStarted = true;
+  // const players = server.connectedPlayerManager.GetPlayers;
+
+  // for (let i = 0; i < players.length; i++) {
+  //   const player = players[i];
+
+  //   if (player.Handle != myPlayer.Handle) {
+  //     const pedDist = Dist(myPlayer.Position, player.Position, true);
+
+  //     if (pedDist <= serverConfig.maxClosestDistance) {
+  //       if (justStarted) {
+  //         closestPlayer = player;
+  //         closestDistance = pedDist;
+  //         justStarted = false;
+  //       }
+
+  //       if (closestDistance < pedDist) {
+  //         closestPlayer = player;
+  //         closestDistance = pedDist;
+  //       }
+  //     }
+  //   }
+  // }
 
   return [closestPlayer, closestDistance];
 }

@@ -7852,6 +7852,74 @@
                     ]
                 }
             }
+        },
+        "police": {
+          "cuffing": {
+            "normal": {
+              "controlDisablers": [
+                {"value": 24, "label": "Attack"},
+                {"value": 257, "label": "Attack 2"},
+                {"value": 25, "label": "Aim"},
+                {"value": 263, "label": "Melee Attack 1"},
+                {"value": 45, "label": "Reload"},
+                {"value": 22, "label": "Jump"},
+                {"value": 44, "label": "Cover"},
+                {"value": 37, "label": "Select Weapon"},
+                {"value": 23, "label": "Also 'enter'?"},
+                {"value": 288, "label": "Disable phone"},
+                {"value": 289, "label": "Inventory"},
+                {"value": 0, "label": "Disable changing view"},
+                {"value": 26, "label": "Disable looking behind"},
+                {"value": 73, "label": "Disable clearing animation"},
+                {"value": 199, "label": "Disable pause screen"},
+                {"value": 59, "label": "Disable steering in vehicle"},
+                {"value": 71, "label": "Disable driving forward in vehicle"},
+                {"value": 72, "label": "Disable reversing in vehicle"},
+                {"value": 36, "label": "Disable going stealth"},
+                {"value": 47, "label": "Disable weapon"},
+                {"value": 264, "label": "Disable melee"},
+                {"value": 257, "label": "Disable melee"},
+                {"value": 140, "label": "Disable melee"},
+                {"value": 141, "label": "Disable melee"},
+                {"value": 142, "label": "Disable melee"},
+                {"value": 143, "label": "Disable melee"},
+                {"value": 75, "label": "Disable exit vehicle"},
+                {"value": 75, "label": "Disable exit vehicle"}
+              ]
+            },
+            "shackling": {
+              "controlDisablers": [
+                {"value": 30, "label": "A and D (Character Movement)"},
+                {"value": 31, "label": "W and S (Character Movement)"},
+                {"value": 21, "label": "LEFT SHIFT"},
+                {"value": 36, "label": "LEFT CTRL"},
+                {"value": 22, "label": "SPACE"},
+                {"value": 44, "label": "Q"},
+                {"value": 38, "label": "E"},
+                {"value": 71, "label": "W (Vehicle Movement)"},
+                {"value": 72, "label": "S (Vehicle Movement)"},
+                {"value": 59, "label": "A and D (Vehicle Movement)"},
+                {"value": 60, "label": "Left Shift and Left CTRL (Vehicle Movement)"},
+                {"value": 85, "label": "Q (Radio Wheel)"},
+                {"value": 86, "label": "E (Vehicle Horn)"},
+                {"value": 15, "label": "Mouse wheel up"},
+                {"value": 14, "label": "Mouse wheel down"},
+                {"value": 37, "label": "Controller R1 (PS) / RT (XBOX)"},
+                {"value": 80, "label": "Controller O (PS) / B (XBOX)"},
+                {"value": 228, "label": ""},
+                {"value": 229, "label": ""},
+                {"value": 172, "label": ""},
+                {"value": 173, "label": ""},
+                {"value": 37, "label": ""},
+                {"value": 44, "label": ""},
+                {"value": 178, "label": ""},
+                {"value": 244, "label": ""},
+                {"value": 24, "label": "Left Mouse"},
+                {"value": 257, "label": "Left Mouse"},
+                {"value": 25, "label": "Mouse"}
+              ]
+            }
+          }
         }
     },
     "spawnInfo": {

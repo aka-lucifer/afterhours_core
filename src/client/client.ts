@@ -40,7 +40,6 @@ import { VehicleManager } from "./managers/vehicle";
 import { WeaponManager } from "./managers/weapon";
 
 // [Controllers] Police
-// import {CuffingStuff} from "./controllers/jobs/police/cuffing";
 // import {HelicamManager} from "./controllers/jobs/police/helicam";
 import { Grabbing } from "./controllers/jobs/police/grabbing";
 
@@ -58,10 +57,11 @@ import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
+import { Ranks } from '../shared/enums/ranks';
+import { CuffState } from '../shared/enums/jobs/cuffStates';
 
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
-import { Ranks } from '../shared/enums/ranks';
 
 let takingScreenshot = false;
 
@@ -120,7 +120,6 @@ export class Client {
   public weaponManager: WeaponManager;
 
   // [Controllers] Police
-  // private cuffing: CuffingStuff;
   // private helicam: HelicamManager;
   private grabbing: Grabbing;
 
@@ -258,7 +257,6 @@ export class Client {
     this.weaponManager.init();
 
     // [Controllers] Police
-    // this.cuffing = new CuffingStuff();
     // this.helicam = new HelicamManager(client);
     this.grabbing = new Grabbing();
 
@@ -269,27 +267,6 @@ export class Client {
     this.registerExports();
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
-
-    RegisterCommand("playerBlipsInit", () => {
-      for (let i = 0; i < this.players.length; i++) {
-        console.log(this.players[i].NetworkId, GetPlayerFromServerId(this.players[i].NetworkId), GetPlayerPed(GetPlayerFromServerId(this.players[i].NetworkId)));
-        const ped = new Ped(GetPlayerPed(GetPlayerFromServerId(this.players[i].NetworkId)));
-        const pedBlip = GetBlipFromEntity(ped.Handle);
-
-        if (DoesBlipExist(pedBlip)) {
-          console.log("delete blip");
-          RemoveBlip(GetBlipFromEntity(ped.Handle));
-        } else {
-          console.log("make blip!");
-          const pedBlip = ped.attachBlip();
-        }
-      }
-    }, false);
-
-    // RegisterCommand("cuff", async() => {
-    //   const [ped, distance] = await closestPed();
-    //   this.cuffing.init(ped.Handle);
-    // }, false);
   }
 
   public async nuiLoaded(cb: any, data: Record<string, any>): Promise<void> {
@@ -349,6 +326,9 @@ export class Client {
     // Vehicle
     this.playerStates.state.set("seatbelt", false, true);
 
+    // Jobs
+    this.playerStates.state.set("cuffState", CuffState.Uncuffed, true);
+
     this.statesTick = setTick(async() => {
 
       if (IsPauseMenuActive()) {
@@ -401,6 +381,7 @@ export class Client {
     if (resourceName == GetCurrentResourceName()) {
       this.grabbing.stop();
       this.vehicleManager.weapon.stop();
+      this.jobManager.policeJob.cuffing.stop();
     }
   }
 

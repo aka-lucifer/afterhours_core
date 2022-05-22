@@ -1,10 +1,13 @@
-import { Audio, Blip, BlipColor, Game, Vector3 } from "fivem-js";
+import { Audio, Blip, BlipColor, Game, Model, Vector3, World } from "fivem-js";
 
 import { Client } from "../../client";
+import { GetClosestPed, getLocation, getZone } from "../../utils";
+
+// Controllers
+import { Cuffing } from "./police/cuffing";
 
 import { Jobs } from "../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
-import { getLocation, getZone } from "../../utils";
 
 interface Call {
   id: number;
@@ -14,10 +17,18 @@ interface Call {
 
 export class PoliceJob {
   private client: Client
+
+  // 911/311 Blips
   private callBlips: Call[] = [];
+
+  // Controllers
+  public cuffing: Cuffing
 
   constructor(client: Client) {
     this.client = client;
+
+    // Controllers
+    this.cuffing = new Cuffing(this.client);
 
     // Events
     onNet(JobEvents.setupMRAP, this.EVENT_setupMRAP.bind(this));
@@ -66,8 +77,9 @@ export class PoliceJob {
     });
   }
 
-  public init(): void {
+  public async init(): Promise<void> {
     this.registerBoxZones();
+    await this.cuffing.init();
   }
 
   // Events
