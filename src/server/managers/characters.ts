@@ -21,6 +21,7 @@ import { Ranks } from "../../shared/enums/ranks";
 
 import sharedConfig from "../../configs/shared.json";
 import serverConfig from "../../configs/server.json";
+import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
 
 export class CharacterManager {
   public server: Server;
@@ -54,6 +55,8 @@ export class CharacterManager {
       if (player) {
         if (player.Spawned) {
           player.Spawned = false;
+          await player.TriggerEvent(JobEvents.unitOffDuty, -1, player.Handle); // Remove this players on duty blip to all on duty players
+          await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you
           await player.TriggerEvent(Events.displayCharacters, true);
         }
       }
