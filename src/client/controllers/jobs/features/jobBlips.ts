@@ -5,6 +5,7 @@ import { Delay, insideVeh } from "../../../utils";
 
 import { Jobs } from "../../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../../shared/enums/events/jobs/jobEvents";
+import { formatFirstName } from "../../../../shared/utils";
 
 interface ActiveUnit {
   netId: string;
@@ -39,38 +40,6 @@ export class JobBlips {
     onNet(JobEvents.refreshBlipData, this.EVENT_refreshBlipData.bind(this));
     onNet(JobEvents.unitOffDuty, this.EVENT_unitOffDuty.bind(this));
     onNet(JobEvents.deleteJobBlips, this.EVENT_deleteJobBlips.bind(this));
-  }
-
-  // Methods
-  private formatFirstName(name: string): string {
-    return name.slice(0, name.indexOf(name[1])); // Convers first name, to first letter (Lucy -> L)
-  }
-
-  private async playerConnected(netId: number): Promise<boolean> {
-    let foundPlayer = false;
-
-    for (let i = 0; i < this.createdBlips.length; i++) {
-      if (this.createdBlips[i].netId == netId) {
-        foundPlayer = true;
-        break;
-      }
-    }
-
-    return foundPlayer;
-  }
-
-  private async deleteBlips(): Promise<void> {
-    if (this.createdBlips.length > 0) { // If off duty and have blips created
-      for (let i = 0; i < this.createdBlips.length; i++) {
-        this.createdBlips[i].blip.delete();
-        if (this.createdBlips[i].tick !== undefined) {
-          clearTick(this.createdBlips[i].tick);
-          this.createdBlips[i].tick = undefined;
-        }
-        
-        this.createdBlips.splice(i, 1);
-      }
-    }
   }
 
   // Events
@@ -207,7 +176,7 @@ export class JobBlips {
                       }
                     }
 
-                    blip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    blip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
 
                     if (units[i].sirenOn) {
                       if (blipTick === undefined) blipTick = setTick(async() => {
@@ -245,7 +214,7 @@ export class JobBlips {
                         break;
                     }
 
-                    blip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    blip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
                     blip.Rotation = units[i].heading;
                     blip.ShowHeadingIndicator = true;
                   }
@@ -373,7 +342,7 @@ export class JobBlips {
                         }
                       }
 
-                      foundBlip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      foundBlip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
 
                       if (units[i].sirenOn && units[i].inVeh) {
                         if (blipData.tick === undefined) blipData.tick = setTick(async() => {
@@ -421,7 +390,7 @@ export class JobBlips {
                           break;
                       }
 
-                      foundBlip.Name = `[${units[i].callsign}] | ${this.formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      foundBlip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
                       foundBlip.Rotation = units[i].heading;
                       foundBlip.ShowHeadingIndicator = true;
                     }
