@@ -7,11 +7,11 @@ import { Notification } from "../../../models/ui/notification";
 
 import { JobEvents } from "../../../../shared/enums/events/jobs/jobEvents";
 import { CuffState } from "../../../../shared/enums/jobs/cuffStates";
-
-import clientConfig from "../../../../configs/client.json";
 import { Weapons } from "../../../../shared/enums/weapons";
 import { NotificationTypes } from "../../../../shared/enums/ui/notifications/types";
 import { Sounds } from "../../../../shared/enums/sounds";
+
+import clientConfig from "../../../../configs/client.json";
 
 enum ArrestPositionEnum {
   Back,
@@ -44,37 +44,38 @@ export class Cuffing {
 
   constructor(client: Client) {
     this.client = client;
-
-    console.log("cuffing start");
+    console.log("staff cuff")
 
     // Events
-    onNet(JobEvents.cuffPlayer, this.EVENT_cuffPlayer.bind(this));
+    onNet(JobEvents.startCuffing, this.EVENT_startCuffing.bind(this));
     onNet(JobEvents.playPerpBackAnim, this.EVENT_playPerpBackAnim.bind(this));
     onNet(JobEvents.playPerpFrontAnim, this.EVENT_playPerpFrontAnim.bind(this));
     onNet(JobEvents.setCuffed, this.EVENT_setCuffed.bind(this));
 
-    RegisterCommand("cuff_test", async() => {
-      const handcuffModel = new Model("p_cs_cuffs_02_s");
+    RegisterCommand("uncuff", async() => {
+      const handcuffModel = new Model("gr_prop_gr_jailer_keys_01a");
       const loadedModel = await handcuffModel.request(2000);
       if (loadedModel) {
-        await PlayAnim(Game.PlayerPed, "mp_arresting", "idle", 49, -1, 8.0, -8.0, 0, false, false, false);
-        this.handcuffs = await World.createProp(handcuffModel, Game.PlayerPed.Position, false, false);
-        const bone = GetPedBoneIndex(Game.PlayerPed.Handle, 18905);
-        AttachEntityToEntity(this.handcuffs.Handle, Game.PlayerPed.Handle, bone, 0.0150, 0.0540, 0.0200, 74.0, 57.49, 7.78, true, true, false, true, 1, true);
-        AttachEntityToEntity(this.handcuffKeys.Handle, Game.PlayerPed.Handle, bone, 0.0100, -0.0300, -0.0100, -147.4, 0.0, 0.0, true, true, false, true, 1, true);
+        await PlayAnim(Game.PlayerPed, "mp_arresting", "a_uncuff", 49, -1, 8.0, -8.0, 0, false, false, false);
+        this.handcuffKeys = await World.createProp(handcuffModel, Game.PlayerPed.Position, false, false);
+        const bone = GetPedBoneIndex(Game.PlayerPed.Handle, 64017);
+        AttachEntityToEntity(this.handcuffKeys.Handle, Game.PlayerPed.Handle, bone, -0.04, -0.05, -0.01, -67.4, 80.0, 130.0, true, true, false, true, 1, true);
       }
     }, false);
 
-    RegisterCommand("cuff_delete", async() => {
-      if (this.handcuffs !== undefined) {
-        if (this.handcuffs.Handle > 0) {
-          if (this.handcuffs.exists()) {
-            this.handcuffs.delete();
-            this.handcuffs = undefined;
+    RegisterCommand("uncuff_stop", async() => {
+      if (this.handcuffKeys !== undefined) {
+        if (this.handcuffKeys.Handle > 0) {
+          if (this.handcuffKeys.exists()) {
+            ClearPedTasks(Game.PlayerPed.Handle);
+            this.handcuffKeys.delete();
+            this.handcuffKeys = undefined;
           }
         }
       }
     }, false);
+
+    Inform("Jobs (Police) | Cuffing Controller", "Started!");
   }
 
   // Methods
@@ -241,8 +242,7 @@ export class Cuffing {
         if (!hasCuffEventOccurred && currentSceneTime >= this.sceneStopTime) {
           if (perpHandle > 0) {
             console.log("handcuff ped");
-            console.log("play handcuff sound 1!");
-            global.exports["xsound"].PlayUrlPos("handcuff", Sounds.Handcuff, 5.0, Game.PlayerPed.Position, false);
+            global.exports["xsound"].PlayUrlPos("handcuff", Sounds.Handcuff, 0.3, Game.PlayerPed.Position, false);
           } else if (role == RoleEnum.Cop) {
             console.log("play handcuff sound 2!");
           } else {
@@ -260,9 +260,10 @@ export class Cuffing {
   }
   
   // Events
-  public async EVENT_cuffPlayer(netToArrest: number): Promise<void> {
+  public async EVENT_startCuffing(netToArrest: number): Promise<void> {
     try {
       const loadedAnim = await LoadAnim("mp_arresting");
+
       if (loadedAnim) {
         const player = GetPlayerFromServerId(netToArrest);
         const pedHandle = GetPlayerPed(player);
