@@ -96,11 +96,11 @@ export class CharacterManager {
         const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.Handle)));
 
         const dist = Dist(myPos, otherPos, false);
-        Log("Proximity Message", `My Position: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
+        Log("Proximity Message", `My Position 1: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
 
         if (dist <= 60.0) {
-          Inform("Proximity Message", `Player (${otherPlayer.GetName}) is close enough to recieve the proximity message sent from (${character.Owner.GetName})`);
-          await character.Owner.TriggerEvent(Events.sendSystemMessage, message, character.Name);
+          Inform("Proximity Message", `Player 1 (${otherPlayer.GetName}) is close enough to recieve the proximity message sent from (${character.Owner.GetName})`);
+          await otherPlayer.TriggerEvent(Events.sendSystemMessage, message, character.Name);
         }
       }
 
