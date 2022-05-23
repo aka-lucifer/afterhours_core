@@ -28,9 +28,11 @@ export enum JobEvents {
 
   // LEO (Client | Cuffing)
   startCuffing = "astrid:client:jobs:police:startCuffing",
+  startUncuffing = "astrid:client:jobs:police:startUncuffing",
   playPerpBackAnim = "astrid:client:jobs:police:playPerpBackAnim",
   playPerpFrontAnim = "astrid:client:jobs:police:playPerpFrontAnim",
   setCuffed = "astrid:client:jobs:police:setCuffed",
+  setUncuffed = "astrid:client:jobs:police:setUncuffed",
 
   // LEO (Server | Cuffing)
   cuffPlayer = "astrid:server:jobs:police:cuffPlayer",

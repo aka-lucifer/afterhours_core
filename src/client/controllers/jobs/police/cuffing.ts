@@ -12,6 +12,7 @@ import { NotificationTypes } from "../../../../shared/enums/ui/notifications/typ
 import { Sounds } from "../../../../shared/enums/sounds";
 
 import clientConfig from "../../../../configs/client.json";
+import { Progress } from '../../../models/ui/progress';
 
 enum ArrestPositionEnum {
   Back,
@@ -48,32 +49,34 @@ export class Cuffing {
 
     // Events
     onNet(JobEvents.startCuffing, this.EVENT_startCuffing.bind(this));
+    onNet(JobEvents.startUncuffing, this.EVENT_startUncuffing.bind(this));
     onNet(JobEvents.playPerpBackAnim, this.EVENT_playPerpBackAnim.bind(this));
     onNet(JobEvents.playPerpFrontAnim, this.EVENT_playPerpFrontAnim.bind(this));
     onNet(JobEvents.setCuffed, this.EVENT_setCuffed.bind(this));
+    onNet(JobEvents.setUncuffed, this.EVENT_setUncuffed.bind(this));
 
-    RegisterCommand("uncuff", async() => {
-      const handcuffModel = new Model("gr_prop_gr_jailer_keys_01a");
-      const loadedModel = await handcuffModel.request(2000);
-      if (loadedModel) {
-        await PlayAnim(Game.PlayerPed, "mp_arresting", "a_uncuff", 49, -1, 8.0, -8.0, 0, false, false, false);
-        this.handcuffKeys = await World.createProp(handcuffModel, Game.PlayerPed.Position, false, false);
-        const bone = GetPedBoneIndex(Game.PlayerPed.Handle, 64017);
-        AttachEntityToEntity(this.handcuffKeys.Handle, Game.PlayerPed.Handle, bone, -0.04, -0.05, -0.01, -67.4, 80.0, 130.0, true, true, false, true, 1, true);
-      }
-    }, false);
-
-    RegisterCommand("uncuff_stop", async() => {
-      if (this.handcuffKeys !== undefined) {
-        if (this.handcuffKeys.Handle > 0) {
-          if (this.handcuffKeys.exists()) {
-            ClearPedTasks(Game.PlayerPed.Handle);
-            this.handcuffKeys.delete();
-            this.handcuffKeys = undefined;
-          }
-        }
-      }
-    }, false);
+    // RegisterCommand("uncuff", async() => {
+    //   const handcuffModel = new Model("gr_prop_gr_jailer_keys_01a");
+    //   const loadedModel = await handcuffModel.request(2000);
+    //   if (loadedModel) {
+    //     await PlayAnim(Game.PlayerPed, "mp_arresting", "a_uncuff", 49, -1, 8.0, -8.0, 0, false, false, false);
+    //     this.handcuffKeys = await World.createProp(handcuffModel, Game.PlayerPed.Position, false, false);
+    //     const bone = GetPedBoneIndex(Game.PlayerPed.Handle, 64017);
+    //     AttachEntityToEntity(this.handcuffKeys.Handle, Game.PlayerPed.Handle, bone, -0.04, -0.05, -0.01, -67.4, 80.0, 130.0, true, true, false, true, 1, true);
+    //   }
+    // }, false);
+    //
+    // RegisterCommand("uncuff_stop", async() => {
+    //   if (this.handcuffKeys !== undefined) {
+    //     if (this.handcuffKeys.Handle > 0) {
+    //       if (this.handcuffKeys.exists()) {
+    //         ClearPedTasks(Game.PlayerPed.Handle);
+    //         this.handcuffKeys.delete();
+    //         this.handcuffKeys = undefined;
+    //       }
+    //     }
+    //   }
+    // }, false);
 
     Inform("Jobs (Police) | Cuffing Controller", "Started!");
   }
@@ -84,6 +87,7 @@ export class Cuffing {
   }
 
   public stop(): void {
+    // Delete Handcuff Prop
     if (this.handcuffs !== undefined) {
       if (this.handcuffs.Handle > 0) {
         if (this.handcuffs.exists()) {
@@ -93,6 +97,15 @@ export class Cuffing {
       }
     }
 
+    // Clear Handcuff Animation Tick
+    if (this.cuffTick !== undefined) {
+      clearTick(this.cuffTick);
+      this.cuffTick = undefined;
+    }
+
+    if (IsEntityPlayingAnim(Game.PlayerPed.Handle, "mp_arresting", "idle", 3)) ClearPedTasks(Game.PlayerPed.Handle); // Stop cuffed animation
+
+    // Delete Handcuff Keys Prop
     if (this.handcuffKeys !== undefined) {
       if (this.handcuffKeys.Handle > 0) {
         if (this.handcuffKeys.exists()) {
@@ -297,6 +310,39 @@ export class Cuffing {
     }
   }
 
+  private async EVENT_startUncuffing(): Promise<void> {
+    const loadedAnim = await LoadAnim("mp_arresting");
+
+    if (loadedAnim) {
+      const handcuffModel = new Model("gr_prop_gr_jailer_keys_01a");
+      const loadedModel = await handcuffModel.request(2000);
+      if (loadedModel) {
+        const progress = new Progress(2000, {
+          combat: true,
+          movement: true
+        }, undefined, async() => {
+          await PlayAnim(Game.PlayerPed, "mp_arresting", "a_uncuff", 49, -1, 8.0, -8.0, 0, false, false, false);
+          this.handcuffKeys = await World.createProp(handcuffModel, Game.PlayerPed.Position, false, false);
+          const bone = GetPedBoneIndex(Game.PlayerPed.Handle, 64017);
+          AttachEntityToEntity(this.handcuffKeys.Handle, Game.PlayerPed.Handle, bone, -0.04, -0.05, -0.01, -67.4, 80.0, 130.0, true, true, false, true, 1, true);
+        }, async () => {
+          if (this.handcuffKeys !== undefined) {
+            if (this.handcuffKeys.Handle > 0) {
+              if (this.handcuffKeys.exists()) {
+                StopAnimTask(Game.PlayerPed.Handle, "mp_arresting", "a_uncuff", 1.0);
+                ClearPedTasks(Game.PlayerPed.Handle);
+                this.handcuffKeys.delete();
+                this.handcuffKeys = undefined;
+              }
+            }
+          }
+        })
+
+        progress.start();
+      }
+    }
+  }
+
   private async EVENT_playPerpBackAnim(perpPos: Vector3, perpRot: Vector3): Promise<void> {
     await this.loadAnim(); // Make sure the anim dict is loaded
     const myPed = Game.PlayerPed;
@@ -381,5 +427,9 @@ export class Cuffing {
         })
       }
     }
+  }
+
+  private EVENT_setUncuffed(): void {
+    this.stop();
   }
 }
