@@ -41,7 +41,6 @@ import { WeaponManager } from "./managers/weapon";
 
 // [Controllers] Police
 // import {HelicamManager} from "./controllers/jobs/police/helicam";
-import { Grabbing } from "./controllers/jobs/police/grabbing";
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
@@ -121,7 +120,6 @@ export class Client {
 
   // [Controllers] Police
   // private helicam: HelicamManager;
-  private grabbing: Grabbing;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -258,7 +256,6 @@ export class Client {
 
     // [Controllers] Police
     // this.helicam = new HelicamManager(client);
-    this.grabbing = new Grabbing();
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
@@ -328,6 +325,7 @@ export class Client {
 
     // Jobs
     this.playerStates.state.set("cuffState", CuffState.Uncuffed, true);
+    this.playerStates.state.set("grabState", CuffState.Uncuffed, true);
 
     this.statesTick = setTick(async() => {
 
@@ -379,9 +377,9 @@ export class Client {
   // Events
   private EVENT_resourceStop(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
-      this.grabbing.stop();
       this.vehicleManager.weapon.stop();
       this.jobManager.policeJob.cuffing.stop();
+      this.jobManager.policeJob.grabbing.stop();
     }
   }
 

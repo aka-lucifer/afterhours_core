@@ -1,20 +1,20 @@
+import { Server } from '../../server';
+import { Capitalize } from '../../utils';
 
-import { Server } from "../../server";
-import { Capitalize, getClosestPlayer } from "../../utils";
+import { Command, JobCommand } from '../../models/ui/chat/command';
 
-import { Command, JobCommand } from "../../models/ui/chat/command";
+import * as Database from '../../managers/database/database';
 
-import * as Database from "../../managers/database/database";
+import { Cuffing } from './police/cuffing';
+import { Grabbing } from './police/grabbing';
 
-import { Cuffing } from "./police/cuffing";
-
-import { Jobs } from "../../../shared/enums/jobs/jobs";
-import { Events, PoliceEvents } from "../../../shared/enums/events/events";
-import { Message } from "../../../shared/models/ui/chat/message";
-import { SystemTypes } from "../../../shared/enums/ui/chat/types";
-import { Ranks } from "../../../shared/enums/ranks";
-import { concatArgs, formatFirstName } from "../../../shared/utils";
-import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
+import { Jobs } from '../../../shared/enums/jobs/jobs';
+import { Events } from '../../../shared/enums/events/events';
+import { Message } from '../../../shared/models/ui/chat/message';
+import { SystemTypes } from '../../../shared/enums/ui/chat/types';
+import { Ranks } from '../../../shared/enums/ranks';
+import { concatArgs, formatFirstName } from '../../../shared/utils';
+import { JobEvents } from '../../../shared/enums/events/jobs/jobEvents';
 
 enum Calls {
   Normal,
@@ -40,6 +40,7 @@ export class PoliceJob {
 
   // Controllers
   private cuffing: Cuffing;
+  private grabbing: Grabbing;
 
   constructor(server: Server) {
     this.server = server;
@@ -50,19 +51,7 @@ export class PoliceJob {
 
     // Controllers
     this.cuffing = new Cuffing(this.server);
-
-    RegisterCommand("grab", async(source: string) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          const [closest, dist] = await getClosestPlayer(player);
-          if (closest) {
-            console.log("Me", player.Handle, "Closest", closest.Handle, "Dist", dist);
-            await player.TriggerEvent(PoliceEvents.startGrabbing, closest.Handle);
-          }
-        }
-      }
-    }, false);
+    this.grabbing = new Grabbing(this.server);
   }
 
   // Methods

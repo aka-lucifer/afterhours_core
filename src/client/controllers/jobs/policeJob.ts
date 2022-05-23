@@ -8,6 +8,7 @@ import { Cuffing } from "./police/cuffing";
 
 import { Jobs } from "../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
+import { Grabbing } from './police/grabbing';
 
 interface Call {
   id: number;
@@ -23,12 +24,14 @@ export class PoliceJob {
 
   // Controllers
   public cuffing: Cuffing
+  public grabbing: Grabbing;
 
   constructor(client: Client) {
     this.client = client;
 
     // Controllers
     this.cuffing = new Cuffing(this.client);
+    this.grabbing = new Grabbing(this.client);
 
     // Events
     onNet(JobEvents.setupMRAP, this.EVENT_setupMRAP.bind(this));

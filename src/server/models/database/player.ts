@@ -14,7 +14,7 @@ import WebhookMessage from "../webhook/discord/webhookMessage";
 import serverConfig from "../../../configs/server.json";
 import { server } from "../../server";
 
-import { Events, PoliceEvents } from "../../../shared/enums/events/events";
+import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/logging/embedColours";
 import sharedConfig from "../../../configs/shared.json"
@@ -34,7 +34,7 @@ export class Player {
   public steamAvatar: string;
   public handle: string;
   private readonly name: string;
-  private rank: number;
+  private rank: Ranks = Ranks.User;
   public identifiers: Record<string, string>;
   public ping: number;
   public playtime: number;
@@ -320,7 +320,7 @@ export class Player {
     return this.playtime + currentPlaytime;
   }
 
-  public async TriggerEvent(eventName: Events | PoliceEvents | JobEvents, ...args: any[]): Promise<void> {
+  public async TriggerEvent(eventName: Events | JobEvents, ...args: any[]): Promise<void> {
     return emitNet(eventName, this.handle, ...args);
   }
 
@@ -405,7 +405,7 @@ export class Player {
     return [false, null];
   }
 
-  public async Notify(title: string, description: string, type: NotificationTypes, timer?: number, progressBar?: boolean) {
+  public async Notify(title: string, description: string, type: NotificationTypes, timer?: number, progressBar?: boolean): Promise<void> {
     const notification = new Notification(this, title, description, type, timer, progressBar);
     await notification.send();
   }

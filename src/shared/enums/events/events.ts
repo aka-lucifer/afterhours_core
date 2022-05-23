@@ -176,12 +176,3 @@ export enum Events {
   // Astrid Client (Commends)
   receiveCommends = "astrid:client:receiveCommends"
 }
-
-export enum PoliceEvents {
-  // Server
-  grabPlayer = "astrid:server:police:grabPlayer",
-
-  // Client
-  setGrabbed = "astrid:client:police:setGrabbed",
-  startGrabbing = "astrid:client:police:startGrabbing"
-}

@@ -44,12 +44,12 @@ import { StaffLogManager } from './managers/database/staffLogs';
 import { LogManager } from './managers/logging';
 
 import { LogTypes } from './enums/logTypes';
-import { Capitalize, Dist, Error, getClosestPlayer, GetHash, Inform, Log, logCommand } from './utils';
+import { Capitalize, Dist, Error, GetHash, Inform, Log, logCommand } from './utils';
 
 import serverConfig from '../configs/server.json';
 import sharedConfig from '../configs/shared.json';
 
-import { Events, PoliceEvents } from '../shared/enums/events/events';
+import { Events } from '../shared/enums/events/events';
 import { Ranks } from '../shared/enums/ranks';
 import { EmbedColours } from '../shared/enums/logging/embedColours';
 import { Callbacks } from '../shared/enums/events/callbacks';
@@ -117,9 +117,6 @@ export class Server {
     onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
     onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
     onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
-    
-    // Police Events
-    onNet(PoliceEvents.grabPlayer, this.EVENT_grabPlayer.bind(this));
   }
 
   // Get Requests
@@ -291,20 +288,6 @@ export class Server {
       emitNet(Events.changeDevMode, -1, this.developmentMode);
       Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
     }, false);
-  }
-
-  private async EVENT_grabPlayer(grabbeeId: number): Promise<void> {
-    const grabbingPlayer = await this.connectedPlayerManager.GetPlayer(source);
-    if (grabbingPlayer) {
-      if (grabbeeId) {
-        console.log("closest on grabPlayer", grabbeeId);
-        emitNet(PoliceEvents.setGrabbed, grabbeeId, grabbingPlayer.Handle);
-      } else {
-        console.log("closest ped isn't found!");
-      }
-    } else {
-      console.log("your ped isn't found!");
-    }
   }
 
   private registerExports(): void {
