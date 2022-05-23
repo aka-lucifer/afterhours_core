@@ -84,7 +84,7 @@ export class WeaponsManager {
           await player.Notify("Weapons", "You aren't the correct rank to equip this weapon!", NotificationTypes.Error, 4000);
 
           const discord = await player.GetIdentifier("discord");
-          await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
             username: "Vehicle Logs", embeds: [{
               color: EmbedColours.Green,
               title: "__Weapon Removed__",
@@ -95,7 +95,7 @@ export class WeaponsManager {
         }
       } else {
         const discord = await player.GetIdentifier("discord");
-        await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
           username: "Weapon Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__Player Killed__",

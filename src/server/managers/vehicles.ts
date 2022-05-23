@@ -156,7 +156,7 @@ export class VehicleManager {
                       }
     
                       // Log it via a webhook
-                      await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                      await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                         username: "Vehicle Logs", embeds: [{
                           color: EmbedColours.Green,
                           title: "__Created Vehicle__",
@@ -188,7 +188,7 @@ export class VehicleManager {
                     }
     
                     // Log it via a webhook
-                    await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                       username: "Vehicle Logs", embeds: [{
                         color: EmbedColours.Green,
                         title: "__Created Vehicle__",
@@ -199,7 +199,7 @@ export class VehicleManager {
                   }
                 }
               } else { // General vehicles
-                const donatorAsset = vehData.donatorAsset !== undefined && true ? true : false;
+                const donatorAsset = vehData.donatorAsset !== undefined && true;
                 const hasPermission = await this.hasPermission(player.Rank, vehData.rank, donatorAsset);
                 
                 if (hasPermission) {
@@ -214,7 +214,7 @@ export class VehicleManager {
                   
                   await player.Notify("Vehicles", "You aren't the correct rank to spawn this vehicle!", NotificationTypes.Error, 4000);
 
-                  await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                     username: "Vehicle Logs", embeds: [{
                       color: EmbedColours.Green,
                       title: "__Created Vehicle__",
@@ -236,7 +236,7 @@ export class VehicleManager {
 
               this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
 
-              await this.server.logManager.Send(LogTypes.Kill, new WebhookMessage({
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                 username: "Vehicle Logs", embeds: [{
                   color: EmbedColours.Green,
                   title: "__Entering Vehicle__",
