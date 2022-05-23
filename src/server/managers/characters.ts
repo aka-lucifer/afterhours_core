@@ -92,11 +92,9 @@ export class CharacterManager {
 
       for (let i = 0; i < players.length; i++) {
         const otherPlayer = players[i];
-        const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.Handle)));
-        const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.Handle)));
+        const dist = character.Owner.Position.distance(otherPlayer.Position);
 
-        const dist = Dist(myPos, otherPos, false);
-        Log("Proximity Message", `My Position 1: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
+        Log("Proximity Message", `My Position: ${JSON.stringify(character.Owner.Position)} | Other Position: ${JSON.stringify(otherPlayer.Position)} | Dist: ${dist}`);
 
         if (dist <= 60.0) {
           Inform("Proximity Message", `Player 1 (${otherPlayer.GetName}) is close enough to recieve the proximity message sent from (${character.Owner.GetName})`);
@@ -298,7 +296,6 @@ export class CharacterManager {
   }
 
   private async CALLBACK_selectCharacter(data: Record<string, any>): Promise<void> {
-    console.log("select character", source);
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
 
     if (data.characterId !== undefined && data.characterId > 0) {
