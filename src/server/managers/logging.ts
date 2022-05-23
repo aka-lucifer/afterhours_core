@@ -18,6 +18,7 @@ export class LogManager {
   private readonly actionURL: string = serverConfig.discordLogs.urls.actionURL;
   private readonly anticheatURL: string = serverConfig.discordLogs.urls.anticheatURL;
   private readonly commendURL: string = serverConfig.discordLogs.urls.commendURL;
+  private readonly timesheetURL: string = serverConfig.discordLogs.urls.timesheetURL;
 
   constructor(server: Server) {
     this.server = server;
@@ -33,6 +34,7 @@ export class LogManager {
     if (type == LogTypes.Action) url = this.actionURL;
     if (type == LogTypes.Anticheat) url = this.anticheatURL;
     if (type == LogTypes.Commend) url = this.commendURL;
+    if (type == LogTypes.Timesheet) url = this.timesheetURL;
 
     try {
       const formData = message.toFormData();

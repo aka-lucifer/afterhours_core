@@ -9,6 +9,7 @@ export class Job {
   public rankLabel: string;
   public callsign: string;
   public status: boolean;
+  public statusTime: string;
 
   constructor(name: string, label: string, rank?: number | PoliceRanks | CountyRanks | StateRanks, isBoss?: boolean, callsign?: string, status?: boolean) {
     this.name = name;

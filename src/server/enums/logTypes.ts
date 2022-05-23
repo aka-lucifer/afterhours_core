@@ -4,5 +4,6 @@ export enum LogTypes {
   Chat,
   Action,
   Anticheat,
-  Commend
+  Commend,
+  Timesheet
 }
