@@ -68,9 +68,9 @@ export class Progress {
       this.controlTick = undefined;
     }
 
-    onCancel = cancel;
-    onStart = start;
-    onFinish = finish;
+    if (cancel !== undefined) onCancel = cancel;
+    if (start !== undefined) onStart = start;
+    if (finish !== undefined) onFinish = finish;
 
     this.registerCallbacks();
   }
@@ -89,15 +89,25 @@ export class Progress {
     
     RegisterNuiCallback(NuiCallbacks.ProgressFinished, (data, cb) => {
       if (!this.cancelled) {
+        if (onCancel !== undefined) {
+          onCancel();
+        }
+        onCancel = undefined;
+
+        if (onStart !== undefined) {
+          onStart();
+        }
+        onStart = undefined;
+
         if (onFinish !== undefined) {
           // console.log("duration timeout is finished and finish function is defined, so we're running it!");
           onFinish();
-          onFinish = undefined;
-
-          // Clear control ticks after timer is finished
-          clearTick(this.controlTick);
-          this.controlTick = undefined;
         }
+        onFinish = undefined;
+
+        // Clear control ticks after timer is finished
+        clearTick(this.controlTick);
+        this.controlTick = undefined;
       } else {
         // console.log("progress was finished but it was already cancelled!");
       }
@@ -181,12 +191,13 @@ export class Progress {
 
       if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.FrontendCancel)) {
         // disable progress UI
-        SendNuiMessage(JSON.stringify({
-          event: NuiMessages.CancelProgress
-        }))
-
-        this.cancelled = true;
         if (onCancel !== undefined) {
+          SendNuiMessage(JSON.stringify({
+            event: NuiMessages.CancelProgress
+          }))
+
+          this.cancelled = true;
+
           onCancel();
           onCancel = undefined;
         }
