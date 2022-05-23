@@ -11,7 +11,7 @@ import { svPlayer } from "../../models/player";
 import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
 import { Events } from "../../../shared/enums/events/events";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
-import { Weapons } from "../../../shared/enums/weapons";
+import { AddonWeapons, Weapons } from '../../../shared/enums/weapons';
 import { Ranks } from "../../../shared/enums/ranks";
 import { Weathers, WinterWeathers } from "../../../shared/enums/sync/weather";
 import { Message } from "../../../shared/models/ui/chat/message";
@@ -90,6 +90,7 @@ export class StaffMenu {
   private noReload: boolean = false;
   private infiniteAmmo: boolean = false;
   private noRecoil: boolean = false;
+  private usingGravityGun: boolean = false;
 
   // Ticks
   private weaponTick: number = undefined;
@@ -250,6 +251,24 @@ export class StaffMenu {
 
       this.playerActionsMenu.BindCheckbox("No Recoil", this.noRecoil, (newState: boolean) => {
         this.noRecoil = newState;
+      });
+
+      this.playerActionsMenu.BindCheckbox("Gravity Gun", this.usingGravityGun, (newState: boolean) => {
+        this.usingGravityGun = newState;
+
+        if (this.usingGravityGun) {
+          if (!HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
+            Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
+          } else {
+            SetCurrentPedWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, true);
+          }
+        } else {
+          if (HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
+            Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
+          }
+
+          SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
+        }
       });
     }
 
