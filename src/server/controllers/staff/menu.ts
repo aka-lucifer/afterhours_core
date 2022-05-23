@@ -37,7 +37,7 @@ export class StaffMenu {
     onNet(Events.freezeAll, this.EVENT_freezeAll.bind(this));
 
     // [Player Actions]
-    onNet(Events.toggleBlips, this.EVENT_toggleBlips.bind(this));
+    // onNet(Events.toggleBlips, this.EVENT_toggleBlips.bind(this));
   }
 
   // Methods

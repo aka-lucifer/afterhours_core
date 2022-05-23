@@ -51,6 +51,7 @@ export class JobManager {
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: data.state}, async(cbData, passedData) => {
           if (cbData) {
             this.client.Character.Job.status = data.state;
+            this.client.staffManager.staffMenu.Duty = data.state;
             console.log("Set Duty", Capitalize(this.client.Character.Job.status.toString()));
             
             if (data.state) {
@@ -77,9 +78,6 @@ export class JobManager {
 
                 // SetPedArmour(myPed.Handle, 100);
               }
-
-              const notify = new Notification("Job", `You've gone on duty`, NotificationTypes.Success);
-              await notify.send();
             } else {
               if (this.client.Character.isLeoJob()) {
                 const myPed = Game.PlayerPed;
@@ -103,9 +101,6 @@ export class JobManager {
                 //   SetPedArmour(myPed.Handle, 100);
                 // }
               }
-
-              const notify = new Notification("Job", `You've gone off duty`, NotificationTypes.Success);
-              await notify.send();
             }
           }
         }));

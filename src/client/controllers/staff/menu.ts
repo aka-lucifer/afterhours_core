@@ -16,6 +16,8 @@ import { Ranks } from "../../../shared/enums/ranks";
 import { Weathers, WinterWeathers } from "../../../shared/enums/sync/weather";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
+import { ServerCallback } from '../../models/serverCallback';
+import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
 
 interface PlayerMenu {
   netId: number,
@@ -81,6 +83,7 @@ export class StaffMenu {
   // [Player] Data
   private godmode: boolean = false;
   private visible: boolean = true;
+  private onDuty: boolean = false;
 
   // [Weapon] Data
   private lastLocation: Vector3;
@@ -110,13 +113,21 @@ export class StaffMenu {
     }
   }
 
-  // Getters
+  // Getters & Setters
   public get WeaponActive(): boolean {
     return this.weaponTick !== undefined;
   }
 
   public get NoRecoil(): boolean {
     return this.noRecoil;
+  }
+
+  public get Duty(): boolean {
+    return this.onDuty;
+  }
+
+  public set Duty(newState: boolean) {
+    this.onDuty = newState;
   }
 
   // Methods
@@ -248,6 +259,14 @@ export class StaffMenu {
     
     this.playerActionsMenu.BindButton("Go To Previous Location", async() => {
       await this.EVENT_teleportBack();
+    });
+
+    this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async(cbData, passedData) => {
+        if (cbData) {
+          this.client.Character.Job.status = newState;
+        }
+      }));
     });
 
     // Vehicle Actions Menu
