@@ -207,6 +207,52 @@ export class MenuManager {
     }
   }
 
+  public async deleteMenu(menuIndex: string): Promise<void> {
+    const menuFound = menus[menuIndex];
+    if (menuFound) {
+      if (menuFound.type === "submenu") {
+        const parentMenu = menus[menuFound.parent]; // Declare menus parent
+        menus[menuIndex] = {}; // Delete the submenu
+        const parentMenuComponentsIndex = parentMenu.components.findIndex(component => component.index == menuIndex); // Get the components index of the submenu
+        if (parentMenuComponentsIndex !== -1) parentMenu.components.splice(parentMenuComponentsIndex, 1); // Delete the submenus components
+        await this.OpenMenu(menuFound.parent); // Opens the parent menu
+      } else {
+        console.log("not submenu, so can't delete menu");
+      }
+    }
+  }
+
+  public deleteElement(elementIndex: string): void {
+    const menuComponent = components[elementIndex];
+    if (menuComponent) {
+      if (menuComponent.type == "button" || menuComponent.type == "checkbox" || menuComponent.type == "list") {
+        let menuIndex = -1;
+        let menuComponentIndex = -1;
+
+        console.log("delete menu component", menuComponent);
+        components[elementIndex].delete();
+
+        for (let i = 0; i < Object.keys(menus).length; i++) {
+          menuComponentIndex = menus[i].components.findIndex(component => component.index == elementIndex);
+          if (menuComponentIndex !== -1) {
+            menuIndex = i;
+            menus[i].components.splice(menuComponentIndex, 1);
+          }
+        }
+
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.DeleteComponent,
+          data: {
+            menuIndex: menuIndex,
+            componentIndex: menuComponentIndex
+          }
+        }))
+      } else {
+        console.log("not submenu, so can't empty components");
+      }
+    }
+  }
+
   public async CloseMenu(): Promise<void> {
     if (openedMenu) {
       SendNuiMessage(JSON.stringify({

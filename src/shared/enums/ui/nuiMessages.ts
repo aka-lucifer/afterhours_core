@@ -36,6 +36,8 @@ export enum NuiMessages {
   OpenMenu = "OPEN_MENU",
   CloseMenu = "CLOSE_MENU",
   EmptyMenu = "EMPTY_MENU",
+  DeleteMenu = "DELETE_MENU",
+  DeleteComponent = "DELETE_COMPONENT",
   SetMenuOption = "SET_MENU_OPTION",
   SetCheckboxState = "SET_CHECKBOX_STATE",
   SetListItem = "SET_LIST_ITEM",

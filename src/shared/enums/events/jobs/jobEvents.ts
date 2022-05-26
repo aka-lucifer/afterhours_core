@@ -36,6 +36,7 @@ export enum JobEvents {
 
   // LEO (Server | Cuffing)
   cuffPlayer = "astrid:server:jobs:police:cuffPlayer",
+  uncuffPlayer = "astrid:server:jobs:police:uncuffPlayer",
   doPerpBackAnim = "astrid:server:jobs:police:doPerpBackAnim",
   doPerpFrontAnim = "astrid:server:jobs:police:doPerpFrontAnim",
   setFinished = "astrid:server:jobs:police:setFinished",
@@ -46,5 +47,8 @@ export enum JobEvents {
   stopGrabbing = "astrid:client:police:stopGrabbing",
 
   // LEO (Server | Grabbing)
-  grabPlayer = "astrid:server:police:grabPlayer"
+  grabPlayer = "astrid:server:police:grabPlayer",
+
+  // LEO (Server | Unit Menu)
+  fireUnit = "astrid:server:police:fireUnit"
 }

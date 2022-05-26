@@ -56,6 +56,9 @@ export class JobManager {
             
             if (data.state) {
               if (this.client.Character.isLeoJob()) {
+                this.policeJob.registerInteractions();
+                this.policeJob.commandMenu.start();
+
                 const myPed = Game.PlayerPed;
 
                 // global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
@@ -80,6 +83,9 @@ export class JobManager {
               }
             } else {
               if (this.client.Character.isLeoJob()) {
+                this.policeJob.deleteInteractions();
+                this.policeJob.commandMenu.stop();
+
                 const myPed = Game.PlayerPed;
 
                 // global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);

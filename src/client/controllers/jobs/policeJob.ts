@@ -5,10 +5,11 @@ import { GetClosestPed, getLocation, getZone } from "../../utils";
 
 // Controllers
 import { Cuffing } from "./police/cuffing";
+import { Grabbing } from './police/grabbing';
+import { CommandMenu } from './police/commandMenu';
 
 import { Jobs } from "../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
-import { Grabbing } from './police/grabbing';
 
 interface Call {
   id: number;
@@ -25,6 +26,7 @@ export class PoliceJob {
   // Controllers
   public cuffing: Cuffing
   public grabbing: Grabbing;
+  public commandMenu: CommandMenu;
 
   constructor(client: Client) {
     this.client = client;
@@ -32,6 +34,7 @@ export class PoliceJob {
     // Controllers
     this.cuffing = new Cuffing(this.client);
     this.grabbing = new Grabbing(this.client);
+    this.commandMenu = new CommandMenu(this.client);
 
     // Events
     onNet(JobEvents.setupMRAP, this.EVENT_setupMRAP.bind(this));
@@ -80,9 +83,42 @@ export class PoliceJob {
     });
   }
 
+  public registerInteractions(): void {
+    emit("astrid_target:client:player", {
+      options: [
+        {
+          event: JobEvents.cuffPlayer,
+          type: "server",
+          icon: "fas fa-solid fa-handcuffs",
+          label: "Cuff Player",
+        }
+      ],
+      distance: 3
+    });
+
+    emit("astrid_target:client:player", {
+      options: [
+        {
+          event: JobEvents.uncuffPlayer,
+          type: "server",
+          icon: "fas fa-solid fa-key",
+          label: "Uncuff Player",
+        }
+      ],
+      distance: 3
+    });
+  }
+
+  public deleteInteractions(): void {
+    emit("astrid_target:client:removePlayer", [
+      "Cuff Player", "Uncuff Player"
+    ])
+  }
+
   public async init(): Promise<void> {
     this.registerBoxZones();
     await this.cuffing.init();
+    this.commandMenu.init();
   }
 
   // Events

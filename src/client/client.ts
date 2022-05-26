@@ -398,10 +398,17 @@ export class Client {
   }
 
   private EVENT_setCharacter(character: any): void {
+    // Clear Previous Character Data
     Game.PlayerPed.removeAllWeapons();
     this.weaponManager.onBack.clearWeapons();
-    this.character = new Character(character);
+    this.jobManager.policeJob.deleteInteractions();
+    this.jobManager.policeJob.commandMenu.stop();
 
+    // Load New Character Data
+    this.character = new Character(character);
+    this.jobManager.policeJob.commandMenu.start();
+
+    // Set Rich Presence
     this.richPresence.Text = "Loading In As Character";
     this.richPresence.start();
     // console.log("Character Set To", this.Character);

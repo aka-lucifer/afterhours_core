@@ -7919,6 +7919,16 @@
                 {"value": 25, "label": "Mouse"}
               ]
             }
+          },
+          "bossMenu": {
+            "locations": [
+              {"x":1847.8638916015626, "y":3685.482666015625, "z":38.07131958007812, "location": "county"}
+            ],
+            "blip": {
+              "sprite": 787,
+              "sprite2": 544,
+              "colour": 3
+            }
           }
         }
     },
