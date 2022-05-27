@@ -50,9 +50,7 @@ export class JobManager {
     onNet(JobCallbacks.setDuty, this.CALLBACK_setDuty.bind(this));
     onNet(JobCallbacks.updateCallsign, this.CALLBACK_updateCallsign.bind(this));
     onNet(JobCallbacks.getUnits, this.CALLBACK_getUnits.bind(this));
-
-    // Events
-    onNet(JobEvents.fireUnit, this.EVENT_fireUnit.bind(this));
+    onNet(JobCallbacks.fireUnit, this.CALLBACK_fireUnit.bind(this));
   }
 
   // Methods
@@ -86,7 +84,7 @@ export class JobManager {
           }
 
           await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you
-          await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+          await player.TriggerEvent(Events.receiveServerCB, true, data); // Return that they are on duty
 
           // Resync all players & selected characters to all clients, as your on duty status has changed
           emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.connectedPlayers));
@@ -132,7 +130,7 @@ export class JobManager {
           if (character.isLeoJob() || character.isSAFREMSJob() || character.Job.name == "cofficer") {
             if (character.Job.Status) {
               const updatedCallsign = character.updateTypes("callsign", data.callsign);
-              await player.TriggerEvent(Events.receiveServerCB, updatedCallsign, data); // Update the UI to close and disable NUI focus
+              await player.TriggerEvent(Events.receiveServerCB, updatedCallsign, data); // Update the callsign in the DB and return it back to the client
 
               // log it here
             }
@@ -156,25 +154,29 @@ export class JobManager {
 
               if (results.data.length > 0) {
                 for (let i = 0; i < results.data.length; i++) {
-                  const jobData = JSON.parse(results.data[i].job);
-                  const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.isBoss, jobData.callsign, jobData.status);
+                  if (results.data[i].player_id !== player.Id) { // If not one of your characters
+                    const jobData = JSON.parse(results.data[i].job);
+                    const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.isBoss, jobData.callsign, jobData.status);
 
-                  if (job.name == Jobs.County) {
-                    units.push({
-                      id: results.data[i].id,
-                      playerId: results.data[i].player_id,
-                      firstName: formatFirstName(results.data[i].first_name),
-                      lastName: results.data[i].last_name,
-                      callsign: job.callsign,
-                      rank: await getRankFromValue(job.rank, job.name)
-                    });
+                    if (job.name == Jobs.County) {
+                      if (job.rank < character.Job.rank) { // If the characters job rank is less than yours
+                        units.push({
+                          id: results.data[i].id,
+                          playerId: results.data[i].player_id,
+                          firstName: formatFirstName(results.data[i].first_name),
+                          lastName: results.data[i].last_name,
+                          callsign: job.callsign,
+                          rank: await getRankFromValue(job.rank, job.name)
+                        });
+                      }
+                    }
                   }
                 }
               }
 
               console.log("units", units);
 
-              await player.TriggerEvent(Events.receiveServerCB, units, data); // Update the UI to close and disable NUI focus
+              await player.TriggerEvent(Events.receiveServerCB, units, data); // Send back all of the passed depts units
             }
           }
         }
@@ -182,7 +184,7 @@ export class JobManager {
     }
   }
 
-  private async EVENT_fireUnit(unitsId: number, unitsPlayerId: number): Promise<void> {
+  private async CALLBACK_fireUnit(data: Record<string, any>): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       if (player.Spawned) {
@@ -193,12 +195,12 @@ export class JobManager {
             if (highCommand) {
               const newJob = new Job("civilian", "Civilian");
               const updatedJob = await Database.SendQuery("UPDATE `player_characters` SET `job` = :newJob WHERE `id` = :id AND `player_id` = :playerId", {
-                id: unitsId,
-                playerId: unitsPlayerId,
+                id: data.unitsId,
+                playerId: data.unitsPlayerId,
                 newJob: JSON.stringify(newJob)
               });
 
-              console.log("updated data", updatedJob, newJob);
+              await player.TriggerEvent(Events.receiveServerCB, updatedJob.meta.affectedRows > 0, data); // Returns true or false, if it sucessfully updated players job (fired them)
             }
           }
         }

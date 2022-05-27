@@ -4,7 +4,7 @@ import { Job } from "../jobs/job";
 
 import * as Database from "../../managers/database/database"
 import { Bloodtypes, Gender } from "../../../shared/enums/ui/characters";
-import { Delay, GetTimestamp, randomBetween, randomEnum } from "../../utils";
+import { Delay, GetTimestamp, randomEnum } from "../../utils";
 import { Jobs } from "../../../shared/enums/jobs/jobs";
 
 export class Character {

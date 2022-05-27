@@ -850,6 +850,15 @@ const HUD = new Vue({
       this.menuOption = 0;
     },
 
+    DeleteMenu(data) {
+      this.menuComponents.splice(data.index, 1);
+      this.menuOption = 0;
+    },
+
+    DeleteComponent(data) {
+      this.menuComponents[data.menuIndex].splice(data.componentIndex, 1);
+    },
+
     SetMenuOption(data) {
       // console.log("set menu option", JSON.stringify(data));
       this.menuOption = data.option;
@@ -1144,7 +1153,9 @@ const HUD = new Vue({
     // ASTRID MENU Events
     RegisterEvent("OPEN_MENU", this.OpenMenu);
     RegisterEvent("CLOSE_MENU", this.CloseMenu);
-    RegisterEvent("EMPTY_MENU", this.EmptyMenu);
+    RegisterEvent("EMPTY_MENU", this.EmptyMenu)
+    RegisterEvent("DELETE_MENU", this.DeleteMenu)
+    RegisterEvent("DELETE_COMPONENT", this.DeleteComponent);
     RegisterEvent("SET_MENU_OPTION", this.SetMenuOption);
     RegisterEvent("SET_CHECKBOX_STATE", this.SetCheckboxState);
     RegisterEvent("SET_LIST_ITEM", this.SetListItem);

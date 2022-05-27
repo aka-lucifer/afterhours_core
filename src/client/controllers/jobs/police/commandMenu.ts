@@ -14,7 +14,8 @@ import { JobCallbacks } from '../../../../shared/enums/events/jobs/jobCallbacks'
 import { Jobs } from '../../../../shared/enums/jobs/jobs';
 import { CountyRanks } from '../../../../shared/enums/jobs/ranks';
 import { Submenu } from '../../../models/ui/menu/submenu';
-import { JobEvents } from '../../../../shared/enums/events/jobs/jobEvents';
+import { Notification } from '../../../models/ui/notification';
+import { NotificationTypes } from '../../../../shared/enums/ui/notifications/types';
 
 interface MenuLocation {
   coords: Vector3,
@@ -69,7 +70,7 @@ export class CommandMenu {
               if (!this.usingMenu) {
                 if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
                   let dist = Game.PlayerPed.Position.distance(this.menuLocations[i].coords);
-                  if (dist <= 5) {
+                  if (dist <= 10) {
 
                     if (this.interactionTick === undefined) this.interactionTick = setTick(() => {
                       dist = Game.PlayerPed.Position.distance(this.menuLocations[i].coords);
@@ -92,16 +93,25 @@ export class CommandMenu {
                         Screen.displayHelpTextThisFrame("~INPUT_CONTEXT~ to access the unit menu");
 
                         if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Context)) {
-                          this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[i].type }, async(cbData, passedData) => {
+                          this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[i].type }, async(receievedUnits, passedData) => {
                             this.client.menuManager.emptyMenu(this.units.handle); // Empty previous contents
 
-                            for (let i = 0; i < cbData.length; i++) {
-                              const submenu = this.units.BindSubmenu(`[${cbData[i].callsign}] | ${cbData[i].firstName}. ${cbData[i].lastName} - ${cbData[i].rank}`);
+                            for (let i = 0; i < receievedUnits.length; i++) {
+                              const submenu = this.units.BindSubmenu(`[${receievedUnits[i].callsign}] | ${receievedUnits[i].firstName}. ${receievedUnits[i].lastName} - ${receievedUnits[i].rank}`);
 
                               const fireButton = submenu.BindButton("Fire Unit", () => {
-                                console.log(`fire [${cbData[i].callsign}] | ${cbData[i].firstName}. ${cbData[i].lastName} - ${cbData[i].rank}`);
-                                emitNet(JobEvents.fireUnit, cbData[i].id, cbData[i].playerId);
-                                this.client.menuManager.deleteMenu(submenu.handle);
+                                console.log(`fire [${receievedUnits[i].callsign}] | ${receievedUnits[i].firstName}. ${receievedUnits[i].lastName} - ${receievedUnits[i].rank}`);
+                                this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, { unitsId: receievedUnits[i].id, unitsPlayerId: receievedUnits[i].playerId }, async (firedUnit, passedData) => {
+                                  if (firedUnit) {
+                                    await this.client.menuManager.deleteMenu(submenu.handle);
+
+                                    const notify = new Notification("Unit Management", `Fired [${receievedUnits[i].callsign}] | ${receievedUnits[i].firstName}. ${receievedUnits[i].lastName} - ${receievedUnits[i].rank}`, NotificationTypes.Info);
+                                    await notify.send();
+                                  } else {
+                                    const notify = new Notification("Unit Management", `Unsuccessful in firing unit, make a support ticket!`, NotificationTypes.Error);
+                                    await notify.send();
+                                  }
+                                }));
                               });
                             }
 
