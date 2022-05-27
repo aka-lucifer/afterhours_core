@@ -233,6 +233,14 @@ export class StaffMenu {
         this.client.staffManager.noclip.toggleNoclip();
       });
 
+      this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async(cbData, passedData) => {
+          if (cbData) {
+            this.client.Character.Job.status = newState;
+          }
+        }));
+      });
+
       this.playerActionsMenu.BindCheckbox("Invisible", this.visible, (newState: boolean) => {
         this.visible = newState;
 
@@ -278,14 +286,6 @@ export class StaffMenu {
     
     this.playerActionsMenu.BindButton("Go To Previous Location", async() => {
       await this.EVENT_teleportBack();
-    });
-
-    this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async(cbData, passedData) => {
-        if (cbData) {
-          this.client.Character.Job.status = newState;
-        }
-      }));
     });
 
     // Vehicle Actions Menu
