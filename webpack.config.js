@@ -31,7 +31,7 @@ const server = {
     })
   ],
   optimization: {
-    minimize: true,
+    minimize: false,
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
