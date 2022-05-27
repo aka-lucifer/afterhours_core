@@ -39,9 +39,9 @@ export class LogManager {
     try {
       const formData = message.toFormData();
 
-      // await axios.post(url, formData.getBuffer(), {
-      //   headers: formData.getHeaders()
-      // });
+      await axios.post(url, formData.getBuffer(), {
+        headers: formData.getHeaders()
+      });
     } catch (error) {
       const axiosError = error as AxiosError;
       const response = axiosError.response;
