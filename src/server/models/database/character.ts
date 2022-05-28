@@ -81,6 +81,10 @@ export class Character {
     return this.job;
   }
 
+  public set Job(newJob: Job) {
+    this.job = newJob;
+  }
+
   public get Metadata(): Metadata {
     return this.metadata;
   }
@@ -187,6 +191,18 @@ export class Character {
 
       return updateCallsign.meta.affectedRows > 0;
     }
+  }
+
+  public async updateJob(name: string, label: string, rank: number, isBoss?: boolean, callsign?: string, status?: boolean): Promise<boolean> {
+    this.Job = new Job(name, label, rank, isBoss, callsign, status);
+
+    const updatedJob = await Database.SendQuery("UPDATE `player_characters` SET `job` = :newJob WHERE `id` = :id AND `player_id` = :playerId", {
+      id: this.id,
+      playerId: this.playerId,
+      newJob: JSON.stringify(this.Job)
+    });
+
+    return updatedJob.meta.affectedRows > 0;
   }
 
   public async format(character?: Info): Promise<boolean> {
