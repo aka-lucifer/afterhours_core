@@ -3,5 +3,6 @@ export enum JobCallbacks {
   setDuty = "astrid:server:jobs:toggleDuty",
   updateCallsign = "astrid:server:jobs:updateCallsign",
   getUnits = "astrid:server:jobs:getUnits",
-  fireUnit = "astrid:server:jobs:fireUnit"
+  fireUnit = "astrid:server:jobs:fireUnit",
+  recruitPlayer = "astrid:server:jobs:recruitPlayer"
 }

@@ -34,10 +34,10 @@ export class JobManager {
   }
 
   // Methods
-  public init(): void {
+  public async init(): Promise<void> {
     // Jobs
     this.policeJob = new PoliceJob(this.client);
-    this.policeJob.init();
+    await this.policeJob.init();
 
     // Controllers
     this.jobBlips = new JobBlips(this.client);

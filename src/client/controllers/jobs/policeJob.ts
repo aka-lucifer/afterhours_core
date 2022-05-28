@@ -49,9 +49,10 @@ export class PoliceJob {
   }
 
   // Methods
-  private registerBoxZones(): void {
+  public registerDuty(): void {
+    console.log("add")
     emit("astrid_target:client:addBoxZone", "Sandy PD", new Vector3(1852.24, 3687.0, 34.27), 2.4, 1.4, {
-      name: "sandy_pd PD",
+      name: "sandy_pd_options",
       heading: 301,
       debugPoly: false,
       minZ: 32.95,
@@ -112,13 +113,21 @@ export class PoliceJob {
   public deleteInteractions(): void {
     emit("astrid_target:client:removePlayer", [
       "Cuff Player", "Uncuff Player"
-    ])
+    ]);
+
+    emit("astrid_target:client:removeZone", [
+      "sandy_pd_options"
+    ]);
   }
 
   public async init(): Promise<void> {
-    this.registerBoxZones();
     await this.cuffing.init();
     this.commandMenu.init();
+  }
+
+  public stop(): void {
+    // this.cuffing.stop();
+    this.commandMenu.stop();
   }
 
   // Events
@@ -149,9 +158,7 @@ export class PoliceJob {
     if (this.client.Player.Spawned) {
       if (this.client.Character.isLeoJob() || this.client.Character.isSAFREMSJob() || this.client.Character.Job.name == Jobs.Community) {
         if (this.client.Character.Job.status) {
-          const blipHandle = AddBlipForCoord(callersPos.x, callersPos.y, callersPos.z);
-          const blip = new Blip(blipHandle);
-
+          const blip = World.createBlip(new Vector3(callersPos.x, callersPos.y, callersPos.z));
           blip.Sprite = 817; // Call Icon
           blip.Color = BlipColor.Red;
           blip.IsShortRange = false;
@@ -181,9 +188,7 @@ export class PoliceJob {
     if (this.client.Player.Spawned) {
       if (this.client.Character.isLeoJob() || this.client.Character.isSAFREMSJob() || this.client.Character.Job.name == Jobs.Community) {
         if (this.client.Character.Job.status) {
-          const blipHandle = AddBlipForCoord(callersPos.x + 50, callersPos.y + 90, callersPos.z);
-          const blip = new Blip(blipHandle);
-
+          const blip = World.createBlip(new Vector3(callersPos.x, callersPos.y, callersPos.z));
           blip.Sprite = 817; // Call Icon
           blip.Color = BlipColor.White;
           blip.IsShortRange = false;

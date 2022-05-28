@@ -7922,7 +7922,24 @@
           },
           "bossMenu": {
             "locations": [
-              {"x":1847.8638916015626, "y":3685.482666015625, "z":38.07131958007812, "location": "county"}
+              {
+                "x":1847.8638916015626,
+                "y":3685.482666015625,
+                "z":38.07131958007812,
+                "label": "Sandy Shores Sheriff Station",
+                "rank": "county",
+                "markerData": {
+                  "type": 30,
+                  "colour": {
+                    "r": 19,
+                    "g": 148,
+                    "b": 235
+                  }
+                },
+                "blipData": {
+
+                }
+              }
             ],
             "blip": {
               "sprite": 787,

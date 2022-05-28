@@ -258,7 +258,12 @@ export class MenuManager {
       SendNuiMessage(JSON.stringify({
         event: NuiMessages.CloseMenu,
       }))
-      
+
+      // Close LEO Unit Recruitment Menu
+      if (this.client.jobManager.policeJob.commandMenu.Open) {
+        this.client.jobManager.policeJob.commandMenu.Open = false;
+      }
+
       openedMenu = null;
       hoveredIndex = 0;
     }

@@ -87,7 +87,8 @@ export enum Events {
   // Astrid Client Events
   serverStarted = "astrid:client:serverStarted",
   playerLoaded = "astrid:client:playerLoaded",
-  setCharacter = "astrid:setCharacter:setCharacter",
+  setCharacter = "astrid:client:setCharacter",
+  updateCharacter = "astrid:client:updateCharacter",
   receiveServerCB = "astrid:client:recieveServerCB",
   changeDevMode = "astrid:client:changeDevMode",
   syncPlayers = "astrid:client:syncPlayers",

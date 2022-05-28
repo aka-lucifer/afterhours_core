@@ -40,4 +40,8 @@ export class Job {
   public set RankLabel(newValue: string) {
     this.rankLabel = newValue;
   }
+
+  public get Boss(): boolean {
+    return this.isBoss;
+  }
 }

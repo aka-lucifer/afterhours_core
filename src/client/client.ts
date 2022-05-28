@@ -110,7 +110,7 @@ export class Client {
   public menuManager: MenuManager;
 
   // [Managers] Job
-  private jobManager: JobManager;
+  public jobManager: JobManager;
 
   // [Managers] Vehicle
   public vehicleManager: VehicleManager;
@@ -143,6 +143,7 @@ export class Client {
     // (Player Data)
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
     onNet(Events.setCharacter, this.EVENT_setCharacter.bind(this));
+    onNet(Events.updateCharacter, this.EVENT_updateCharacter.bind(this));
     onNet(Events.changeDevMode, this.EVENT_changeDevMode.bind(this));
     onNet(Events.syncPlayers, this.EVENT_syncPlayers.bind(this));
     
@@ -389,7 +390,7 @@ export class Client {
     // Manager Inits
     this.staffManager.init();
     // await this.worldManager.init();
-    this.jobManager.init();
+    await this.jobManager.init();
 
     this.setupUI();
     
@@ -406,12 +407,37 @@ export class Client {
 
     // Load New Character Data
     this.character = new Character(character);
-    this.jobManager.policeJob.commandMenu.start();
+    console.log("loaded char", this.character.firstName, this.character.job);
+    if (this.character.isLeoJob()) {
+      console.log("is leo 1!");
+
+      this.jobManager.policeJob.registerDuty();
+      this.jobManager.policeJob.commandMenu.start();
+    } else {
+      this.jobManager.policeJob.deleteInteractions();
+      this.jobManager.policeJob.commandMenu.stop();
+    }
 
     // Set Rich Presence
     this.richPresence.Text = "Loading In As Character";
     this.richPresence.start();
     // console.log("Character Set To", this.Character);
+  }
+
+  private async EVENT_updateCharacter(character: any): Promise<void> {
+    this.jobManager.policeJob.deleteInteractions();
+    this.jobManager.policeJob.commandMenu.stop();
+
+    // Load New Character Data
+    this.character = new Character(character);
+
+    console.log("loaded new char", this.character.firstName, this.character.job);
+    if (this.character.isLeoJob()) {
+      console.log("is leo 2!");
+
+      this.jobManager.policeJob.registerDuty();
+      this.jobManager.policeJob.commandMenu.start();
+    }
   }
 
   private EVENT_changeDevMode(newState: boolean): void {

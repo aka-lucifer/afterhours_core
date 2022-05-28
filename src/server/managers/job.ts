@@ -21,7 +21,7 @@ import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
 import { EmbedColours } from '../../shared/enums/logging/embedColours';
 import { formatFirstName, getRankFromValue } from '../../shared/utils';
 import { CountyRanks } from '../../shared/enums/jobs/ranks';
-import { Jobs } from '../../shared/enums/jobs/jobs';
+import { JobLabels, Jobs } from '../../shared/enums/jobs/jobs';
 
 import sharedConfig from '../../configs/shared.json';
 
@@ -51,6 +51,7 @@ export class JobManager {
     onNet(JobCallbacks.updateCallsign, this.CALLBACK_updateCallsign.bind(this));
     onNet(JobCallbacks.getUnits, this.CALLBACK_getUnits.bind(this));
     onNet(JobCallbacks.fireUnit, this.CALLBACK_fireUnit.bind(this));
+    onNet(JobCallbacks.recruitPlayer, this.CALLBACK_recruitPlayer.bind(this));
   }
 
   // Methods
@@ -147,14 +148,13 @@ export class JobManager {
         const character = await this.server.characterManager.Get(player);
         if (character) {
           if (character.isLeoJob()) {
-            const highCommand = await this.highCommand(character);
-            if (highCommand) {
+            if (character.Job.Boss) {
               const units: Unit[] = [];
               const results = await Database.SendQuery("SELECT * FROM `player_characters`", {});
 
               if (results.data.length > 0) {
                 for (let i = 0; i < results.data.length; i++) {
-                  if (results.data[i].player_id !== player.Id) { // If not one of your characters
+                  // if (results.data[i].player_id !== player.Id) { // If not one of your characters
                     const jobData = JSON.parse(results.data[i].job);
                     const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.isBoss, jobData.callsign, jobData.status);
 
@@ -170,7 +170,7 @@ export class JobManager {
                         });
                       }
                     }
-                  }
+                  // }
                 }
               }
 
@@ -191,14 +191,60 @@ export class JobManager {
         const character = await this.server.characterManager.Get(player);
         if (character) {
           if (character.isLeoJob()) {
-            const highCommand = await this.highCommand(character);
-            if (highCommand) {
+            if (character.Job.Boss) {
               const newJob = new Job("civilian", "Civilian");
               const updatedJob = await Database.SendQuery("UPDATE `player_characters` SET `job` = :newJob WHERE `id` = :id AND `player_id` = :playerId", {
                 id: data.unitsId,
                 playerId: data.unitsPlayerId,
                 newJob: JSON.stringify(newJob)
               });
+
+              if (updatedJob.meta.affectedRows > 0) {
+                const playerConnected = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsPlayerId);
+                if (playerConnected) {
+                  if (playerConnected.Spawned) {
+                    const connectedCharacter = await this.server.characterManager.Get(playerConnected);
+                    if (connectedCharacter) {
+                      console.log("fired b4 job", connectedCharacter.Job, newJob);
+                      connectedCharacter.Job = newJob;
+                      console.log("fired after job", connectedCharacter.Job, newJob);
+
+                      // Set your selected character fuck thing
+                      playerConnected.selectedCharacter = { // Update selected character to have new job
+                        id: connectedCharacter.Id,
+                        firstName: connectedCharacter.firstName,
+                        lastName: connectedCharacter.lastName,
+                        nationality: connectedCharacter.nationality,
+                        backstory: connectedCharacter.backstory,
+                        dob: connectedCharacter.DOB,
+                        age: connectedCharacter.Age,
+                        isFemale: connectedCharacter.Female,
+                        phone: connectedCharacter.Phone,
+                        job: connectedCharacter.Job,
+                        metadata: connectedCharacter.Metadata,
+                        createdAt: connectedCharacter.CreatedAt,
+                        lastUpdated: connectedCharacter.LastEdited,
+                      };
+
+                      // Empty owned characters table
+                      playerConnected.characters = [];
+
+                      // Sync all players & selected characters to all clients
+                      emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
+
+                      // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      this.server.commandManager.createChatSuggestions(playerConnected);
+                      await playerConnected.TriggerEvent(Events.updateSuggestions);
+                      console.log("fired finished job", connectedCharacter.Job, newJob);
+
+                      console.log("character data", connectedCharacter);
+
+                      await playerConnected.TriggerEvent(Events.updateCharacter, Object.assign({}, connectedCharacter)); // Update our character on our client (char info, job, etc)
+                      await playerConnected.Notify("Character", `You've been fired from ${character.Job.label}.`, NotificationTypes.Error);
+                    }
+                  }
+                }
+              }
 
               await player.TriggerEvent(Events.receiveServerCB, updatedJob.meta.affectedRows > 0, data); // Returns true or false, if it sucessfully updated players job (fired them)
             }
@@ -208,12 +254,71 @@ export class JobManager {
     }
   }
 
-  // Methods
-  private async highCommand(character: Character): Promise<boolean> {
-    if (character.Job.name == Jobs.County) {
-      return character.Job.rank >= CountyRanks.Patrol_Lieutenant;
-    } else {
-      return false;
+  private async CALLBACK_recruitPlayer(data: Record<string, any>): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      if (player.Spawned) {
+        const character = await this.server.characterManager.Get(player);
+        if (character) {
+          if (character.isLeoJob()) {
+            if (character.Job.Boss) {
+              const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(data.unitsNet);
+              if (foundPlayer) {
+                if (foundPlayer.Spawned) {
+                  const foundCharacter = await this.server.characterManager.Get(foundPlayer);
+                  if (foundCharacter) {
+
+                    // Sets their job (Controls what dept rank is FTO/High Command)
+                    if (data.jobName === Jobs.County) {
+                      const updatedJob = await foundCharacter.updateJob(data.jobName, JobLabels.County, data.jobRank, data.jobRank > CountyRanks.Patrol_Lieutenant, sharedConfig.jobs.defaultCallsign, false);
+
+                      if (updatedJob) {
+                        // Set your selected character fuck thing
+                        foundPlayer.selectedCharacter = { // Update selected character to have new job
+                          id: foundCharacter.Id,
+                          firstName: foundCharacter.firstName,
+                          lastName: foundCharacter.lastName,
+                          nationality: foundCharacter.nationality,
+                          backstory: foundCharacter.backstory,
+                          dob: foundCharacter.DOB,
+                          age: foundCharacter.Age,
+                          isFemale: foundCharacter.Female,
+                          phone: foundCharacter.Phone,
+                          job: foundCharacter.Job,
+                          metadata: foundCharacter.Metadata,
+                          createdAt: foundCharacter.CreatedAt,
+                          lastUpdated: foundCharacter.LastEdited,
+                        };
+
+                        // Empty owned characters table
+                        foundPlayer.characters = [];
+
+                        // Sync all players & selected characters to all clients
+                        emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
+
+                        // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                        this.server.commandManager.createChatSuggestions(foundPlayer);
+                        await foundPlayer.TriggerEvent(Events.updateSuggestions);
+
+                        await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
+                        await foundPlayer.Notify("Character", `You've have been set to [${data.jobLabel}] - ${JobLabels.County}`, NotificationTypes.Info);
+                      }
+
+                      await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                    }
+                  } else {
+                    await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                  }
+                } else {
+                  await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                }
+              } else {
+                await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
