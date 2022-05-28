@@ -151,7 +151,7 @@ export class RepairShops {
   
       this.shops.push(zone);
 
-      zone.onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
+      zone.onPlayerInOut((isInside: boolean, pedPos: Vector3) => {
         if (isInside) {
           if (this.tick === undefined) this.tick = setTick(this.interactTask);
         } else {

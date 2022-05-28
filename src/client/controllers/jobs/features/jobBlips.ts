@@ -1,4 +1,4 @@
-import { Blip, BlipColor, BlipSprite, Game, Ped, Vector3, VehicleClass } from "fivem-js";
+import { Blip, BlipColor, BlipSprite, Game, Ped, Vector3, VehicleClass, World } from 'fivem-js';
 
 import { Client } from "../../../client";
 import { Delay, insideVeh } from "../../../utils";
@@ -59,8 +59,7 @@ export class JobBlips {
                 const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
 
                 if (blipIndex === -1) {
-                  const blipHandle = AddBlipForCoord(units[i].coords.x, units[i].coords.y, units[i].coords.z);
-                  const blip = new Blip(blipHandle);
+                  const blip = World.createBlip(new Vector3(units[i].coords.x, units[i].coords.y, units[i].coords.z));
                   blip.IsShortRange = true;
                   blip.Display = 4;
                   let blipTick = undefined;
@@ -229,8 +228,7 @@ export class JobBlips {
 
                   console.log("on duty", units[i].status, netId);
                   if (units[i].status) { // If the person is still on duty
-                    const foundBlip = new Blip(blipData.blip.Handle);
-                    foundBlip.Position = units[i].coords;
+                    const foundBlip = World.createBlip(units[i].coords);
                     if (units[i].inVeh) {
                       if (units[i].vehType == "automobile") {
                         switch (units[i].job) {
