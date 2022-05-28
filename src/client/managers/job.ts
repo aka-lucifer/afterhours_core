@@ -31,6 +31,7 @@ export class JobManager {
     // Events
     onNet(JobEvents.toggleDuty, this.EVENT_toggleDuty.bind(this));
     onNet(JobEvents.setCallsign, this.EVENT_setCallsign.bind(this));
+    onNet(JobEvents.dutyStateChange, this.EVENT_dutyStateChange.bind(this));
   }
 
   // Methods
@@ -56,9 +57,6 @@ export class JobManager {
             
             if (data.state) {
               if (this.client.Character.isLeoJob()) {
-                this.policeJob.registerInteractions();
-                this.policeJob.commandMenu.start();
-
                 const myPed = Game.PlayerPed;
 
                 // global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
@@ -83,9 +81,6 @@ export class JobManager {
               }
             } else {
               if (this.client.Character.isLeoJob()) {
-                this.policeJob.deleteInteractions();
-                this.policeJob.commandMenu.stop();
-
                 const myPed = Game.PlayerPed;
 
                 // global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
@@ -148,6 +143,19 @@ export class JobManager {
     } else {
       const notify = new Notification("Job", `You haven't entered a callsign!`, NotificationTypes.Error);
       await notify.send();
+    }
+  }
+
+  private EVENT_dutyStateChange(newState: boolean): void {
+    console.log("set duty", newState);
+    this.policeJob.commandMenu.toggleBlips(newState);
+
+    if (newState) { // If on duty
+      this.policeJob.registerInteractions();
+      this.policeJob.commandMenu.start();
+    } else { // If off duty
+      this.policeJob.deleteInteractions();
+      this.policeJob.commandMenu.stop();
     }
   }
 }

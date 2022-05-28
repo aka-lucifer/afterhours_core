@@ -7,7 +7,7 @@ export enum JobEvents {
 
   // All (Client | Job Blips)
   refreshBlipData = "astrid:client:jobs:refreshBlipData",
-  unitOffDuty = "astrid:client:jobs:unitOffDuty",
+  deleteOffDutyUnit = "astrid:client:jobs:deleteOffDutyUnit",
   deleteJobBlips = "astrid:client:jobs:deleteJobBlips",
 
   // LEO (Client)
@@ -48,6 +48,9 @@ export enum JobEvents {
 
   // LEO (Server | Grabbing)
   grabPlayer = "astrid:server:police:grabPlayer",
+
+  // LEO (Client | Unit Menu)
+  dutyStateChange = "astrid:client:police:dutyStateChange",
 
   // LEO (Server | Unit Menu)
   fireUnit = "astrid:server:police:fireUnit"

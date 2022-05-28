@@ -411,8 +411,8 @@ export class Client {
     if (this.character.isLeoJob()) {
       console.log("is leo 1!");
 
-      this.jobManager.policeJob.registerDuty();
-      this.jobManager.policeJob.commandMenu.start();
+      this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone
+      this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
     } else {
       this.jobManager.policeJob.deleteInteractions();
       this.jobManager.policeJob.commandMenu.stop();
@@ -425,6 +425,7 @@ export class Client {
   }
 
   private async EVENT_updateCharacter(character: any): Promise<void> {
+    // Set the necessary police controllers stopped
     this.jobManager.policeJob.deleteInteractions();
     this.jobManager.policeJob.commandMenu.stop();
 
@@ -435,8 +436,9 @@ export class Client {
     if (this.character.isLeoJob()) {
       console.log("is leo 2!");
 
-      this.jobManager.policeJob.registerDuty();
-      this.jobManager.policeJob.commandMenu.start();
+      // Start the necessary police controllers
+      this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone
+      this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
     }
   }
 

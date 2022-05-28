@@ -38,7 +38,7 @@ export class JobBlips {
 
     // Events
     onNet(JobEvents.refreshBlipData, this.EVENT_refreshBlipData.bind(this));
-    onNet(JobEvents.unitOffDuty, this.EVENT_unitOffDuty.bind(this));
+    onNet(JobEvents.deleteOffDutyUnit, this.EVENT_deleteOffDutyUnit.bind(this));
     onNet(JobEvents.deleteJobBlips, this.EVENT_deleteJobBlips.bind(this));
   }
 
@@ -405,7 +405,7 @@ export class JobBlips {
     }
   }
 
-  private EVENT_unitOffDuty(netId: number): void {
+  private EVENT_deleteOffDutyUnit(netId: number): void { //
     const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
     // console.log("blipindex from off duty!", netId, blipIndex);
     if (blipIndex !== -1) {

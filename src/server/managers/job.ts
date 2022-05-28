@@ -80,11 +80,13 @@ export class JobManager {
             await player.Notify("Job", `You've gone on duty`, NotificationTypes.Success);
           } else {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} Off Duty`);
-            emitNet(JobEvents.unitOffDuty, -1, player.Handle); // Remove this players on duty blip to all on duty players
+            emitNet(JobEvents.deleteOffDutyUnit, -1, player.Handle); // Remove this players on duty blip to all on duty players
+
+            await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you as you have gone off duty
             await player.Notify("Job", `You've gone off duty`, NotificationTypes.Error);
           }
 
-          await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you
+          await player.TriggerEvent(JobEvents.dutyStateChange, data.state); // Handles toggling job on/off duty controllers & helpers
           await player.TriggerEvent(Events.receiveServerCB, true, data); // Return that they are on duty
 
           // Resync all players & selected characters to all clients, as your on duty status has changed

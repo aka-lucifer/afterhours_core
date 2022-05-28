@@ -7937,7 +7937,8 @@
                   }
                 },
                 "blipData": {
-
+                  "sprite": 60,
+                  "colour": 3
                 }
               }
             ],
