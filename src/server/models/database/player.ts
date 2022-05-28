@@ -333,7 +333,10 @@ export class Player {
 
     axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPIKey}&steamids=${profileId}`, {}).then(response => {
       // console.log("post repsonse", response.data.response.players[0].avatarfull);
-      avatarUrl = response.data.response.players[0].avatarfull;
+      const avatar = response.data.response.players[0].avatarfull;
+      if (avatar !== undefined) {
+        avatarUrl = response.data.response.players[0].avatarfull;
+      }
       doneProcessing = true;
     }).catch(error => {
       console.log("post error", error);
