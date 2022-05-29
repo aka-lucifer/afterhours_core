@@ -188,6 +188,21 @@ export class MenuManager {
     }
   }
 
+  public renameMenu(menuIndex: string, newName: string): void {
+    const menuFound = menus[menuIndex];
+    if (menuFound) {
+      console.log("Set menu name to", newName, menuIndex);
+      menuFound.name = newName;
+
+      SendNuiMessage(JSON.stringify({
+        event: NuiMessages.RenameMenu,
+        data: {
+          name: newName
+        }
+      }))
+    }
+  }
+
   public emptyMenu(menuIndex: string): void {
     const menuFound = menus[menuIndex];
     if (menuFound) {
@@ -262,6 +277,10 @@ export class MenuManager {
       // Close LEO Unit Recruitment Menu
       if (this.client.jobManager.policeJob.commandMenu.Open) {
         this.client.jobManager.policeJob.commandMenu.Open = false;
+      }
+
+      if (this.client.jobManager.policeJob.garages.Open) {
+        this.client.jobManager.policeJob.garages.Open = false;
       }
 
       openedMenu = null;

@@ -1,13 +1,15 @@
-import { Vector3, Ped, World, Font, Game, Vehicle, RaycastResult, Audio } from "fivem-js";
+import { Audio, Font, Game, Model, Ped, RadioStation, RaycastResult, Vector3, Vehicle, World } from 'fivem-js';
 
-import { client } from "./client";
+import { client } from './client';
 
-import { Postal } from "./controllers/vehicles/gps";
+import { Postal } from './controllers/vehicles/gps';
 
-import { RightHandsideVehs } from "../shared/enums/vehicles";
+import { RightHandsideVehs } from '../shared/enums/vehicles';
 
-import clientConfig from "../configs/client.json";
-import { Events } from "../shared/enums/events/events";
+import clientConfig from '../configs/client.json';
+import { Events } from '../shared/enums/events/events';
+import { Notification } from './models/ui/notification';
+import { NotificationTypes } from '../shared/enums/ui/notifications/types';
 
 /**
  * @param reference Title for organisation logs
@@ -646,6 +648,31 @@ export async function getZone(ped: Ped): Promise<string> {
   }
 }
 
+export async function createVeh(model: string | number, position: Vector3, heading?: number, plate?: string): Promise<Vehicle> {
+  const vehModel = new Model(model);
+
+  if (vehModel.IsInCdImage) {
+    const loadedModel = vehModel.request(2000);
+    if (loadedModel) {
+      const vehicle = await World.createVehicle(vehModel, position, heading);
+
+      // Vehicle Setters
+      if (plate !== undefined) vehicle.NumberPlate = plate;
+      vehicle.PreviouslyOwnedByPlayer = true; // Set that a player owns the vehicle
+      vehicle.NeedsToBeHotwired = false; // Set it already hotwired
+      vehicle.RadioStation = RadioStation.RadioOff; // Set the vehicle radio turned off
+      global.exports["astrid_fuel"].SetFuel(vehicle.Handle, 100); // Set the vehicles fuel level to full
+      vehModel.markAsNoLongerNeeded(); // Removes vehicle model from memory
+
+      return vehicle;
+    }
+  } else {
+    const notify = new Notification("Vehicle", `The passed vehicle model (${model}) doesn't exist in the server!`, NotificationTypes.Error);
+    await notify.send();
+  }
+}
+
+// EVENTS
 onNet(Events.soundFrontEnd, (sound: string, set?: string) => {
   Audio.playSoundFrontEnd(sound, set);
 })

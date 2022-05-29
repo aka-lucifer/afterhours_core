@@ -159,153 +159,149 @@
       "interval": 30
     },
     "blacklister": {
-      "general": {
-        "-1291952903": {
-          "name": "entityxf",
-          "brand": "Overflod",
-          "model": "Entity XF",
-          "type": "super",
-          "rank": 2
-        },
-        "-1216765807": {
-          "name": "adder",
-          "brand": "Truffade",
-          "model": "Adder",
-          "type": "super",
-          "rank": [2, 5]
-        },
-        "338562499": {
-          "name": "vacca",
-          "brand": "Pegassi",
-          "model": "Vacca",
-          "type": "super",
-          "rank": 2
-        },
+      "-1291952903": {
+        "model": "entityxf",
+        "brand": "Overflod",
+        "name": "Entity XF",
+        "type": "super",
+        "rank": 2
+      },
+      "-1216765807": {
+        "model": "adder",
+        "brand": "Truffade",
+        "name": "Adder",
+        "type": "super",
+        "rank": [2, 5]
+      },
+      "338562499": {
+        "model": "vacca",
+        "brand": "Pegassi",
+        "name": "Vacca",
+        "type": "super",
+        "rank": 2
+      },
 
-        "DIAMOND!": "Diamond Donator Vehicles",
-        "-984243759": {
-          "name": "765lt",
-          "brand": "McLaren",
-          "model": "765LT",
-          "type": "super",
-          "rank": [4, 5],
-          "donatorAsset": true
-        },
+      "-984243759": {
+        "model": "765lt",
+        "brand": "McLaren",
+        "name": "765LT",
+        "type": "super",
+        "rank": [4, 5],
+        "donatorAsset": true,
+        "donatorType": "DIAMOND"
+      },
 
-        
-        "COMMENT_1": "SASP Vehicles",
-        "-1530015901": {
-          "name": "sasp1",
-          "brand": "Ford",
-          "model": "CVPI (2011)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [0, 1, 2, 3, 4, 5, 6, 7, 8]
-        },
-        "-1291621426": {
-          "name": "sasp2",
-          "brand": "Ford",
-          "model": "Taurus (2018)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
-        },
-        "1198560426": {
-          "name": "sasp3",
-          "brand": "Ford",
-          "model": "Explorer (2016)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [2, 3, 4, 5, 6, 7, 8]
-        },
-        "1430204487": {
-          "name": "sasp4",
-          "brand": "Dodge",
-          "model": "Charger (2918)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [2, 3, 4, 5, 6, 7, 8]
-        },
-        "1811307957": {
-          "name": "sasp5",
-          "brand": "Dodge",
-          "model": "Charger (2018 | K9)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
-        },
-        "2043148632": {
-          "name": "sasp6",
-          "brand": "Ford",
-          "model": "F-150 (2018)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [3, 4, 5, 6, 7, 8]
-        },
-        "1805737223": {
-          "name": "sasp7",
-          "brand": "Chevrolet",
-          "model": "Tahoe (2014)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [4, 5, 6, 7, 8]
-        },
-        "2045966762": {
-          "name": "sasp8",
-          "brand": "Ford",
-          "model": "Mustang (2018)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
-        },
-        "847047359": {
-          "name": "sasp9",
-          "brand": "Chevrolet",
-          "model": "Tahoe (2020)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [4, 5, 6, 7, 8]
-        },
-        "1740784122": {
-          "name": "sasp10",
-          "brand": "Chevrolet",
-          "model": "Tahoe (2020 | K9)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [1, 2, 3, 4, 5, 6, 7, 8]
-        },
-        "-1661686690": {
-          "name": "sasp11",
-          "brand": "Dodge",
-          "model": "Durango (2021)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [7, 8]
-        },
-        "-1958475523": {
-          "name": "sasp12",
-          "brand": "Chevrolet",
-          "model": "Tahoe (2021)",
-          "type": "emergency",
-          "job": "state",
-          "rank": [7, 8]
-        },
-        "-1042057669": {
-          "name": "sasp13",
-          "brand": "BMW",
-          "model": "RT1200",
-          "type": "emergency",
-          "job": "state",
-          "rank": [3, 4, 5, 6, 7, 8]
-        },
-        "-1350053500": {
-          "name": "sasp14",
-          "brand": "Boston",
-          "model": "Whaler",
-          "type": "emergency",
-          "job": "state",
-          "rank": [4, 5, 6, 7, 8]
-        }
+      "-1530015901": {
+        "model": "sasp1",
+        "brand": "Ford",
+        "name": "CVPI (2011)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [0, 1, 2, 3, 4, 5, 6, 7, 8]
+      },
+      "-1291621426": {
+        "model": "sasp2",
+        "brand": "Ford",
+        "name": "Taurus (2018)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+      },
+      "1198560426": {
+        "model": "sasp3",
+        "brand": "Ford",
+        "name": "Explorer (2016)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [2, 3, 4, 5, 6, 7, 8]
+      },
+      "1430204487": {
+        "model": "sasp4",
+        "brand": "Dodge",
+        "name": "Charger (2018)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [2, 3, 4, 5, 6, 7, 8]
+      },
+      "1811307957": {
+        "model": "sasp5",
+        "brand": "Dodge",
+        "name": "Charger (2018 | K9)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+      },
+      "2043148632": {
+        "model": "sasp6",
+        "brand": "Ford",
+        "name": "F-150 (2018)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [3, 4, 5, 6, 7, 8]
+      },
+      "1805737223": {
+        "model": "sasp7",
+        "brand": "Chevrolet",
+        "name": "Tahoe (2014)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [4, 5, 6, 7, 8]
+      },
+      "2045966762": {
+        "model": "sasp8",
+        "brand": "Ford",
+        "name": "Mustang (2018)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+      },
+      "847047359": {
+        "model": "sasp9",
+        "brand": "Chevrolet",
+        "name": "Tahoe (2020)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [4, 5, 6, 7, 8]
+      },
+      "1740784122": {
+        "model": "sasp10",
+        "brand": "Chevrolet",
+        "name": "Tahoe (2020 | K9)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [1, 2, 3, 4, 5, 6, 7, 8]
+      },
+      "-1661686690": {
+        "model": "sasp11",
+        "brand": "Dodge",
+        "name": "Durango (2021)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [7, 8]
+      },
+      "-1958475523": {
+        "model": "sasp12",
+        "brand": "Chevrolet",
+        "name": "Tahoe (2021)",
+        "type": "emergency",
+        "job": "state",
+        "rank": [7, 8]
+      },
+      "-1042057669": {
+        "model": "sasp13",
+        "brand": "BMW",
+        "name": "RT1200",
+        "type": "emergency",
+        "job": "state",
+        "rank": [3, 4, 5, 6, 7, 8]
+      },
+      "-1350053500": {
+        "model": "sasp14",
+        "brand": "Boston",
+        "name": "Whaler",
+        "type": "emergency",
+        "job": "state",
+        "rank": [4, 5, 6, 7, 8]
       }
     }
   },

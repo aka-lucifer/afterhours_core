@@ -10,6 +10,7 @@ import { CommandMenu } from './police/commandMenu';
 
 import { Jobs } from "../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
+import { Garages } from './police/garages';
 
 interface Call {
   id: number;
@@ -27,6 +28,7 @@ export class PoliceJob {
   public cuffing: Cuffing
   public grabbing: Grabbing;
   public commandMenu: CommandMenu;
+  public garages: Garages;
 
   constructor(client: Client) {
     this.client = client;
@@ -35,6 +37,7 @@ export class PoliceJob {
     this.cuffing = new Cuffing(this.client);
     this.grabbing = new Grabbing(this.client);
     this.commandMenu = new CommandMenu(this.client);
+    this.garages = new Garages(this.client);
 
     // Events
     onNet(JobEvents.setupMRAP, this.EVENT_setupMRAP.bind(this));
@@ -123,6 +126,7 @@ export class PoliceJob {
   public async init(): Promise<void> {
     await this.cuffing.init();
     this.commandMenu.init();
+    this.garages.init();
   }
 
   public stop(): void {

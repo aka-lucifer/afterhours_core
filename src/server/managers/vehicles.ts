@@ -23,6 +23,8 @@ import { Message } from "../../shared/models/ui/chat/message";
 
 import serverConfig from "../../configs/server.json";
 import sharedConfig from "../../configs/shared.json";
+import { Player } from '../models/database/player';
+import { Character } from '../models/database/character';
 
 export class VehicleManager {
   public server: Server;
@@ -97,8 +99,26 @@ export class VehicleManager {
         return true; // for fun debugging
       }
     }
+  }
 
-    return false;
+  private async hasJobPermission(character: Character, vehRanks: number[] | number): Promise<boolean> {
+    if (vehRanks !== undefined) {
+      if (typeof vehRanks == "object") {
+        for (let i = 0; i < vehRanks.length; i++) {
+          if (character.Job.rank >= vehRanks[i] || character.Owner.Rank > Ranks.Admin) {
+            return true;
+          }
+        }
+      } else if (typeof vehRanks == "number") {
+        if (character.Job.rank >= vehRanks || character.Owner.Rank > Ranks.Admin) {
+          return true;
+        }
+      }
+
+      return false;
+    } else {
+      return true; // for fun debugging
+    }
   }
 
   // Events
@@ -120,7 +140,7 @@ export class VehicleManager {
           if (player.Spawned) {
             // Permission Checker
             const vehModel = GetEntityModel(entity);
-            const vehData = serverConfig.vehicles.blacklister.general[vehModel];
+            const vehData = serverConfig.vehicles.blacklister[vehModel];
             if (vehData !== undefined) {
               // console.log("spawning veh!", entity);
               const discord = await player.GetIdentifier("discord");
@@ -130,7 +150,8 @@ export class VehicleManager {
                 const character = await this.server.characterManager.Get(player);
                 if (character) {
                   if (character.Job.name == vehData.job || player.Rank >= Ranks.Admin) {
-                    if (character.Job.rank >= vehData.rank || player.Rank >= Ranks.Admin) {
+                    const hasPerm = await this.hasJobPermission(character, vehData.rank);
+                    if (hasPerm) {
                       // console.log("spawn police vehicle!");
                       this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
                     } else {

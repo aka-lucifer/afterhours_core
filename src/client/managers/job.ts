@@ -149,13 +149,16 @@ export class JobManager {
   private EVENT_dutyStateChange(newState: boolean): void {
     console.log("set duty", newState);
     this.policeJob.commandMenu.toggleBlips(newState);
+    this.policeJob.garages.toggleBlips(newState);
 
     if (newState) { // If on duty
       this.policeJob.registerInteractions();
       this.policeJob.commandMenu.start();
+      this.policeJob.garages.start();
     } else { // If off duty
       this.policeJob.deleteInteractions();
       this.policeJob.commandMenu.stop();
+      this.policeJob.garages.stop();
     }
   }
 }

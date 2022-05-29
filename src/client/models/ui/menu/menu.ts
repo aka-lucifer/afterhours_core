@@ -15,6 +15,16 @@ export class Menu {
     this.handle = client.menuManager.AddMenu(menuName, menuResource, menuPosition);
   }
 
+  // Setters
+  public get Name(): string {
+    return this.name;
+  }
+
+  public set Name(newName: string) {
+    this.name = newName;
+    client.menuManager.renameMenu(this.handle, this.name);
+  }
+
   // Methods
   public async IsAnyMenuOpen(): Promise<boolean> {
     return client.menuManager.IsAnyMenuOpen();

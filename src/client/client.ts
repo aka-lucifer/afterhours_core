@@ -398,7 +398,7 @@ export class Client {
     this.registerStates();
   }
 
-  private EVENT_setCharacter(character: any): void {
+  private async EVENT_setCharacter(character: any): Promise<void> {
     // Clear Previous Character Data
     Game.PlayerPed.removeAllWeapons();
     this.weaponManager.onBack.clearWeapons();
@@ -413,6 +413,7 @@ export class Client {
 
       this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone
       this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
+      await this.jobManager.policeJob.garages.setup();
     } else {
       this.jobManager.policeJob.deleteInteractions();
       this.jobManager.policeJob.commandMenu.stop();
@@ -439,6 +440,7 @@ export class Client {
       // Start the necessary police controllers
       this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone
       this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
+      await this.jobManager.policeJob.garages.setup();
     }
   }
 

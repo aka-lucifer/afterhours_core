@@ -35,6 +35,7 @@ export enum NuiMessages {
   // Astrid Menu
   OpenMenu = "OPEN_MENU",
   CloseMenu = "CLOSE_MENU",
+  RenameMenu = "RENAME_MENU",
   EmptyMenu = "EMPTY_MENU",
   DeleteMenu = "DELETE_MENU",
   DeleteComponent = "DELETE_COMPONENT",
