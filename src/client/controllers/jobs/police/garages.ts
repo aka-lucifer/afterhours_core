@@ -114,30 +114,32 @@ export class Garages {
     this.menu = new Menu(`Garage`, GetCurrentResourceName(), MenuPositions.MiddleRight);
   }
 
-  private async vehiclesInArea(positionData: SpawnLocation): Promise<Vehicle[]> {
-    const spawnPosition = new Vector3(positionData.x, positionData.y, positionData.z);
-    const worldVehs = World.getAllVehicles();
-    const foundVehicles: Vehicle[] = [];
-
-
-    for (let i = 0; i < worldVehs.length; i++) {
-      const vehPosition = worldVehs[i].Position;
-
-      if (vehPosition.distance(spawnPosition) <= clientConfig.controllers.police.garage.nearVehiclesDist) {
-        // console.log("vehicle within dist", worldVehs[i].Handle, worldVehs[i].NetworkId, worldVehs[i].NumberPlate);
-        foundVehicles.push(worldVehs[i]);
-      }
-    }
-
-    // console.log("found vehicles", foundVehicles);
-
-    return foundVehicles;
-  }
+  // private async vehiclesInArea(positionData: SpawnLocation): Promise<Vehicle[]> {
+  //   const spawnPosition = new Vector3(positionData.x, positionData.y, positionData.z);
+  //   const worldVehs = World.getAllVehicles();
+  //   const foundVehicles: Vehicle[] = [];
+  //
+  //
+  //   for (let i = 0; i < worldVehs.length; i++) {
+  //     const vehPosition = worldVehs[i].Position;
+  //
+  //     if (vehPosition.distance(spawnPosition) <= clientConfig.controllers.police.garage.nearVehiclesDist) {
+  //       // console.log("vehicle within dist", worldVehs[i].Handle, worldVehs[i].NetworkId, worldVehs[i].NumberPlate);
+  //       foundVehicles.push(worldVehs[i]);
+  //     }
+  //   }
+  //
+  //   // console.log("found vehicles", foundVehicles);
+  //
+  //   return foundVehicles;
+  // }
 
   private async findPosition(locations: SpawnLocation[]): Promise<[boolean, Vector3, number]> {
     for (let i = 0; i < locations.length; i++) {
-      const nearbyVehicles = await this.vehiclesInArea(locations[i]); // Returns all the vehicles in each parking spot
-      if (nearbyVehicles.length <= 0) { // If there are no vehicles in a parking spot
+      // const nearbyVehicles = await this.vehiclesInArea(locations[i]); // Returns all the vehicles in each parking spot
+      // if (nearbyVehicles.length <= 0) { // If there are no vehicles in a parking spot
+      const spotFilled = IsAnyVehicleNearPoint(locations[i].x, locations[i].y, locations[i].z, clientConfig.controllers.police.garage.nearVehiclesDist);
+      if (!spotFilled) {
         return [true, new Vector3(locations[i].x, locations[i].y, locations[i].z), locations[i].h];
       }
     }
