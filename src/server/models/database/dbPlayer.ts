@@ -7,8 +7,9 @@ export class DBPlayer {
   private readonly name: string;
   private rank: number;
   public playtime: number;
-  private firstJoin: Date;
   private whitelisted: boolean = false;
+  private discord: string;
+  private firstJoin: Date;
 
   constructor(data?: Record<string, any>) {
     this.id = data.player_id;
@@ -17,8 +18,9 @@ export class DBPlayer {
     this.name = data.name;
     this.rank = data.rank;
     this.playtime = data.playtime;
-    this.firstJoin = new Date(data.initial_connection);
     this.whitelisted = data.whitelisted > 0;
+    this.discord = data.discord;
+    this.firstJoin = new Date(data.initial_connection);
 
     // console.log("Added DB Player", this);
   }
@@ -42,5 +44,9 @@ export class DBPlayer {
 
   public get Rank(): number {
     return this.rank;
+  }
+
+  public get Discord(): string {
+    return this.discord;
   }
 }
