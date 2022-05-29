@@ -1,7 +1,7 @@
 import { Blip, BlipColor, BlipSprite, Game, Ped, Vector3, VehicleClass, World } from 'fivem-js';
 
 import { Client } from "../../../client";
-import { Delay, insideVeh } from "../../../utils";
+import { Delay, Inform, insideVeh } from '../../../utils';
 
 import { Jobs } from "../../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../../shared/enums/events/jobs/jobEvents";
@@ -40,6 +40,8 @@ export class JobBlips {
     onNet(JobEvents.refreshBlipData, this.EVENT_refreshBlipData.bind(this));
     onNet(JobEvents.deleteOffDutyUnit, this.EVENT_deleteOffDutyUnit.bind(this));
     onNet(JobEvents.deleteJobBlips, this.EVENT_deleteJobBlips.bind(this));
+
+    Inform("Unit Blips | Jobs Controller", "Started!");
   }
 
   // Events

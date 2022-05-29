@@ -45,7 +45,6 @@ export class Cuffing {
 
   constructor(client: Client) {
     this.client = client;
-    console.log("staff cuff")
 
     // Events
     onNet(JobEvents.startCuffing, this.EVENT_startCuffing.bind(this));
@@ -55,30 +54,7 @@ export class Cuffing {
     onNet(JobEvents.setCuffed, this.EVENT_setCuffed.bind(this));
     onNet(JobEvents.setUncuffed, this.EVENT_setUncuffed.bind(this));
 
-    // RegisterCommand("uncuff", async() => {
-    //   const handcuffModel = new Model("gr_prop_gr_jailer_keys_01a");
-    //   const loadedModel = await handcuffModel.request(2000);
-    //   if (loadedModel) {
-    //     await PlayAnim(Game.PlayerPed, "mp_arresting", "a_uncuff", 49, -1, 8.0, -8.0, 0, false, false, false);
-    //     this.handcuffKeys = await World.createProp(handcuffModel, Game.PlayerPed.Position, false, false);
-    //     const bone = GetPedBoneIndex(Game.PlayerPed.Handle, 64017);
-    //     AttachEntityToEntity(this.handcuffKeys.Handle, Game.PlayerPed.Handle, bone, -0.04, -0.05, -0.01, -67.4, 80.0, 130.0, true, true, false, true, 1, true);
-    //   }
-    // }, false);
-    //
-    // RegisterCommand("uncuff_stop", async() => {
-    //   if (this.handcuffKeys !== undefined) {
-    //     if (this.handcuffKeys.Handle > 0) {
-    //       if (this.handcuffKeys.exists()) {
-    //         ClearPedTasks(Game.PlayerPed.Handle);
-    //         this.handcuffKeys.delete();
-    //         this.handcuffKeys = undefined;
-    //       }
-    //     }
-    //   }
-    // }, false);
-
-    Inform("Jobs (Police) | Cuffing Controller", "Started!");
+    Inform("Cuffing | Jobs (Police) Controller", "Started!");
   }
 
   // Methods

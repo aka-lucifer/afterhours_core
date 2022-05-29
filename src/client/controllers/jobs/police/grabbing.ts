@@ -1,7 +1,7 @@
 import { Game } from 'fivem-js';
 
 import { Client } from '../../../client';
-import { LoadAnim, PlayAnim } from '../../../utils';
+import { Inform, LoadAnim, PlayAnim } from '../../../utils';
 
 import { JobEvents } from '../../../../shared/enums/events/jobs/jobEvents';
 import { GrabState } from '../../../../shared/enums/jobs/grabStates';
@@ -30,6 +30,8 @@ export class Grabbing {
     onNet(JobEvents.startGrabbing, this.EVENT_startGrabbing.bind(this));
     onNet(JobEvents.setGrabbed, this.EVENT_setGrabbed.bind(this));
     onNet(JobEvents.stopGrabbing, this.EVENT_stopGrabbing.bind(this));
+
+    Inform("Grabbing | Jobs (Police) Controller", "Started!");
   }
 
   // Methods
