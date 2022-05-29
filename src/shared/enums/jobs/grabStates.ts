@@ -1,5 +1,7 @@
 export enum GrabState {
   None,
   Holding,
-  Held
+  Held,
+  Seating,
+  Seated
 }

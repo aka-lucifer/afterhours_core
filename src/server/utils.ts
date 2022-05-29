@@ -266,39 +266,15 @@ export async function getClosestPlayer(myPlayer: Player): Promise<[Player, numbe
   for (let i = 0; i < svPlayers.length; i++) {
     const player = svPlayers[i];
 
-    if (myPlayer.Handle !== player.Handle) {
+    // if (myPlayer.Handle !== player.Handle) { // DISABLED FOR SEATING TESTING
       const dist = myPlayer.Position.distance(player.Position);
 
       if (closestPlayer == undefined || dist < closestDistance) {
         closestPlayer = player;
         closestDistance = dist;
       }
-    }
+    // }
   }
-  
-  // let justStarted = true;
-  // const players = server.connectedPlayerManager.GetPlayers;
-
-  // for (let i = 0; i < players.length; i++) {
-  //   const player = players[i];
-
-  //   if (player.Handle != myPlayer.Handle) {
-  //     const pedDist = Dist(myPlayer.Position, player.Position, true);
-
-  //     if (pedDist <= serverConfig.maxClosestDistance) {
-  //       if (justStarted) {
-  //         closestPlayer = player;
-  //         closestDistance = pedDist;
-  //         justStarted = false;
-  //       }
-
-  //       if (closestDistance < pedDist) {
-  //         closestPlayer = player;
-  //         closestDistance = pedDist;
-  //       }
-  //     }
-  //   }
-  // }
 
   return [closestPlayer, closestDistance];
 }

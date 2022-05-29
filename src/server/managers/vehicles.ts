@@ -3,11 +3,14 @@ import { VehicleSeat } from "fivem-js";
 import { Server } from "../server";
 import { Delay, GetHash } from "../utils";
 
-import { Command } from "../models/ui/chat/command";;
+import { Command } from "../models/ui/chat/command";
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
+import { Character } from '../models/database/character';
 
+// Controllers
 import { GPS } from "../controllers/vehicles/gps";
 import { Seatbelt } from "../controllers/vehicles/seatbelt";
+import { Seating } from "../controllers/vehicles/seating";
 
 import { LogTypes } from "../enums/logTypes";
 
@@ -23,8 +26,6 @@ import { Message } from "../../shared/models/ui/chat/message";
 
 import serverConfig from "../../configs/server.json";
 import sharedConfig from "../../configs/shared.json";
-import { Player } from '../models/database/player';
-import { Character } from '../models/database/character';
 
 export class VehicleManager {
   public server: Server;
@@ -33,6 +34,7 @@ export class VehicleManager {
   // Controllers
   private gps: GPS;
   private seatbelt: Seatbelt;
+  private seating: Seating;
 
   constructor(server: Server) {
     this.server = server;
@@ -46,6 +48,7 @@ export class VehicleManager {
   public async init(): Promise<void> {
     this.gps = new GPS(this.server);
     this.seatbelt = new Seatbelt(this.server);
+    this.seating = new Seating(this.server);
 
     this.gps.init();
 

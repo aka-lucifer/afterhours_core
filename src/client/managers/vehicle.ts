@@ -16,6 +16,7 @@ import { KeepWheel } from "../controllers/vehicles/keepWheel";
 import { Rolling } from "../controllers/vehicles/rolling";
 import { Seatbelt } from "../controllers/vehicles/seatbelt";
 import { ReverseBraking } from '../controllers/vehicles/reverseBraking';
+import { Seating } from "../controllers/vehicles/seating";
 
 export class VehicleManager {
   private readonly client: Client;
@@ -32,6 +33,7 @@ export class VehicleManager {
   private rolling: Rolling;
   private seatbelt: Seatbelt;
   private reverseBraking: ReverseBraking;
+  private seating: Seating;
 
   constructor(client: Client) {
     this.client = client;
@@ -55,10 +57,14 @@ export class VehicleManager {
     this.rolling = new Rolling(); // done
     this.seatbelt = new Seatbelt(this.client); // done - (0.10ms)
     this.reverseBraking = new ReverseBraking(); // done - (0.10ms)
+    this.seating = new Seating(this.client);
+
+    // Inits
     this.speedZones.init(); // done (0.01ms-0.02ms)
     this.repairShops.init(); // done
     this.gps.init(); // done
     this.rolling.init(); // done
+    this.seating.init();
   }
 
   // Events

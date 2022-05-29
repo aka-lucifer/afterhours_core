@@ -66,7 +66,8 @@ export enum Events {
   bringAll = "astrid:server:bringAll",
   freezeAll = "astrid:server:freezeAll",
 
-  // Astrid Server ([Controllers] | Staff] - Menu | [Player Management])
+  // Astrid Server ([Controllers] | Vehicle] - Seating)
+  seatPlayer = "astrid:server:controllers:vehicle:seatPlayer",
 
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
@@ -141,6 +142,9 @@ export enum Events {
   // Astrid Client ([Vehicle] - Seatbelt)
   ejectFromVeh = "astrid:client:ejectFromVeh",
   harmPassenger = "astrid:client:harmPassenger",
+
+  // Astrid Client ([Controllers] | Vehicle] - Seating)
+  seatCuffAnim = "astrid:client:controllers:vehicle:seating:seatCuffAnim",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

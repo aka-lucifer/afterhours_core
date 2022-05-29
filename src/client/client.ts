@@ -58,6 +58,8 @@ import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
 import { Ranks } from '../shared/enums/ranks';
 import { CuffState } from '../shared/enums/jobs/cuffStates';
+import { InteractionStates } from '../shared/enums/jobs/interactionStates';
+import { GrabState } from '../shared/enums/jobs/grabStates';
 
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
@@ -326,7 +328,8 @@ export class Client {
 
     // Jobs
     this.playerStates.state.set("cuffState", CuffState.Uncuffed, true);
-    this.playerStates.state.set("grabState", CuffState.Uncuffed, true);
+    this.playerStates.state.set("grabState", GrabState.None, true);
+    this.playerStates.state.set("interationState", InteractionStates.None, true);
 
     this.statesTick = setTick(async() => {
 

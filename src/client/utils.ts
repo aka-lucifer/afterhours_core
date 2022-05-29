@@ -648,6 +648,14 @@ export async function getZone(ped: Ped): Promise<string> {
   }
 }
 
+/**
+ *
+ * @param model The model name or model hash of the vehicle to create
+ * @param position The world position to create the vehicle at
+ * @param heading The entity heading to make the entity face
+ * @param plate A custom plate to assign to the vehicle
+ * @returns Returns the vehicle class of the vehicle created
+ */
 export async function createVeh(model: string | number, position: Vector3, heading?: number, plate?: string): Promise<Vehicle> {
   const vehModel = new Model(model);
 
@@ -670,6 +678,24 @@ export async function createVeh(model: string | number, position: Vector3, headi
     const notify = new Notification("Vehicle", `The passed vehicle model (${model}) doesn't exist in the server!`, NotificationTypes.Error);
     await notify.send();
   }
+}
+
+export async function getClosestVehicle(ped: Ped): Promise<[number, Vehicle]> {
+  const pedPos = ped.Position;
+  const worldVehs = World.getAllVehicles();
+  let closest;
+  let distance;
+
+  for (let i = 0; i < worldVehs.length; i++) {
+    const dist = pedPos.distance(worldVehs[i].Position);
+
+    if (closest == undefined || dist < distance) {
+      closest = worldVehs[i];
+      distance = dist;
+    }
+  }
+
+  return [distance, closest];
 }
 
 // EVENTS
