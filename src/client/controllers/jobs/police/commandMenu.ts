@@ -1,46 +1,34 @@
 import {
   Blip,
-  BlipColor,
-  BlipSprite,
   Color,
   Control,
   Game,
   InputMode,
-  MarkerType,
   Screen,
   Vector3,
   World,
 } from 'fivem-js';
 
 import { Client } from '../../../client';
+import { Delay, Inform } from '../../../utils';
 
 import { Menu } from '../../../models/ui/menu/menu';
-
-import { PolyZone } from '../../../helpers/polyZone';
-
-import clientConfig from '../../../../configs/client.json';
-import { Delay } from '../../../utils';
-import { MenuPositions } from '../../../../shared/enums/ui/menu/positions';
 import { ServerCallback } from '../../../models/serverCallback';
-import { JobCallbacks } from '../../../../shared/enums/events/jobs/jobCallbacks';
-import { Jobs } from '../../../../shared/enums/jobs/jobs';
-import { CountyRanks, PoliceRanks, StateRanks } from '../../../../shared/enums/jobs/ranks';
 import { Submenu } from '../../../models/ui/menu/submenu';
 import { Notification } from '../../../models/ui/notification';
+
+import { MarkerData } from "../../../interfaces/ui/marker";
+import { BlipData } from "../../../interfaces/ui/blip";
+
+import clientConfig from '../../../../configs/client.json';
+
+import { MenuPositions } from '../../../../shared/enums/ui/menu/positions';
+import { JobCallbacks } from '../../../../shared/enums/events/jobs/jobCallbacks';
+import { JobLabels, Jobs } from '../../../../shared/enums/jobs/jobs';
+import { CountyRanks, PoliceRanks, StateRanks } from '../../../../shared/enums/jobs/ranks';
 import { NotificationTypes } from '../../../../shared/enums/ui/notifications/types';
-import { getRankFromValue } from '../../../../shared/utils';
 import { Ranks } from '../../../../shared/enums/ranks';
-import { JobEvents } from '../../../../shared/enums/events/jobs/jobEvents';
-
-interface MarkerData {
-  type: MarkerType,
-  colour: {r: number, g: number, b: number}
-}
-
-interface BlipData {
-  sprite: BlipSprite,
-  colour: BlipColor
-}
+import { getRankFromValue } from '../../../../shared/utils';
 
 interface MenuLocation {
   coords: Vector3,
@@ -56,7 +44,6 @@ export class CommandMenu {
 
   // Location Data
   private menuLocations: MenuLocation[] = [];
-  private locations: PolyZone[] = [];
 
   // Menu Data
   private menu: Menu;
@@ -71,6 +58,8 @@ export class CommandMenu {
 
   constructor(client: Client) {
     this.client = client;
+
+    Inform("Command Menu | Jobs (Police) Controller", "Started!");
   }
 
   public get Open(): boolean {
@@ -94,13 +83,19 @@ export class CommandMenu {
     const configLocations = clientConfig.controllers.police.bossMenu.locations;
     for (let i = 0; i < configLocations.length; i++) {
       const position = new Vector3(configLocations[i].x, configLocations[i].y, configLocations[i].z);
-      const marker: MarkerData = configLocations[i].markerData;
-      const blipData: BlipData = configLocations[i].blipData;
+      const marker: MarkerData = clientConfig.controllers.police.bossMenu.markerData;
+      const blipData: BlipData = clientConfig.controllers.police.bossMenu.blipData;
 
       // Blip Creation
+      let namePrefix = "Command Menu Rank NOT FOUND";
+      if (configLocations[i].rank == Jobs.Police) namePrefix = JobLabels.Police;
+      if (configLocations[i].rank == Jobs.County) namePrefix = JobLabels.County;
+      if (configLocations[i].rank == Jobs.State) namePrefix = JobLabels.State;
+
       const blip = World.createBlip(position);
       blip.Sprite = blipData.sprite;
       blip.Color = blipData.colour;
+      blip.Name = `${namePrefix} | Unit Management`;
       blip.Scale = 0.7;
       blip.Alpha = 0;
 
