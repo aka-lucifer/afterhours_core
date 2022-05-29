@@ -201,18 +201,18 @@ export class Ban {
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Offline Banned__",
-              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: System\n**Unban Date**: ${this.issuedUntil.toUTCString()}`,
+              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${player.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Discord**: ${player.Discord !== "Unknown" ? `<@${player.Discord}>` : player.Discord}\n**Banned By**: System`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));
-          
+
           emitNet(Events.sendSystemMessage, -1, new Message(`^3${player.GetName} ^0has been banned from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
         } else { // Perm ban
           await server.logManager.Send(this.logger, new WebhookMessage({
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Offline Banned__",
-              description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${player.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: System`,
+              description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${player.GetName}\n**Reason**: ${this.banReason}\n**Discord**: ${player.Discord !== "Unknown" ? `<@${player.Discord}>` : player.Discord}\n**Banned By**: System`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));

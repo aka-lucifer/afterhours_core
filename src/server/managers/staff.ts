@@ -116,6 +116,11 @@ export class StaffManager {
     }, false);
 
     RegisterCommand("offline_ban", async(source: string, args: any[]) => {
+      // NOTES
+      // - First arg is the players license
+      // - Second arg is a DOB format (31/12/9999)
+      // - Third arg is the ban reason
+
       if (args[0]) {
         const player = await this.server.playerManager.getPlayerFromLicense(args[0]);
         if (player) {
@@ -126,14 +131,14 @@ export class StaffManager {
                 const banReason = concatArgs(2, args);
                 if (player.Rank < Ranks.Management) {
                   Inform("Ban Command", `Banned: [${player.Id}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
-                  const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id);
+                  const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id, date);
                   ban.OfflineBan = true;
                   await ban.save();
                 } else {
                   Error("Ban Command", "You can't ban management or above!");
                 }
               } else {
-                Error("Ban Command", "No ban reason provided | format (YY-MM-DD)!");
+                Error("Ban Command", "No ban reason provided!");
               }
             } else {
               Error("Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
