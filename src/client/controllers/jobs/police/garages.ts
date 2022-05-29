@@ -192,7 +192,7 @@ export class Garages {
 
         // Spawn Button (With spawn logic)
         if (menuPermission) {
-          const spawnButton = this.menu.BindButton(`${vehicle.brand} ${vehicle.name} | ${vehicle.model}`, async () => {
+          const spawnButton = this.menu.BindButton(`${vehicle.brand}, ${vehicle.name}`, async () => {
             const [positionAvailable, position, heading] = await this.findPosition(this.currentGarage.spawnLocations);
             const myPed = Game.PlayerPed;
             let spawnPos = position;
@@ -210,6 +210,7 @@ export class Garages {
 
             const createdVeh = await createVeh(vehicle.model, spawnPos, spawnHeading);
             TaskWarpPedIntoVehicle(myPed.Handle, createdVeh.Handle, VehicleSeat.Driver); // Set you in the drivers seat of the vehicle
+            await this.menu.Close();
           });
         }
       }
@@ -224,31 +225,31 @@ export class Garages {
         if (this.client.Character.isLeoJob()) { // If you have the correct job (Police, State, County, Fire/EMS)
           if (this.client.Character.job.status) { // If you are on duty
             if (!this.usingMenu) {
-              if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
-                let dist = Game.PlayerPed.Position.distance(this.locations[a].coords);
+              let dist = Game.PlayerPed.Position.distance(this.locations[a].coords);
 
-                if (dist <= 10) {
-                  currentPos = this.locations[a].coords;
+              if (dist <= 10) {
+                currentPos = this.locations[a].coords;
 
-                  if (this.interactionTick === undefined) this.interactionTick = setTick(async () => {
-                    if (!this.usingMenu) {
-                      dist = Game.PlayerPed.Position.distance(this.locations[a].coords);
-                      World.drawMarker(
-                        this.locations[a].marker.type,
-                        this.locations[a].coords,
-                        new Vector3(0, 0, 0),
-                        new Vector3(0, 0, 0),
-                        new Vector3(1, 1, 1),
-                        Color.fromRgb(this.locations[a].marker.colour.r, this.locations[a].marker.colour.g, this.locations[a].marker.colour.b),
-                        false,
-                        true,
-                        false,
-                        null,
-                        null,
-                        false
-                      );
+                if (this.interactionTick === undefined) this.interactionTick = setTick(async () => {
+                  if (!this.usingMenu) {
+                    dist = Game.PlayerPed.Position.distance(this.locations[a].coords);
+                    World.drawMarker(
+                      this.locations[a].marker.type,
+                      this.locations[a].coords,
+                      new Vector3(0, 0, 0),
+                      new Vector3(0, 0, 0),
+                      new Vector3(1, 1, 1),
+                      Color.fromRgb(this.locations[a].marker.colour.r, this.locations[a].marker.colour.g, this.locations[a].marker.colour.b),
+                      false,
+                      true,
+                      false,
+                      null,
+                      null,
+                      false
+                    );
 
-                      if (dist <= 1.5) {
+                    if (dist <= 1.5) {
+                      if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
                         Screen.displayHelpTextThisFrame("~INPUT_CONTEXT~ to access the garage"); // Display the E toggle
 
                         if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Context)) { // If E is pressed
@@ -256,10 +257,16 @@ export class Garages {
                           await this.menu.Open(); // Open the menu
                           this.usingMenu = true; // Set the using menu variable to true
                         }
+                      } else {
+                        Screen.displayHelpTextThisFrame("~INPUT_CONTEXT~ Return vehicle to the garage"); // Display the E toggle
+
+                        if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Context)) { // If E is pressed
+                          Game.PlayerPed.CurrentVehicle.delete();
+                        }
                       }
                     }
-                  });
-                }
+                  }
+                });
               }
             }
           } else {
