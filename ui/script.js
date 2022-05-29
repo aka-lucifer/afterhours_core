@@ -845,6 +845,10 @@ const HUD = new Vue({
       this.menuVisible = false;
     },
 
+    RenameMenu(data) {
+      this.menuName = data.name;
+    },
+
     EmptyMenu(data) {
       this.menuComponents = data.components;
       this.menuOption = 0;
@@ -1153,6 +1157,7 @@ const HUD = new Vue({
     // ASTRID MENU Events
     RegisterEvent("OPEN_MENU", this.OpenMenu);
     RegisterEvent("CLOSE_MENU", this.CloseMenu);
+    RegisterEvent("RENAME_MENU", this.RenameMenu);
     RegisterEvent("EMPTY_MENU", this.EmptyMenu)
     RegisterEvent("DELETE_MENU", this.DeleteMenu)
     RegisterEvent("DELETE_COMPONENT", this.DeleteComponent);
