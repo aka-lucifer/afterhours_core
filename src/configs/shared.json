@@ -1682,7 +1682,20 @@
     "1061211904": {
       "name": "WEAPON_GRAVITY",
       "label": "Gravity Gun",
-      "reason": "fucking disintegrated"
+      "reason": "fucking disintegrated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_gravity"
+      },
+      "rank": 9
     }
   },
   "postals": [
