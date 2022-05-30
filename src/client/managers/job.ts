@@ -46,7 +46,7 @@ export class JobManager {
 
   // Events
   public async EVENT_toggleDuty(data: Record<string, any>): Promise<void> {
-    if (this.client.Character.Job.callsign != "NOT_SET") {
+    if (this.client.Character.Job.callsign !== "NOT_SET") {
       if (this.client.Character.Job.status != data.state) {
 
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: data.state}, async(cbData, passedData) => {
@@ -122,13 +122,12 @@ export class JobManager {
 
   public async EVENT_setCallsign(): Promise<void> {
     const callsign = await keyboardInput("Callsign", 5);
-    if (callsign != null) {
+    if (callsign !== undefined) {
       if (callsign.length > 0) {
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.updateCallsign, {callsign: callsign}, async(cbData, passedData) => {
-          console.log("result", cbData, passedData);
 
           if (cbData) {
-            this.client.Character.Job.Callsign = callsign;
+            this.client.Character.Job.callsign = callsign;
             const notify = new Notification("Job", `You've set your callsign to (${callsign})`, NotificationTypes.Success);
             await notify.send();
           } else {

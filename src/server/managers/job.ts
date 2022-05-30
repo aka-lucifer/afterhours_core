@@ -131,12 +131,19 @@ export class JobManager {
         const character = await this.server.characterManager.Get(player);
         if (character) {
           if (character.isLeoJob() || character.isSAFREMSJob() || character.Job.name == "cofficer") {
-            if (character.Job.Status) {
-              const updatedCallsign = character.updateTypes("callsign", data.callsign);
-              await player.TriggerEvent(Events.receiveServerCB, updatedCallsign, data); // Update the callsign in the DB and return it back to the client
+            const oldCallsign = character.Job.Callsign;
+            const updatedCallsign = await character.updateTypes("callsign", data.callsign);
+            await player.TriggerEvent(Events.receiveServerCB, updatedCallsign, data); // Update the callsign in the DB and return it back to the client
 
-              // log it here
-            }
+            const discord = await player.GetIdentifier("discord");
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Callsign Logging", embeds: [{
+                color: EmbedColours.Green,
+                title: `__Unit Changed Callsign | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
+                description: `A player has changed their callsign.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Old Callsign**: ${oldCallsign}\n**New Callsign**: ${data.callsign}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
           }
         }
       }
