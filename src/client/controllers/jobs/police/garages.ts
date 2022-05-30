@@ -36,6 +36,9 @@ interface Garage {
   spawnLocations: SpawnLocation[]
 }
 
+// NOTES
+// - SASP vehicles are showing for BCSO (for those who arent admin above perm ting, look into this later)
+
 export class Garages {
   // Main Data
   private client: Client;
@@ -310,14 +313,18 @@ export class Garages {
   private async hasPermission(vehicle: VehData): Promise<boolean> {
     if (vehicle.rank !== undefined) {
       if (typeof vehicle.rank == "object") {
-        for (let i = 0; i < vehicle.rank.length; i++) {
-          if (this.client.Character.job.rank >= vehicle.rank[i] || this.client.Player.Rank >= Ranks.Admin) { // If you have permission or you're a admin or above
-            return true;
+        if (this.client.Character.job.name == vehicle.job) {
+          for (let i = 0; i < vehicle.rank.length; i++) {
+            if (this.client.Character.job.rank >= vehicle.rank[i] || this.client.Player.Rank >= Ranks.Admin) { // If you have permission or you're a admin or above
+              return true;
+            }
           }
         }
       } else if (typeof vehicle.rank == "number") {
-        if (this.client.Character.job.rank >= vehicle.rank || this.client.Player.Rank >= Ranks.Admin) { // If you have permission or you're a admin or above
-          return true;
+        if (this.client.Character.job.name == vehicle.job) {
+          if (this.client.Character.job.rank >= vehicle.rank || this.client.Player.Rank >= Ranks.Admin) { // If you have permission or you're a admin or above
+            return true;
+          }
         }
       }
 
