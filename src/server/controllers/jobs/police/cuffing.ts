@@ -1,9 +1,7 @@
 import { Vector3 } from 'fivem-js';
 
 import { Server } from '../../../server';
-import { Delay, Dist, getClosestPlayer, Inform, Log, NumToVector3 } from '../../../utils';
-
-import { ProximityTypes } from '../../../managers/characters';
+import { Delay, getClosestPlayer, Inform, Log } from '../../../utils';
 
 import { JobEvents } from '../../../../shared/enums/events/jobs/jobEvents';
 import { CuffState } from '../../../../shared/enums/jobs/cuffStates';
@@ -112,7 +110,7 @@ export class Cuffing {
                     }
 
                     // Display 3D /me above your head
-                    await this.server.characterManager.meDrawing(parseInt(player.Handle), `handcuffs ${closestCharacter.Name}`);
+                    await this.server.characterManager.meDrawing(parseInt(player.Handle), `Uncuffs ${closestCharacter.Name}`);
                   } else {
                     await player.Notify("Cuffing", "This person isn't cuffed!", NotificationTypes.Error);
                   }
