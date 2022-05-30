@@ -93,17 +93,19 @@ export class WeaponsManager {
             }]
           }));
         }
-      } else {
-        const discord = await player.GetIdentifier("discord");
-        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-          username: "Weapon Logs", embeds: [{
-            color: EmbedColours.Green,
-            title: "__Player Killed__",
-            description: `Weapon not found (${currentWeapon}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,
-            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-          }]
-        }));
       }
+
+      // else {
+      //   const discord = await player.GetIdentifier("discord");
+      //   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+      //     username: "Weapon Logs", embeds: [{
+      //       color: EmbedColours.Green,
+      //       title: "__Player Killed__",
+      //       description: `Weapon not found (${currentWeapon}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,
+      //       footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+      //     }]
+      //   }));
+      // }
     }
   }
 }
