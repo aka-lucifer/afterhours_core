@@ -202,7 +202,6 @@ export class RichPresence {
           if (inVeh) {
             const vehSpeed = speedToMph(currVeh.Speed);
             if (currVeh.Model.IsCar || currVeh.Model.IsBike || currVeh.Model.IsQuadbike) {
-              console.log("speed", vehSpeed);
               if (vehSpeed > 5 && vehSpeed < 80) {
                 if (currVeh.Driver.Handle == myPed.Handle) {
                   if (crossingHash > 0) {
