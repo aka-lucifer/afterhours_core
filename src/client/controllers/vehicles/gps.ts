@@ -48,7 +48,7 @@ export class GPS {
   }
 
   // Methods
-  public init() {
+  public init(): void {
 
     // Insert street data into just name and street class arrays
     for (const [key, value] of Object.entries(clientConfig.controllers.vehicles.gps.streets)) {
