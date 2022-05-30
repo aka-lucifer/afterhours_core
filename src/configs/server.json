@@ -302,6 +302,174 @@
         "type": "emergency",
         "job": "state",
         "rank": [4, 5, 6, 7, 8]
+      },
+      "476322742": {
+        "model": "so1",
+        "brand": "Ford",
+        "name": "CVPI (2011)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "-1739648114": {
+        "model": "so2",
+        "brand": "Chevrolet",
+        "name": "Caprice (2013)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "-1248899570": {
+        "model": "so3",
+        "brand": "Ford",
+        "name": "Explorer (2013)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "-469882133": {
+        "model": "so4",
+        "brand": "Dodge",
+        "name": "Charger (2014)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "-784792223": {
+        "model": "so5",
+        "brand": "Ford",
+        "name": "Explorer (2016)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "1561926939": {
+        "model": "so6",
+        "brand": "Dodge",
+        "name": "Charger (2018)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "-1957037668": {
+        "model": "so7",
+        "brand": "Ford",
+        "name": "Explorer (2018)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "2023478304": {
+        "model": "so8",
+        "brand": "Ford",
+        "name": "F-150 (2018)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "-1439844533": {
+        "model": "so9",
+        "brand": "Chevrolet",
+        "name": "Tahoe (2020)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "197501315": {
+        "model": "so10",
+        "brand": "Dodge",
+        "name": "Durango (2021)",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "38331683": {
+        "model": "leoatv",
+        "brand": "Nagazaki",
+        "name": "ATV",
+        "type": "emergency",
+        "job": "county",
+        "rank": [0]
+      },
+      "-1046437422": {
+        "model": "pd1",
+        "brand": "Ford",
+        "name": "CVPI (2011)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "-1293679527": {
+        "model": "pd2",
+        "brand": "Chevrolet",
+        "name": "Caprice (2013)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "1477136041": {
+        "model": "pd3",
+        "brand": "Ford",
+        "name": "Explorer (2013)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "1196272942": {
+        "model": "pd4",
+        "brand": "Dodge",
+        "name": "Charger (2014)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "-1937164380": {
+        "model": "pd5",
+        "brand": "Ford",
+        "name": "Explorer (2016)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "1707272728": {
+        "model": "pd6",
+        "brand": "Dodge",
+        "name": "Charger (2018)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "543809383": {
+        "model": "pd7",
+        "brand": "Ford",
+        "name": "Explorer (2018)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "153006289": {
+        "model": "pd8",
+        "brand": "Ford",
+        "name": "F-150 (2018)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "852329518": {
+        "model": "pd9",
+        "brand": "Chevrolet",
+        "name": "Tahoe (2020)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
+      },
+      "-244897883": {
+        "model": "pd10",
+        "brand": "Dodge",
+        "name": "Durango (2021)",
+        "type": "emergency",
+        "job": "police",
+        "rank": [0]
       }
     }
   },
