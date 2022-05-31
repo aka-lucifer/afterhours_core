@@ -1,6 +1,6 @@
 import { Control, Game, InputMode } from "fivem-js";
 
-import { Delay, Inform } from "../../utils";
+import { Delay, GetHash, Inform } from '../../utils';
 
 export class AntiControl {
   private rollTick: number = undefined;
@@ -54,7 +54,7 @@ export class AntiControl {
       if (IsPedInAnyVehicle(myPed.Handle, false)) {
         const currVeh = myPed.CurrentVehicle;
         if (currVeh.Model.IsCar) {
-          if (currVeh.IsInAir) {
+          if (currVeh.IsInAir && currVeh.Model.Hash !== GetHash("380sx") && currVeh.Model.Hash !== GetHash("deluxo")) {
             Game.disableControlThisFrame(InputMode.GamePad, Control.VehicleMoveUpDown);
             Game.disableControlThisFrame(InputMode.GamePad, Control.VehicleMoveLeftRight);
           } else {
