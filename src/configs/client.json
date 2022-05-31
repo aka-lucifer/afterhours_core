@@ -7853,6 +7853,258 @@
                 }
             }
         },
+        "dev": {
+          "interiorBlips": [
+            {
+              "x": -1194.00000000,
+              "y": -894.86500000,
+              "z": 16.48870000,
+              "label": "Burgershot",
+              "sprite": 106,
+              "colour": 59,
+              "scale": 0.7
+            },
+            {
+              "x":-697.83, "y":5803.16, "z":17.33,
+              "label": "Bayview Lodge",
+              "sprite": 40,
+              "colour": 0,
+              "scale": 0.7
+            },
+            {
+              "x":-1490.79, "y":4981.39, "z":63.34,
+              "label": "Ranger Hut",
+              "sprite": 162,
+              "colour": 31,
+              "scale": 0.7
+            },
+            {
+              "x":1986.33, "y":3052.84, "z":47.22,
+              "label": "Yellow Jack",
+              "sprite": 93,
+              "colour": 15,
+              "scale": 0.7
+            },
+            {
+              "x": -1882.72200000, "y": 2067.61800000, "z": 139.98430000,
+              "label": "Wine Vineyard",
+              "sprite": 93,
+              "colour": 27,
+              "scale": 0.7
+            },
+            {
+              "x": -1424.82100000, "y": -263.01020000, "z": 45.25503000,
+              "label": "General Store",
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "x":196.84, "y":-29.01, "z":69.89,
+              "label": "General Store",
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "x": -2544.42, "y": 2310.95, "z": 33.41,
+              "label": "General Store",
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 373.875, "y": 325.896, "z": 102.566,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 2557.458, "y": 382.282, "z": 107.622,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 3038.939, "y": 585.954, "z": 6.908,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 3241.927, "y": 1001.462, "z": 11.830,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 547.431, "y": 2671.710, "z": 41.156,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1960.78, "y": 3742.33, "z": 31.383,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 2678.916, "y": 3280.671, "z": 54.241,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1730.922, "y": 6416.046, "z": 34.037,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1135.808, "y": 982.281, "z": 45.475,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1222.915, "y": 906.983, "z": 11.326,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1487.553, "y": 379.107, "z": 39.163,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 2968.243, "y": 390.910, "z": 14.043,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1166.024, "y": 2708.930, "z": 37.157,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 48.519, "y": 1757.514, "z": 28.421,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1163.373, "y": 323.801, "z": 68.205,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 707.501, "y": 914.260, "z": 18.22,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1820.523, "y": 792.518, "z": 137.118,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1698.388, "y": 4924.404, "z": 41.063,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 26.369, "y": 1345.598, "z": 29.53,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1393.48, "y": 3604.95, "z": 34.98,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 1096.65, "y": 2593.99, "z": 13.93,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 270.6, "y": 980.18, "z": 29.37,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 162.88, "y": 6642.18, "z": 31.69,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "label": "General Store", "x": 676.1, "y": 5835.71, "z": 17.33,
+              "sprite": 52,
+              "colour": 2,
+              "scale": 0.7
+            },
+            {
+              "x":1838.75, "y":2590.71, "z":45.95,
+              "label": "Bolingbroke Penitentiary",
+              "sprite": 188,
+              "colour": 1,
+              "scale": 0.7
+            },
+            {
+              "x": 440.74,
+              "y": -976.14,
+              "z": 29.70,
+              "label": "Mission Row Police Station",
+              "sprite": 60,
+              "colour": 3,
+              "scale": 0.7
+            },
+            {
+              "x": 825.99, "y": -1289.85, "z": 28.24,
+              "label": "La Mesa Highway Station",
+              "sprite": 60,
+              "colour": 3,
+              "scale": 0.7
+            },
+            {
+              "x":1852.71, "y":3685.33, "z":34.27,
+              "label": "Sandy Shores Sheriff Station",
+              "sprite": 60,
+              "colour": 3,
+              "scale": 0.7
+            },
+            {
+              "x": -449.48,
+              "y": 6010.59,
+              "z": 31.79,
+              "label": "Paleto Bay Highway Station",
+              "sprite": 60,
+              "colour": 3,
+              "scale": 0.7
+            },
+            {
+              "x": -262.13920000, "y": 6325.47000000, "z": 34.24238000,
+              "label": "Paleto Bay Medical Center",
+              "sprite": 61,
+              "colour": 2,
+              "scale": 0.7
+            }
+          ]
+        },
         "police": {
           "cuffing": {
             "normal": {

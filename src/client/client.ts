@@ -42,6 +42,9 @@ import { WeaponManager } from "./managers/weapon";
 // [Controllers] Police
 // import {HelicamManager} from "./controllers/jobs/police/helicam";
 
+// [Controllers] World
+import { WorldBlips } from './controllers/world/worldBlips';
+
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
@@ -52,7 +55,6 @@ import {Delay, Inform, RegisterNuiCallback} from "./utils";
 import {Events} from "../shared/enums/events/events";
 import {GameEvents} from "../shared/enums/events/gameEvents";
 import {Callbacks} from "../shared/enums/events/callbacks";
-import {Weapons} from "../shared/enums/weapons";
 import {NuiMessages} from "../shared/enums/ui/nuiMessages";
 import {NotificationTypes} from "../shared/enums/ui/notifications/types";
 import { NuiCallbacks } from "../shared/enums/ui/nuiCallbacks";
@@ -122,6 +124,9 @@ export class Client {
 
   // [Controllers] Police
   // private helicam: HelicamManager;
+
+  // [Controllers] World
+  private worldBlips: WorldBlips;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -260,6 +265,10 @@ export class Client {
     // [Controllers] Police
     // this.helicam = new HelicamManager(client);
 
+    // [Controllers] World
+    this.worldBlips = new WorldBlips(client);
+    this.worldBlips.init();
+
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
     this.afk = new AFK(client);
@@ -305,6 +314,10 @@ export class Client {
     this.aopManager.init();
     this.weaponManager.start();
     this.safezoneManager.start();
+
+    if (this.developmentMode) {
+      if (!this.worldBlips.Started) this.worldBlips.start();
+    }
   }
 
   private registerStates(): void {
