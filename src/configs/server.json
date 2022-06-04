@@ -181,16 +181,6 @@
         "rank": 2
       },
 
-      "-984243759": {
-        "model": "765lt",
-        "brand": "McLaren",
-        "name": "765LT",
-        "type": "super",
-        "rank": [4, 5],
-        "donatorAsset": true,
-        "donatorType": "DIAMOND"
-      },
-
       "-1530015901": {
         "model": "sasp1",
         "brand": "Ford",
@@ -309,7 +299,7 @@
         "name": "CVPI (2011)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "-1739648114": {
         "model": "so2",
@@ -317,7 +307,7 @@
         "name": "Caprice (2013)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "-1248899570": {
         "model": "so3",
@@ -325,7 +315,7 @@
         "name": "Explorer (2013)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "-469882133": {
         "model": "so4",
@@ -333,7 +323,7 @@
         "name": "Charger (2014)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "-784792223": {
         "model": "so5",
@@ -341,7 +331,7 @@
         "name": "Explorer (2016)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "1561926939": {
         "model": "so6",
@@ -349,7 +339,7 @@
         "name": "Charger (2018)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "-1957037668": {
         "model": "so7",
@@ -357,7 +347,7 @@
         "name": "Explorer (2018)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "2023478304": {
         "model": "so8",
@@ -365,7 +355,7 @@
         "name": "F-150 (2018)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "-1439844533": {
         "model": "so9",
@@ -373,7 +363,7 @@
         "name": "Tahoe (2020)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "197501315": {
         "model": "so10",
@@ -381,7 +371,7 @@
         "name": "Durango (2021)",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "38331683": {
         "model": "leoatv",
@@ -389,7 +379,7 @@
         "name": "ATV",
         "type": "emergency",
         "job": "county",
-        "rank": [0]
+        "rank": 0
       },
       "-1046437422": {
         "model": "pd1",
@@ -397,7 +387,7 @@
         "name": "CVPI (2011)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "-1293679527": {
         "model": "pd2",
@@ -405,7 +395,7 @@
         "name": "Caprice (2013)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "1477136041": {
         "model": "pd3",
@@ -413,7 +403,7 @@
         "name": "Explorer (2013)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "1196272942": {
         "model": "pd4",
@@ -421,7 +411,7 @@
         "name": "Charger (2014)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "-1937164380": {
         "model": "pd5",
@@ -429,7 +419,7 @@
         "name": "Explorer (2016)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "1707272728": {
         "model": "pd6",
@@ -437,7 +427,7 @@
         "name": "Charger (2018)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "543809383": {
         "model": "pd7",
@@ -445,7 +435,7 @@
         "name": "Explorer (2018)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "153006289": {
         "model": "pd8",
@@ -453,7 +443,7 @@
         "name": "F-150 (2018)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "852329518": {
         "model": "pd9",
@@ -461,7 +451,7 @@
         "name": "Tahoe (2020)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
       },
       "-244897883": {
         "model": "pd10",
@@ -469,7 +459,5110 @@
         "name": "Durango (2021)",
         "type": "emergency",
         "job": "police",
-        "rank": [0]
+        "rank": 0
+      },
+
+      "-162245135": {
+        "model": "airone",
+        "brand": "",
+        "name": "Air One",
+        "type": "emergency",
+        "job": "police",
+        "rank": 0
+      },
+
+      "1998346768": {
+        "model": "f82",
+        "brand": "BMW",
+        "name": "F82 M4 (2015)",
+        "type": "sedans",
+        "rank": 0
+      },
+
+      "1472688836": {
+        "model": "nisaltima",
+        "brand": "Nissan",
+        "name": "Altima 3.5SE (2008)",
+        "type": "sedans",
+        "rank": 0
+      },
+
+      "-235523255": {
+        "model": "a8audi",
+        "brand": "Audi",
+        "name": "A8 (2008)",
+        "type": "sedans",
+        "rank": 0
+      },
+
+      "-465446781": {
+        "model": "audis8om",
+        "brand": "Audi",
+        "name": "S8 4.0 FSI (2013)",
+        "type": "sedans",
+        "rank": 0
+      },
+
+      "-162479054": {
+        "model": "sjbenz",
+        "brand": "Mercedes",
+        "name": "Benz S-Class (2009)",
+        "type": "sedans",
+        "rank": 6
+      },
+
+      "452353733": {
+        "model": "190e",
+        "brand": "Mercedes",
+        "name": "Benz 190E Evolution II (1990)",
+        "type": "sedans",
+        "rank": 6
+      },
+
+      "-1831563210": {
+        "model": "e34",
+        "brand": "BMW",
+        "name": "M5 E34 (1995)",
+        "type": "sedans",
+        "rank": 7
+      },
+
+      "713340065": {
+        "model": "ix35",
+        "brand": "Hyundai",
+        "name": "IX35 (2012)",
+        "type": "suvs",
+        "rank": 0
+      },
+
+      "-1620001347": {
+        "model": "gmcyd",
+        "brand": "GMC",
+        "name": "Yukon Denali",
+        "type": "suvs",
+        "rank": 6
+      },
+
+      "509544490": {
+        "model": "tahoe",
+        "brand": "Chevrolet",
+        "name": "Tahoe (2015)",
+        "type": "suvs",
+        "rank": 0
+      },
+
+      "2077006351": {
+        "model": "sl1500",
+        "brand": "Chevrolet",
+        "name": "Silverado 1500 (2010)",
+        "type": "suvs",
+        "rank": 0
+      },
+
+      "-178636495": {
+        "model": "sjtoyota13",
+        "brand": "Toyota",
+        "name": "Land Cruiser 200",
+        "type": "suvs",
+        "rank": 0
+      },
+
+      "560382773": {
+        "model": "sbban",
+        "brand": "Chevrolet",
+        "name": "Surburban Z71 (2003)",
+        "type": "suvs",
+        "rank": 0
+      },
+
+      "-654905667": {
+        "model": "dbx",
+        "brand": "Aston Martin",
+        "name": "DBX (2020)",
+        "type": "suvs",
+        "rank": 0
+      },
+
+      "129391352": {
+        "model": "cooperworks",
+        "brand": "Mini",
+        "name": "Cooper (2012)",
+        "type": "coupes",
+        "rank": 0
+      },
+
+      "-1136165044": {
+        "model": "srt392",
+        "brand": "Dodge",
+        "name": "Challenger SRT8 392 (2011)",
+        "type": "muscle",
+        "rank": 0
+      },
+
+      "-279141045": {
+        "model": "13fmb302",
+        "brand": "Ford",
+        "name": "Mustang Boss 302 (2013)",
+        "type": "muscle",
+        "rank": 0
+      },
+
+      "-855336914": {
+        "model": "fastback",
+        "brand": "Ford",
+        "name": "Mustang Fastback (1967)",
+        "type": "muscle",
+        "rank": 0
+      },
+
+      "426098980": {
+        "model": "06chargerrt",
+        "brand": "Dodge",
+        "name": "Charger RT (2006)",
+        "type": "muscle",
+        "rank": 7
+      },
+
+      "-47252748": {
+        "model": "ss69",
+        "brand": "Chevrolet",
+        "name": "Camaro SS (1969)",
+        "type": "muscle",
+        "rank": 6
+      },
+
+      "2117711508": {
+        "model": "skyline",
+        "brand": "Nissan",
+        "name": "Skyline GT-R34 (2002)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "-726635538": {
+        "model": "gtrnismo17",
+        "brand": "Nissan",
+        "name": "GTR Nismo (2017)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "-1395631167": {
+        "model": "350gt",
+        "brand": "Nissan",
+        "name": "Skyline 350GT (2006)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "940300397": {
+        "model": "3000gt",
+        "brand": "Mitsubishi",
+        "name": "3000GT (1999)",
+        "type": "sports",
+        "rank": 0
+      },
+
+      "-1059188217": {
+        "model": "m3e30",
+        "brand": "BMW",
+        "name": "E90 M3 (1991)",
+        "type": "sports",
+        "rank": 0
+      },
+
+      "1324261434": {
+        "model": "rx7tunable",
+        "brand": "Mazda",
+        "name": "RX7 FD3S (1993)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "-1549019518": {
+        "model": "ap2",
+        "brand": "Honda",
+        "name": "S2000 AP2 (2006)",
+        "type": "sports",
+        "rank": 0
+      },
+
+      "-1621882958": {
+        "model": "gto06",
+        "brand": "Pontiac",
+        "name": "GTO (2006)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "-1127249378": {
+        "model": "m3e36",
+        "brand": "BMW",
+        "name": "M3 E36 (1997)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "796303759": {
+        "model": "czr1",
+        "brand": "Chevrolet",
+        "name": "Corvette ZR1 (2009)",
+        "type": "sports",
+        "rank": 7
+      },
+
+      "167334603": {
+        "model": "8c",
+        "brand": "Alfa Romeo",
+        "name": "8C (2008)",
+        "type": "sports",
+        "rank": 0
+      },
+
+      "-734327176": {
+        "model": "ipl",
+        "brand": "Infiniti",
+        "name": "IPL G (2012)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "-434750294": {
+        "model": "pgt34",
+        "brand": "Porsche",
+        "name": "911 GT3 RS 4.0 (2012)",
+        "type": "sports",
+        "rank": 7
+      },
+
+      "2046572318": {
+        "model": "911turbos",
+        "brand": "Porsche",
+        "name": "911 GT3 RS (2019)",
+        "type": "sports",
+        "rank": 7
+      },
+
+      "54739228": {
+        "model": "pgt3",
+        "brand": "Porsche",
+        "name": "911 GT3 RS 4.0 (2019)",
+        "type": "sports",
+        "rank": 7
+      },
+
+      "1021752584": {
+        "model": "gxs13",
+        "brand": "Nissan",
+        "name": "Silvia S13 (1992)",
+        "type": "sports",
+        "rank": 0
+      },
+
+      "1545422143": {
+        "model": "rx7fd",
+        "brand": "Mazda",
+        "name": "RX-7 FD (1993)",
+        "type": "sports",
+        "rank": 0
+      },
+
+      "-1423481308": {
+        "model": "wrx19",
+        "brand": "Subaru",
+        "name": "WRX (2019)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "297410642": {
+        "model": "aamx",
+        "brand": "AMC",
+        "name": "Javelin-AMX (1971)",
+        "type": "sports classic",
+        "rank": 0
+      },
+
+      "-1925702473": {
+        "model": "70zr1",
+        "brand": "Chevrolet",
+        "name": "Corvette ZR1 C3 (1970)",
+        "type": "sports",
+        "rank": 6
+      },
+
+      "-1824643908": {
+        "model": "430s",
+        "brand": "Ferrari",
+        "name": "430 Scuderia (2007)",
+        "type": "super",
+        "rank": 7
+      },
+
+      "904871091": {
+        "model": "vip8",
+        "brand": "Dodge",
+        "name": "Viper (2008)",
+        "type": "super",
+        "rank": 7
+      },
+
+      "-984243759": {
+        "model": "765lt",
+        "brand": "McLaren",
+        "name": "765 LT (2020)",
+        "type": "super",
+        "rank": 7
+      },
+
+      "-402091644": {
+        "model": "auroras",
+        "brand": "Progren",
+        "name": "Aurora Sport (2022)",
+        "type": "super",
+        "rank": 7
+      },
+
+      "433186168": {
+        "model": "softail1",
+        "brand": "Harley Davidson",
+        "name": "Softail (1983)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "545993358": {
+        "model": "foxharley1",
+        "brand": "Harley Davidson",
+        "name": "Fox V1 (1986)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "305501667": {
+        "model": "foxharley2",
+        "brand": "Harley Davidson",
+        "name": "Fox V2 (1986)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "-1016279499": {
+        "model": "springer",
+        "brand": "Harley Davidson",
+        "name": "Springer (1988)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "-1474280704": {
+        "model": "hvrod",
+        "brand": "Harley Davidson",
+        "name": "Fat Boy (1991)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "1828705042": {
+        "model": "na25",
+        "brand": "Harley Davidson",
+        "name": "Road King (2011)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "-296908236": {
+        "model": "rk2019",
+        "brand": "Harley Davidson",
+        "name": "Road King Viclero (2019)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "-1577545177": {
+        "model": "indian",
+        "brand": "Indian Chief",
+        "name": "Dark Horse (2019)",
+        "type": "motorcycles",
+        "rank": 0
+      },
+
+      "1895977513": {
+        "model": "380sx",
+        "brand": "Nissan",
+        "name": "380SX (Management)",
+        "type": "management",
+        "rank": 12
+      },
+
+      "-2049163182": {
+        "model": "wrangler86",
+        "brand": "Jeep",
+        "name": "Wrangler (1986)",
+        "type": "offroad",
+        "rank": 6
+      },
+
+      "377285995": {
+        "model": "bronco",
+        "brand": "Ford",
+        "name": "Bronco (1980)",
+        "type": "offroad",
+        "rank": 0
+      },
+
+      "112539755": {
+        "model": "gmc1500",
+        "brand": "GMC",
+        "name": "Sierra 1500 Custom (1997)",
+        "type": "offroad",
+        "rank": 0
+      },
+
+      "-1348482777": {
+        "model": "silverado99",
+        "brand": "Chevrolet",
+        "name": "Silverado 3500 LS (1999)",
+        "type": "offroad",
+        "rank": 6
+      },
+
+      "-1178021069": {
+        "model": "wheelchair",
+        "brand": "",
+        "name": "Wheelchair",
+        "type": "utility",
+        "rank": 0
+      },
+
+      "451354419": {
+        "model": "elec-chair",
+        "brand": "",
+        "name": "Electric Chair",
+        "type": "utility",
+        "rank": 0
+      },
+
+      "1033245328": {
+        "name": "dinghy",
+        "brand": "Nagasaki",
+        "model": "Dinghy",
+        "type": "boat",
+        "rank": 0
+      },
+      "276773164": {
+        "name": "dinghy2",
+        "brand": "Nagasaki",
+        "model": "Dinghy 2",
+        "type": "boat",
+        "rank": 0
+      },
+      "509498602": {
+        "name": "dinghy3",
+        "brand": "Nagasaki",
+        "model": "Dinghy 3",
+        "type": "boat",
+        "rank": 0
+      },
+      "867467158": {
+        "name": "dinghy3",
+        "brand": "Nagasaki",
+        "model": "Dinghy 4",
+        "type": "boat",
+        "rank": 0
+      },
+      "861409633": {
+        "name": "jetmax",
+        "brand": "Shitzu",
+        "model": "Jetmax",
+        "type": "boat",
+        "rank": 0
+      },
+      "-1043459709": {
+        "name": "marquis",
+        "brand": "Dinka",
+        "model": "Marquis",
+        "type": "boat",
+        "rank": 0
+      },
+      "-1030275036": {
+        "name": "seashark",
+        "brand": "Speedophile",
+        "model": "Seashark",
+        "type": "boat",
+        "rank": 0
+      },
+      "-616331036": {
+        "name": "seashark2",
+        "brand": "Speedophile",
+        "model": "Seashark 2",
+        "type": "boat",
+        "rank": 0
+      },
+      "-311022263": {
+        "name": "seashark3",
+        "brand": "Speedophile",
+        "model": "Seashark 3",
+        "type": "boat",
+        "rank": 0
+      },
+      "231083307": {
+        "name": "speeder",
+        "brand": "Pegassi",
+        "model": "Speeder",
+        "type": "boat",
+        "rank": 0
+      },
+      "437538602": {
+        "name": "speeder2",
+        "brand": "Pegassi",
+        "model": "Speeder 2",
+        "type": "boat",
+        "rank": 0
+      },
+      "400514754": {
+        "name": "squalo",
+        "brand": "Shitzu",
+        "model": "Squalo",
+        "type": "boat",
+        "rank": 0
+      },
+      "771711535": {
+        "name": "submersible",
+        "brand": "Kraken",
+        "model": "Submersible",
+        "type": "boat",
+        "rank": 0
+      },
+      "-1066334226": {
+        "name": "submersible2",
+        "brand": "Kraken",
+        "model": "Submersible 2",
+        "type": "boat",
+        "rank": 0
+      },
+      "-282946103": {
+        "name": "suntrap",
+        "brand": "Shitzu",
+        "model": "Suntrap",
+        "type": "boat",
+        "rank": 0
+      },
+      "1070967343": {
+        "name": "toro",
+        "brand": "Pegasus",
+        "model": "Toro",
+        "type": "boat",
+        "rank": 0
+      },
+      "908897389": {
+        "name": "toro2",
+        "brand": "Pegasus",
+        "model": "Toro 2",
+        "type": "boat",
+        "rank": 0
+      },
+      "290013743": {
+        "name": "tropic",
+        "brand": "Shitzu",
+        "model": "Tropic",
+        "type": "boat",
+        "rank": 0
+      },
+      "1448677353": {
+        "name": "tropic2",
+        "brand": "Shitzu",
+        "model": "Tropic 2",
+        "type": "boat",
+        "rank": 0
+      },
+      "-2100640717": {
+        "name": "tug",
+        "brand": "Buckingham",
+        "model": "Tug",
+        "type": "boat",
+        "rank": [10, 11, 12, 13]
+      },
+      "2053223216": {
+        "name": "benson",
+        "brand": "Vapid",
+        "model": "Benson",
+        "type": "commercial",
+        "rank": 0
+      },
+      "850991848": {
+        "name": "biff",
+        "brand": "HVY",
+        "model": "Biff",
+        "type": "commercial",
+        "rank": 0
+      },
+      "1518533038": {
+        "name": "hauler",
+        "brand": "Jobuilt",
+        "model": "Hauler",
+        "type": "commercial",
+        "rank": 0
+      },
+      "387748548": {
+        "name": "hauler2",
+        "brand": "Jobuilt",
+        "model": "Hauler 2",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "904750859": {
+        "name": "mule",
+        "brand": "Maibatsu",
+        "model": "Mule",
+        "type": "commercial",
+        "rank": 0
+      },
+      "-1050465301": {
+        "name": "mule2",
+        "brand": "Maibatsu",
+        "model": "Mule",
+        "type": "commercial",
+        "rank": 0
+      },
+      "-2052737935": {
+        "name": "mule3",
+        "brand": "Maibatsu",
+        "model": "mule3",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "1945374990": {
+        "name": "mule4",
+        "brand": "Maibatsu",
+        "model": "Mule",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "1343932732": {
+        "name": "mule5",
+        "brand": "Maibatsu",
+        "model": "Mule",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "1747439474": {
+        "name": "stockade",
+        "brand": "Brute",
+        "model": "Stockade",
+        "type": "commercial",
+        "rank": 0
+      },
+      "4080511798": {
+        "name": "stockade3",
+        "brand": "Brute",
+        "model": "Stockade",
+        "type": "commercial",
+        "rank": 0
+      },
+      "2157618379": {
+        "name": "phantom",
+        "brand": "JoBuilt",
+        "model": "Phantom",
+        "type": "commercial",
+        "rank": 0
+      },
+      "2645431192": {
+        "name": "phantom2",
+        "brand": "JoBuilt",
+        "model": "Phantom Wedge",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "177270108": {
+        "name": "phantom3",
+        "brand": "JoBuilt",
+        "model": "Phantom Custom",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "569305213": {
+        "name": "packer",
+        "brand": "MTL",
+        "model": "Packer",
+        "type": "commercial",
+        "rank": 0
+      },
+      "2112052861": {
+        "name": "pounder",
+        "brand": "MTL",
+        "model": "Pounder",
+        "type": "commercial",
+        "rank": 0
+      },
+      "3493417227": {
+        "name": "cerberus",
+        "brand": "MTL",
+        "model": "Apocalypse Cerberus",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "679453769": {
+        "name": "cerberus2",
+        "brand": "MTL",
+        "model": "Future Shock Cerberus",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "1909700336": {
+        "name": "cerberus3",
+        "brand": "MTL",
+        "model": "Nightmare Cerberus",
+        "type": "commercial",
+        "rank": [10, 11, 12, 13]
+      },
+      "3164157193": {
+        "name": "dilettante",
+        "brand": "Karin",
+        "model": "Dilettante",
+        "type": "compacts",
+        "rank": 0
+      },
+      "2844316578": {
+        "name": "prairie",
+        "brand": "Bollokan",
+        "model": "Prairie",
+        "type": "compacts",
+        "rank": 0
+      },
+      "3117103977": {
+        "name": "issi2",
+        "brand": "Weeny",
+        "model": "Issi",
+        "type": "compacts",
+        "rank": 0
+      },
+      "3950024287": {
+        "name": "blista",
+        "brand": "Dinka",
+        "model": "Blista",
+        "type": "compacts",
+        "rank": 0
+      },
+      "1682114128": {
+        "name": "dilettante2",
+        "brand": "Karin",
+        "model": "Dilettante",
+        "type": "compacts",
+        "rank": 0
+      },
+      "841808271": {
+        "name": "rhapsody",
+        "brand": "Declasse",
+        "model": "Rhapsody",
+        "type": "compacts",
+        "rank": 0
+      },
+      "3863274624": {
+        "name": "panto",
+        "brand": "Benefactor",
+        "model": "Panto",
+        "type": "compacts",
+        "rank": 0
+      },
+      "1118611807": {
+        "name": "asbo",
+        "brand": "Maxwell",
+        "model": "Asbo",
+        "type": "compacts",
+        "rank": 0
+      },
+      "409049982": {
+        "name": "kanjo",
+        "brand": "Dinka",
+        "model": "Blista Kanjo",
+        "type": "compacts",
+        "rank": 0
+      },
+      "1549126457": {
+        "name": "brioso",
+        "brand": "Grotti",
+        "model": "Brioso R/A",
+        "type": "compacts",
+        "rank": 0
+      },
+      "2196012677": {
+        "name": "club",
+        "brand": "BF",
+        "model": "Club",
+        "type": "compacts",
+        "rank": 0
+      },
+      "1239571361": {
+        "name": "issi6",
+        "brand": "Weeny",
+        "model": "Nightmare Issi",
+        "type": "compacts",
+        "rank": [10, 11, 12, 13]
+      },
+      "628003514": {
+        "name": "issi4",
+        "brand": "Weeny",
+        "model": "Apocalypse Issi",
+        "type": "compacts",
+        "rank": [10, 11, 12, 13]
+      },
+      "1537277726": {
+        "name": "issi5",
+        "brand": "Weeny",
+        "model": "Future Shock Issi",
+        "type": "compacts",
+        "rank": [10, 11, 12, 13]
+      },
+      "1644055914": {
+        "name": "weevil",
+        "brand": "BF",
+        "model": "Weevil",
+        "type": "compacts",
+        "rank": 0
+      },
+      "1429622905": {
+        "name": "brioso2",
+        "brand": "Grotti",
+        "model": "Brioso 300",
+        "type": "compacts",
+        "rank": 0
+      },
+      "931280609": {
+        "name": "issi3",
+        "brand": "Weeny",
+        "model": "Issi Classic",
+        "type": "compacts",
+        "rank": 0
+      },
+      "4205676014": {
+        "name": "felon2",
+        "brand": "Lampadati",
+        "model": "Felon GT",
+        "type": "coupe",
+        "rank": 0
+      },
+      "4289813342": {
+        "name": "exemplar",
+        "brand": "Dewbauchee",
+        "model": "Exemplar",
+        "type": "coupe",
+        "rank": 0
+      },
+      "3172678083": {
+        "name": "zion",
+        "brand": "Ubermacht",
+        "model": "Zion",
+        "type": "coupe",
+        "rank": 0
+      },
+      "3101863448": {
+        "name": "3101863448",
+        "brand": "Ubermacht",
+        "model": "Zion Cabrio",
+        "type": "coupe",
+        "rank": 0
+      },
+      "3783366066": {
+        "name": "oracle2",
+        "brand": "Ubermacht",
+        "model": "Oracle",
+        "type": "coupe",
+        "rank": 0
+      },
+      "1581459400": {
+        "name": "windsor",
+        "brand": "Enus",
+        "model": "Windsor",
+        "type": "coupe",
+        "rank": 0
+      },
+      "2364918497": {
+        "name": "windsor2",
+        "brand": "Enus",
+        "model": "Windsor Drop",
+        "type": "coupe",
+        "rank": 0
+      },
+      "788747387": {
+        "name": "buzzard",
+        "brand": "Nagaskai",
+        "model": "Buzzard Attack Chopper",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "837858166": {
+        "name": "annihilator",
+        "brand": "Nagaskai",
+        "model": "Annihilator",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "745926877": {
+        "name": "buzzard2",
+        "brand": "Nagaskai",
+        "model": "Buzzard",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "744705981": {
+        "name": "Frogger",
+        "brand": "Nagaskai",
+        "model": "Frogger",
+        "type": "helicopters",
+        "rank": 0
+      },
+      "2634305738": {
+        "name": "maverick",
+        "brand": "Nagaskai",
+        "model": "Maverick",
+        "type": "helicopters",
+        "rank": 0
+      },
+      "4244420235": {
+        "name": "cargobob",
+        "brand": "Nagaskai",
+        "model": "Cargobob",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "1044954915": {
+        "name": "skylift",
+        "brand": "Nagaskai",
+        "model": "Skylift",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "1621617168": {
+        "name": "cargobob2",
+        "brand": "Nagaskai",
+        "model": "Cargobob",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "1949211328": {
+        "name": "frogger2",
+        "brand": "Nagaskai",
+        "model": "Frogger",
+        "type": "helicopters",
+        "rank": 0
+      },
+      "1181327175": {
+        "name": "akula",
+        "brand": "Nagaskai",
+        "model": "Akula",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "3955379698": {
+        "name": "swift",
+        "brand": "Buckingham",
+        "model": "Swift",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "295054921": {
+        "name": "annihilator2",
+        "brand": "Nagaskai",
+        "model": "Annihilator",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "1229411063": {
+        "name": "seasparrow2",
+        "brand": "Nagaskai",
+        "model": "Sparrow",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "1593933419": {
+        "name": "seasparrow3",
+        "brand": "Nagaskai",
+        "model": "Sparrow",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "4212341271": {
+        "name": "savage",
+        "brand": "Nagaskai",
+        "model": "Savage",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "2694714877": {
+        "name": "valkyrie",
+        "brand": "Nagaskai",
+        "model": "Valkyrie",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "1075432268": {
+        "name": "swift2",
+        "brand": "Buckingham",
+        "model": "Swift",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "2025593404": {
+        "name": "cargobob4",
+        "brand": "Nagaskai",
+        "model": "Cargobob",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "710198397": {
+        "name": "supervolito",
+        "brand": "Buckingham",
+        "model": "SuperVolito",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "2623428164": {
+        "name": "supervolito2",
+        "brand": "Buckingham",
+        "model": "SuperVolito Carbon",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "2449479409": {
+        "name": "volatus",
+        "brand": "Buckingham",
+        "model": "Volatus",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "2310691317": {
+        "name": "havok",
+        "brand": "Nagasaki",
+        "model": "Havok",
+        "type": "helicopters",
+        "rank": 0
+      },
+      "4252008158": {
+        "name": "hunter",
+        "brand": "Nagasaki",
+        "model": "FH-1 Hunter",
+        "type": "helicopters",
+        "rank": [10, 11, 12, 13]
+      },
+      "3568198617": {
+        "name": "seasparrow",
+        "brand": "Nagasaki",
+        "model": "Sea Sparrow",
+        "type": "helicopters",
+        "rank": [1, 2]
+      },
+      "3288047904": {
+        "name": "cutter",
+        "brand": "HVY",
+        "model": "Cutter",
+        "type": "industrial",
+        "rank": 0
+      },
+      "2589662668": {
+        "name": "rubble",
+        "brand": "JoBuilt",
+        "model": "Rubble",
+        "type": "industrial",
+        "rank": 0
+      },
+      "48339065": {
+        "name": "tiptruck",
+        "brand": "Brute",
+        "model": "Tipper",
+        "type": "industrial",
+        "rank": 0
+      },
+      "3347205726": {
+        "name": "tiptruck2",
+        "brand": "Brute",
+        "model": "Tipper",
+        "type": "industrial",
+        "rank": 0
+      },
+      "3510150843": {
+        "name": "mixer",
+        "brand": "HVY",
+        "model": "Mixer",
+        "type": "industrial",
+        "rank": 0
+      },
+      "475220373": {
+        "name": "mixer2",
+        "brand": "HVY",
+        "model": "Mixer",
+        "type": "industrial",
+        "rank": 0
+      },
+      "1353720154": {
+        "name": "flatbed",
+        "brand": "MTL",
+        "model": "Flatbed",
+        "type": "industrial",
+        "rank": 0
+      },
+      "2186977100": {
+        "name": "guardian",
+        "brand": "Vapid",
+        "model": "Guardian",
+        "type": "industrial",
+        "rank": 0
+      },
+      "3471458123": {
+        "name": "barracks",
+        "brand": "HVY",
+        "model": "Barracks",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "1074326203": {
+        "name": "barracks2",
+        "brand": "HVY",
+        "model": "Barracks",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "321739290": {
+        "name": "crusader",
+        "brand": "Canis",
+        "model": "Crusader",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "782665360": {
+        "name": "rhino",
+        "brand": "Zancudo",
+        "model": "Rhino",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "2859440138": {
+        "name": "khanjali",
+        "brand": "Zancudo",
+        "model": "TM-02 Khanjali",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "4081974053": {
+        "name": "barrage",
+        "brand": "Merrywheather",
+        "model": "Barrage",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "3602674979": {
+        "name": "chernobog",
+        "brand": "Zancudo",
+        "model": "Chernobog",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "1489874736": {
+        "name": "thruster",
+        "brand": "Mammoth",
+        "model": "Thruster-",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "3147997943": {
+        "name": "scarab",
+        "brand": "HVY",
+        "model": "Apocalypse Scarab",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "1542143200": {
+        "name": "scarab2",
+        "brand": "HVY",
+        "model": "Future Shock Scarab",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "3715219435": {
+        "name": "scarab3",
+        "brand": "HVY",
+        "model": "Nightmare Scarab",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "3040635986": {
+        "name": "minitank",
+        "brand": "HVY",
+        "model": "Invade and Persuade Tank",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "2014313426": {
+        "name": "vetir",
+        "brand": "HVY",
+        "model": "Vetir",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "630371791": {
+        "name": "barracks3",
+        "brand": "HVY",
+        "model": "Barracks",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "562680400": {
+        "name": "apc",
+        "brand": "HVY",
+        "model": "APC",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "4262731174": {
+        "name": "halftrack",
+        "brand": "Bravado",
+        "model": "Half-track",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "2413121211": {
+        "name": "trailersmall2",
+        "brand": "Vom Feuer",
+        "model": "Anti-Aircraft Trailer",
+        "type": "military",
+        "rank": [10, 11, 12, 13]
+      },
+      "301427732": {
+        "name": "hexer",
+        "brand": "LCC",
+        "model": "Hexer",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1672195559": {
+        "name": "akuma",
+        "brand": "Dinka",
+        "model": "Akuma",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "4180675781": {
+        "name": "bati",
+        "brand": "Pegassi",
+        "model": "Bati 801",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3403504941": {
+        "name": "bati2",
+        "brand": "Pegassi",
+        "model": "Bati 801RR",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3385765638": {
+        "name": "pcj",
+        "brand": "Shitzu",
+        "model": "PCJ 600",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2154536131": {
+        "name": "bagger",
+        "brand": "Western",
+        "model": "Bagger",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3660088182": {
+        "name": "nemesis",
+        "brand": "Principe",
+        "model": "Nemesis",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2623969160": {
+        "name": "double",
+        "brand": "Double-T",
+        "model": "Dinka",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2006142190": {
+        "name": "daemon",
+        "brand": "Western",
+        "model": "Daemon",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3401388520": {
+        "name": "ruffian",
+        "brand": "Pegassi",
+        "model": "Ruffian",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "4154065143": {
+        "name": "Vader",
+        "brand": "Shitzu",
+        "model": "Vader",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "788045382": {
+        "name": "sanchez",
+        "brand": "Maibatsu",
+        "model": "Sanchez",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "55628203": {
+        "name": "faggio2",
+        "brand": "Pegassi",
+        "model": "Faggio",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "11251904": {
+        "name": "carbonrs",
+        "brand": "Nagasaki",
+        "model": "Carbon RS",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2841686334": {
+        "name": "sanchez2",
+        "brand": "Maibatsu",
+        "model": "Sanchez",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1836027715": {
+        "name": "thrust",
+        "brand": "Dinka",
+        "model": "Thrust",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2482017624": {
+        "name": "deathbike2",
+        "brand": "Western",
+        "model": "Future Shock Deathbike",
+        "type": "motorcycle",
+        "rank": [10, 11, 12, 13]
+      },
+      "2920466844": {
+        "name": "deathbike3",
+        "brand": "Western",
+        "model": "Nightmare Deathbike",
+        "type": "motorcycle",
+        "rank": [10, 11, 12, 13]
+      },
+      "4267640610": {
+        "name": "deathbike",
+        "brand": "Western",
+        "model": "Apocalypse Deathbike",
+        "type": "motorcycle",
+        "rank": [10, 11, 12, 13]
+      },
+      "743478836": {
+        "name": "sovereign",
+        "brand": "Western",
+        "model": "Sovereign",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "4135840458": {
+        "name": "innovation",
+        "brand": "LCC",
+        "model": "Innovation",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1265391242": {
+        "name": "hakuchou",
+        "brand": "Shitzu",
+        "model": "Hakuchou",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1086534307": {
+        "name": "manchez2",
+        "brand": "Maibatsu",
+        "model": "Manchez Scout",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "301304410": {
+        "name": "stryder",
+        "brand": "Nagasaki",
+        "model": "Stryder",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1753414259": {
+        "name": "enduro",
+        "brand": "Dinka",
+        "model": "Enduro",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "640818791": {
+        "name": "lectro",
+        "brand": "Principe",
+        "model": "Lectro",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2941886209": {
+        "name": "vindicator",
+        "brand": "Dinka",
+        "model": "Ill-Gotten Gains Part 2",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "741090084": {
+        "name": "gargoyle",
+        "brand": "Western",
+        "model": "Gargoyle",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "86520421": {
+        "name": "bf400",
+        "brand": "Nagasaki",
+        "model": "BF400",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "390201602": {
+        "name": "cliffhanger",
+        "brand": "Western",
+        "model": "Cliffhanger",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "4055125828": {
+        "name": "diablous",
+        "brand": "Principe",
+        "model": "Diabolus",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1790834270": {
+        "name": "diablous2",
+        "brand": "Principe",
+        "model": "Diabolus Custom",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "627535535": {
+        "name": "fcr",
+        "brand": "Pegassi",
+        "model": "FCR 1000",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3537231886": {
+        "name": "fcr2",
+        "brand": "Pegassi",
+        "model": "FCR 1000 Custom",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3685342204": {
+        "name": "vortex",
+        "brand": "Pegassi",
+        "model": "Vortex",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2179174271": {
+        "name": "avarus",
+        "brand": "LCC",
+        "model": "Avarus",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1491277511": {
+        "name": "sanctus",
+        "brand": "LCC",
+        "model": "Sanctus",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3005788552": {
+        "name": "faggio3",
+        "brand": "Pegassi",
+        "model": "Faggio Mod",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2452219115": {
+        "name": "faggio",
+        "brand": "Pegassi",
+        "model": "Faggio Sport",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "4039289119": {
+        "name": "hakuchou2",
+        "brand": "Shitzu",
+        "model": "Hakuchou Drag",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2688780135": {
+        "name": "nightblade",
+        "brand": "Western",
+        "model": "Nightblade",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "6774487": {
+        "name": "chimera",
+        "brand": "Nagasaki",
+        "model": "Chimera",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2035069708": {
+        "name": "esskey",
+        "brand": "Pegassi",
+        "model": "Esskey",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3285698347": {
+        "name": "zombiea",
+        "brand": "Western",
+        "model": "Zombie Bobber",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3676349299": {
+        "name": "wolfsbane",
+        "brand": "Western",
+        "model": "Wolfsbane",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2890830793": {
+        "name": "daemon2",
+        "brand": "Western",
+        "model": "Daemon",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3889340782": {
+        "name": "shotaro",
+        "brand": "Nagasaki",
+        "model": "Shotaro",
+        "type": "motorcycle",
+        "rank": [1, 2]
+      },
+      "ratbike": {
+        "name": "ratbike",
+        "brand": "Western",
+        "model": "Rat Bike",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "3724934023": {
+        "name": "zombieb",
+        "brand": "Western",
+        "model": "Zombie Chopper",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "822018448": {
+        "name": "defiler",
+        "brand": "Shitzu",
+        "model": "Defiler",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "2771538552": {
+        "name": "manchez",
+        "brand": "Maibatsu",
+        "model": "Manchez",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "884483972": {
+        "name": "oppressor",
+        "brand": "Pegassi",
+        "model": "Oppressor",
+        "type": "motorcycle",
+        "rank": [12, 13]
+      },
+      "2069146067": {
+        "name": "oppressor2",
+        "brand": "Pegassi",
+        "model": "Oppressor Mk II",
+        "type": "motorcycle",
+        "rank": [12, 13]
+      },
+      "916547552": {
+        "name": "rrocket",
+        "brand": "Western",
+        "model": "Rampant Rocket",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1353120668": {
+        "name": "shinobi",
+        "brand": "Nagasaki",
+        "model": "Shinobi",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "1993851908": {
+        "name": "reever",
+        "brand": "Western",
+        "model": "Reever",
+        "type": "motorcycle",
+        "rank": 0
+      },
+      "972671128": {
+        "name": "tampa",
+        "brand": "Declasse",
+        "model": "Tampa",
+        "type": "muscle",
+        "rank": 0
+      },
+      "523724515": {
+        "name": "voodoo2",
+        "brand": "Declasse",
+        "model": "Voodoo",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1507916787": {
+        "name": "picador",
+        "brand": "Cheval",
+        "model": "Picador",
+        "type": "muscle",
+        "rank": 0
+      },
+      "4067225593": {
+        "name": "ruiner",
+        "brand": "Ruiner",
+        "model": "Imponte",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3612755468": {
+        "name": "buccaneer",
+        "brand": "Albany",
+        "model": "Buccaneer",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2609945748": {
+        "name": "sabregt",
+        "brand": "Declasse",
+        "model": "Sabre Turbo",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3469130167": {
+        "name": "vigero",
+        "brand": "Declasse",
+        "model": "Vigero",
+        "type": "muscle",
+        "rank": 0
+      },
+      "80636076": {
+        "name": "dominator",
+        "brand": "Vapid",
+        "model": "Dominator",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3627815886": {
+        "name": "ratloader",
+        "brand": "Bravado",
+        "model": "Rat-Loader",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2199527893": {
+        "name": "phoenix",
+        "brand": "Imponte",
+        "model": "Phoenix",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2494797253": {
+        "name": "gauntlet",
+        "brand": "Bravado",
+        "model": "Gauntlet",
+        "type": "muscle",
+        "rank": 0
+      },
+      "37348240": {
+        "name": "hotknife",
+        "brand": "Vapid",
+        "model": "Hotknife",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1871995513": {
+        "name": "yosemite",
+        "brand": "Declasse",
+        "model": "Yosemite",
+        "type": "muscle",
+        "rank": 0
+      },
+      "15219735": {
+        "name": "hermes",
+        "brand": "Albany",
+        "model": "Hermes",
+        "type": "muscle",
+        "rank": 0
+      },
+      "600450546": {
+        "name": "hustler",
+        "brand": "Vapid",
+        "model": "Hustler",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2370166601": {
+        "name": "impaler3",
+        "brand": "Declasse",
+        "model": "Future Shock Impaler",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "1742022738": {
+        "name": "slamvan6",
+        "brand": "Vapid",
+        "model": "Nightmare Slamvan",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "3001042683": {
+        "name": "dominator6",
+        "brand": "Vapid",
+        "model": "Nightmare Dominator",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "2550461639": {
+        "name": "impaler4",
+        "brand": "Declasse",
+        "model": "Nightmare Impaler",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "2233918197": {
+        "name": "slamvan4",
+        "brand": "Vapid",
+        "model": "Apocalypse Slamvan",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "373261600": {
+        "name": "slamvan5",
+        "brand": "Vapid",
+        "model": "Future Shock Slamvan",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "1009171724": {
+        "name": "impaler2",
+        "brand": "Declasse",
+        "model": "Apocalypse Impaler",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "1456744817": {
+        "name": "tulip",
+        "brand": "Declasse",
+        "model": "Tulip",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "2728360112": {
+        "name": "clique",
+        "brand": "Vapid",
+        "model": "Clique",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "2198276962": {
+        "name": "impaler",
+        "brand": "Declasse",
+        "model": "Impaler",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "4245851645": {
+        "name": "vamos",
+        "brand": "Declasse",
+        "model": "Vamos",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "444994115": {
+        "name": "imperator",
+        "brand": "Vapid",
+        "model": "Apocalypse Imperator",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "1637620610": {
+        "name": "imperator2",
+        "brand": "Vapid",
+        "model": "Future Shock Imperator",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "3539435063": {
+        "name": "imperator3",
+        "brand": "Vapid",
+        "model": "Nightmare Imperator",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "1279262537": {
+        "name": "deviant",
+        "brand": "Schyster",
+        "model": "Deviant",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "3606777648": {
+        "name": "dominator4",
+        "brand": "Vapid",
+        "model": "Apocalypse Dominator",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "2919906639": {
+        "name": "dominator5",
+        "brand": "Vapid",
+        "model": "Future Shock Dominator",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "729783779": {
+        "name": "slamvan",
+        "brand": "Vapid",
+        "model": "Festive Surprise",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "3705788919": {
+        "name": "ratloader2",
+        "brand": "Bravado",
+        "model": "Rat-Truck",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3089165662": {
+        "name": "blade",
+        "brand": "Vapid",
+        "model": "Blade",
+        "type": "muscle",
+        "rank": 0
+      },
+      "723973206": {
+        "name": "dukes",
+        "brand": "Imponte",
+        "model": "Dukes",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3968823444": {
+        "name": "dukes2",
+        "brand": "Imponte",
+        "model": "Duke O'Death",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3379262425": {
+        "name": "dominator2",
+        "brand": "Vapid",
+        "model": "Pisswasser Dominator",
+        "type": "muscle",
+        "rank": 0
+      },
+      "349315417": {
+        "name": "gauntlet2",
+        "brand": "Bravado",
+        "model": "Redwood Gauntlet",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1923400478": {
+        "name": "stalion",
+        "brand": "Declasse",
+        "model": "Stallion",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3893323758": {
+        "name": "stalion2",
+        "brand": "Declasse",
+        "model": "Burger Shot Stallion",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1693751655": {
+        "name": "yosemite2",
+        "brand": "Declasse",
+        "model": "Drift Yosemite",
+        "type": "muscle",
+        "rank": 0
+      },
+      "833469436": {
+        "name": "slamvan2",
+        "brand": "Vapid",
+        "model": "Lost Slamvan",
+        "type": "muscle",
+        "rank": 0
+      },
+      "784565758": {
+        "name": "coquette3",
+        "brand": "Invetero",
+        "model": "Coquette BlackFin",
+        "type": "muscle",
+        "rank": 0
+      },
+      "349605904": {
+        "name": "chino",
+        "brand": "349605904",
+        "model": "Chino",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3796912450": {
+        "name": "virgo",
+        "brand": "3796912450",
+        "model": "Albany",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3281516360": {
+        "name": "buccaneer2",
+        "brand": "Albany",
+        "model": "Buccaneer Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2006667053": {
+        "name": "voodoo",
+        "brand": "Declasse",
+        "model": "Voodoo Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2175389151": {
+        "name": "faction",
+        "brand": "Willard",
+        "model": "Faction",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2504420315": {
+        "name": "faction2",
+        "brand": "Willard",
+        "model": "Faction Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "525509695": {
+        "name": "moonbeam",
+        "brand": "Declasse",
+        "model": "Moonbeam",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1896491931": {
+        "name": "moonbeam2",
+        "brand": "Declasse",
+        "model": "Moonbeam Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2933279331": {
+        "name": "chino2",
+        "brand": "Vapid",
+        "model": "Chino Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2255212070": {
+        "name": "faction3",
+        "brand": "Willard",
+        "model": "Faction Custom Donk",
+        "type": "muscle",
+        "rank": 0
+      },
+      "223258115": {
+        "name": "sabregt2",
+        "brand": "Declasse",
+        "model": "Sabre Turbo Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1119641113": {
+        "name": "slamvan3",
+        "brand": "Vapid",
+        "model": "Slamvan Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3395457658": {
+        "name": "virgo2",
+        "brand": "Dundreary",
+        "model": "Virgo Classic Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "16646064": {
+        "name": "virgo3",
+        "brand": "Dundreary",
+        "model": "Virgo Classic",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2068293287": {
+        "name": "lurcher",
+        "brand": "Albany",
+        "model": "Lurcher",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2351681756": {
+        "name": "nightshade",
+        "brand": "Imponte",
+        "model": "Nightshade",
+        "type": "muscle",
+        "rank": 0
+      },
+      "941494461": {
+        "name": "ruiner2",
+        "brand": "Imponte",
+        "model": "Ruiner 2000",
+        "type": "muscle",
+        "rank": 0
+      },
+      "777714999": {
+        "name": "ruiner3",
+        "brand": "Imponte",
+        "model": "Ruiner",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3084515313": {
+        "name": "tampa3",
+        "brand": "Declasse",
+        "model": "Weaponized Tampa",
+        "type": "muscle",
+        "rank": [10, 11, 12, 13]
+      },
+      "3308022675": {
+        "name": "dominator3",
+        "brand": "Vapid",
+        "model": "Dominator GTX",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3027423925": {
+        "name": "ellie",
+        "brand": "Vapid",
+        "model": "Ellie",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2490551588": {
+        "name": "peyote2",
+        "brand": "Vapid",
+        "model": "Peyote Gasser",
+        "type": "muscle",
+        "rank": 0
+      },
+      "722226637": {
+        "name": "gauntlet3",
+        "brand": "Bravado",
+        "model": "Gauntlet Classic",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1934384720": {
+        "name": "gauntlet4",
+        "brand": "Bravado",
+        "model": "Gauntlet Hellfire",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2172320429": {
+        "name": "gauntlet5",
+        "brand": "Bravado",
+        "model": "Gauntlet Classic Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "2134119907": {
+        "name": "dukes3",
+        "brand": "Beater Dukes",
+        "model": "Imponte",
+        "type": "muscle",
+        "rank": 0
+      },
+      "1717532765": {
+        "name": "manana2",
+        "brand": "Albany",
+        "model": "Manana Custom",
+        "type": "muscle",
+        "rank": 0
+      },
+      "736672010": {
+        "name": "dominator8",
+        "brand": "Vapid",
+        "model": "Dominator GTT",
+        "type": "muscle",
+        "rank": 0
+      },
+      "426742808": {
+        "name": "dominator7",
+        "brand": "Vapid",
+        "model": "Dominator ASP",
+        "type": "muscle",
+        "rank": 0
+      },
+      "3675036420": {
+        "name": "buffalo4",
+        "brand": "Bravado",
+        "model": "Buffalo STX",
+        "type": "muscle",
+        "rank": 0
+      },
+      "4246935337": {
+        "name": "blazer2",
+        "brand": "Nagasaki",
+        "model": "Blazer Lifeguard",
+        "type": "off-road",
+        "rank": 0
+      },
+      "1770332643": {
+        "name": "dloader",
+        "brand": "Bravado",
+        "model": "Duneloader",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2633113103": {
+        "name": "dune",
+        "brand": "BF",
+        "model": "Dune Buggy",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2249373259": {
+        "name": "rebel2",
+        "brand": "Karin",
+        "model": "Rebel",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3105951696": {
+        "name": "sandking",
+        "brand": "Vapid",
+        "model": "Sandking XL",
+        "type": "off-road",
+        "rank": 0
+      },
+      "989381445": {
+        "name": "sandking2",
+        "brand": "Vapid",
+        "model": "Sandking SWB",
+        "type": "off-road",
+        "rank": 0
+      },
+      "1126868326": {
+        "name": "bfinjection",
+        "brand": "BF",
+        "model": "Injection",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2859047862": {
+        "name": "Bodhi2",
+        "brand": "Canis",
+        "model": "Bodhi",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2166734073": {
+        "name": "blazer",
+        "brand": "Nagasaki",
+        "model": "Blazer",
+        "type": "off-road",
+        "rank": 0
+      },
+      "1933662059": {
+        "name": "rancherxl2",
+        "brand": "Declasse",
+        "model": "Rancher XL",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3087195462": {
+        "name": "rebel",
+        "brand": "Karin",
+        "model": "Rusty Rebel",
+        "type": "off-road",
+        "rank": 0
+      },
+      "1645267888": {
+        "name": "rancherxL",
+        "brand": "Declasse",
+        "model": "Rancher XL",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2230595153": {
+        "name": "mesa3",
+        "brand": "Canis",
+        "model": "Mesa",
+        "type": "off-road",
+        "rank": 0
+      },
+      "534258863": {
+        "name": "dune2",
+        "brand": "BF",
+        "model": "Space Docker",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3025077634": {
+        "name": "blazer3",
+        "brand": "Nagasaki",
+        "model": "Hot Rod Blazer",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3945366167": {
+        "name": "bifta",
+        "brand": "BF",
+        "model": "Bifta",
+        "type": "off-road",
+        "rank": 0
+      },
+      "92612664": {
+        "name": "kalahari",
+        "brand": "Canis",
+        "model": "Kalahari",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2762269779": {
+        "name": "riata",
+        "brand": "Vapid",
+        "model": "Riata",
+        "type": "off-road",
+        "rank": 0
+      },
+      "4173521127": {
+        "name": "kamacho",
+        "brand": "Canis",
+        "model": "Kamacho",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3579220348": {
+        "name": "monster5",
+        "brand": "Bravado",
+        "model": "Nightmare Sasquatch",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2038858402": {
+        "name": "brutus3",
+        "brand": "Declasse",
+        "model": "Nightmare Brutus",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2403970600": {
+        "name": "brutus2",
+        "brand": "Declasse",
+        "model": "Future Shock Brutus",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2139203625": {
+        "name": "brutus",
+        "brand": "Declasse",
+        "model": "Apocalypse Brutus",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "668439077": {
+        "name": "bruiser",
+        "brand": "Benefactor",
+        "model": "Apocalypse Bruiser",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2600885406": {
+        "name": "bruiser2",
+        "brand": "Benefactor",
+        "model": "Future Shock Bruiser",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2252616474": {
+        "name": "bruiser3",
+        "brand": "Benefactor",
+        "model": "Nightmare Bruiser",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "4008920556": {
+        "name": "rcbandito",
+        "brand": "Remote",
+        "model": "RC Bandito",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "840387324": {
+        "name": "monster4",
+        "brand": "Bravado",
+        "model": "Future Shock Sasquatch",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "1721676810": {
+        "name": "monster3",
+        "brand": "Bravado",
+        "model": "Apocalypse Sasquatch",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "3057713523": {
+        "name": "dubsta3",
+        "brand": "Benefactor",
+        "model": "Dubsta 6x6",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3449006043": {
+        "name": "monster",
+        "brand": "Vapid",
+        "model": "Monster",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "1233534620": {
+        "name": "marshall",
+        "brand": "Cheval",
+        "model": "Marshall",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "298565713": {
+        "name": "verus",
+        "brand": "Dinka",
+        "model": "Verus",
+        "type": "off-road",
+        "rank": 0
+      },
+      "4084658662": {
+        "name": "winky",
+        "brand": "Vapid",
+        "model": "Winky",
+        "type": "off-road",
+        "rank": 0
+      },
+      "408825843": {
+        "name": "outlaw",
+        "brand": "Nagasaki",
+        "model": "Outlaw",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2538945576": {
+        "name": "everon",
+        "brand": "Karin",
+        "model": "Everon",
+        "type": "off-road",
+        "rank": 0
+      },
+      "740289177": {
+        "name": "vagrant",
+        "brand": "Maxwell",
+        "model": "Vagrant",
+        "type": "off-road",
+        "rank": 0
+      },
+      "1284356689": {
+        "name": "zhaba",
+        "brand": "RUNE",
+        "model": "Zhaba",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2198148358": {
+        "name": "technical",
+        "brand": "Karin",
+        "model": "Technical",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2434067162": {
+        "name": "insurgent",
+        "brand": "HVY",
+        "model": "Insurgent Pick-Up",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2071877360": {
+        "name": "insurgent2",
+        "brand": "HVY",
+        "model": "Insurgent",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2815302597": {
+        "name": "brawler",
+        "brand": "Coil",
+        "model": "Brawler",
+        "type": "off-road",
+        "rank": 0
+      },
+      "101905590": {
+        "name": "trophytruck",
+        "brand": "Vapid",
+        "model": "Trophy Truck",
+        "type": "off-road",
+        "rank": 6
+      },
+      "3631668194": {
+        "name": "trophytruck2",
+        "brand": "Vapid",
+        "model": "Desert Raid",
+        "type": "off-road",
+        "rank": 6
+      },
+      "2704629607": {
+        "name": "blazer5",
+        "brand": "Nagasaki",
+        "model": "Blazer Aqua",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3467805257": {
+        "name": "dune4",
+        "brand": "Vapid",
+        "model": "Ramp Buggy",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "3982671785": {
+        "name": "dune5",
+        "brand": "Vapid",
+        "model": "Ramp Buggy",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "1180875963": {
+        "name": "technical2",
+        "brand": "Karin",
+        "model": "Technical Aqua",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "3854198872": {
+        "name": "blazer4",
+        "brand": "Nagasaki",
+        "model": "Street Blazer",
+        "type": "off-road",
+        "rank": 0
+      },
+      "433954513": {
+        "name": "nightshark",
+        "brand": "HVY",
+        "model": "Nightshark",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "1356124575": {
+        "name": "technical3",
+        "brand": "Karin",
+        "model": "Technical Custom",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2370534026": {
+        "name": "insurgent3",
+        "brand": "HVY",
+        "model": "Insurgent Pick-Up Custom",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "1897744184": {
+        "name": "dune3",
+        "brand": "BF",
+        "model": "Dune FAV",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "1254014755": {
+        "name": "caracara",
+        "brand": "Vapid",
+        "model": "Caracara",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "4240635011": {
+        "name": "freecrawler",
+        "brand": "Canis",
+        "model": "Freecrawler",
+        "type": "off-road",
+        "rank": 0
+      },
+      "2044532910": {
+        "name": "menacer",
+        "brand": "HVY",
+        "model": "Menacer",
+        "type": "off-road",
+        "rank": [10, 11, 12, 13]
+      },
+      "2945871676": {
+        "name": "caracara2",
+        "brand": "Vapid",
+        "model": "Caracara 4x4",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3932816511": {
+        "name": "hellion",
+        "brand": "Annis",
+        "model": "Hellion",
+        "type": "off-road",
+        "rank": 0
+      },
+      "67753863": {
+        "name": "yosemite3",
+        "brand": "Declasse",
+        "model": "Yosemite Rancher",
+        "type": "off-road",
+        "rank": 0
+      },
+      "3624880708": {
+        "name": "patriot3",
+        "brand": "Mammoth",
+        "model": "Patriot Mil-Spec",
+        "type": "off-road",
+        "rank": 0
+      },
+      "340154634": {
+        "name": "formula",
+        "brand": "Progen",
+        "model": "PR4",
+        "type": "openwheel",
+        "rank": 6
+      },
+      "2334210311": {
+        "name": "formula2",
+        "brand": "Ocelot",
+        "model": "R88",
+        "type": "openwheel",
+        "rank": 6
+      },
+      "1492612435": {
+        "name": "openwheel1",
+        "brand": "Benefactor",
+        "model": "BR8",
+        "type": "openwheel",
+        "rank": 6
+      },
+      "1181339704": {
+        "name": "openwheel2",
+        "brand": "Declasse",
+        "model": "DR1",
+        "type": "openwheel",
+        "rank": 6
+      },
+      "3650256867": {
+        "name": "cuban800",
+        "brand": "Western Company",
+        "model": "Cuban 800",
+        "type": "planes",
+        "rank": 6
+      },
+      "1058115860": {
+        "name": "jet",
+        "brand": "Passenger",
+        "model": "Jet",
+        "type": "planes",
+        "rank": 6
+      },
+      "1981688531": {
+        "name": "titan",
+        "brand": "Military",
+        "model": "Titan",
+        "type": "planes",
+        "rank": 6
+      },
+      "368211810": {
+        "name": "cargoplane",
+        "brand": "Passenger",
+        "model": "Cargo Plane",
+        "type": "planes",
+        "rank": 6
+      },
+      "970356638": {
+        "name": "duster",
+        "brand": "Western Company",
+        "model": "Duster",
+        "type": "planes",
+        "rank": 6
+      },
+      "621481054": {
+        "name": "luxor",
+        "brand": "Buckingham",
+        "model": "Luxor",
+        "type": "planes",
+        "rank": 6
+      },
+      "2172210288": {
+        "name": "Stunt",
+        "brand": "Western Company",
+        "model": "Mallard",
+        "type": "planes",
+        "rank": 6
+      },
+      "2548391185": {
+        "name": "mammatus",
+        "brand": "Western Company",
+        "model": "Mammatus",
+        "type": "planes",
+        "rank": 6
+      },
+      "2621610858": {
+        "name": "velum",
+        "brand": "Jobuilt",
+        "model": "Velum",
+        "type": "planes",
+        "rank": 6
+      },
+      "4143991942": {
+        "name": "blimp",
+        "brand": "Atomic",
+        "model": "Blimp",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "3080461301": {
+        "name": "shamal",
+        "brand": "Buckingham",
+        "model": "Shamal",
+        "type": "planes",
+        "rank": 6
+      },
+      "3013282534": {
+        "name": "lazer",
+        "brand": "Jobuilt",
+        "model": "P-996 LAZER",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "1341619767": {
+        "name": "vestra",
+        "brand": "Buckingham",
+        "model": "Vestra",
+        "type": "planes",
+        "rank": 6
+      },
+      "447548909": {
+        "name": "volatol",
+        "brand": "Bomber",
+        "model": "Volatol",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "2176659152": {
+        "name": "avenger",
+        "brand": "Mammoth",
+        "model": "Avenger",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "408970549": {
+        "name": "avenger2",
+        "brand": "Mammoth",
+        "model": "Avenger",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "165154707": {
+        "name": "miljet",
+        "brand": "Buckingham",
+        "model": "Miljet",
+        "type": "planes",
+        "rank": 6
+      },
+      "1824333165": {
+        "name": "besra",
+        "brand": "Western",
+        "model": "Besra",
+        "type": "planes",
+        "rank": 6
+      },
+      "3393804037": {
+        "name": "dodo",
+        "brand": "Mammoth",
+        "model": "Dodo",
+        "type": "planes",
+        "rank": 6
+      },
+      "3681241380": {
+        "name": "blimp2",
+        "brand": "Xero",
+        "model": "Blimp",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "3929093893": {
+        "name": "alkonost",
+        "brand": "Miltary",
+        "model": "RO-86 Alkonost",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "1077420264": {
+        "name": "velum2",
+        "brand": "Jobuilt",
+        "model": "Velum 5-Seater",
+        "type": "planes",
+        "rank": 6
+      },
+      "970385471": {
+        "name": "hydra",
+        "brand": "Mammoth",
+        "model": "Hydra",
+        "type": "planes",
+        "rank": 6
+      },
+      "3080673438": {
+        "name": "luxor2",
+        "brand": "Buckingham",
+        "model": "Luxor Deluxe",
+        "type": "planes",
+        "rank": 6
+      },
+      "4262088844": {
+        "name": "bombushka",
+        "brand": "Military",
+        "model": "RM-10 Bombushka",
+        "type": "planes",
+        "rank": 6
+      },
+      "3287439187": {
+        "name": "howard",
+        "brand": "Howard NX-25",
+        "model": "Buckingham",
+        "type": "planes",
+        "rank": 6
+      },
+      "2771347558": {
+        "name": "alphaz1",
+        "brand": "Buckingham",
+        "model": "Alpha-Z1",
+        "type": "planes",
+        "rank": 6
+      },
+      "3902291871": {
+        "name": "seabreeze",
+        "brand": "Western",
+        "model": "Seabreeze",
+        "type": "planes",
+        "rank": 6
+      },
+      "1036591958": {
+        "name": "nokota",
+        "brand": "Military",
+        "model": "P-45 Nokota",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "1565978651": {
+        "name": "molotok",
+        "brand": "Military",
+        "model": "V-65 Molotok",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "2594093022": {
+        "name": "starling",
+        "brand": "Military",
+        "model": "LF-22 Starling",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "1043222410": {
+        "name": "tula",
+        "brand": "Mammoth",
+        "model": "Tula",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "2531412055": {
+        "name": "microlight",
+        "brand": "Nagasaki",
+        "model": "Ultralight",
+        "type": "planes",
+        "rank": 6
+      },
+      "3319621991": {
+        "name": "rogue",
+        "brand": "Western",
+        "model": "Rogue",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "2908775872": {
+        "name": "pyro",
+        "brand": "Buckingham",
+        "model": "Pyro",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "3545667823": {
+        "name": "mogul",
+        "brand": "Mammoth",
+        "model": "Mogul",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "1692272545": {
+        "name": "strikeforce",
+        "brand": "Military",
+        "model": "B-11 Strikeforce",
+        "type": "planes",
+        "rank": 6
+      },
+      "blimp3": {
+        "name": "blimp3",
+        "brand": "Basic",
+        "model": "Blimp",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "2999939664": {
+        "name": "nimbus",
+        "brand": "Buckingham",
+        "model": "Nimbus",
+        "type": "planes",
+        "rank": [12, 13]
+      },
+      "-1291952903": {
+        "name": "entityxf",
+        "brand": "Overflod",
+        "model": "Entity XF",
+        "type": "super",
+        "rank": 6
+      },
+      "-1216765807": {
+        "name": "adder",
+        "brand": "Truffade",
+        "model": "Adder",
+        "type": "super",
+        "rank": 6
+      },
+      "338562499": {
+        "name": "vacca",
+        "brand": "Pegassi",
+        "model": "Vacca",
+        "type": "super",
+        "rank": 6
+      },
+      "2983812512": {
+        "name": "cheetah",
+        "brand": "Grotti",
+        "model": "Cheetah",
+        "type": "super",
+        "rank": 6
+      },
+      "418536135": {
+        "name": "infernus",
+        "brand": "Pegassi",
+        "model": "Infernus",
+        "type": "super",
+        "rank": 6
+      },
+      "2598821281": {
+        "name": "bullet",
+        "brand": "Vapid",
+        "model": "Bullet",
+        "type": "super",
+        "rank": 6
+      },
+      "2672523198": {
+        "name": "voltic",
+        "brand": "Coil",
+        "model": "Voltic",
+        "type": "super",
+        "rank": 6
+      },
+      "2891838741": {
+        "name": "zentorno",
+        "brand": "Pegassi",
+        "model": "Zentorno",
+        "type": "super",
+        "rank": 6
+      },
+      "408192225": {
+        "name": "turismor",
+        "brand": "Grotti",
+        "model": "Turismo R",
+        "type": "super",
+        "rank": 6
+      },
+      "1352136073": {
+        "name": "sc1",
+        "brand": "Ubermacht",
+        "model": "SC1",
+        "type": "super",
+        "rank": 6
+      },
+      "3981782132": {
+        "name": "autarch",
+        "brand": "Overflod",
+        "model": "Autarch",
+        "type": "super",
+        "rank": 6
+      },
+      "1591739866": {
+        "name": "deveste",
+        "brand": "Principe",
+        "model": "Deveste Eight",
+        "type": "super",
+        "rank": 6
+      },
+      "960812448": {
+        "name": "furia",
+        "brand": "Grotti",
+        "model": "Furia",
+        "type": "super",
+        "rank": 6
+      },
+      "1663218586": {
+        "name": "t20",
+        "brand": "Progen",
+        "model": "T20",
+        "type": "super",
+        "rank": 6
+      },
+      "1987142870": {
+        "name": "osiris",
+        "brand": "Pegassi",
+        "model": "Osiris",
+        "type": "super",
+        "rank": 6
+      },
+      "3999278268": {
+        "name": "sultanrs",
+        "brand": "Karin",
+        "model": "Sultan RS",
+        "type": "super",
+        "rank": 0
+      },
+      "633712403": {
+        "name": "banshee2",
+        "brand": "Bravado",
+        "model": "Banshee 900R",
+        "type": "super",
+        "rank": 0
+      },
+      "234062309": {
+        "name": "reaper",
+        "brand": "Pegassi",
+        "model": "Reaper",
+        "type": "super",
+        "rank": 6
+      },
+      "1426219628": {
+        "name": "fmj",
+        "brand": "Vapid",
+        "model": "FMJ",
+        "type": "super",
+        "rank": 6
+      },
+      "2465164804": {
+        "name": "pfister811",
+        "brand": "Pfister",
+        "model": "811",
+        "type": "super",
+        "rank": 0
+      },
+      "2123327359": {
+        "name": "prototipo",
+        "brand": "Grotti",
+        "model": "X80 Proto",
+        "type": "super",
+        "rank": 6
+      },
+      "819197656": {
+        "name": "sheava",
+        "brand": "Emperor",
+        "model": "ETR1",
+        "type": "super",
+        "rank": 6
+      },
+      "2067820283": {
+        "name": "tyrus",
+        "brand": "Progen",
+        "model": "Tyrus",
+        "type": "super",
+        "rank": 6
+      },
+      "3062131285": {
+        "name": "le7b",
+        "brand": "Annis",
+        "model": "RE-7B",
+        "type": "super",
+        "rank": 6
+      },
+      "1034187331": {
+        "name": "nero",
+        "brand": "Truffade",
+        "model": "Nero",
+        "type": "super",
+        "rank": 6
+      },
+      "1093792632": {
+        "name": "nero2",
+        "brand": "Truffade",
+        "model": "Nero Custom",
+        "type": "super",
+        "rank": 6
+      },
+      "2246633323": {
+        "name": "italigtb",
+        "brand": "Progen",
+        "model": "Itali GTB",
+        "type": "super",
+        "rank": 6
+      },
+      "272929391": {
+        "name": "tempesta",
+        "brand": "Pegassi",
+        "model": "Tempesta",
+        "type": "super",
+        "rank": 6
+      },
+      "989294410": {
+        "name": "voltic2",
+        "brand": "Coil",
+        "model": "Rocket Voltic",
+        "type": "super",
+        "rank": 6
+      },
+      "2536829930": {
+        "name": "penetrator",
+        "brand": "Ocelot",
+        "model": "Penetrator",
+        "type": "super",
+        "rank": 6
+      },
+      "1234311532": {
+        "name": "gp1",
+        "brand": "Progen",
+        "model": "GP1",
+        "type": "super",
+        "rank": 6
+      },
+      "917809321": {
+        "name": "xa21",
+        "brand": "Ocelot",
+        "model": "XA-21",
+        "type": "super",
+        "rank": 6
+      },
+      "1939284556": {
+        "name": "vagner",
+        "brand": "Dewbauchee",
+        "model": "Vagner",
+        "type": "super",
+        "rank": 6
+      },
+      "3052358707": {
+        "name": "vigilante",
+        "brand": "Vapid",
+        "model": "Vigilante",
+        "type": "super",
+        "rank": [10, 11, 12, 13]
+      },
+      "1392481335": {
+        "name": "cyclone",
+        "brand": "Coil",
+        "model": "Cyclone",
+        "type": "super",
+        "rank": 6
+      },
+      "3296789504": {
+        "name": "visione",
+        "brand": "Grotti",
+        "model": "Visione",
+        "type": "super",
+        "rank": 6
+      },
+      "2174267100": {
+        "name": "entity2",
+        "brand": "Overflod",
+        "model": "Entity XXR",
+        "type": "super",
+        "rank": 6
+      },
+      "3918533058": {
+        "name": "tyrant",
+        "brand": "Overflod",
+        "model": "Tyrant",
+        "type": "super",
+        "rank": 6
+      },
+      "1031562256": {
+        "name": "tezeract",
+        "brand": "Pegassi",
+        "model": "Tezeract",
+        "type": "super",
+        "rank": 6
+      },
+      "3160260734": {
+        "name": "taipan",
+        "brand": "Cheval",
+        "model": "Taipan",
+        "type": "super",
+        "rank": 6
+      },
+      "3656405053": {
+        "name": "scramjet",
+        "brand": "Declasse",
+        "model": "Scramjet",
+        "type": "super",
+        "rank": [10, 11, 12, 13]
+      },
+      "3630826055": {
+        "name": "krieger",
+        "brand": "Benefactor",
+        "model": "Krieger",
+        "type": "super",
+        "rank": 6
+      },
+      "3970348707": {
+        "name": "s80",
+        "brand": "Annis",
+        "model": "S80RR",
+        "type": "super",
+        "rank": 6
+      },
+      "1044193113": {
+        "name": "thrax",
+        "brand": "Truffade",
+        "model": "Thrax",
+        "type": "super",
+        "rank": 6
+      },
+      "3612858749": {
+        "name": "zorrusso",
+        "brand": "Pegassi",
+        "model": "Zorrusso",
+        "type": "super",
+        "rank": 6
+      },
+      "1323778901": {
+        "name": "emerus",
+        "brand": "Progen",
+        "model": "Emerus",
+        "type": "super",
+        "rank": 6
+      },
+      "2936769864": {
+        "name": "tigon",
+        "brand": "Lampadati",
+        "model": "Tigon",
+        "type": "super",
+        "rank": 6
+      },
+      "3379732821": {
+        "name": "champion",
+        "brand": "Dewbauchee",
+        "model": "Champion",
+        "type": "super",
+        "rank": 6
+      },
+      "2850852987": {
+        "name": "ignus",
+        "brand": "Pegassi",
+        "model": "Ignus",
+        "type": "super",
+        "rank": 6
+      },
+      "655665811": {
+        "name": "zeno",
+        "brand": "Overflod",
+        "model": "Zeno",
+        "type": "super",
+        "rank": 6
+      },
+      "1051415893": {
+        "name": "jb700",
+        "brand": "Dewbauchee",
+        "model": "JB 700",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1545842587": {
+        "name": "stinger",
+        "brand": "Grotti",
+        "model": "Stinger",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "464687292": {
+        "name": "tornado",
+        "brand": "Declasse",
+        "model": "Tornado",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2170765704": {
+        "name": "manana",
+        "brand": "Albany",
+        "model": "Manana",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2196019706": {
+        "name": "stingergt",
+        "brand": "Grotti",
+        "model": "Stinger GT",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1830407356": {
+        "name": "peyote",
+        "brand": "Vapid",
+        "model": "Peyote",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1531094468": {
+        "name": "tornado2",
+        "brand": "Declasse",
+        "model": "Tornado",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1762279763": {
+        "name": "tornado3",
+        "brand": "Declasse",
+        "model": "Tornado",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2261744861": {
+        "name": "tornado4",
+        "brand": "Declasse",
+        "model": "Tornado",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "3861591579": {
+        "name": "monroe",
+        "brand": "Pegassi",
+        "model": "Monroe",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "758895617": {
+        "name": "Ztype",
+        "brand": "Truffade",
+        "model": "Z-Type",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "3903371924": {
+        "name": "viseris",
+        "brand": "Lampadati",
+        "model": "Viseris",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "903794909": {
+        "name": "savestra",
+        "brand": "Annis",
+        "model": "Savestra",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2215179066": {
+        "name": "gt500",
+        "brand": "Grotti",
+        "model": "GT500",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "838982985": {
+        "name": "z190",
+        "brand": "Karin",
+        "model": "190z",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1483171323": {
+        "name": "deluxo",
+        "brand": "Imponte",
+        "model": "Deluxo",
+        "type": "sports classics",
+        "rank": [12, 13]
+      },
+      "886810209": {
+        "name": "stromberg",
+        "brand": "Ocelot",
+        "model": "Stromberg",
+        "type": "sports classics",
+        "rank": [12, 13]
+      },
+      "117401876": {
+        "name": "btype",
+        "brand": "Albany",
+        "model": "Roosevelt",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "3692679425": {
+        "name": "btype3",
+        "brand": "Albany",
+        "model": "Roosevelt Valor",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1078682497": {
+        "name": "pigalle",
+        "brand": "Lampadati",
+        "model": "Pigalle",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1011753235": {
+        "name": "coquette2",
+        "brand": "Invetero",
+        "model": "Coquette Classic",
+        "type": "sports classics",
+        "rank": 6
+      },
+      "1455990255": {
+        "name": "toreador",
+        "brand": "Pegassi",
+        "model": "Toreador",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2031587082": {
+        "name": "retinue2",
+        "brand": "Vapid",
+        "model": "Retinue Mk II",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "394110044": {
+        "name": "jb7002",
+        "brand": "Dewbauchee",
+        "model": "JB 700W",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "941800958": {
+        "name": "casco",
+        "brand": "Lampadati",
+        "model": "Casco",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2728226064": {
+        "name": "feltzer3",
+        "brand": "Benefactor",
+        "model": "Stirling GT",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2497353967": {
+        "name": "tornado5",
+        "brand": "Declasse",
+        "model": "Tornado Custom",
+        "type": "sports classics",
+        "rank": 6
+      },
+      "3463132580": {
+        "name": "btype2",
+        "brand": "Albany",
+        "model": "Fränken Stange",
+        "type": "sports classics",
+        "rank": 6
+      },
+      "2634021974": {
+        "name": "mamba",
+        "brand": "Declasse",
+        "model": "Mamba",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2736567667": {
+        "name": "tornado6",
+        "brand": "Declasse",
+        "model": "Tornado Rat Rod",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "3312836369": {
+        "name": "turismo2",
+        "brand": "Grotti",
+        "model": "Turismo Classic",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "223240013": {
+        "name": "cheetah2",
+        "brand": "Grotti",
+        "model": "Cheetah Classic",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1504306544": {
+        "name": "torero",
+        "brand": "Pegassi",
+        "model": "Torero",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "159274291": {
+        "name": "ardent",
+        "brand": "Ocelot",
+        "model": "Ardent",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "2049897956": {
+        "name": "rapidgt3",
+        "brand": "Dewbauchee",
+        "model": "Rapid GT Classic",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1841130506": {
+        "name": "retinue",
+        "brand": "Vapid",
+        "model": "Retinue",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1046206681": {
+        "name": "michelli",
+        "brand": "Lampadati",
+        "model": "Michelli GT",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1617472902": {
+        "name": "fagaloa",
+        "brand": "Vulcar",
+        "model": "Fagaloa",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "3306466016": {
+        "name": "cheburek",
+        "brand": "RUNE",
+        "model": "Cheburek",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "500482303": {
+        "name": "swinger",
+        "brand": "Ocelot",
+        "model": "Swinger",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "310284501": {
+        "name": "Dynasty",
+        "brand": "Weeny",
+        "model": "Dynasty",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "3412338231": {
+        "name": "nebula",
+        "brand": "Vulcar",
+        "model": "Nebula Turbo",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1862507111": {
+        "name": "zion3",
+        "brand": "Ubermacht",
+        "model": "Zion Classic",
+        "type": "sports classics",
+        "rank": 0
+      },
+      "1107404867": {
+        "name": "peyote3",
+        "brand": "Vapid",
+        "model": "Peyote Custom",
+        "type": "sports classics",
+        "rank": 6
+      },
+      "1177543287": {
+        "name": "dubsta",
+        "brand": "Benefactor",
+        "model": "Dubsta",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3900892662": {
+        "name": "dubsta2",
+        "brand": "Benefactor",
+        "model": "Dubsta",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3157435195": {
+        "name": "fq2",
+        "brand": "Fathom",
+        "model": "FQ 2",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3486509883": {
+        "name": "patriot",
+        "brand": "Mammoth",
+        "model": "Patriot",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2643899483": {
+        "name": "radi",
+        "brand": "Vapid",
+        "model": "Radius",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "884422927": {
+        "name": "habanero",
+        "brand": "Emperor",
+        "model": "Habanero",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "1269098716": {
+        "name": "landstalker",
+        "brand": "Dundreary",
+        "model": "Landstalker",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "1337041428": {
+        "name": "serrano",
+        "brand": "Benefactor",
+        "model": "Serrano",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2006918058": {
+        "name": "cavalcade",
+        "brand": "Albany",
+        "model": "Cavalcade",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2136773105": {
+        "name": "rocoto",
+        "brand": "Obey",
+        "model": "Rocoto",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2519238556": {
+        "name": "GRANGER",
+        "brand": "Declasse",
+        "model": "Granger",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3486135912": {
+        "name": "Baller",
+        "brand": "Gallivanter",
+        "model": "Baller",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2751205197": {
+        "name": "gresley",
+        "brand": "Bravado",
+        "model": "Gresley",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "142944341": {
+        "name": "baller2",
+        "brand": "Gallivanter",
+        "model": "Baller",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3505073125": {
+        "name": "cavalcade2",
+        "brand": "Albany",
+        "model": "Cavalcade",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "914654722": {
+        "name": "MESA",
+        "brand": "Canis",
+        "model": "Mesa",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "1221512915": {
+        "name": "Seminole",
+        "brand": "Canis",
+        "model": "Seminole",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "850565707": {
+        "name": "BjXL",
+        "brand": "Karin",
+        "model": "BeeJay XL",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3546958660": {
+        "name": "mesa2",
+        "brand": "Canis",
+        "model": "Mesa",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "486987393": {
+        "name": "huntley",
+        "brand": "Enus",
+        "model": "Huntley S",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3126015148": {
+        "name": "toros",
+        "brand": "Pegassi",
+        "model": "Toros",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "4192631813": {
+        "name": "squaddie",
+        "brand": "Mammoth",
+        "model": "Squaddie",
+        "type": "SUVs",
+        "rank": [12, 13]
+      },
+      "83136452": {
+        "name": "rebla",
+        "brand": "Ubermacht",
+        "model": "Rebla GTS",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "1878062887": {
+        "name": "baller3",
+        "brand": "Gallivanter",
+        "model": "Baller LE",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "634118882": {
+        "name": "baller4",
+        "brand": "Gallivanter",
+        "model": "Baller LE LWB",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "470404958": {
+        "name": "baller5",
+        "brand": "Gallivanter",
+        "model": "Baller LE (Armored)",
+        "type": "SUVs",
+        "rank": [10, 11, 12, 13]
+      },
+      "666166960": {
+        "name": "baller6",
+        "brand": "Gallivanter",
+        "model": "Baller LE LWB (Armored)",
+        "type": "SUVs",
+        "rank": [10, 11, 12, 13]
+      },
+      "1203490606": {
+        "name": "xls",
+        "brand": "Benefactor",
+        "model": "XLS",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3862958888": {
+        "name": "xls2",
+        "brand": "Benefactor",
+        "model": "XLS (Armored)",
+        "type": "SUVs",
+        "rank": [10, 11, 12, 13]
+      },
+      "683047626": {
+        "name": "contender",
+        "brand": "Vapid",
+        "model": "Contender",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3874056184": {
+        "name": "patriot2",
+        "brand": "Mammoth",
+        "model": "Patriot Stretch",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2465530446": {
+        "name": "Novak",
+        "brand": "Lampadati",
+        "model": "Novak",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "3456868130": {
+        "name": "landstalker2",
+        "brand": "Dundreary",
+        "model": "Landstalker XL",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2484160806": {
+        "name": "seminole2",
+        "brand": "Canis",
+        "model": "Seminole Frontier",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "662793086": {
+        "name": "iwagen",
+        "brand": "Obey",
+        "model": "I-Wagen",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "629969764": {
+        "name": "astron",
+        "brand": "Pfister",
+        "model": "Astron",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "359875117": {
+        "name": "baller7",
+        "brand": "Gallivanter",
+        "model": "Baller ST",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "461465043": {
+        "name": "jubilee",
+        "brand": "Enus",
+        "model": "Jubilee",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "4033620423": {
+        "name": "granger2",
+        "brand": "Declasse",
+        "model": "Granger 3600LX",
+        "type": "SUVs",
+        "rank": 0
+      },
+      "2222034228": {
+        "name": "coach",
+        "brand": "Brute",
+        "model": "Dashound",
+        "type": "service",
+        "rank": 0
+      },
+      "1917016601": {
+        "name": "Trash",
+        "brand": "Brute",
+        "model": "Trashmaster",
+        "type": "service",
+        "rank": 0
+      },
+      "1283517198": {
+        "name": "Airbus",
+        "brand": "Brute",
+        "model": "Airport Bus",
+        "type": "service",
+        "rank": 0
+      },
+      "3196165219": {
+        "name": "Rentalbus",
+        "brand": "Brute",
+        "model": "Rental Shuttle Bus",
+        "type": "service",
+        "rank": 0
+      },
+      "3581397346": {
+        "name": "bus",
+        "brand": "Brute",
+        "model": "Bus",
+        "type": "service",
+        "rank": 0
+      },
+      "1941029835": {
+        "name": "tourbus",
+        "brand": "Brute",
+        "model": "Tourbus",
+        "type": "service",
+        "rank": 0
+      },
+      "3338918751": {
+        "name": "taxi",
+        "brand": "Vapid",
+        "model": "Taxi",
+        "type": "service",
+        "rank": 0
+      },
+      "3039269212": {
+        "name": "trash2",
+        "brand": "Brute",
+        "model": "Trashmaster",
+        "type": "service",
+        "rank": 0
+      },
+      "3989239879": {
+        "name": "brickade",
+        "brand": "MTL",
+        "model": "Brickade",
+        "type": "service",
+        "rank": [12, 13]
+      },
+      "2191146052": {
+        "name": "rallytruck",
+        "brand": "MTL",
+        "model": "Dune",
+        "type": "service",
+        "rank": [12, 13]
+      },
+      "2382949506": {
+        "name": "wastelander",
+        "brand": "MTL",
+        "model": "Wastelander",
+        "type": "service",
+        "rank": [12, 13]
+      },
+      "345756458": {
+        "name": "pbus2",
+        "brand": "MTL",
+        "model": "Festival Bus",
+        "type": "service",
+        "rank": 7
+      },
+      "1032823388": {
+        "name": "ninef",
+        "brand": "Obey",
+        "model": "9F",
+        "type": "sports",
+        "rank": 0
+      },
+      "2833484545": {
+        "name": "ninef2",
+        "brand": "Obey",
+        "model": "9F Cabrio",
+        "type": "sports",
+        "rank": 0
+      },
+      "3253274834": {
+        "name": "banshee",
+        "brand": "Bravado",
+        "model": "Banshee",
+        "type": "sports",
+        "rank": 0
+      },
+      "3990165190": {
+        "name": "buffalo",
+        "brand": "Bravado",
+        "model": "Buffalo",
+        "type": "sports",
+        "rank": 0
+      },
+      "3917501776": {
+        "name": "penumbra",
+        "brand": "Maibatsu",
+        "model": "Penumbra",
+        "type": "sports",
+        "rank": 0
+      },
+      "970598228": {
+        "name": "sultan",
+        "brand": "Karin",
+        "model": "Sultan",
+        "type": "sports",
+        "rank": 0
+      },
+      "2016857647": {
+        "name": "futo",
+        "brand": "Karin",
+        "model": "Futo",
+        "type": "sports",
+        "rank": 0
+      },
+      "2299640309": {
+        "name": "feltzer2",
+        "brand": "Benefactor",
+        "model": "Feltzer",
+        "type": "sports",
+        "rank": 0
+      },
+      "3249425686": {
+        "name": "comet2",
+        "brand": "Pfister",
+        "model": "Comet",
+        "type": "sports",
+        "rank": 0
+      },
+      "499169875": {
+        "name": "fusilade",
+        "brand": "Schyster",
+        "model": "Fusilade",
+        "type": "sports",
+        "rank": 0
+      },
+      "3548084598": {
+        "name": "schwarzer",
+        "brand": "Benefactor",
+        "model": "Schwartzer",
+        "type": "sports",
+        "rank": 0
+      },
+      "2072687711": {
+        "name": "carbonizzare",
+        "brand": "Grotti",
+        "model": "Carbonizzare",
+        "type": "sports",
+        "rank": 0
+      },
+      "2360515092": {
+        "name": "RapidGT",
+        "brand": "Dewbauchee",
+        "model": "Rapid GT",
+        "type": "sports",
+        "rank": 0
+      },
+      "1737773231": {
+        "name": "RapidGT2",
+        "brand": "Dewbauchee",
+        "model": "Rapid GT",
+        "type": "sports",
+        "rank": 0
+      },
+      "384071873": {
+        "name": "Surano",
+        "brand": "Benefactor",
+        "model": "Surano",
+        "type": "sports",
+        "rank": 0
+      },
+      "736902334": {
+        "name": "buffalo2",
+        "brand": "Bravado",
+        "model": "Buffalo S",
+        "type": "sports",
+        "rank": 0
+      },
+      "108773431": {
+        "name": "coquette",
+        "brand": "Invetero",
+        "model": "Coquette",
+        "type": "sports",
+        "rank": 6
+      },
+      "3728579874": {
+        "name": "elegy2",
+        "brand": "Annis",
+        "model": "Elegy RH8",
+        "type": "sports",
+        "rank": 0
+      },
+      "544021352": {
+        "name": "khamelion",
+        "brand": "Hijak",
+        "model": "Khamelion",
+        "type": "sports",
+        "rank": 0
+      },
+      "4152024626": {
+        "name": "massacro",
+        "brand": "Dewbauchee",
+        "model": "Massacro",
+        "type": "sports",
+        "rank": 0
+      },
+      "2997294755": {
+        "name": "jester",
+        "brand": "Dinka",
+        "model": "Jester",
+        "type": "sports",
+        "rank": 0
+      },
+      "767087018": {
+        "name": "alpha",
+        "brand": "Albany",
+        "model": "Alpha",
+        "type": "sports",
+        "rank": 0
+      },
+      "2765724541": {
+        "name": "raiden",
+        "brand": "Coil",
+        "model": "Raiden",
+        "type": "sports",
+        "rank": 0
+      },
+      "661493923": {
+        "name": "comet5",
+        "brand": "Pfister",
+        "model": "Comet SR",
+        "type": "sports",
+        "rank": 0
+      },
+      "1561920505": {
+        "name": "comet4",
+        "brand": "Pfister",
+        "model": "Comet Safari",
+        "type": "sports",
+        "rank": 0
+      },
+      "2445973230": {
+        "name": "neon",
+        "brand": "Pfister",
+        "model": "Neon",
+        "type": "sports",
+        "rank": 0
+      },
+      "1741861769": {
+        "name": "streiter",
+        "brand": "Benefactor",
+        "model": "Streiter",
+        "type": "sports",
+        "rank": 0
+      },
+      "3884762073": {
+        "name": "revolter",
+        "brand": "Ubermacht",
+        "model": "Revolter",
+        "type": "sports",
+        "rank": 0
+      },
+      "867799010": {
+        "name": "pariah",
+        "brand": "Ocelot",
+        "model": "Pariah",
+        "type": "sports",
+        "rank": 0
+      },
+      "3963499524": {
+        "name": "italigto",
+        "brand": "Grotti",
+        "model": "Itali GTO",
+        "type": "sports",
+        "rank": 0
+      },
+      "3787471536": {
+        "name": "schlagen",
+        "brand": "Benefactor",
+        "model": "Schlagen GT",
+        "type": "sports",
+        "rank": 0
+      },
+      "540101442": {
+        "name": "zr380",
+        "brand": "Annis",
+        "model": "Apocalypse ZR380",
+        "type": "sports",
+        "rank": [10, 11, 12, 13]
+      },
+      "3188846534": {
+        "name": "zr3802",
+        "brand": "Annis",
+        "model": "Future Shock ZR380",
+        "type": "sports",
+        "rank": [10, 11, 12, 13]
+      },
+      "2816263004": {
+        "name": "zr3803",
+        "brand": "Annis",
+        "model": "Nightmare ZR380",
+        "type": "sports",
+        "rank": [10, 11, 12, 13]
+      },
+      "3188613414": {
+        "name": "jester2",
+        "brand": "Dinka",
+        "model": "Jester (Racecar)",
+        "type": "sports",
+        "rank": 0
+      },
+      "3663206819": {
+        "name": "massacro2",
+        "brand": "Dewbauchee",
+        "model": "Massacro (Racecar)",
+        "type": "sports",
+        "rank": 0
+      },
+      "237764926": {
+        "name": "buffalo3",
+        "brand": "Bravado",
+        "model": "Sprunk Buffalo",
+        "type": "sports",
+        "rank": 0
+      },
+      "1039032026": {
+        "name": "blista2",
+        "brand": "Dinka",
+        "model": "Blista Compact",
+        "type": "sports",
+        "rank": 0
+      },
+      "3205927392": {
+        "name": "furoregt",
+        "brand": "Lampadati",
+        "model": "Furore GT",
+        "type": "sports",
+        "rank": 0
+      },
+      "3703315515": {
+        "name": "blista3",
+        "brand": "Dinka",
+        "model": "Go Go Monkey Blista",
+        "type": "sports",
+        "rank": 0
+      },
+      "2802050217": {
+        "name": "veto2",
+        "brand": "Dinka",
+        "model": "Veto Modern",
+        "type": "sports",
+        "rank": 0
+      },
+      "3437611258": {
+        "name": "veto",
+        "brand": "Dinka",
+        "model": "Veto Classic",
+        "type": "sports",
+        "rank": 0
+      },
+      "3145241962": {
+        "name": "italirsx",
+        "brand": "Grotti",
+        "model": "Itali RSX",
+        "type": "sports",
+        "rank": 0
+      },
+      "987469656": {
+        "name": "Sugoi",
+        "brand": "Dinka",
+        "model": "Sugoi",
+        "type": "sports",
+        "rank": 0
+      },
+      "872704284": {
+        "name": "sultan2",
+        "brand": "Karin",
+        "model": "Sultan Classic",
+        "type": "sports",
+        "rank": 0
+      },
+      "1456336509": {
+        "name": "vstr",
+        "brand": "Albany",
+        "model": "V-STR",
+        "type": "sports",
+        "rank": 0
+      },
+      "3460613305": {
+        "name": "komoda",
+        "brand": "Lampadati",
+        "model": "Komoda",
+        "type": "sports",
+        "rank": 0
+      },
+      "3162245632": {
+        "name": "imorgon",
+        "brand": "Overflod",
+        "model": "Imorgon",
+        "type": "sports",
+        "rank": 0
+      },
+      "2922118804": {
+        "name": "kuruma",
+        "brand": "Karin",
+        "model": "Kuruma",
+        "type": "sports",
+        "rank": 0
+      },
+      "410882957": {
+        "name": "kuruma2",
+        "brand": "Karin",
+        "model": "Kuruma (armored)",
+        "type": "sports",
+        "rank": [10, 11, 12, 13]
+      },
+      "1102544804": {
+        "name": "verlierer2",
+        "brand": "Bravado",
+        "model": "Verlierer",
+        "type": "sports",
+        "rank": 0
+      },
+      "2809443750": {
+        "name": "schafter3",
+        "brand": "Benefactor",
+        "model": "Schafter V12",
+        "type": "sports",
+        "rank": 0
+      },
+      "1489967196": {
+        "name": "schafter4",
+        "brand": "Benefactor",
+        "model": "Schafter LWB",
+        "type": "sports",
+        "rank": 0
+      },
+      "2537130571": {
+        "name": "SEVEN70",
+        "brand": "Dewbauchee",
+        "model": "Seven-70",
+        "type": "sports",
+        "rank": 0
+      },
+      "1274868363": {
+        "name": "bestiagts",
+        "brand": "Grotti",
+        "model": "Bestia GTS",
+        "type": "sports",
+        "rank": 0
+      },
+      "3517794615": {
+        "name": "omnis",
+        "brand": "Obey",
+        "model": "Omnis",
+        "type": "sports",
+        "rank": 0
+      },
+      "482197771": {
+        "name": "lynx",
+        "brand": "Ocelot",
+        "model": "Lynx",
+        "type": "sports",
+        "rank": 0
+      },
+      "1887331236": {
+        "name": "tropos",
+        "brand": "Lampadati",
+        "model": "Tropos Rallye",
+        "type": "sports",
+        "rank": 0
+      },
+      "3223586949": {
+        "name": "tampa2",
+        "brand": "Declasse",
+        "model": "Drift Tampa",
+        "type": "sports",
+        "rank": 0
+      },
+      "196747873": {
+        "name": "elegy",
+        "brand": "Annis",
+        "model": "Elegy Retro Custom",
+        "type": "sports",
+        "rank": 0
+      },
+      "1886268224": {
+        "name": "SPECTER",
+        "brand": "Dewbauchee",
+        "model": "Specter",
+        "type": "sports",
+        "rank": 0
+      },
+      "1074745671": {
+        "name": "SPECTER2",
+        "brand": "Dewbauchee",
+        "model": "Specter Custom",
+        "type": "sports",
+        "rank": 0
+      },
+      "2272483501": {
+        "name": "comet3",
+        "brand": "Pfister",
+        "model": "Comet Retro Custom",
+        "type": "sports",
+        "rank": 0
+      },
+      "3620039993": {
+        "name": "raptor",
+        "brand": "BF",
+        "model": "Raptor",
+        "type": "sports",
+        "rank": 0
+      },
+      "719660200": {
+        "name": "ruston",
+        "brand": "Hijak",
+        "model": "Ruston",
+        "type": "sports",
+        "rank": 0
+      },
+      "4080061290": {
+        "name": "jester3",
+        "brand": "Dinka",
+        "model": "Jester Classic",
+        "type": "sports",
+        "rank": 0
+      },
+      "1115909093": {
+        "name": "hotring",
+        "brand": "Declasse",
+        "model": "Hotring Sabre",
+        "type": "sports",
+        "rank": 0
+      },
+      "3035832600": {
+        "name": "flashgt",
+        "brand": "Vapid",
+        "model": "Flash GT",
+        "type": "sports",
+        "rank": 0
+      },
+      "1909189272": {
+        "name": "gb200",
+        "brand": "Vapid",
+        "model": "GB200",
+        "type": "sports",
+        "rank": 0
+      },
+      "3847255899": {
+        "name": "paragon",
+        "brand": "Enus",
+        "model": "Paragon R",
+        "type": "sports",
+        "rank": 0
+      },
+      "1416466158": {
+        "name": "paragon2",
+        "brand": "Enus",
+        "model": "Paragon R (Armored)",
+        "type": "sports",
+        "rank": [10, 11, 12, 13]
+      },
+      "4086055493": {
+        "name": "jugular",
+        "brand": "Ocelot",
+        "model": "Jugular",
+        "type": "sports",
+        "rank": 0
+      },
+      "2674840994": {
+        "name": "neo",
+        "brand": "Vysser",
+        "model": "Neo",
+        "type": "sports",
+        "rank": 0
+      },
+      "1854776567": {
+        "name": "issi7",
+        "brand": "Weeny",
+        "model": "Issi Sport",
+        "type": "sports",
+        "rank": 0
+      },
+      "3353694737": {
+        "name": "locust",
+        "brand": "Ocelot",
+        "model": "Locust",
+        "type": "sports",
+        "rank": 0
+      },
+      "686471183": {
+        "name": "drafter",
+        "brand": "Obey",
+        "model": "8F Drafter",
+        "type": "sports",
+        "rank": 0
+      },
+      "2566281822": {
+        "name": "coquette4",
+        "brand": "Invetero",
+        "model": "Coquette D10",
+        "type": "sports",
+        "rank": 0
+      },
+      "3663644634": {
+        "name": "penumbra2",
+        "brand": "Maibatsu",
+        "model": "Penumbra FF",
+        "type": "sports",
+        "rank": 0
+      },
+      "2038480341": {
+        "name": "Euros",
+        "brand": "Annis",
+        "model": "Euros",
+        "type": "sports",
+        "rank": 0
+      },
+      "4003946083": {
+        "name": "sultan3",
+        "brand": "Karin",
+        "model": "Sultan RS Classic",
+        "type": "sports",
+        "rank": 0
+      },
+      "2787736776": {
+        "name": "futo2",
+        "brand": "Karin",
+        "model": "Futo GTX",
+        "type": "sports",
+        "rank": 0
+      },
+      "3842363289": {
+        "name": "rt3000",
+        "brand": "Dinka",
+        "model": "RT3000",
+        "type": "sports",
+        "rank": 0
+      },
+      "2568944644": {
+        "name": "comet6",
+        "brand": "Pfister",
+        "model": "Comet S2",
+        "type": "sports",
+        "rank": 0
+      },
+      "1304459735": {
+        "name": "growler",
+        "brand": "Pfister",
+        "model": "Growler",
+        "type": "sports",
+        "rank": 0
+      },
+      "3101054893": {
+        "name": "calico",
+        "brand": "Karin",
+        "model": "Calico GTF",
+        "type": "sports",
+        "rank": 0
+      },
+      "1377217886": {
+        "name": "remus",
+        "brand": "Annis",
+        "model": "Remus",
+        "type": "sports",
+        "rank": 0
+      },
+      "2436313176": {
+        "name": "zr350",
+        "brand": "Annis",
+        "model": "ZR350",
+        "type": "sports",
+        "rank": 0
+      },
+      "1755697647": {
+        "name": "cypher",
+        "brand": "Ubermacht",
+        "model": "Cypher",
+        "type": "sports",
+        "rank": 0
+      },
+      "2712905841": {
+        "name": "jester4",
+        "brand": "Dinka",
+        "model": "Jester RR",
+        "type": "sports",
+        "rank": 0
+      },
+      "2754593701": {
+        "name": "vectre",
+        "brand": "Emperor",
+        "model": "Vectre",
+        "type": "sports",
+        "rank": 0
+      },
+      "1141395928": {
+        "name": "comet7",
+        "brand": "Pfister",
+        "model": "Comet S2 Cabrio",
+        "type": "sports",
+        "rank": 0
+
+      },
+      "4061868990": {
+        "name": "boxville2",
+        "brand": "Vapid",
+        "model": "Boxville",
+        "type": "Vans",
+        "rank": 0
+      },
+      "4174679674": {
+        "name": "journey",
+        "brand": "Zirconium",
+        "model": "Journey",
+        "type": "Vans",
+        "rank": 0
+      },
+      "2549763894": {
+        "name": "gburrito",
+        "brand": "Declasse",
+        "model": "Gang Burrito",
+        "type": "Vans",
+        "rank": 0
+      },
+      "3984502180": {
+        "name": "minivan",
+        "brand": "Vapid",
+        "model": "Minivan",
+        "type": "Vans",
+        "rank": 0
+      },
+      "65402552": {
+        "name": "youga",
+        "brand": "Bravado",
+        "model": "Youga",
+        "type": "Vans",
+        "rank": 0
+      },
+      "3484649228": {
+        "name": "speedo",
+        "brand": "Vapid",
+        "model": "Speedo",
+        "type": "Vans",
+        "rank": 0
+      },
+      "4175309224": {
+        "name": "pony",
+        "brand": "Brute",
+        "model": "Pony",
+        "type": "Vans",
+        "rank": 0
+      },
+      "3387490166": {
+        "name": "burrito2",
+        "brand": "Declasse",
+        "model": "Bugstars Burrito",
+        "type": "vans",
+        "rank": 0
+      },
+      "728614474": {
+        "name": "speedo2",
+        "brand": "Vapid",
+        "model": "Clown Van",
+        "type": "vans",
+        "rank": 0
+      },
+      "1162065741": {
+        "name": "rumpo",
+        "brand": "Bravado",
+        "model": "Rumpo",
+        "type": "vans",
+        "rank": 0
+      },
+      "2307837162": {
+        "name": "boxville",
+        "brand": "Brute",
+        "model": "Boxville",
+        "type": "vans",
+        "rank": 0
+      },
+      "2072156101": {
+        "name": "Bison2",
+        "brand": "Bravado",
+        "model": "Bison",
+        "type": "vans",
+        "rank": 0
+      },
+      "1739845664": {
+        "name": "Bison3",
+        "brand": "Bravado",
+        "model": "Bison",
+        "type": "vans",
+        "rank": 0
+      },
+      "2948279460": {
+        "name": "Burrito",
+        "brand": "Declasse",
+        "model": "Burrito",
+        "type": "vans",
+        "rank": 0
+      },
+      "893081117": {
+        "name": "Burrito4",
+        "brand": "Declasse",
+        "model": "Burrito",
+        "type": "vans",
+        "rank": 0
+      },
+      "1951180813": {
+        "name": "Taco",
+        "brand": "Vapid",
+        "model": "Taco Van",
+        "type": "vans",
+        "rank": 0
+      },
+      "2983726598": {
+        "name": "Surfer2",
+        "brand": "BF",
+        "model": "Surfer",
+        "type": "vans",
+        "rank": 0
+      },
+      "699456151": {
+        "name": "SURFER",
+        "brand": "BF",
+        "model": "Surfer",
+        "type": "vans",
+        "rank": 0
+      },
+      "121658888": {
+        "name": "boxville3",
+        "brand": "Brute",
+        "model": "Boxville",
+        "type": "vans",
+        "rank": 0
+      },
+      "1069929536": {
+        "name": "bobcatXL",
+        "brand": "Vapid",
+        "model": "Bobcat XL",
+        "type": "vans",
+        "rank": 0
+      },
+      "2551651283": {
+        "name": "burrito3",
+        "brand": "Declasse",
+        "model": "Burrito",
+        "type": "vans",
+        "rank": 0
+      },
+      "2518351607": {
+        "name": "rumpo2",
+        "brand": "Bravado",
+        "model": "Rumpo",
+        "type": "vans",
+        "rank": 0
+      },
+      "943752001": {
+        "name": "pony2",
+        "brand": "Brute",
+        "model": "Pony",
+        "type": "vans",
+        "rank": 0
+      },
+      "1876516712": {
+        "name": "CAMPER",
+        "brand": "Brute",
+        "model": "Camper",
+        "type": "van",
+        "rank": 0
+      },
+      "682434785": {
+        "name": "boxville5",
+        "brand": "Vapid",
+        "model": "Armored Boxville",
+        "type": "vans",
+        "rank": [10, 11, 12, 13]
+      },
+      "4278019151": {
+        "name": "bison",
+        "brand": "Bravado",
+        "model": "Bison",
+        "type": "vans",
+        "rank": 0
+      },
+      "1132262048": {
+        "name": "burrito5",
+        "brand": "Declasse",
+        "model": "Burrito",
+        "type": "vans",
+        "rank": 0
+      },
+      "1488164764": {
+        "name": "paradise",
+        "brand": "Bravado",
+        "model": "Paradise",
+        "type": "vans",
+        "rank": 0
+      },
+      "444171386": {
+        "name": "boxville4",
+        "brand": "Brute",
+        "model": "Boxville",
+        "type": "vans",
+        "rank": 0
+      },
+      "296357396": {
+        "name": "gburrito2",
+        "brand": "Declasse",
+        "model": "Gang Burrito",
+        "type": "vans",
+        "rank": 0
+      },
+      "3168702960": {
+        "name": "minivan2",
+        "brand": "Vapid",
+        "model": "Minivan Custom",
+        "type": "vans",
+        "rank": 0
+      },
+      "1475773103": {
+        "name": "rumpo3",
+        "brand": "Bravado",
+        "model": "Rumpo Custom",
+        "type": "vans",
+        "rank": 0
+      },
+      "1026149675": {
+        "name": "youga2",
+        "brand": "Bravado",
+        "model": "Youga Classic",
+        "type": "vans",
+        "rank": 0
+      },
+      "219613597": {
+        "name": "speedo4",
+        "brand": "Vapid",
+        "model": "Speedo Custom",
+        "type": "vans",
+        "rank": 0
+      },
+      "1802742206": {
+        "name": "youga3",
+        "brand": "Bravado",
+        "model": "Youga Classic 4x4",
+        "type": "vans",
+        "rank": 0
+      },
+      "1486521356": {
+        "name": "youga4",
+        "brand": "Vapid",
+        "model": "Youga Custom",
+        "type": "vans",
+        "rank": 0
+      },
+      "516990260": {
+        "name": "utillitruck",
+        "brand": "Brute",
+        "model": "Utility Truck",
+        "type": "utility",
+        "rank": 0
+      },
+      "887537515": {
+        "name": "utillitruck2",
+        "brand": "Brute",
+        "model": "Utility Truck",
+        "type": "utility",
+        "rank": 0
+      },
+      "3417488910": {
+        "name": "trailers",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "3564062519": {
+        "name": "tanker",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2016027501": {
+        "name": "trailerlogs",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2078290630": {
+        "name": "tr2",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "1784254509": {
+        "name": "tr3",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": [10, 11, 12, 13]
+      },
+      "2218488798": {
+        "name": "tractor2",
+        "brand": "Stanley",
+        "model": "Fieldmaster",
+        "type": "utility",
+        "rank": 0
+      },
+      "2154757102": {
+        "name": "docktrailer",
+        "brand": "Brute",
+        "model": "Dock Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "390902130": {
+        "name": "raketrailer",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2715434129": {
+        "name": "trailers2",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2524324030": {
+        "name": "tvtrailer",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2942498482": {
+        "name": "trflat",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2818520053": {
+        "name": "armytrailer",
+        "brand": "Brute",
+        "model": "Army Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "524108981": {
+        "name": "boattrailer",
+        "brand": "Brute",
+        "model": "Boat Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "3087536137": {
+        "name": "armytanker",
+        "brand": "Brute",
+        "model": "Army Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2594165727": {
+        "name": "scrap",
+        "brand": "Brute",
+        "model": "Scrap Truck",
+        "type": "utility",
+        "rank": 0
+      },
+      "2236089197": {
+        "name": "trailers3",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "1641462412": {
+        "name": "TRACTOR",
+        "brand": "Brute",
+        "model": "Tractor",
+        "type": "utility",
+        "rank": 0
+      },
+      "3695398481": {
+        "name": "Sadler",
+        "brand": "Vapid",
+        "model": "Sadler",
+        "type": "utility",
+        "rank": 0
+      },
+      "734217681": {
+        "name": "sadler2",
+        "brand": "Vapid",
+        "model": "Sadler",
+        "type": "utility",
+        "rank": 0
+      },
+      "1560980623": {
+        "name": "Airtug",
+        "brand": "HVY",
+        "model": "Airtug",
+        "type": "utility",
+        "rank": 0
+      },
+      "3448987385": {
+        "name": "Ripley",
+        "brand": "HVY",
+        "model": "Ripley",
+        "type": "utility",
+        "rank": 0
+      },
+      "1491375716": {
+        "name": "FORKLIFT",
+        "brand": "HVY",
+        "model": "Forklift",
+        "type": "utility",
+        "rank": 0
+      },
+      "712162987": {
+        "name": "trailersmall",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2132890591": {
+        "name": "Utillitruck3",
+        "brand": "Brute",
+        "model": "Utility Truck",
+        "type": "utility",
+        "rank": 0
+      },
+      "1147287684": {
+        "name": "caddy",
+        "brand": "HVY",
+        "model": "Caddy",
+        "type": "utility",
+        "rank": 0
+      },
+      "2971866336": {
+        "name": "TOWTRUCK",
+        "brand": "Brute",
+        "model": "Towtruck",
+        "type": "utility",
+        "rank": 0
+      },
+      "3852654278": {
+        "name": "Towtruck2",
+        "brand": "Vapid",
+        "model": "Towtruck",
+        "type": "utility",
+        "rank": 0
+      },
+      "3757070668": {
+        "name": "Caddy2",
+        "brand": "HVY",
+        "model": "Caddy",
+        "type": "utility",
+        "rank": 0
+      },
+      "1019737494": {
+        "name": "graintrailer",
+        "brand": "Brute",
+        "model": "Graintrailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "3895125590": {
+        "name": "baletrailer",
+        "brand": "Brute",
+        "model": "Baletrailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "1445631933": {
+        "name": "tractor3",
+        "brand": "Stanley",
+        "model": "Fieldmaster",
+        "type": "utility",
+        "rank": 0
+      },
+      "1783355638": {
+        "name": "Mower",
+        "brand": "HVY",
+        "model": "Lawn Mower",
+        "type": "utility",
+        "rank": 0
+      },
+      "2657817814": {
+        "name": "armytrailer2",
+        "brand": "HVY",
+        "model": "Army Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "3517691494": {
+        "name": "freighttrailer",
+        "brand": "HVY",
+        "model": "Freight Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "2091594960": {
+        "name": "tr4",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "3249056020": {
+        "name": "slamtruck",
+        "brand": "Vapid",
+        "model": "Slamtruck",
+        "type": "utility",
+        "rank": 0
+      },
+      "1956216962": {
+        "name": "tanker2",
+        "brand": "Brute",
+        "model": "Tank Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "3194418602": {
+        "name": "trailers4",
+        "brand": "Brute",
+        "model": "Trailer",
+        "type": "utility",
+        "rank": 0
+      },
+      "3525819835": {
+        "name": "caddy3",
+        "brand": "HVY",
+        "model": "Caddy",
+        "type": "utility",
+        "rank": 0
+      },
+      "1502869817": {
+        "name": "trailerlarge",
+        "brand": "HVY",
+        "model": "Mobile Operations Center",
+        "type": "utility",
+        "rank": [10, 11, 12, 13]
+      },
+      "3410276810": {
+        "name": "docktug",
+        "brand": "Brute",
+        "model": "Docktug",
+        "type": "utility",
+        "rank": [10, 11, 12, 13]
       }
     }
   },
