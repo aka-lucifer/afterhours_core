@@ -215,6 +215,10 @@ export class Server {
 
     this.aopManager.init();
 
+    // Disables Population Density & Variety
+    SetConvarReplicated("profile_gfxCityDensity", "0");
+    SetConvarReplicated("profile_gfxDistScale", "0");
+
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
 
@@ -458,6 +462,10 @@ export class Server {
         if (!this.developmentMode) {
           await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.GetMaxPlayers, await this.playerManager.getBestPlayer())
         }
+
+        // Disables Population Density & Variety
+        SetConvarReplicated("profile_gfxCityDensity", "0");
+        SetConvarReplicated("profile_gfxDistScale", "0");
 
         // Sync Player data
         await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player));
