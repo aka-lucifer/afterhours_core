@@ -405,7 +405,7 @@ export class Client {
 
     // Manager Inits
     this.staffManager.init();
-    // await this.worldManager.init();
+    await this.worldManager.init();
     await this.jobManager.init();
 
     this.setupUI();
