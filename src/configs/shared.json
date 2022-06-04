@@ -381,6 +381,76 @@
       },
       "rank": 12
     },
+    "NOT_SET": {
+      "name": "WEAPON_G19", "label": "Glock 19 RMR", "ammoType": "AMMO_PISTOL",
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "W_PI_G19"
+      },
+      "rank": 6
+    },
+    "NOT_SET": {
+      "name": "WEAPON_G17", "label": "Glock 17", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Magazine", "hash": "COMPONENT_G17_CLIP_01"},
+        {"name": "clip_17rnd", "label": "17 Round Magazine", "hash": "COMPONENT_G17_CLIP_02"},
+        {"name": "clip_21rnd", "label": "21 Round Magazine", "hash": "COMPONENT_G17_CLIP_03"},
+        {"name": "clip_33rnd", "label": "33 Round Magazine", "hash": "COMPONENT_G17_CLIP_04"},
+        {"name": "clip_50rnd", "label": "50 Round Magazine", "hash": "COMPONENT_G17_CLIP_05"},
+        {"name": "frame_1", "label": "Black Frame", "hash": "COMPONENT_G17_FRAME_01"},
+        {"name": "frame_2", "label": "Tan Frame", "hash": "COMPONENT_G17_FRAME_02"},
+        {"name": "frame_3", "label": "Blue Frame", "hash": "COMPONENT_G17_FRAME_03"},
+        {"name": "frame_4", "label": "Frame W/ Stock", "hash": "COMPONENT_G17_FRAME_04"},
+        {"name": "frame_5", "label": "Frame W/ Stock", "hash": "COMPONENT_G17_FRAME_05"},
+        {"name": "barrel_1", "label": "Barrel 1", "hash": "COMPONENT_G17_BARREL_01"},
+        {"name": "barrel_2", "label": "Barrel 2", "hash": "COMPONENT_G17_BARREL_02"},
+        {"name": "barrel_3", "label": "Barrel 3", "hash": "COMPONENT_G17_BARREL_03"},
+        {"name": "barrel_4", "label": "Barrel 4", "hash": "COMPONENT_G17_BARREL_04"},
+        {"name": "barrel_5", "label": "Barrel 5", "hash": "COMPONENT_G17_BARREL_05"},
+        {"name": "barrel_6", "label": "Barrel 6", "hash": "COMPONENT_G17_BARREL_06"},
+        {"name": "barrel_7", "label": "Barrel 7", "hash": "COMPONENT_G17_BARREL_07"},
+        {"name": "slide_1", "label": "Slide 1", "hash": "COMPONENT_G17_SLIDE_01"},
+        {"name": "slide_2", "label": "Slide 2", "hash": "COMPONENT_G17_SLIDE_02"},
+        {"name": "slide_3", "label": "Slide 3", "hash": "COMPONENT_G17_SLIDE_03"},
+        {"name": "slide_4", "label": "Slide 4", "hash": "COMPONENT_G17_SLIDE_04"},
+        {"name": "slide_5", "label": "Slide 5", "hash": "COMPONENT_G17_SLIDE_05"},
+        {"name": "slide_6", "label": "Slide 6", "hash": "COMPONENT_G17_SLIDE_06"},
+        {"name": "slide_7", "label": "Slide 7", "hash": "COMPONENT_G17_SLIDE_07"},
+        {"name": "slide_8", "label": "Slide 8", "hash": "COMPONENT_G17_SLIDE_08"},
+        {"name": "slide_9", "label": "Slide 9", "hash": "COMPONENT_G17_SLIDE_09"},
+        {"name": "suppressor_1", "label": "Suppressor 1", "hash": "COMPONENT_G17_SUPPRESSOR_01"},
+        {"name": "suppressor_2", "label": "Suppressor 2", "hash": "COMPONENT_G17_SUPPRESSOR_02"},
+        {"name": "suppressor_3", "label": "Suppressor 3", "hash": "COMPONENT_G17_SUPPRESSOR_03"},
+        {"name": "suppressor_4", "label": "Suppressor 4", "hash": "COMPONENT_G17_SUPPRESSOR_04"},
+        {"name": "suppressor_5", "label": "Suppressor 5", "hash": "COMPONENT_G17_SUPPRESSOR_05"},
+        {"name": "suppressor_6", "label": "Suppressor 6", "hash": "COMPONENT_G17_SUPPRESSOR_06"},
+        {"name": "suppressor_7", "label": "Suppressor 7", "hash": "COMPONENT_G17_SUPPRESSOR_07"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_G17_FLASH_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_G17_FLASH_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_G17_FLASH_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_G17_FLASH_04"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "mm_g17"
+      },
+      "rank": 6
+    },
+    "NOT_SET": {
+      "name": "WEAPON_P226", "label": "P226", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Magazine", "hash": "COMPONENT_P226_CLIP_01"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_p226"
+      },
+      "rank": 6
+    },
     "736523883": {
       "name": "weapon_smg", "label": "MP5", "ammoType": "AMMO_SMG", "attachments": [
         {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_SMG_CLIP_01"},
@@ -480,6 +550,162 @@
         "model": "w_ar_srifle"
       },
       "rank": 12
+    },
+    "NOT_SET": {
+      "name": "WEAPON_MP5", "label": "MP5", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MP5_CLIP_01"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MP5"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_MP5_SUPP"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_MP5"
+      },
+      "rank": 6
+    },
+    "NOT_SET": {
+      "name": "WEAPON_MP9a", "label": "MP9", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MP9a_CLIP_02"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MP9A"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_MP9A_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_MP9A_SUPP_02"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_MP9a"
+      },
+      "rank": 6
+    },
+    "NOT_SET": {
+      "name": "WEAPON_MPX", "label": "Sig Sauer MPX", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_1", "label": "20 Round Magazine", "hash": "COMPONENT_MPX_CLIP_01"},
+        {"name": "clip_2", "label": "41 Round Magazine", "hash": "COMPONENT_MPX_CLIP_02"},
+        {"name": "clip_3", "label": "50 Round Magazine", "hash": "COMPONENT_MPX_CLIP_03"},
+        {"name": "barrel_1", "label": "114mm Barrel", "hash": "COMPONENT_MPX_BARREL_01"}, 
+        {"name": "barrel_2", "label": "114mm ISBarrel", "hash": "COMPONENT_MPX_BARREL_02"}, 
+        {"name": "barrel_3", "label": "114mm SBarrel", "hash": "COMPONENT_MPX_BARREL_03"}, 
+        {"name": "barrel_4", "label": "165mm Barrel", "hash": "COMPONENT_MPX_BARREL_04"}, 
+        {"name": "barrel_5", "label": "165mm ISBarrel", "hash": "COMPONENT_MPX_BARREL_05"}, 
+        {"name": "barrel_6", "label": "165mm SBarrel", "hash": "COMPONENT_MPX_BARREL_06"}, 
+        {"name": "barrel_7", "label": "205mm Barrel", "hash": "COMPONENT_MPX_BARREL_07"}, 
+        {"name": "barrel_8", "label": "205mm SBarrel", "hash": "COMPONENT_MPX_BARREL_08"}, 
+        {"name": "barrel_9", "label": "265mm Barrel", "hash": "COMPONENT_MPX_BARREL_09"}, 
+        {"name": "barrel_10", "label": "265mm SBarrel", "hash": "COMPONENT_MPX_BARREL_10"}, 
+        {"name": "barrel_11", "label": "355mm Barrel", "hash": "COMPONENT_MPX_BARREL_11"}, 
+        {"name": "barrel_12", "label": "355mm SBarrel", "hash": "COMPONENT_MPX_BARREL_12"},
+        {"name": "handguard_1", "label": "Handguard 1", "hash": "COMPONENT_MPX_HANDGUARD_01"},
+        {"name": "handguard_2", "label": "Handguard 2", "hash": "COMPONENT_MPX_HANDGUARD_02"},
+        {"name": "handguard_3", "label": "Handguard 3", "hash": "COMPONENT_MPX_HANDGUARD_03"},
+        {"name": "handguard_4", "label": "Handguard 4", "hash": "COMPONENT_MPX_HANDGUARD_04"},
+        {"name": "handguard_5", "label": "Handguard 5", "hash": "COMPONENT_MPX_HANDGUARD_05"},
+        {"name": "handguard_6", "label": "Handguard 6", "hash": "COMPONENT_MPX_HANDGUARD_06"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_MPX_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_MPX_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_MPX_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_MPX_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_MPX_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_MPX_STOCK_06"},
+        {"name": "stock_7", "label": "Stock 7", "hash": "COMPONENT_MPX_STOCK_07"},
+        {"name": "stock_8", "label": "Stock 8", "hash": "COMPONENT_MPX_STOCK_08"},
+        {"name": "stock_9", "label": "Stock 9", "hash": "COMPONENT_MPX_STOCK_09"},
+        {"name": "stock_10", "label": "Stock 10", "hash": "COMPONENT_mk18_STOCK_10"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_MPX_FLSH_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_MPX_FLSH_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_MPX_FLSH_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_MPX_FLSH_04"},
+        {"name": "flashlight_5", "label": "Flashlight 5", "hash": "COMPONENT_MPX_FLSH_05"},
+        {"name": "flashlight_6", "label": "Flashlight 6", "hash": "COMPONENT_MPX_FLSH_06"},
+        {"name": "flashlight_7", "label": "Flashlight 7", "hash": "COMPONENT_MPX_FLSH_07"},
+        {"name": "flashlight_8", "label": "Flashlight 8", "hash": "COMPONENT_MPX_FLSH_08"},
+        {"name": "scope_default", "label": "Ironsights", "hash": "COMPONENT_MPX_SCOPE_01"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_MPX_SCOPE_02"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_MPX_SCOPE_03"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_MPX_SCOPE_04"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_MPX_SCOPE_05"},
+        {"name": "scope_5", "label": "Scope 5", "hash": "COMPONENT_MPX_SCOPE_06"},
+        {"name": "scope_6", "label": "Scope 6", "hash": "COMPONENT_MPX_SCOPE_07"},
+        {"name": "scope_7", "label": "Scope 7", "hash": "COMPONENT_MPX_SCOPE_08"},
+        {"name": "scope_8", "label": "Scope 8", "hash": "COMPONENT_MPX_SCOPE_09"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_MP9a"
+      },
+      "rank": 7
+    },
+    "NOT_SET": {
+      "name": "WEAPON_PP19", "label": "PP19", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_1", "label": "Default Magazine", "hash": "COMPONENT_PP19_CLIP_01"},
+        {"name": "clip_2", "label": "20 Round Black Magazine", "hash": "COMPONENT_PP19_CLIP_02"},
+        {"name": "clip_3", "label": "30 Round Black Magazine", "hash": "COMPONENT_PP19_CLIP_03"},
+        {"name": "clip_4", "label": "20 Round Blue Magazine", "hash": "COMPONENT_PP19_CLIP_04"},
+        {"name": "clip_5", "label": "30 Round Blue Magazine", "hash": "COMPONENT_PP19_CLIP_05"},
+        {"name": "clip_6", "label": "20 Round Yellow Magazine", "hash": "COMPONENT_PP19_CLIP_06"},
+        {"name": "clip_7", "label": "30 Round Yellow Magazine", "hash": "COMPONENT_PP19_CLIP_07"},
+        {"name": "handguard_1", "label": "Handguard 1", "hash": "COMPONENT_PP19_HANDGUARD_01"},
+        {"name": "handguard_2", "label": "Handguard 2", "hash": "COMPONENT_PP19_HANDGUARD_02"},
+        {"name": "handguard_3", "label": "Handguard 3", "hash": "COMPONENT_PP19_HANDGUARD_03"},
+        {"name": "handguard_4", "label": "Handguard 4", "hash": "COMPONENT_PP19_HANDGUARD_04"},
+        {"name": "handguard_5", "label": "Handguard 5", "hash": "COMPONENT_PP19_HANDGUARD_05"},
+        {"name": "handguard_6", "label": "Handguard 6", "hash": "COMPONENT_PP19_HANDGUARD_06"},
+        {"name": "handguard_7", "label": "Handguard 7", "hash": "COMPONENT_PP19_HANDGUARD_07"},
+        {"name": "handguard_8", "label": "Handguard 8", "hash": "COMPONENT_PP19_HANDGUARD_08"},
+        {"name": "handguard_9", "label": "Handguard 9", "hash": "COMPONENT_PP19_HANDGUARD_09"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_PP19_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_PP19_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_PP19_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_PP19_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_PP19_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_PP19_STOCK_06"},
+        {"name": "stock_7", "label": "Stock 7", "hash": "COMPONENT_PP19_STOCK_07"},
+        {"name": "stock_8", "label": "Stock 8", "hash": "COMPONENT_PP19_STOCK_08"},
+        {"name": "stock_9", "label": "Stock 9", "hash": "COMPONENT_PP19_STOCK_09"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_PP19_LASER_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_PP19_LASER_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_PP19_LASER_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_PP19_LASER_04"},
+        {"name": "flashlight_5", "label": "Flashlight 5", "hash": "COMPONENT_PP19_LASER_05"},
+        {"name": "flashlight_6", "label": "Flashlight 6", "hash": "COMPONENT_PP19_LASER_06"},
+        {"name": "flashlight_7", "label": "Flashlight 7", "hash": "COMPONENT_PP19_LASER_07"},
+        {"name": "scope_none", "label": "No Scope", "hash": "COMPONENT_PP19_SCOPE_01"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_PP19_SCOPE_02"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_PP19_SCOPE_03"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_PP19_SCOPE_04"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_PP19_SCOPE_05"},
+        {"name": "scope_5", "label": "Scope 5", "hash": "COMPONENT_PP19_SCOPE_06"},
+        {"name": "scope_6", "label": "Scope 6", "hash": "COMPONENT_PP19_SCOPE_07"},
+        {"name": "scope_7", "label": "Scope 7", "hash": "COMPONENT_PP19_SCOPE_08"},
+        {"name": "scope_8", "label": "Scope 8", "hash": "COMPONENT_PP19_SCOPE_09"},
+        {"name": "scope_9", "label": "Scope 9", "hash": "COMPONENT_PP19_SCOPE_10"},
+        {"name": "foregrip_1", "label": "Foregrip 1", "hash": "COMPONENT_PP19_GRIP_01"},
+        {"name": "foregrip_2", "label": "Foregrip 2", "hash": "COMPONENT_PP19_GRIP_02"},
+        {"name": "foregrip_3", "label": "Foregrip 3", "hash": "COMPONENT_PP19_GRIP_03"},
+        {"name": "foregrip_4", "label": "Foregrip 4", "hash": "COMPONENT_PP19_GRIP_04"},
+        {"name": "foregrip_5", "label": "Foregrip 5", "hash": "COMPONENT_PP19_GRIP_05"},
+        {"name": "foregrip_6", "label": "Foregrip 6", "hash": "COMPONENT_PP19_GRIP_06"},
+        {"name": "foregrip_7", "label": "Foregrip 7", "hash": "COMPONENT_PP19_GRIP_07"},
+        {"name": "foregrip_8", "label": "Foregrip 8", "hash": "COMPONENT_PP19_GRIP_08"},
+        {"name": "foregrip_9", "label": "Foregrip 9", "hash": "COMPONENT_PP19_GRIP_09"},
+        {"name": "muzzle_1", "label": "Muzzle 1", "hash": "COMPONENT_PP19_MUZZLE_01"},
+        {"name": "muzzle_2", "label": "Muzzle 2", "hash": "COMPONENT_PP19_MUZZLE_02"},
+        {"name": "muzzle_3", "label": "Muzzle 3", "hash": "COMPONENT_PP19_MUZZLE_03"},
+        {"name": "muzzle_4", "label": "Muzzle 4", "hash": "COMPONENT_PP19_MUZZLE_04"},
+        {"name": "muzzle_5", "label": "Muzzle 5", "hash": "COMPONENT_PP19_MUZZLE_05"},
+        {"name": "muzzle_6", "label": "Muzzle 6", "hash": "COMPONENT_PP19_MUZZLE_06"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "pp19"
+      },
+      "rank": 6
     },
     "487013001": {
       "name": "weapon_pumpshotgun", "label": "Remington 870", "ammoType": "AMMO_SHOTGUN", "attachments": [
@@ -585,7 +811,7 @@
     },
     "984333226": {
       "name": "weapon_heavyshotgun", "label": "Heavy Shotgun", "ammoType": "AMMO_SHOTGUN", "attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_HEAVYSHOTGUN_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_HEAVYSHOTGUN_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_HEAVYSHOTGUN_CLIP_02"},
         {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_HEAVYSHOTGUN_CLIP_03"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
@@ -638,7 +864,7 @@
     },
     "-1074790547": {
       "name": "weapon_assaultrifle", "label": "AK-47", "ammoType": "AMMO_RIFLE","attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_ASSAULTRIFLE_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_ASSAULTRIFLE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_ASSAULTRIFLE_CLIP_02"},
         {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_ASSAULTRIFLE_CLIP_03"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
@@ -680,7 +906,7 @@
     },
     "-2084633992": {
       "name": "weapon_carbinerifle", "label": "AR-15", "ammoType": "AMMO_RIFLE","attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_CARBINERIFLE_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_CARBINERIFLE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_CARBINERIFLE_CLIP_02"},
         {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_CARBINERIFLE_CLIP_03"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
@@ -722,7 +948,7 @@
     },
     "-1357824103": {
       "name": "weapon_advancedrifle", "label": "Advanced Rifle", "ammoType": "AMMO_RIFLE","attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_ADVANCEDRIFLE_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_ADVANCEDRIFLE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_ADVANCEDRIFLE_CLIP_02"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
         {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL"},
@@ -745,7 +971,7 @@
     },
     "-1063057011": {
       "name": "weapon_specialcarbine", "label": "SCAR H", "ammoType": "AMMO_RIFLE", "attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_SPECIALCARBINE_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_SPECIALCARBINE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_SPECIALCARBINE_CLIP_02"},
         {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_SPECIALCARBINE_CLIP_03"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
@@ -789,7 +1015,7 @@
     },
     "2132975508": {
       "name": "weapon_bullpuprifle", "label": "Type 25", "ammoType": "AMMO_RIFLE", "attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_BULLPUPRIFLE_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_BULLPUPRIFLE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_BULLPUPRIFLE_CLIP_02"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
         {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL"},
@@ -832,7 +1058,7 @@
     },
     "1649403952": {
       "name": "weapon_compactrifle", "label": "Compact Rifle", "ammoType": "AMMO_RIFLE","attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_COMPACTRIFLE_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_COMPACTRIFLE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_COMPACTRIFLE_CLIP_02"},
         {"name": "clip_drum", "label": "Drum Clip", "hash": "COMPONENT_COMPACTRIFLE_CLIP_03"}
       ],
@@ -845,7 +1071,7 @@
     },
     "-1658906650": {
       "name": "weapon_militaryrifle", "label": "Military Rifle", "ammoType": "AMMO_RIFLE", "attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_MILITARYRIFLE_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MILITARYRIFLE_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MILITARYRIFLE_CLIP_02"},
         {"name": "iron_sights", "label": "Iron Sights", "hash": "COMPONENT_MILITARYRIFLE_SIGHT_01"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
@@ -866,6 +1092,131 @@
         "model": "w_ar_bullpuprifleh4"
       },
       "rank": 6
+    },
+    "NOT_SET": {
+      "name": "WEAPON_HK416B", "label": "HK416", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_HK416B_CLIP_01"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_HK416B_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_HK416B"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_HK416B_SUPP"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_HK416B"
+      },
+      "rank": 6
+    },
+    "NOT_SET": {
+      "name": "WEAPON_MM4", "label": "M4", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MM4_CLIP_01"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_MM4"
+      },
+      "rank": 6
+    },
+    "NOT_SET": {
+      "name": "WEAPON_fbiarb", "label": "AR15", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_fbiarb_CLIP_01"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_fbiarb_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_fbiarb"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_fbiarb_AFGRIP"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_fbiarb"
+      },
+      "rank": 7
+    },
+    "NOT_SET": {
+      "name": "WEAPON_MK18", "label": "MK18", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "frame_1", "label": "Frame 1", "hash": "COMPONENT_mk18_FRAME_01"},
+        {"name": "frame_2", "label": "Frame 2", "hash": "COMPONENT_mk18_FRAME_02"},
+        {"name": "frame_3", "label": "Frame 3", "hash": "COMPONENT_mk18_FRAME_03"},
+        {"name": "clip_1", "label": "Magazine 1", "hash": "COMPONENT_mk18_CLIP_01"},
+        {"name": "clip_2", "label": "Magazine 2", "hash": "COMPONENT_mk18_CLIP_02"},
+        {"name": "clip_3", "label": "Magazine 2 (Tan)", "hash": "COMPONENT_mk18_CLIP_03"},
+        {"name": "clip_4", "label": "Magazine 3", "hash": "COMPONENT_mk18_CLIP_04"},
+        {"name": "clip_5", "label": "Magazine 3 (Tan)", "hash": "COMPONENT_mk18_CLIP_05"},
+        {"name": "clip_6", "label": "Magazine 4", "hash": "COMPONENT_mk18_CLIP_06"},
+        {"name": "clip_7", "label": "Magazine 5", "hash": "COMPONENT_mk18_CLIP_07"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_mk18_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_mk18_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_mk18_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_mk18_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_mk18_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_mk18_STOCK_06"},
+        {"name": "stock_7", "label": "Stock 7", "hash": "COMPONENT_mk18_STOCK_07"},
+        {"name": "suppressor_1", "label": "Suppressor 1", "hash": "COMPONENT_mk18_SUPPRESSOR_01"},
+        {"name": "suppressor_2", "label": "Suppressor 2", "hash": "COMPONENT_mk18_SUPPRESSOR_02"},
+        {"name": "suppressor_3", "label": "Suppressor 3", "hash": "COMPONENT_mk18_SUPPRESSOR_03"},
+        {"name": "suppressor_4", "label": "Suppressor 4", "hash": "COMPONENT_mk18_SUPPRESSOR_04"},
+        {"name": "suppressor_5", "label": "Suppressor 5", "hash": "COMPONENT_mk18_SUPPRESSOR_05"},
+        {"name": "suppressor_6", "label": "Suppressor 6", "hash": "COMPONENT_mk18_SUPPRESSOR_06"},
+        {"name": "grip_1", "label": "Grip 1", "hash": "COMPONENT_mk18_GRIP_01"},
+        {"name": "grip_2", "label": "Grip 2", "hash": "COMPONENT_mk18_GRIP_02"},
+        {"name": "grip_3", "label": "Grip 3", "hash": "COMPONENT_mk18_GRIP_03"},
+        {"name": "grip_4", "label": "Grip 4", "hash": "COMPONENT_mk18_GRIP_04"},
+        {"name": "grip_5", "label": "Grip 5", "hash": "COMPONENT_mk18_GRIP_05"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_mk18_FLASH_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_mk18_FLASH_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_mk18_FLASH_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_mk18_FLASH_04"},
+        {"name": "flashlight_5", "label": "Flashlight 5", "hash": "COMPONENT_mk18_FLASH_05"},
+        {"name": "flashlight_6", "label": "Flashlight 6", "hash": "COMPONENT_mk18_FLASH_06"},
+        {"name": "flashlight_7", "label": "Flashlight 7", "hash": "COMPONENT_mk18_FLASH_07"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_mk18_SCOPE_01"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_mk18_SCOPE_02"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_mk18_SCOPE_03"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_mk18_SCOPE_04"},
+        {"name": "scope_5", "label": "Scope 5", "hash": "COMPONENT_mk18_SCOPE_05"},
+        {"name": "scope_6", "label": "Scope 6", "hash": "COMPONENT_mk18_SCOPE_06"},
+        {"name": "scope_7", "label": "Scope 7", "hash": "COMPONENT_mk18_SCOPE_07"},
+        {"name": "scope_8", "label": "Scope 8", "hash": "COMPONENT_mk18_SCOPE_08"},
+        {"name": "scope_9", "label": "Scope 9", "hash": "COMPONENT_mk18_SCOPE_09"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_fbiarb"
+      },
+      "rank": 7
     },
     "-1466123874": {
       "name": "weapon_musket", "label": "Musket", "ammoType": "AMMO_SHOTGUN",
@@ -896,7 +1247,7 @@
     },
     "-1660422300": {
       "name": "weapon_mg", "label": "PKM", "ammoType": "AMMO_MG","attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_MG_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MG_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MG_CLIP_02"},
         {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL_02"},
         {"name": "luxary_finish", "label": "Luxary Finsih", "hash": "COMPONENT_MG_VARMOD_LOWRIDER"}
@@ -918,7 +1269,7 @@
     },
     "2144741730": {
       "name": "weapon_combatmg", "label": "M249E1", "ammoType": "AMMO_MG","attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_COMBATMG_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_COMBATMG_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_COMBATMG_CLIP_02"},
         {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MEDIUM"},
         {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
@@ -959,7 +1310,7 @@
     },
     "1627465347": {
       "name": "weapon_gusenberg", "label": "Thompson Tommy Gun 1921", "ammoType": "AMMO_MG","attachments": [
-        {"name": "clip_defualt", "label": "Default Clip", "hash": "COMPONENT_GUSENBERG_CLIP_01"},
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_GUSENBERG_CLIP_01"},
         {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_GUSENBERG_CLIP_02"}
       ],
       "reason": "riddled",
@@ -1079,6 +1430,68 @@
       },
       "rank": 7,
       "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "NOT_SET": {
+      "name": "WEAPON_M700", "label": "M700", "ammoType": "AMMO_SNIPER","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_M700_CLIP_01"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_M700"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_M700"}
+      ],
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "w_sr_M700"
+      },
+      "rank": 7
+    },
+    "NOT_SET": {
+      "name": "WEAPON_M870", "label": "Remington M870", "ammoType": "AMMO_SNIPER","attachments": [
+        {"name": "clip_4rnd", "label": "4 Round Magazine", "hash": "COMPONENT_M870_CLIP_01"},
+        {"name": "clip_7rnd", "label": "7 Round Magazine", "hash": "COMPONENT_M870_CLIP_02"},
+        {"name": "clip_12rnd", "label": "12 Round Magazine", "hash": "COMPONENT_M870_CLIP_03"},
+        {"name": "barrel_1", "label": "Barrel 1", "hash": "COMPONENT_M870_BARREL_01"},
+        {"name": "barrel_2", "label": "Barrel 2", "hash": "COMPONENT_M870_BARREL_02"},
+        {"name": "barrel_3", "label": "Barrel 3", "hash": "COMPONENT_M870_BARREL_03"},
+        {"name": "barrel_4", "label": "Barrel 4", "hash": "COMPONENT_M870_BARREL_04"},
+        {"name": "barrel_5", "label": "Barrel 5", "hash": "COMPONENT_M870_BARREL_05"},
+        {"name": "barrel_6", "label": "Barrel 6", "hash": "COMPONENT_M870_BARREL_06"},
+        {"name": "barrel_7", "label": "Barrel 7", "hash": "COMPONENT_M870_BARREL_07"},
+        {"name": "handguard_1", "label": "Handguard 1", "hash": "COMPONENT_M870_HANDGUARD_01"},
+        {"name": "handguard_2", "label": "Handguard 2", "hash": "COMPONENT_M870_HANDGUARD_02"},
+        {"name": "handguard_3", "label": "Handguard 3", "hash": "COMPONENT_M870_HANDGUARD_03"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_M870_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_M870_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_M870_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_M870_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_M870_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_M870_STOCK_06"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_M870_SCOPE_01"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_M870_SCOPE_02"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_M870_SCOPE_03"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_M870_SCOPE_04"}
+      ],
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "m870"
+      },
+      "rank": 7
     },
     "101631238": {
       "name": "weapon_fireextinguisher", "label": "Fire Extinguisher ", "ammoType": "AMMO_FIREEXTINGUISHER",
@@ -1316,12 +1729,12 @@
       "attaching": {
         "canAttach": true,
         "bone": 24816,
-        "x": 0.550,
-        "y": -0.18,
+        "x": 0.55,
+        "y": -0.23,
         "z": 0.10,
         "xRotation": 0.0,
-        "yRotation": -90.0,
-        "zRotation": 0.0,
+        "yRotation": -280.0,
+        "zRotation": 90.0,
         "model": "w_me_nightstick"
       }
     },
