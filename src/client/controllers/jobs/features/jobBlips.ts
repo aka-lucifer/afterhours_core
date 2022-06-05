@@ -228,9 +228,10 @@ export class JobBlips {
                 } else {
                   const blipData = this.createdBlips[blipIndex];
 
-                  console.log("on duty", units[i].status, netId);
                   if (units[i].status) { // If the person is still on duty
-                    const foundBlip = World.createBlip(units[i].coords);
+                    const foundBlip = new Blip(blipData.blip.Handle); // see if this fixes stupid bug
+                    foundBlip.Position = units[i].coords;
+
                     if (units[i].inVeh) {
                       if (units[i].vehType == "automobile") {
                         switch (units[i].job) {
