@@ -46,6 +46,7 @@ export class Garages {
   // Location Data
   private currentGarage: Garage;
   private locations: Garage[] = [];
+  private currentPos: Vector3 = undefined;
 
   // Menu Data
   private menu: Menu;
@@ -118,26 +119,6 @@ export class Garages {
     this.menu = new Menu(`Garage`, GetCurrentResourceName(), MenuPositions.MiddleRight);
   }
 
-  // private async vehiclesInArea(positionData: SpawnLocation): Promise<Vehicle[]> {
-  //   const spawnPosition = new Vector3(positionData.x, positionData.y, positionData.z);
-  //   const worldVehs = World.getAllVehicles();
-  //   const foundVehicles: Vehicle[] = [];
-  //
-  //
-  //   for (let i = 0; i < worldVehs.length; i++) {
-  //     const vehPosition = worldVehs[i].Position;
-  //
-  //     if (vehPosition.distance(spawnPosition) <= clientConfig.controllers.police.garage.nearVehiclesDist) {
-  //       // console.log("vehicle within dist", worldVehs[i].Handle, worldVehs[i].NetworkId, worldVehs[i].NumberPlate);
-  //       foundVehicles.push(worldVehs[i]);
-  //     }
-  //   }
-  //
-  //   // console.log("found vehicles", foundVehicles);
-  //
-  //   return foundVehicles;
-  // }
-
   private async findPosition(locations: SpawnLocation[]): Promise<[boolean, Vector3, number]> {
     for (let i = 0; i < locations.length; i++) {
       // const nearbyVehicles = await this.vehiclesInArea(locations[i]); // Returns all the vehicles in each parking spot
@@ -175,26 +156,7 @@ export class Garages {
       const vehicle = vehicles[b]; // Get second entry from array, as first entry is vehicle hash.
 
       if (vehicle.type == "emergency") {
-        // const myJob: string = this.client.Character.job.name;
         const menuPermission = await this.hasPermission(vehicle);
-
-        // Handles what name to give the menu
-        // if (myJob == Jobs.State) {
-        //   const newName = `${JobLabels.State} | Garage`;
-        //   if (this.menu.Name !== newName) {
-        //     this.menu.Name = newName;
-        //   }
-        // } else if (myJob == Jobs.Police) {
-        //   const newName = `${JobLabels.Police} | Garage`;
-        //   if (this.menu.Name !== newName) {
-        //     this.menu.Name = newName;
-        //   }
-        // } else if (myJob == Jobs.County) {
-        //   const newName = `${JobLabels.County} | Garage`;
-        //   if (this.menu.Name !== newName) {
-        //     this.menu.Name = newName;
-        //   }
-        // }
 
         // Spawn Button (With spawn logic)
         if (menuPermission) {
@@ -225,7 +187,6 @@ export class Garages {
 
   public start(): void {
     if (this.distTick === undefined) this.distTick = setTick(async() => {
-      let currentPos: Vector3;
 
       for (let a = 0; a < this.locations.length; a++) {
         if (this.client.Character.isLeoJob()) { // If you have the correct job (Police, State, County, Fire/EMS)
@@ -234,7 +195,7 @@ export class Garages {
               let dist = Game.PlayerPed.Position.distance(this.locations[a].coords);
 
               if (dist <= 15) {
-                currentPos = this.locations[a].coords;
+                if (this.currentPos === undefined) this.currentPos = this.locations[a].coords;
 
                 if (this.interactionTick === undefined) this.interactionTick = setTick(async () => {
                   if (!this.usingMenu) {
@@ -284,9 +245,9 @@ export class Garages {
         }
       }
 
-      if (currentPos !== undefined) {
-        if (currentPos.distance(Game.PlayerPed.Position) > 15) {
-          currentPos = undefined;
+      if (this.currentPos !== undefined) {
+        if (this.currentPos.distance(Game.PlayerPed.Position) > 15) {
+          this.currentPos = undefined;
 
           if (this.interactionTick !== undefined) {
             clearTick(this.interactionTick);
