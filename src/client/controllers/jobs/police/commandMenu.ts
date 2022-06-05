@@ -89,9 +89,17 @@ export class CommandMenu {
 
       // Blip Creation
       let namePrefix = "Command Menu Rank NOT FOUND";
-      if (configLocations[i].rank == Jobs.Police) namePrefix = JobLabels.Police;
-      if (configLocations[i].rank == Jobs.County) namePrefix = JobLabels.County;
-      if (configLocations[i].rank == Jobs.State) namePrefix = JobLabels.State;
+      switch (configLocations[i].rank) {
+        case Jobs.Police:
+          namePrefix = JobLabels.Police;
+          break;
+        case Jobs.County:
+          namePrefix = JobLabels.County;
+          break;
+        case Jobs.State:
+          namePrefix = JobLabels.State;
+          break;
+      }
 
       const blip = World.createBlip(position);
       blip.Sprite = blipData.sprite;
@@ -157,17 +165,56 @@ export class CommandMenu {
                             // Units Menu
                             this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[a].type }, async (receievedUnits, passedData) => {
 
+                              // Get dept rank
+                              let ranks;
+
+                              if (this.menuLocations[a].type == Jobs.State) {
+                                ranks = StateRanks;
+                              } else if (this.menuLocations[a].type == Jobs.Police) {
+                                ranks = PoliceRanks;
+                              } else if (this.menuLocations[a].type == Jobs.County) {
+                                ranks = CountyRanks;
+                              }
+
                               // Loop through all department characters
                               for (let b = 0; b < receievedUnits.length; b++) {
                                 const submenu = this.units.BindSubmenu(`[${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
 
                                 const promoteMenu = submenu.BindSubmenu("Promote Unit");
 
+                                for (let c = 0; c < Object.keys(ranks).length / 2; c++) {
+                                  if (c < this.client.Character.job.rank || this.client.player.Rank >= Ranks.SeniorAdmin) { // If the available ranks are less than your rank
+                                    const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
+
+                                    const promoteButton = submenu.BindButton(rankLabel, () => {
+                                      console.log(`Promote ${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}, to rank (${ranks[c]})`);
+
+                                      this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.promoteUnit, {
+                                        unitsId: receievedUnits[b].id,
+                                        unitsPlayerId: receievedUnits[b].playerId,
+                                        job: this.menuLocations[a].type,
+                                        newRank: c,
+                                        callsign: receievedUnits[b].callsign
+                                      }, async (promotedUnit, passedData) => {
+                                        if (promotedUnit) {
+                                          await this.client.menuManager.CloseMenu();
+
+                                          const notify = new Notification("Unit Management", `Promoted [${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName}, to the rank of (${rankLabel}).`, NotificationTypes.Info);
+                                          await notify.send();
+                                        } else {
+                                          const notify = new Notification("Unit Management", `Unsuccessful in promoting unit, make a support ticket!`, NotificationTypes.Error);
+                                          await notify.send();
+                                        }
+                                      }));
+                                    });
+                                  }
+                                }
+
                                 const fireButton = submenu.BindButton("Fire Unit", () => {
                                   console.log(`fire [${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
                                   this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, {
                                     unitsId: receievedUnits[b].id,
-                                    unitsPlayerId: receievedUnits[b].playerId
+                                    unitsPlayerId: receievedUnits[b].playerId,
                                   }, async (firedUnit, passedData) => {
                                     if (firedUnit) {
                                       await this.client.menuManager.deleteMenu(submenu.handle);
@@ -180,17 +227,6 @@ export class CommandMenu {
                                     }
                                   }));
                                 });
-                              }
-
-                              // Get dept rank
-                              let ranks;
-
-                              if (this.menuLocations[a].type == Jobs.State) {
-                                ranks = StateRanks;
-                              } else if (this.menuLocations[a].type == Jobs.Police) {
-                                ranks = PoliceRanks;
-                              } else if (this.menuLocations[a].type == Jobs.County) {
-                                ranks = CountyRanks;
                               }
 
                               // Loop through all players
