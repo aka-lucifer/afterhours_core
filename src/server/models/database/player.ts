@@ -332,7 +332,6 @@ export class Player {
     let doneProcessing = false;
 
     axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPIKey}&steamids=${profileId}`, {}).then(response => {
-      console.log("post response", response.data.response.players[0]);
       const profileData = response.data.response.players[0];
       if (profileData !== undefined) {
         avatarUrl = profileData.avatarfull;
