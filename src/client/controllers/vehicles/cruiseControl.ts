@@ -30,8 +30,6 @@ export class CruiseControl {
           this.stop();
         }
       }
-
-      this.active = !this.active;
     }, false);
     
     Inform("Vehicle | Cruise Control Controller", "Started!");
@@ -41,6 +39,7 @@ export class CruiseControl {
   private start(): void {
     this.ped = Game.PlayerPed;
     if (IsPedInAnyVehicle(this.ped.Handle, false)) {
+      if (!this.active) this.active = true;
       this.vehicle = this.ped.CurrentVehicle;
       if (this.vehicle.Model.IsCar || this.vehicle.Model.IsBike || this.vehicle.Model.IsQuadbike) {
         if (this.vehicle.Driver.Handle == this.ped.Handle) {
@@ -118,7 +117,7 @@ export class CruiseControl {
       this.speed = undefined;
       this.formattedSpeed = undefined;
       this.sentNotify = false;
-      this.active = false;
+      if (this.active) this.active = false;
     }
   }
 }
