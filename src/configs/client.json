@@ -308,7 +308,11 @@
                     "WEAPON_BULLPUPRIFLE_MK2",
                     "WEAPON_COMPACTRIFLE",
                     "WEAPON_MILITARYRIFLE",
-                    "WEAPON_GRAVITY"
+                    "WEAPON_GRAVITY",
+                    "WEAPON_MK18",
+                    "WEAPON_fbiarb",
+                    "WEAPON_MM4",
+                    "WEAPON_HK416B"
                 ]
             },
             "spamPreventor": {
@@ -8111,6 +8115,27 @@
                 "z":38.07131958007812,
                 "rank": "county",
                 "label": "Sandy Shores Sheriff Station"
+              },
+              {
+                "x": -443.88,
+                "y": 6011.3,
+                "z": 36.51,
+                "rank": "state",
+                "label": "Paleto Bay Highway Station"
+              },
+              {
+                "x": 847.57,
+                "y": -1295.99,
+                "z": 28.23,
+                "rank": "state",
+                "label": "La Mesa Highway Station"
+              },
+              {
+                "x": 461.39,
+                "y": -989.21,
+                "z": 30.69,
+                "rank": "police",
+                "label": "Mission Row Police Station"
               }
             ],
             "markerData": {
@@ -8181,6 +8206,23 @@
                   {"x": 434.96, "y": -1027.40, "z": 28.61, "h": 4.18},
                   {"x": 431.32, "y": -1027.66, "z": 28.68, "h": 4.58},
                   {"x": 427.60, "y": -1028.04, "z": 28.74, "h": 3.58}
+                ]
+              },
+              {
+                "x": 860.18,
+                "y": -1350.04,
+                "z": 26.07,
+                "rank": "state",
+                "label": "La Mesa Highway Station",
+                "spawnLocations": [
+                  {"x": 843.61, "y": -1334.23, "z": 25.75, "h": 247.59},
+                  {"x": 843.92, "y": -1340.48, "z": 25.71, "h": 247.82},
+                  {"x": 844.14, "y": -1346.43, "z": 25.72, "h": 246.22},
+                  {"x": 844.45, "y": -1352.64, "z": 25.73, "h": 246.56},
+                  {"x": 828.38, "y": -1351.41, "z": 25.74, "h": 69.01},
+                  {"x": 828.21, "y": -1345.43, "z": 25.74, "h": 65.35},
+                  {"x": 828.06, "y": -1339.14, "z": 25.74, "h": 66.46},
+                  {"x": 827.59, "y": -1333.47, "z": 25.75, "h": 65.07}
                 ]
               }
             ],
