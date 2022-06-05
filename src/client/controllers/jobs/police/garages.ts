@@ -101,6 +101,7 @@ export class Garages {
       blip.Name = `${namePrefix} | Garage`;
       blip.Scale = 0.7;
       blip.Alpha = 0;
+      blip.IsShortRange = true;
 
       this.locations.push({
         coords: position,
@@ -232,7 +233,7 @@ export class Garages {
             if (!this.usingMenu) {
               let dist = Game.PlayerPed.Position.distance(this.locations[a].coords);
 
-              if (dist <= 10) {
+              if (dist <= 15) {
                 currentPos = this.locations[a].coords;
 
                 if (this.interactionTick === undefined) this.interactionTick = setTick(async () => {
