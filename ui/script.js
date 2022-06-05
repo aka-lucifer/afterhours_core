@@ -245,6 +245,11 @@ const HUD = new Vue({
     },
 
     startCreatingChar() {
+      // Set date to current date when you start creating a character
+      const date = new Date();
+      this.newCharacter.dob = `${date.getFullYear()}-${(date.getMonth() + 1)}-${date.getDate()}`;
+
+      // Show the create character form
       this.creatingCharacter = true;
     },
 
@@ -257,7 +262,9 @@ const HUD = new Vue({
     createCharacter() {
       const isFormComplete = this.$refs.charCreatorForm.validate();
       if (isFormComplete) {
-        const dobValid = isDateValid(this.newCharacter.dob);
+        const dobDate = new Date(this.newCharacter.dob);
+        console.log("dob valid", this.newCharacter.dob, dobDate);
+        const dobValid = isDateValid(dobDate);
 
         if (dobValid) {
           this.Post("CREATE_CHARACTER", {
