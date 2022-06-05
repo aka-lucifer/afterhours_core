@@ -263,9 +263,18 @@ export class Seatbelt {
     console.log("EJECT VELOCITY IS THIS FKIN FAST", vehicleVelocity);
     const myPed = Game.PlayerPed;
     if (IsPedInAnyVehicle(myPed.Handle, false)) {
+
+      // Fade out the screen
+      DoScreenFadeOut(0);
+
+      // Eject from the vehicle
       const currVeh = myPed.CurrentVehicle;
       myPed.Position = NumToVector3(GetWorldPositionOfEntityBone(currVeh.Handle, GetEntityBoneIndexByName(currVeh.Handle, "windscreen")));
       myPed.Velocity = new Vector3(vehicleVelocity.x * 4, vehicleVelocity.y * 4, vehicleVelocity.z * 4);
+
+      // Wait 1.5 seconds, then fade back in over 3 seconds.
+      await Delay(1500);
+      DoScreenFadeIn(3000);
     }
   }
   
