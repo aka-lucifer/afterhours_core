@@ -82,6 +82,8 @@ export class StaffMenu {
 
   // [Player] Data
   private godmode: boolean = false;
+  private godmodeTick: number = undefined;
+
   private visible: boolean = true;
   private onDuty: boolean = false;
 
@@ -217,16 +219,34 @@ export class StaffMenu {
       this.playerActionsMenu.BindCheckbox("Godmode", this.godmode, (newState: boolean) => {
         this.godmode = newState;
 
-        const myPed = Game.PlayerPed;
-        myPed.IsInvincible = this.godmode;
-        SetPlayerInvincible(Game.Player.Handle, this.godmode);
-        myPed.CanRagdoll = !this.godmode;
-        myPed.clearBloodDamage();
-        myPed.resetVisibleDamage();
-        myPed.clearLastWeaponDamage();
-        SetEntityProofs(myPed.Handle, this.godmode, this.godmode, this.godmode, this.godmode, this.godmode, this.godmode, this.godmode, this.godmode);
-        myPed.IsOnlyDamagedByPlayer = !this.godmode;
-        SetEntityCanBeDamaged(myPed.Handle, !this.godmode);
+        if (this.godmode) {
+          if (this.godmodeTick === undefined) this.godmodeTick = setTick(() => {
+            const myPed = Game.PlayerPed;
+            myPed.IsInvincible = this.godmode;
+            SetPlayerInvincible(Game.Player.Handle, this.godmode);
+
+            myPed.CanRagdoll = false;
+            myPed.clearBloodDamage();
+            myPed.resetVisibleDamage();
+            myPed.clearLastWeaponDamage();
+            SetEntityProofs(myPed.Handle, true, true, true, true, true, true, true, true);
+            myPed.IsOnlyDamagedByPlayer = false;
+            SetEntityCanBeDamaged(myPed.Handle, false);
+          });
+        } else {
+          if (this.godmodeTick !== undefined) {
+            clearTick(this.godmodeTick);
+            this.godmodeTick = undefined;
+
+            const myPed = Game.PlayerPed;
+            myPed.IsInvincible = false;
+            SetPlayerInvincible(Game.Player.Handle, false);
+            myPed.CanRagdoll = true;
+            SetEntityProofs(myPed.Handle, false, false, false, false, false, false, false, false);
+            myPed.IsOnlyDamagedByPlayer = true;
+            SetEntityCanBeDamaged(myPed.Handle, true);
+          }
+        }
       });
 
       this.playerActionsMenu.BindCheckbox("NoClip", this.client.staffManager.noclip.Active, () => {
