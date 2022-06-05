@@ -44,6 +44,7 @@ export class CommandMenu {
 
   // Location Data
   private menuLocations: MenuLocation[] = [];
+  private currentPos: Vector3 = undefined;
 
   // Menu Data
   private menu: Menu;
@@ -121,129 +122,124 @@ export class CommandMenu {
         if (this.client.Character.job.name == this.menuLocations[a].type) { // If you have the correct job (Police, State, County, Fire/EMS)
           if (this.client.Character.job.isBoss) { // If you are a boss
             if (this.client.Character.job.status) { // If you are on duty
-              if (this.menuLocations[a].type == Jobs.County) {
-                if (!this.usingMenu) {
-                  if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
-                    let dist = Game.PlayerPed.Position.distance(this.menuLocations[a].coords);
+              if (!this.usingMenu) {
+                if (!IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+                  let dist = Game.PlayerPed.Position.distance(this.menuLocations[a].coords);
 
-                    if (dist <= 10) {
-                      if (this.interactionTick === undefined) this.interactionTick = setTick(() => {
-                        if (!this.usingMenu) {
-                          dist = Game.PlayerPed.Position.distance(this.menuLocations[a].coords);
-                          World.drawMarker(
-                            this.menuLocations[a].marker.type,
-                            this.menuLocations[a].coords,
-                            new Vector3(0, 0, 0),
-                            new Vector3(0, 0, 0),
-                            new Vector3(1, 1, 1),
-                            Color.fromRgb(this.menuLocations[a].marker.colour.r, this.menuLocations[a].marker.colour.g, this.menuLocations[a].marker.colour.b),
-                            false,
-                            true,
-                            false,
-                            null,
-                            null,
-                            false
-                          );
+                  if (dist <= 10) {
+                    this.currentPos = this.menuLocations[a].coords;
 
-                          if (dist <= 1.5) {
-                            Screen.displayHelpTextThisFrame("~INPUT_CONTEXT~ to access the unit menu");
+                    if (this.interactionTick === undefined) this.interactionTick = setTick(() => {
+                      if (!this.usingMenu) {
+                        dist = Game.PlayerPed.Position.distance(this.menuLocations[a].coords);
+                        World.drawMarker(
+                          this.menuLocations[a].marker.type,
+                          this.menuLocations[a].coords,
+                          new Vector3(0, 0, 0),
+                          new Vector3(0, 0, 0),
+                          new Vector3(1, 1, 1),
+                          Color.fromRgb(this.menuLocations[a].marker.colour.r, this.menuLocations[a].marker.colour.g, this.menuLocations[a].marker.colour.b),
+                          false,
+                          true,
+                          false,
+                          null,
+                          null,
+                          false
+                        );
 
-                            if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Context)) {
-                              this.client.menuManager.emptyMenu(this.units.handle);
-                              this.client.menuManager.emptyMenu(this.recruitment.handle);
+                        if (dist <= 1.5) {
+                          Screen.displayHelpTextThisFrame("~INPUT_CONTEXT~ to access the unit menu");
 
-                              // Units Menu
-                              this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[a].type }, async (receievedUnits, passedData) => {
+                          if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Context)) {
+                            this.client.menuManager.emptyMenu(this.units.handle);
+                            this.client.menuManager.emptyMenu(this.recruitment.handle);
 
-                                // Loop through all department characters
-                                for (let b = 0; b < receievedUnits.length; b++) {
-                                  const submenu = this.units.BindSubmenu(`[${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
+                            // Units Menu
+                            this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[a].type }, async (receievedUnits, passedData) => {
 
-                                  const promoteMenu = submenu.BindSubmenu("Promote Unit");
+                              // Loop through all department characters
+                              for (let b = 0; b < receievedUnits.length; b++) {
+                                const submenu = this.units.BindSubmenu(`[${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
 
-                                  const fireButton = submenu.BindButton("Fire Unit", () => {
-                                    console.log(`fire [${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
-                                    this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, {
-                                      unitsId: receievedUnits[b].id,
-                                      unitsPlayerId: receievedUnits[b].playerId
-                                    }, async (firedUnit, passedData) => {
-                                      if (firedUnit) {
-                                        await this.client.menuManager.deleteMenu(submenu.handle);
+                                const promoteMenu = submenu.BindSubmenu("Promote Unit");
 
-                                        const notify = new Notification("Unit Management", `Fired [${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`, NotificationTypes.Info);
-                                        await notify.send();
-                                      } else {
-                                        const notify = new Notification("Unit Management", `Unsuccessful in firing unit, make a support ticket!`, NotificationTypes.Error);
-                                        await notify.send();
-                                      }
-                                    }));
-                                  });
-                                }
+                                const fireButton = submenu.BindButton("Fire Unit", () => {
+                                  console.log(`fire [${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
+                                  this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, {
+                                    unitsId: receievedUnits[b].id,
+                                    unitsPlayerId: receievedUnits[b].playerId
+                                  }, async (firedUnit, passedData) => {
+                                    if (firedUnit) {
+                                      await this.client.menuManager.deleteMenu(submenu.handle);
 
-                                // Get dept rank
-                                let ranks;
+                                      const notify = new Notification("Unit Management", `Fired [${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`, NotificationTypes.Info);
+                                      await notify.send();
+                                    } else {
+                                      const notify = new Notification("Unit Management", `Unsuccessful in firing unit, make a support ticket!`, NotificationTypes.Error);
+                                      await notify.send();
+                                    }
+                                  }));
+                                });
+                              }
 
-                                if (this.menuLocations[a].type == Jobs.State) {
-                                  ranks = StateRanks;
-                                } else if (this.menuLocations[a].type == Jobs.Police) {
-                                  ranks = PoliceRanks;
-                                } else if (this.menuLocations[a].type == Jobs.County) {
-                                  ranks = CountyRanks;
-                                }
+                              // Get dept rank
+                              let ranks;
 
-                                // Loop through all players
-                                const svPlayers = this.client.Players;
+                              if (this.menuLocations[a].type == Jobs.State) {
+                                ranks = StateRanks;
+                              } else if (this.menuLocations[a].type == Jobs.Police) {
+                                ranks = PoliceRanks;
+                              } else if (this.menuLocations[a].type == Jobs.County) {
+                                ranks = CountyRanks;
+                              }
 
-                                for (let b = 0; b < svPlayers.length; b++) {
-                                  if (svPlayers[b].NetworkId !== this.client.player.NetworkId) { // If not you
-                                    if (svPlayers[b].Spawned) {
-                                      if (svPlayers[b].Character.job.name !== this.menuLocations[a].type) { // If they are a civilian
-                                        const playerMenu = this.recruitment.BindSubmenu(`${svPlayers[b].Name} | ${svPlayers[b].Character.firstName} ${svPlayers[b].Character.lastName}`);
+                              // Loop through all players
+                              const svPlayers = this.client.Players;
 
-                                        for (let c = 0; c < Object.keys(ranks).length / 2; c++) {
-                                          if (c < this.client.Character.job.rank || this.client.player.Rank >= Ranks.SeniorAdmin) { // If the available ranks are less than your rank
-                                            const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
-                                            const rankButton = playerMenu.BindButton(rankLabel, () => {
+                              for (let b = 0; b < svPlayers.length; b++) {
+                                if (svPlayers[b].NetworkId !== this.client.player.NetworkId) { // If not you
+                                  if (svPlayers[b].Spawned) {
+                                    if (svPlayers[b].Character.job.name !== this.menuLocations[a].type) { // If they are a civilian
+                                      const playerMenu = this.recruitment.BindSubmenu(`${svPlayers[b].Name} | ${svPlayers[b].Character.firstName} ${svPlayers[b].Character.lastName}`);
 
-                                              this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.recruitPlayer, {
-                                                unitsNet: svPlayers[b].NetworkId,
-                                                jobName: this.menuLocations[a].type,
-                                                jobRank: c,
-                                                jobLabel: rankLabel
-                                              }, async (recruitedUnit, passedData) => {
-                                                if (recruitedUnit) {
-                                                  await this.client.menuManager.CloseMenu();
+                                      for (let c = 0; c < Object.keys(ranks).length / 2; c++) {
+                                        if (c < this.client.Character.job.rank || this.client.player.Rank >= Ranks.SeniorAdmin) { // If the available ranks are less than your rank
+                                          const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
+                                          const rankButton = playerMenu.BindButton(rankLabel, () => {
 
-                                                  const notify = new Notification("Unit Management", `Recruited ${svPlayers[b].Character.firstName} ${svPlayers[b].Character.lastName}, To ${ranks[c]}.`, NotificationTypes.Info);
-                                                  await notify.send();
-                                                } else {
-                                                  const notify = new Notification("Unit Management", "Unsuccessful in recruitign unit, make a support ticket!", NotificationTypes.Error);
-                                                  await notify.send();
-                                                }
-                                              }));
-                                            });
-                                          }
+                                            this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.recruitPlayer, {
+                                              unitsNet: svPlayers[b].NetworkId,
+                                              jobName: this.menuLocations[a].type,
+                                              jobRank: c,
+                                              jobLabel: rankLabel
+                                            }, async (recruitedUnit, passedData) => {
+                                              if (recruitedUnit) {
+                                                await this.client.menuManager.CloseMenu();
+
+                                                const notify = new Notification("Unit Management", `Recruited ${svPlayers[b].Character.firstName} ${svPlayers[b].Character.lastName}, To ${ranks[c]}.`, NotificationTypes.Info);
+                                                await notify.send();
+                                              } else {
+                                                const notify = new Notification("Unit Management", "Unsuccessful in recruitign unit, make a support ticket!", NotificationTypes.Error);
+                                                await notify.send();
+                                              }
+                                            }));
+                                          });
                                         }
                                       }
                                     }
                                   }
                                 }
+                              }
 
 
-                                // Open the menu
-                                await this.menu.Open();
-                                this.usingMenu = true;
-                              }));
-                            }
+                              // Open the menu
+                              await this.menu.Open();
+                              this.usingMenu = true;
+                            }));
                           }
                         }
-                      });
-                    } else {
-                      if (this.interactionTick !== undefined) {
-                        clearTick(this.interactionTick);
-                        this.interactionTick = undefined;
                       }
-                    }
+                    });
                   }
                 }
               }
@@ -258,6 +254,17 @@ export class CommandMenu {
               clearTick(this.interactionTick);
               this.interactionTick = undefined;
             }
+          }
+        }
+      }
+
+      if (this.currentPos !== undefined) {
+        if (this.currentPos.distance(Game.PlayerPed.Position) > 15) {
+          this.currentPos = undefined;
+
+          if (this.interactionTick !== undefined) {
+            clearTick(this.interactionTick);
+            this.interactionTick = undefined;
           }
         }
       }
@@ -281,12 +288,14 @@ export class CommandMenu {
   // Events
   public toggleBlips(toggleState: boolean): void {
     for (let i = 0; i < this.menuLocations.length; i++) {
-      if (toggleState) {
-        const blip = new Blip(this.menuLocations[i].blip.Handle);
-        blip.Alpha = 255;
-      } else {
-        const blip = new Blip(this.menuLocations[i].blip.Handle);
-        blip.Alpha = 0;
+      if (this.client.Character.job.name == this.menuLocations[i].type) {
+        if (toggleState) {
+          const blip = new Blip(this.menuLocations[i].blip.Handle);
+          blip.Alpha = 255;
+        } else {
+          const blip = new Blip(this.menuLocations[i].blip.Handle);
+          blip.Alpha = 0;
+        }
       }
     }
   }
