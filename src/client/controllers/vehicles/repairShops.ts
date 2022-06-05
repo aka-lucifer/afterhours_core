@@ -50,6 +50,7 @@ export class RepairShops {
       const blipPos = new Vector3(shops[i].location.x, shops[i].location.y, shops[i].location.z)
       const blip = World.createBlip(blipPos);
       blip.Sprite = 446;
+      blip.Color = 5;
       blip.Scale = 0.7;
       blip.IsShortRange = true;
       blip.Name = "Repair Shop";
