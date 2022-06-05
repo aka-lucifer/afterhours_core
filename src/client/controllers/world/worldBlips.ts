@@ -52,6 +52,7 @@ export class WorldBlips {
       blip.Color = this.blips[i].colour;
       blip.Scale = this.blips[i].scale;
       blip.Name = this.blips[i].name;
+      blip.IsShortRange = true;
 
       this.createdBlips.push(blip);
     }
