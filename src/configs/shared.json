@@ -381,7 +381,7 @@
       },
       "rank": 12
     },
-    "NOT_SET": {
+    "949377494": {
       "name": "WEAPON_G19", "label": "Glock 19 RMR", "ammoType": "AMMO_PISTOL",
       "reason": "pistoled",
       "type": "weapon",
@@ -391,7 +391,7 @@
       },
       "rank": 6
     },
-    "NOT_SET": {
+    "-724102563": {
       "name": "WEAPON_G17", "label": "Glock 17", "ammoType": "AMMO_PISTOL", "attachments": [
         {"name": "clip_default", "label": "Default Magazine", "hash": "COMPONENT_G17_CLIP_01"},
         {"name": "clip_17rnd", "label": "17 Round Magazine", "hash": "COMPONENT_G17_CLIP_02"},
@@ -439,7 +439,7 @@
       },
       "rank": 6
     },
-    "NOT_SET": {
+    "-925345946": {
       "name": "WEAPON_P226", "label": "P226", "ammoType": "AMMO_PISTOL", "attachments": [
         {"name": "clip_default", "label": "Default Magazine", "hash": "COMPONENT_P226_CLIP_01"}
       ],
@@ -551,7 +551,7 @@
       },
       "rank": 12
     },
-    "NOT_SET": {
+    "-634552258": {
       "name": "WEAPON_MP5", "label": "MP5", "ammoType": "AMMO_SMG", "attachments": [
         {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MP5_CLIP_01"},
         {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MP5"},
@@ -565,7 +565,7 @@
       },
       "rank": 6
     },
-    "NOT_SET": {
+    "1704503360": {
       "name": "WEAPON_MP9a", "label": "MP9", "ammoType": "AMMO_SMG", "attachments": [
         {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MP9a_CLIP_02"},
         {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MP9A"},
@@ -580,7 +580,7 @@
       },
       "rank": 6
     },
-    "NOT_SET": {
+    "506038341": {
       "name": "WEAPON_MPX", "label": "Sig Sauer MPX", "ammoType": "AMMO_SMG", "attachments": [
         {"name": "clip_1", "label": "20 Round Magazine", "hash": "COMPONENT_MPX_CLIP_01"},
         {"name": "clip_2", "label": "41 Round Magazine", "hash": "COMPONENT_MPX_CLIP_02"},
@@ -639,7 +639,7 @@
       },
       "rank": 7
     },
-    "NOT_SET": {
+    "-1034100737": {
       "name": "WEAPON_PP19", "label": "PP19", "ammoType": "AMMO_SMG", "attachments": [
         {"name": "clip_1", "label": "Default Magazine", "hash": "COMPONENT_PP19_CLIP_01"},
         {"name": "clip_2", "label": "20 Round Black Magazine", "hash": "COMPONENT_PP19_CLIP_02"},
@@ -1093,7 +1093,7 @@
       },
       "rank": 6
     },
-    "NOT_SET": {
+    "1837284246": {
       "name": "WEAPON_HK416B", "label": "HK416", "ammoType": "AMMO_RIFLE", "attachments": [
         {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_HK416B_CLIP_01"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_HK416B_FLSH"},
@@ -1115,7 +1115,7 @@
       },
       "rank": 6
     },
-    "NOT_SET": {
+    "-319609691": {
       "name": "WEAPON_MM4", "label": "M4", "ammoType": "AMMO_RIFLE", "attachments": [
         {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MM4_CLIP_01"}
       ],
@@ -1134,7 +1134,7 @@
       },
       "rank": 6
     },
-    "NOT_SET": {
+    "2083584098": {
       "name": "WEAPON_fbiarb", "label": "AR15", "ammoType": "AMMO_RIFLE", "attachments": [
         {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_fbiarb_CLIP_01"},
         {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_fbiarb_FLSH"},
@@ -1156,7 +1156,7 @@
       },
       "rank": 7
     },
-    "NOT_SET": {
+    "-1949706116": {
       "name": "WEAPON_MK18", "label": "MK18", "ammoType": "AMMO_RIFLE", "attachments": [
         {"name": "frame_1", "label": "Frame 1", "hash": "COMPONENT_mk18_FRAME_01"},
         {"name": "frame_2", "label": "Frame 2", "hash": "COMPONENT_mk18_FRAME_02"},
@@ -1431,7 +1431,7 @@
       "rank": 7,
       "note": "NEED_TO_ADD_ATTACHMENTS"
     },
-    "NOT_SET": {
+    "-303773045": {
       "name": "WEAPON_M700", "label": "M700", "ammoType": "AMMO_SNIPER","attachments": [
         {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_M700_CLIP_01"},
         {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_M700"},
@@ -1452,7 +1452,7 @@
       },
       "rank": 7
     },
-    "NOT_SET": {
+    "1994921561": {
       "name": "WEAPON_M870", "label": "Remington M870", "ammoType": "AMMO_SNIPER","attachments": [
         {"name": "clip_4rnd", "label": "4 Round Magazine", "hash": "COMPONENT_M870_CLIP_01"},
         {"name": "clip_7rnd", "label": "7 Round Magazine", "hash": "COMPONENT_M870_CLIP_02"},
@@ -1647,6 +1647,16 @@
         "model": "w_me_switchblade"
       }
     },
+    "-262696221": {
+      "name": "weapon_shiv",
+      "label": "Shiv",
+      "reason": "stabbed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_shiv"
+      }
+    },
     "-102323637": {
       "name": "weapon_bottle", "label": "Glass Bottle",
       "reason": "beaten",
@@ -1793,6 +1803,46 @@
         "yRotation": -90.0,
         "zRotation": 0.0,
         "model": "w_me_crowbar"
+      }
+    },
+    "1064738331": {
+      "name": "weapon_brick",
+      "label": "Brick",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_brick"
+      }
+    },
+    "-828058162": {
+      "name": "weapon_shoe",
+      "label": "Shoe",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_shoe"
+      }
+    },
+    "571920712": {
+      "name": "weapon_cash",
+      "label": "Cash Pile",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_cash"
+      }
+    },
+    "-691061592": {
+      "name": "weapon_book",
+      "label": "Book",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_book"
       }
     },
     "-1813897027": {
