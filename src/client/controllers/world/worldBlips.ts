@@ -23,7 +23,7 @@ export class WorldBlips {
     this.client = client;
     console.log("start blips")
 
-    Inform("InteriorBlips | Dev Controller", "Started!");
+    Inform("Blips | World Controller", "Started!");
   }
 
   // Getters
