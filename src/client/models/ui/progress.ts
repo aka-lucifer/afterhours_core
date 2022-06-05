@@ -89,14 +89,7 @@ export class Progress {
     
     RegisterNuiCallback(NuiCallbacks.ProgressFinished, (data, cb) => {
       if (!this.cancelled) {
-        if (onCancel !== undefined) {
-          onCancel();
-        }
         onCancel = undefined;
-
-        if (onStart !== undefined) {
-          onStart();
-        }
         onStart = undefined;
 
         if (onFinish !== undefined) {
