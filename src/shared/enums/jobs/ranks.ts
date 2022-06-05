@@ -12,14 +12,13 @@ export enum PoliceRanks {
 }
 
 export enum CountyRanks {
-  Probationary_Deputy,
   Deputy,
+  Senior_Deputy,
   Corporal,
   Sergeant,
-  Admin_Sergeant,
-  Patrol_Lieutenant,
-  Admin_Lieutenant,
+  Lieutenant,
   Captain,
+  Commander,
   Chief_Deputy,
   Sheriff
 }
