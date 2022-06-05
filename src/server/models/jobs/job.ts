@@ -14,9 +14,9 @@ export class Job {
   constructor(name: string, label: string, rank?: number | PoliceRanks | CountyRanks | StateRanks, isBoss?: boolean, callsign?: string, status?: boolean) {
     this.name = name;
     this.label = label;
-    if (rank) this.rank = rank;
+    if (rank !== undefined) this.rank = rank;
     if (isBoss !== undefined) this.isBoss = isBoss;
-    if (callsign) this.callsign = callsign;
+    if (callsign !== undefined) this.callsign = callsign;
     if (status !== undefined) this.status = status;
   }
 

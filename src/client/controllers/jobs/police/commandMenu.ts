@@ -186,9 +186,7 @@ export class CommandMenu {
                                   if (c < this.client.Character.job.rank || this.client.player.Rank >= Ranks.SeniorAdmin) { // If the available ranks are less than your rank
                                     const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
 
-                                    const promoteButton = submenu.BindButton(rankLabel, () => {
-                                      console.log(`Promote ${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}, to rank (${ranks[c]})`);
-
+                                    const promoteButton = promoteMenu.BindButton(rankLabel, () => {
                                       this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.promoteUnit, {
                                         unitsId: receievedUnits[b].id,
                                         unitsPlayerId: receievedUnits[b].playerId,
@@ -211,7 +209,6 @@ export class CommandMenu {
                                 }
 
                                 const fireButton = submenu.BindButton("Fire Unit", () => {
-                                  console.log(`fire [${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
                                   this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, {
                                     unitsId: receievedUnits[b].id,
                                     unitsPlayerId: receievedUnits[b].playerId,

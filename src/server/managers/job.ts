@@ -184,8 +184,6 @@ export class JobManager {
                 }
               }
 
-              console.log("units", units);
-
               await player.TriggerEvent(Events.receiveServerCB, units, data); // Send back all of the passed depts units
             }
           }
@@ -215,9 +213,7 @@ export class JobManager {
                   if (playerConnected.Spawned) {
                     const connectedCharacter = await this.server.characterManager.Get(playerConnected);
                     if (connectedCharacter) {
-                      console.log("fired b4 job", connectedCharacter.Job, newJob);
                       connectedCharacter.Job = newJob;
-                      console.log("fired after job", connectedCharacter.Job, newJob);
 
                       // Set your selected character fuck thing
                       playerConnected.selectedCharacter = { // Update selected character to have new job
@@ -245,10 +241,6 @@ export class JobManager {
                       // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
                       this.server.commandManager.createChatSuggestions(playerConnected);
                       await playerConnected.TriggerEvent(Events.updateSuggestions);
-                      console.log("fired finished job", connectedCharacter.Job, newJob);
-
-                      console.log("character data", connectedCharacter);
-
                       await playerConnected.TriggerEvent(Events.updateCharacter, Object.assign({}, connectedCharacter)); // Update our character on our client (char info, job, etc)
                       await playerConnected.Notify("Character", `You've been fired from ${character.Job.label}.`, NotificationTypes.Error);
                     }
@@ -287,9 +279,7 @@ export class JobManager {
                   if (playerConnected.Spawned) {
                     const connectedCharacter = await this.server.characterManager.Get(playerConnected);
                     if (connectedCharacter) {
-                      console.log("promote b4 job", connectedCharacter.Job, newJob);
                       connectedCharacter.Job = newJob;
-                      console.log("promote after job", connectedCharacter.Job, newJob);
 
                       // Set your selected character fuck thing
                       playerConnected.selectedCharacter = { // Update selected character to have new job
@@ -317,10 +307,6 @@ export class JobManager {
                       // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
                       this.server.commandManager.createChatSuggestions(playerConnected);
                       await playerConnected.TriggerEvent(Events.updateSuggestions);
-                      console.log("promote finished job", connectedCharacter.Job, newJob);
-
-                      console.log("character data", connectedCharacter);
-
                       await playerConnected.TriggerEvent(Events.updateCharacter, Object.assign({}, connectedCharacter)); // Update our character on our client (char info, job, etc)
                       await playerConnected.Notify("Character", `You've been fired from ${character.Job.label}.`, NotificationTypes.Error);
                     }
