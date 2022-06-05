@@ -332,10 +332,12 @@ export class Player {
     let doneProcessing = false;
 
     axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamAPIKey}&steamids=${profileId}`, {}).then(response => {
-      // console.log("post repsonse", response.data.response.players[0].avatarfull);
-      const avatar = response.data.response.players[0].avatarfull;
-      if (avatar !== undefined) {
-        avatarUrl = response.data.response.players[0].avatarfull;
+      console.log("post response", response.data.response.players[0]);
+      const profileData = response.data.response.players[0];
+      if (profileData !== undefined) {
+        avatarUrl = profileData.avatarfull;
+      } else {
+        avatarUrl = "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png"; // Placeholder loading screen avatar
       }
       doneProcessing = true;
     }).catch(error => {
