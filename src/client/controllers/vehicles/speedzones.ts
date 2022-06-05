@@ -17,16 +17,6 @@ interface Speedzone {
   points: {x: number, y: number}[];
 }
 
-// class Speedzone {
-//   name: string;
-//   points: {x: number, y: number}[];
-
-//   constructor(name: string, points: {x: number, y: number}[]) {
-//     this.name = name;
-//     this.points = points;
-//   }
-// }
-
 export class Speedzones {
   private client: Client;
 
