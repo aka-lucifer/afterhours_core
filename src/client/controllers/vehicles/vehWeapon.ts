@@ -108,9 +108,10 @@ export class VehicleWeapon {
                   this.attachedWeaponHash = this.currentWeapon;
                   this.attachedWeapon = await World.createProp(weaponModel, myPed.Position, false, false);
 
-                  const rightHandVeh = await rightHandVehicle(currVeh);
-                  const boneToAttach = !rightHandVeh ? Bone.SKEL_R_Hand : Bone.SKEL_L_Hand;
+                  // const rightHandVeh = await rightHandVehicle(currVeh);
+                  // const boneToAttach = !rightHandVeh ? Bone.SKEL_R_Hand : Bone.SKEL_L_Hand;
                   // console.log("vehs 2", rightHandVeh, boneToAttach);
+                  const boneToAttach = Bone.SKEL_R_Hand
 
                   AttachEntityToEntity(this.attachedWeapon.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, boneToAttach), 0.18, 0.035, -0.001, -82.2, -2.6449, -7.71, true, true, false, false, 1, true)
                   // this.attachedWeapon.attachToBone(new EntityBone(myPed, GetPedBoneIndex(myPed.Handle, Bone.SKEL_R_Hand)), new Vector3(0.18, 0.035, -0.001), new Vector3(-82.2, -2.6449, -7.71));
