@@ -1,28 +1,29 @@
-import { Server } from "../server";
-import {Error, Inform, Log} from "../utils";
+import { server, Server } from '../server';
+import { Delay, Error, Inform, Log } from '../utils';
 
 import { Player } from "../models/database/player";
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
 
-import { LogTypes } from "../enums/logTypes";
+import { LogTypes } from "../enums/logging";
 
 import {Ranks} from "../../shared/enums/ranks";
 import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
 import { EmbedColours } from "../../shared/enums/logging/embedColours";
+import { Events } from "../../shared/enums/events/events";
+import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
 
 import serverConfig from "../../configs/server.json";
 import sharedConfig from "../../configs/shared.json";
-import { Events } from "../../shared/enums/events/events";
-import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
 
 export class ConnectedPlayerManager {
   public server: Server;
   public connectedPlayers: any[] = [];
+
+  // Ticks
+  private pingTick: number = undefined;
   
   constructor(server: Server) {
     this.server = server;
-
-    this.processRanks();
   }
 
   // Get Requests
@@ -32,6 +33,7 @@ export class ConnectedPlayerManager {
 
   // Methods
   private processRanks(): void {
+    // console.log("process ranks")
     setInterval(async() => {
       for (let i = 0; i < this.connectedPlayers.length; i++) {
         if (this.connectedPlayers[i].GetPlaytime.days >= 2) {
@@ -56,6 +58,27 @@ export class ConnectedPlayerManager {
         }
       }
     }, serverConfig.rankCycling.interval * 1000);
+  }
+
+  private processPing(): void {
+    if (this.pingTick === undefined) this.pingTick = setTick(async() => {
+      for (let i = 0; i < this.connectedPlayers.length; i++) {
+        if (this.connectedPlayers[i].Rank < Ranks.Moderator) { // If they aren't staff
+          const newPing = this.connectedPlayers[i].RefreshPing();
+
+          if (newPing > serverConfig.maxPing) { // If their ping is greater than the max ping, kick them
+            DropPlayer(this.connectedPlayers[i].Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName} for having too high ping. (Ping: ${newPing})`);
+          }
+        }
+      }
+
+      await Delay(1000);
+    });
+  }
+
+  public init(): void {
+    this.processRanks();
+    this.processPing();
   }
 
   public Add(player: Player): number {
@@ -133,7 +156,7 @@ export class ConnectedPlayerManager {
       }
 
       if (player) {
-        emitNet(JobEvents.unitOffDuty, -1, player.Handle); // Remove this players on duty blip to all on duty players
+        emitNet(JobEvents.deleteOffDutyUnit, -1, player.Handle); // Remove this players on duty blip to all on duty players
         this.server.characterManager.Disconnect(player);
         await player.Disconnect(disconnectReason);
       }
