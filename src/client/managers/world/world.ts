@@ -12,7 +12,6 @@ export class WorldManager {
   private client: Client;
   private clearerTick: number = undefined;
   private slowTick: number = undefined;
-  private wantedTick: number = undefined;
 
   // Controllers
   private minimap: Minimap;
@@ -57,18 +56,6 @@ export class WorldManager {
       await Delay(500);
     });
 
-    // Wanted Level Removing
-    this.wantedTick = setTick(async() => {
-      const myPlayer = Game.Player;
-
-      if (GetPlayerWantedLevel(myPlayer.Handle) > 0 ) {
-        SetPlayerWantedLevel(Game.Player.Handle, 0, false);
-        SetPlayerWantedLevelNow(Game.Player.Handle, false);
-      } else {
-        await Delay(500);
-      }
-    });
-
     this.slowTick = setTick(async() => {
       this.disableAmbients();
       this.disableCoverAdvantage();
@@ -82,7 +69,7 @@ export class WorldManager {
     InvalidateIdleCam();
   }
 
-  // Disable Wanted Level, Police Radio, Vehicle & Vehicle Rewards
+  // Disable Police Radio, Vehicle & Vehicle Rewards
   private disablePolice(ped: Ped): void {
     const myCoords = ped.Position;
 
