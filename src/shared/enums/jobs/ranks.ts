@@ -27,7 +27,7 @@ export enum StateRanks {
   Cadet,
   Trooper,
   Senior_Trooper,
-  Corportal,
+  Corporal,
   Sergeant,
   Lieutenant,
   Captain,
