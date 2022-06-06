@@ -167,9 +167,8 @@ export class PoliceJob {
     }, [Jobs.State, Jobs.Police, Jobs.County]);
 
     new JobCommand("dispatch", "Reply to a emergency call", [{name: "callId", help: "The ID of the call, you're responding to."}, {name: "response", help: "The response to the callmaker."}], true, async(source: string, args: any[]) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-
       if (args[0] && args[1]) {
+        const player = await this.server.connectedPlayerManager.GetPlayer(source);
         if (player) {
           if (player.Spawned) {
             const character = await this.server.characterManager.Get(player);
@@ -210,9 +209,8 @@ export class PoliceJob {
     }, [Jobs.State, Jobs.Police, Jobs.County]);
 
     new Command("911", "Call 911 with an emergency", [{name: "description", help: "The description of your 911 call."}], true, async(source: string, args: any[]) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-
       if (args[0]) {
+        const player = await this.server.connectedPlayerManager.GetPlayer(source);
         if (player) {
           if (player.Spawned) {
             const character = await this.server.characterManager.Get(player);
@@ -227,9 +225,8 @@ export class PoliceJob {
     }, Ranks.User);
 
     new Command("311", "Call 311 with an emergency", [{name: "description", help: "The description of your 311 call."}], true, async(source: string, args: any[]) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-
       if (args[0]) {
+        const player = await this.server.connectedPlayerManager.GetPlayer(source);
         if (player) {
           if (player.Spawned) {
             const character = await this.server.characterManager.Get(player);
