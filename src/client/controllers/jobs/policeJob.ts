@@ -49,11 +49,38 @@ export class PoliceJob {
 
     onNet(JobEvents.start311Call, this.EVENT_start311Call.bind(this));
     onNet(JobEvents.receive311Call, this.EVENT_receive311Call.bind(this));
+
+    RegisterCommand("cuff", () => {
+      emitNet(JobEvents.cuffPlayer);
+    }, false);
+
+    RegisterCommand("uncuff", () => {
+      emitNet(JobEvents.uncuffPlayer);
+    }, false);
   }
 
   // Methods
+
+  private registerExports(): void {
+    global.exports("getJob", () => {
+      if (this.client.Player.Spawned) {
+        return this.client.Character.job.name;
+      } else {
+        return Jobs.Civilian;
+      }
+    });
+
+    
+    global.exports("onDuty", async() => {
+      if (this.client.Player.Spawned) {
+        return this.client.Character.job.status;
+      } else {
+        return false;
+      }
+    });
+  }
+
   public registerDuty(): void {
-    console.log("add")
     emit("astrid_target:client:addBoxZone", "Sandy PD", new Vector3(1852.24, 3687.0, 34.27), 2.4, 1.4, {
       name: "sandy_pd_options",
       heading: 301,
@@ -83,7 +110,103 @@ export class PoliceJob {
           job: [Jobs.State, Jobs.County, Jobs.Police]
         }
       ],
-      distance: 3.5
+      distance: 1
+    });
+
+    emit("astrid_target:client:addBoxZone", "Paleto PD", new Vector3(-448.55, 6013.48, 31.72), 4.5, 1.2, {
+      name: "paleto_pd_options",
+      heading: 45,
+      debugPoly: false,
+      minZ: 30.72,
+      maxZ: 33.0
+    }, {
+      options: [
+        {
+          event: JobEvents.toggleDuty,
+          icon: "fas fa-solid fa-check",
+          label: "On Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
+          state: true
+        },
+        {
+          event: JobEvents.toggleDuty,
+          icon: "fas fa-solid fa-ban",
+          label: "Off Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
+          state: false
+        },
+        {
+          event: JobEvents.setCallsign,
+          icon: "fas fa-solid fa-walkie-talkie",
+          label: "Set Callsign",
+          job: [Jobs.State, Jobs.County, Jobs.Police]
+        }
+      ],
+      distance: 1
+    });
+
+    emit("astrid_target:client:addBoxZone", "Mission Row PD", new Vector3(442.13, -981.87, 30.69), 2, 2, {
+      name: "mrpd_options",
+      heading: 0,
+      debugPoly: false,
+      minZ: 29.69,
+      maxZ: 32.2
+    }, {
+      options: [
+        {
+          event: JobEvents.toggleDuty,
+          icon: "fas fa-solid fa-check",
+          label: "On Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
+          state: true
+        },
+        {
+          event: JobEvents.toggleDuty,
+          icon: "fas fa-solid fa-ban",
+          label: "Off Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
+          state: false
+        },
+        {
+          event: JobEvents.setCallsign,
+          icon: "fas fa-solid fa-walkie-talkie",
+          label: "Set Callsign",
+          job: [Jobs.State, Jobs.County, Jobs.Police]
+        }
+      ],
+      distance: 1
+    });
+
+    emit("astrid_target:client:addBoxZone", "La Mesa PD", new Vector3(835.83, -1289.7, 28.24), 5.2, 1.2, {
+      name: "la_mesa_pd_options",
+      heading: 0,
+      debugPoly: false,
+      minZ: 27.23,
+      maxZ: 29.8
+    }, {
+      options: [
+        {
+          event: JobEvents.toggleDuty,
+          icon: "fas fa-solid fa-check",
+          label: "On Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
+          state: true
+        },
+        {
+          event: JobEvents.toggleDuty,
+          icon: "fas fa-solid fa-ban",
+          label: "Off Duty",
+          job: [Jobs.State, Jobs.County, Jobs.Police],
+          state: false
+        },
+        {
+          event: JobEvents.setCallsign,
+          icon: "fas fa-solid fa-walkie-talkie",
+          label: "Set Callsign",
+          job: [Jobs.State, Jobs.County, Jobs.Police]
+        }
+      ],
+      distance: 1
     });
   }
 
@@ -127,6 +250,8 @@ export class PoliceJob {
     await this.cuffing.init();
     this.commandMenu.init();
     this.garages.init();
+
+    this.registerExports();
   }
 
   public stop(): void {
