@@ -60,7 +60,8 @@ import { Message } from '../shared/models/ui/chat/message';
 import { SystemTypes } from '../shared/enums/ui/chat/types';
 import { PlayerManager } from './managers/database/players';
 import { ErrorCodes } from '../shared/enums/logging/errors';
-import { Weapon } from "../shared/interfaces/weapon";
+import { Weapon } from '../shared/interfaces/weapon';
+import { concatArgs } from '../shared/utils';
 
 
 export class Server {
@@ -198,6 +199,7 @@ export class Server {
     await this.commendManager.loadCommends(); // Load all warnings from the DB, into the warn manager
 
     await this.playerManager.init(); // Load all players from the DB, into the player manager
+    await this.connectedPlayerManager.init();
 
     await this.staffLogManager.loadLogs(); // Loads all the server logs
 
@@ -292,6 +294,63 @@ export class Server {
         if (player.Spawned) {
           await player.TriggerEvent(Events.sendSystemMessage, new Message("You've gone AFK", SystemTypes.Interaction));
           await player.TriggerEvent(Events.setAFK);
+        }
+      }
+    }, Ranks.Developer);
+
+    new Command("report", "Report a player.", [{name: "server_id", help: "The server ID of the player you're reporting."}, {name: "reason", help: "The reason you're reporting the player."}], true, async(source: string, args: any[]) => {
+      if (args[0]) {
+        if (args[1]) {
+          const player = await this.connectedPlayerManager.GetPlayer(source);
+          if (player) {
+            if (player.Spawned) {
+              const reportedPlayer = await this.connectedPlayerManager.GetPlayer(args[0]);
+              if (reportedPlayer) {
+                const reportReason = concatArgs(1, args);
+
+                // Insert report into database (make a manager later on maybe, could be used in in-game admin panel)
+                const inserted = await Database.SendQuery("INSERT INTO `player_reports` (`player_id`, `reason`, `reported_by`) VALUES (:id, :reason, :reportedBy)", {
+                  id: reportedPlayer.Id,
+                  reason: reportReason,
+                  reportedBy: player.Id
+                });
+
+                console.log("insertedData", inserted);
+
+                if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
+                  // Inform the player their report has been submitted
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have reported ^3${reportedPlayer.GetName}^0, for ^3${reportReason}^0.`, SystemTypes.Admin));
+
+                  // Inform all in server staff with a chat message and sound
+                  const svPlayers = this.connectedPlayerManager.GetPlayers;
+                  for (let i = 0; i < svPlayers.length; i++) {
+                    if (svPlayers[i].Rank >= Ranks.Moderator) {
+                      await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`A server report has been filled out on ^3${reportedPlayer.GetName}^0, for ^3${reportReason}^0, by ^3${player.GetName}^0.`, SystemTypes.Admin));
+                      await svPlayers[i].TriggerEvent(Events.soundFrontEnd, "Menu_Accept", "Phone_SoundSet_Default");
+                    }
+                  }
+
+                  // Log player report
+                  const playersDiscord = await reportedPlayer.GetIdentifier("discord");
+                  const reportersDiscord = await player.GetIdentifier("discord");
+
+                  await this.logManager.Send(LogTypes.Report, new WebhookMessage({
+                    username: "Player Reporting", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Reported__",
+                      description: `A player has been reported.\n\n**Players Id**: ${reportedPlayer.Id}\n**Players Name**: ${reportedPlayer.GetName}\n**Players Rank**: ${Ranks[reportedPlayer.Rank]}\n**Reporters Id**: ${player.Id}\n**Reporters Name**: ${player.GetName}\n**Reporters Rank**: ${Ranks[player.Rank]}\n**Report Reason**: ${reportReason}\n**Players Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}\n**Reporters Discord**: ${reportersDiscord != "Unknown" ? `<@${reportersDiscord}>` : reportersDiscord}.`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
+                }
+              } else {
+                await player.TriggerEvent(Events.sendSystemMessage, new Message("No player found with that server ID!", SystemTypes.Error));
+              }
+            }
+          }
         }
       }
     }, Ranks.Developer);

@@ -5,7 +5,8 @@ export enum LogTypes {
   Action,
   Anticheat,
   Commend,
-  Timesheet
+  Timesheet,
+  Report
 }
 
 export enum Bugs {

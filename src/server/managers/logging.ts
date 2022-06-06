@@ -12,6 +12,8 @@ import { ErrorCodes } from '../../shared/enums/logging/errors';
 
 export class LogManager {
   private server: Server;
+
+  // Admin Logs
   private readonly connectionsURL: string = serverConfig.discordLogs.urls.connectionsURL;
   private readonly killURL: string = serverConfig.discordLogs.urls.killURL;
   private readonly chatURL: string = serverConfig.discordLogs.urls.chatURL;
@@ -19,6 +21,9 @@ export class LogManager {
   private readonly anticheatURL: string = serverConfig.discordLogs.urls.anticheatURL;
   private readonly commendURL: string = serverConfig.discordLogs.urls.commendURL;
   private readonly timesheetURL: string = serverConfig.discordLogs.urls.timesheetURL;
+  private readonly reportURL: string = serverConfig.discordLogs.urls.reportURL;
+
+  // Bugs
   private readonly scriptBugs: string = serverConfig.discordLogs.bugs.script;
   private readonly vehicleBugs: string = serverConfig.discordLogs.bugs.vehicle;
   private readonly eupBugs: string = serverConfig.discordLogs.bugs.eup;
@@ -53,6 +58,9 @@ export class LogManager {
         break;
       case LogTypes.Timesheet:
         url = this.timesheetURL;
+        break;
+      case LogTypes.Report:
+        url = this.reportURL;
         break;
       case Bugs.Script:
         url = this.scriptBugs;

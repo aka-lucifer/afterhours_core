@@ -1,6 +1,7 @@
 {
   "debug": true,
   "whitelist": true,
+  "maxPing": 350,
   "trustscore": {
     "default": 75,
     "playtimeDivider": 14000,
@@ -24,7 +25,8 @@
             "actionURL": "https://discord.com/api/webhooks/937429667567251526/Ea6B-cFiBAKr_W3lY1JDM184f7S8WbP_m6DMB30YchL8uKUzCbJc857hP8ztoNAzV2s0",
             "anticheatURL": "https://discord.com/api/webhooks/938225013969002497/hdbFIDn-oqKNYyTCoWouEQpj-9apI-JavVUiO1jIfjd8gLa3xcpkxnxxIXeijxxqD97w",
             "commendURL": "https://discord.com/api/webhooks/944681275975954432/6jCSIW0hpgzPxXfebM0sQrAEoQwqWh5Al_qiJyU5faZ5UmRietUObSPIwQqsZA49chy7",
-            "timesheetURL": "https://discord.com/api/webhooks/978326826831200257/c7D0STWbPP3J9EL0UnKtlpAruZtr9ykFV1H42C3mtbaUgFSiCUIfgU51EfvyQoNNp1Kl"
+            "timesheetURL": "https://discord.com/api/webhooks/978326826831200257/c7D0STWbPP3J9EL0UnKtlpAruZtr9ykFV1H42C3mtbaUgFSiCUIfgU51EfvyQoNNp1Kl",
+            "reportURL": "https://discord.com/api/webhooks/983429571699433522/AZsmKfdK6TUq-Gm4pOq4NNnIOqf3w8y57kg-AUhD5CxYNtqw1TgljyAs3RkdFTsUK4CO"
         },
         "bugs": {
           "script": "https://discord.com/api/webhooks/983386759406686229/mTglNGLBPbc5MT93OChO9D0zUo_czj4iKBuWWLUIs1B7THPi2Lt2qZIcbj7wJF0yGtFE",
