@@ -11,6 +11,5 @@ export enum Ranks {
   Admin,
   SeniorAdmin,
   Developer,
-  Management,
-  Ownership
+  Management
 }

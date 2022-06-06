@@ -97,9 +97,6 @@ export class PlayerNames {
 
                   // Sets gamertag name colour
                   switch(svPlayers[i].Rank) {
-                    case Ranks.Ownership:
-                      SetMpGamerTagColour(tag, tagIcons.Name, 201);
-                      break;
                     case Ranks.Management:
                       SetMpGamerTagColour(tag, tagIcons.Name, 142);
                       break;
