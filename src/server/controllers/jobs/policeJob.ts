@@ -186,6 +186,20 @@ export class PoliceJob {
                       emitNet(Events.sendSystemMessage, this.activeCalls[callIndex].caller, new Message(`911 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
                       emitNet(Events.soundFrontEnd, this.activeCalls[callIndex].caller, "Menu_Accept", "Phone_SoundSet_Default");
 
+                      // Send the same message to all on duty units
+                      const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+                      for (let i = 0; i < svPlayers.length; i++) {
+                        if (svPlayers[i].Handle !== player.Handle) {
+                          if (svPlayers[i].Spawned) {
+                            const character = await this.server.characterManager.Get(svPlayers[i]);
+                            if (character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status) {
+                              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                            }
+                          }
+                        }
+                      }
+
+                      // Inform the responder that their response has been sent
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`Dispatch Response "${message}" Sent!`, SystemTypes.Success));
                     } else if (this.activeCalls[callIndex].type == Calls.Normal) {
                       const responderName = `${formatFirstName(character.firstName)}. ${character.lastName}`;
@@ -193,6 +207,20 @@ export class PoliceJob {
                       emitNet(Events.sendSystemMessage, this.activeCalls[callIndex].caller, new Message(`311 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
                       emitNet(Events.soundFrontEnd, this.activeCalls[callIndex].caller, "Menu_Accept", "Phone_SoundSet_Default");
 
+                      // Send the same message to all on duty units
+                      const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+                      for (let i = 0; i < svPlayers.length; i++) {
+                        if (svPlayers[i].Handle !== player.Handle) {
+                          if (svPlayers[i].Spawned) {
+                            const character = await this.server.characterManager.Get(svPlayers[i]);
+                            if (character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status) {
+                              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                            }
+                          }
+                        }
+                      }
+
+                      // Inform the responder that their response has been sent
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`Dispatch Response "${message}" Sent!`, SystemTypes.Success));
                     }
                   } else {
