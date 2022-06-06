@@ -1,7 +1,7 @@
 import { Audio, Blip, BlipColor, Game, Model, Vector3, World } from "fivem-js";
 
 import { Client } from "../../client";
-import { GetClosestPed, getLocation, getZone } from "../../utils";
+import { GetClosestPed, getLocation, getZone, Inform } from '../../utils';
 
 // Controllers
 import { Cuffing } from "./police/cuffing";
@@ -57,6 +57,8 @@ export class PoliceJob {
     RegisterCommand("uncuff", () => {
       emitNet(JobEvents.uncuffPlayer);
     }, false);
+
+    Inform("Police | Jobs Controller", "Started!");
   }
 
   // Methods
