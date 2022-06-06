@@ -324,9 +324,11 @@ export class Server {
                   // Inform all in server staff with a chat message and sound
                   const svPlayers = this.connectedPlayerManager.GetPlayers;
                   for (let i = 0; i < svPlayers.length; i++) {
-                    if (svPlayers[i].Rank >= Ranks.Moderator) {
-                      await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`A server report has been filled out on ^3${reportedPlayer.GetName}^0, for ^3${reportReason}^0, by ^3${player.GetName}^0.`, SystemTypes.Admin));
-                      await svPlayers[i].TriggerEvent(Events.soundFrontEnd, "Menu_Accept", "Phone_SoundSet_Default");
+                    if (svPlayers[i].Spawned) {
+                      if (svPlayers[i].Rank >= Ranks.Moderator) {
+                        await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`A server report has been filled out on ^3${reportedPlayer.GetName}^0, for ^3${reportReason}^0, by ^3${player.GetName}^0.`, SystemTypes.Admin));
+                        await svPlayers[i].TriggerEvent(Events.soundFrontEnd, "Menu_Accept", "Phone_SoundSet_Default");
+                      }
                     }
                   }
 
