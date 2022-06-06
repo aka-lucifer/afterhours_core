@@ -1,9 +1,12 @@
+import {Game, Ped} from "fivem-js";
+
 import {Client} from "../../client";
 import {Delay, GetHash} from "../../utils";
 
-import clientConfig from "../../../configs/client.json";
+// Controllers
+import { Minimap } from '../../controllers/world/minimap';
 
-import {Game, Ped} from "fivem-js";
+import clientConfig from "../../../configs/client.json";
 
 export class WorldManager {
   private client: Client;
@@ -11,8 +14,16 @@ export class WorldManager {
   private slowTick: number = undefined;
   private wantedTick: number = undefined;
 
+  // Controllers
+  private minimap: Minimap;
+
   constructor(client: Client) {
     this.client = client;
+
+    // Controllers
+    this.minimap = new Minimap();
+
+    this.minimap.init();
   }
 
   // Methods
@@ -56,14 +67,14 @@ export class WorldManager {
       } else {
         await Delay(500);
       }
-    })
+    });
 
     this.slowTick = setTick(async() => {
       this.disableAmbients();
       this.disableCoverAdvantage();
 
       await Delay(2000);
-    })
+    });
   }
 
   // Disable Wondering Idle Cam (Don't call every frame, as it activates every 30 seconds)
