@@ -1,31 +1,32 @@
-import { VehicleSeat } from "fivem-js";
+import { VehicleSeat } from 'fivem-js';
 
-import { Server } from "../server";
-import { Delay, GetHash } from "../utils";
+import { Server } from '../server';
+import { Delay, GetHash } from '../utils';
 
-import { Command } from "../models/ui/chat/command";
-import WebhookMessage from "../models/webhook/discord/webhookMessage";
+import { Command } from '../models/ui/chat/command';
+import WebhookMessage from '../models/webhook/discord/webhookMessage';
 import { Character } from '../models/database/character';
 
 // Controllers
-import { GPS } from "../controllers/vehicles/gps";
-import { Seatbelt } from "../controllers/vehicles/seatbelt";
-import { Seating } from "../controllers/vehicles/seating";
+import { GPS } from '../controllers/vehicles/gps';
+import { Seatbelt } from '../controllers/vehicles/seatbelt';
+import { Seating } from '../controllers/vehicles/seating';
+import {Shuffling} from '../controllers/vehicles/shuffling';
 
-import { LogTypes } from "../enums/logging";
+import { LogTypes } from '../enums/logging';
 
-import { Ranks } from "../../shared/enums/ranks";
-import { Events } from "../../shared/enums/events/events";
-import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
-import { EmbedColours } from "../../shared/enums/logging/embedColours";
-import { ErrorCodes } from "../../shared/enums/logging/errors";
-import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
-import { Jobs } from "../../shared/enums/jobs/jobs";
-import { SystemTypes } from "../../shared/enums/ui/chat/types";
-import { Message } from "../../shared/models/ui/chat/message";
+import { Ranks } from '../../shared/enums/ranks';
+import { Events } from '../../shared/enums/events/events';
+import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
+import { EmbedColours } from '../../shared/enums/logging/embedColours';
+import { ErrorCodes } from '../../shared/enums/logging/errors';
+import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
+import { Jobs } from '../../shared/enums/jobs/jobs';
+import { SystemTypes } from '../../shared/enums/ui/chat/types';
+import { Message } from '../../shared/models/ui/chat/message';
 
-import serverConfig from "../../configs/server.json";
-import sharedConfig from "../../configs/shared.json";
+import serverConfig from '../../configs/server.json';
+import sharedConfig from '../../configs/shared.json';
 
 export class VehicleManager {
   public server: Server;
@@ -35,6 +36,7 @@ export class VehicleManager {
   private gps: GPS;
   private seatbelt: Seatbelt;
   private seating: Seating;
+  private shuffling: Shuffling;
 
   constructor(server: Server) {
     this.server = server;
@@ -49,8 +51,10 @@ export class VehicleManager {
     this.gps = new GPS(this.server);
     this.seatbelt = new Seatbelt(this.server);
     this.seating = new Seating(this.server);
+    this.shuffling = new Shuffling(this.server);
 
     this.gps.init();
+    this.shuffling.init();
 
     this.registerCommands();
   }

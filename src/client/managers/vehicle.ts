@@ -2,8 +2,6 @@ import { Game } from "fivem-js";
 
 import { Client } from "../client";
 
-import { LXEvents } from "../../shared/enums/events/lxEvents";
-
 // Controllers
 import { Speedzones } from "../controllers/vehicles/speedzones";
 import { VehicleWeapon } from "../controllers/vehicles/vehWeapon";
@@ -17,6 +15,9 @@ import { Rolling } from "../controllers/vehicles/rolling";
 import { Seatbelt } from "../controllers/vehicles/seatbelt";
 import { ReverseBraking } from '../controllers/vehicles/reverseBraking';
 import { Seating } from "../controllers/vehicles/seating";
+import { Shuffling } from '../controllers/vehicles/shuffling';
+
+import { LXEvents } from "../../shared/enums/events/lxEvents";
 
 export class VehicleManager {
   private readonly client: Client;
@@ -34,6 +35,7 @@ export class VehicleManager {
   private seatbelt: Seatbelt;
   private reverseBraking: ReverseBraking;
   private seating: Seating;
+  private shuffling: Shuffling;
 
   constructor(client: Client) {
     this.client = client;
@@ -57,6 +59,7 @@ export class VehicleManager {
     this.seatbelt = new Seatbelt(this.client); // done - (0.10ms)
     this.reverseBraking = new ReverseBraking(); // done - (0.10ms)
     this.seating = new Seating(this.client);
+    this.shuffling = new Shuffling();
 
     // Inits
     this.speedZones.init(); // done (0.01ms-0.02ms)
@@ -79,6 +82,7 @@ export class VehicleManager {
     if (!this.seatbelt.Started) this.seatbelt.start(); // done - (0.10ms)
     if (!this.reverseBraking.Started) this.reverseBraking.start(); // done - (0.10ms)
     if (!this.repairShops.Started) this.repairShops.start(); // done
+    if (!this.shuffling.Started) this.shuffling.start();
   }
   
   private EVENT_leftVeh(): void {
@@ -92,5 +96,6 @@ export class VehicleManager {
     if (this.seatbelt.Started) this.seatbelt.stop(); // done - (0.10ms)
     if (this.reverseBraking.Started) this.reverseBraking.stop(); // done - (0.10ms)
     if (this.repairShops.Started) this.repairShops.stop(); // done
+    if (this.shuffling.Started) this.shuffling.stop();
   }
 }

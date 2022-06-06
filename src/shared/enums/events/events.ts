@@ -146,6 +146,9 @@ export enum Events {
   // Astrid Client ([Controllers] | Vehicle - Seating)
   seatCuffAnim = "astrid:client:controllers:vehicle:seating:seatCuffAnim",
 
+  // Astrid Client ([Controllers] | Vehicle - Shuffling)
+  shuffleSeats = "astrid:client:controllers:vehicle:shuffling:shuffleSeats",
+
   // Astrid Client ([Controllers | UI] - Bug Reporting)
   startReporting = "astrid:client:controllers:ui:startBugReporting",
 
