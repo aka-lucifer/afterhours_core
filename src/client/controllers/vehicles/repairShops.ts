@@ -138,7 +138,6 @@ export class RepairShops {
   }
 
   public start(): void {
-    console.log("create repair shops!");
     
     for (let i = 0; i < this.shopLocations.length; i++) {
       const zone = new BoxZone({
@@ -166,7 +165,6 @@ export class RepairShops {
 
       if (i == (this.shopLocations.length - 1)) { // if last entry, set created to true
         this.createdShops = true;
-        console.log("created repair shops!");
       }
     }
   }
