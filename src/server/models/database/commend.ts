@@ -14,7 +14,7 @@ import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/chat/types";
 import {Inform, inDiscord} from "../../utils";
-import {LogTypes} from "../../enums/logTypes";
+import {LogTypes} from "../../enums/logging";
 
 export class Commend {
   private id: number;

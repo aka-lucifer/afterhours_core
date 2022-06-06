@@ -1897,3 +1897,12 @@ body {
       transform: scale(1.2);
   }
 }
+
+/* Bug Reporting */
+/* Char Creator Form */
+#Bug-Reporting {
+  position: absolute;
+
+  /* Size */
+  z-index: 999;
+}

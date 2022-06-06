@@ -4,7 +4,7 @@ import { server } from "../../server";
 import WebhookMessage from "../webhook/discord/webhookMessage";
 import * as Database from "../../managers/database/database";
 
-import {LogTypes} from "../../enums/logTypes";
+import {LogTypes} from "../../enums/logging";
 import {BanStates} from "../../enums/database/bans";
 
 import {addZero, Error} from "../../utils";

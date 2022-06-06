@@ -25,4 +25,8 @@ export enum NuiCallbacks {
   ProgressStarted = "PROGRESS_STARTED",
   ProgressFinished = "PROGRESS_FINISHED",
   ProgressCancelled = "PROGRESS_CANCELLED",
+
+  // Bug Reporting
+  CloseBugReport = "CLOSE_BUG_REPORT",
+  SubmitBug = "SUBMIT_BUG"
 }

@@ -3,7 +3,7 @@ import { GetTimestamp } from '../utils';
 
 import * as Database from './database/database';
 
-import { LogTypes } from '../enums/logTypes';
+import { LogTypes } from '../enums/logging';
 
 import { Job } from '../models/jobs/job';
 import { Character } from '../models/database/character';

@@ -1,14 +1,14 @@
-import axios, {AxiosError} from "axios";
-import {StatusCodes} from "http-status-codes";
+import axios, { AxiosError } from 'axios';
+import { StatusCodes } from 'http-status-codes';
 
-import {LogTypes} from "../enums/logTypes";
-import WebhookMessage from "../models/webhook/discord/webhookMessage";
-import RateLimitInfo from "../models/webhook/discord/rateLimitInfo";
+import { Bugs, LogTypes } from '../enums/logging';
+import WebhookMessage from '../models/webhook/discord/webhookMessage';
+import RateLimitInfo from '../models/webhook/discord/rateLimitInfo';
 
-import {Server} from "../server";
-import {Delay, Error} from "../utils";
-import serverConfig from "../../configs/server.json"
-import { ErrorCodes } from "../../shared/enums/logging/errors";
+import { Server } from '../server';
+import { Delay, Error } from '../utils';
+import serverConfig from '../../configs/server.json';
+import { ErrorCodes } from '../../shared/enums/logging/errors';
 
 export class LogManager {
   private server: Server;
@@ -19,22 +19,54 @@ export class LogManager {
   private readonly anticheatURL: string = serverConfig.discordLogs.urls.anticheatURL;
   private readonly commendURL: string = serverConfig.discordLogs.urls.commendURL;
   private readonly timesheetURL: string = serverConfig.discordLogs.urls.timesheetURL;
+  private readonly scriptBugs: string = serverConfig.discordLogs.bugs.script;
+  private readonly vehicleBugs: string = serverConfig.discordLogs.bugs.vehicle;
+  private readonly eupBugs: string = serverConfig.discordLogs.bugs.eup;
+  private readonly mloBugs: string = serverConfig.discordLogs.bugs.mlo;
 
   constructor(server: Server) {
     this.server = server;
   }
 
   // Methods
-  public async Send(type: LogTypes, message: WebhookMessage): Promise<void> {
+  public async Send(type: LogTypes | Bugs, message: WebhookMessage): Promise<void> {
     let url;
 
-    if (type == LogTypes.Connection) url = this.connectionsURL;
-    if (type == LogTypes.Kill) url = this.killURL;
-    if (type == LogTypes.Chat) url = this.chatURL;
-    if (type == LogTypes.Action) url = this.actionURL;
-    if (type == LogTypes.Anticheat) url = this.anticheatURL;
-    if (type == LogTypes.Commend) url = this.commendURL;
-    if (type == LogTypes.Timesheet) url = this.timesheetURL;
+    switch (type) {
+      case LogTypes.Connection:
+        url = this.connectionsURL;
+        break;
+      case LogTypes.Kill:
+        url = this.killURL;
+        break;
+      case LogTypes.Chat:
+        url = this.chatURL;
+        break;
+      case LogTypes.Action:
+        url = this.actionURL;
+        break;
+      case LogTypes.Anticheat:
+        url = this.anticheatURL;
+        break;
+      case LogTypes.Commend:
+        url = this.commendURL;
+        break;
+      case LogTypes.Timesheet:
+        url = this.timesheetURL;
+        break;
+      case Bugs.Script:
+        url = this.scriptBugs;
+        break;
+      case Bugs.Vehicle:
+        url = this.vehicleBugs;
+        break;
+      case Bugs.EUP:
+        url = this.eupBugs;
+        break;
+      case Bugs.MLO:
+        url = this.mloBugs;
+        break;
+    }
 
     try {
       const formData = message.toFormData();
@@ -51,8 +83,6 @@ export class LogManager {
 
         await Delay(rateLimitInfo.retryAfter);
         return await this.Send(type, message);
-
-        throw axiosError;
       } else if (response?.status == StatusCodes.FORBIDDEN || response?.status == StatusCodes.NOT_FOUND) {
         Error("Webhook Send Method", `Error posting content to webhook!\nError Code: ${ErrorCodes.DiscordDown}`);
       }

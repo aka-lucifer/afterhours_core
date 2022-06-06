@@ -8,7 +8,7 @@ import * as Utils from "../../utils";
 
 import * as Database from "../../managers/database/database"
 
-import { LogTypes } from "../../enums/logTypes";
+import { LogTypes } from "../../enums/logging";
 import WebhookMessage from "../webhook/discord/webhookMessage";
 
 import serverConfig from "../../../configs/server.json";

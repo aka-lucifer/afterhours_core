@@ -1,7 +1,7 @@
 import { Server } from "../../server";
 import {Dist, GetTimestamp, Inform, Log, logCommand, NumToVector3} from "../../utils";
 
-import { LogTypes } from "../../enums/logTypes";
+import { LogTypes } from "../../enums/logging";
 
 import { Player } from "../../models/database/player";
 import { Character } from "../../models/database/character";

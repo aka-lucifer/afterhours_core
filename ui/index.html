@@ -753,6 +753,45 @@
           </div>
         </div>
       </div>
+
+      <!-- Bug Reporting -->
+      <v-dialog id="Bug-Reporting" transition="dialog-top-transition" max-width="600" v-model="reportingBug">
+        <template v-slot:default="dialog">
+          <v-card dark>
+            <v-toolbar color="success" dark><h2>Bug Report</h2></v-toolbar>
+
+            <v-card-text>
+              <v-form ref="bugReportForm" class="px-3">
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="12" md="20">
+                      <br>
+                      <v-select
+                        v-model="bugData.type"
+                        :items="bugData.reportTypes"
+                        color="green"
+                        label="Type"
+                        outlined
+                        append-icon="mdi-rename-box"
+                        :rules="bugRules"
+                      ></v-select>
+
+                      <v-text-field v-model="bugData.description" :rules="bugRules" outlined label="What Happened?" append-icon="mdi-rename-box" required></v-text-field>
+                      <v-text-field v-model="bugData.reproduce" :rules="bugRules" outlined label="How To Reproduce?" append-icon="mdi-rename-box" required></v-text-field>
+                      <v-textarea v-model="bugData.evidence" :rules="bugRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
+                    </v-col>
+
+                    <v-col cols="12" sm="12" md="20">
+                      <v-btn color="success" class="mr-4" @click="submitBug()" :ripple=false>Submit</v-btn>
+                      <v-btn color="error" class="mr-4" @click="resetBugData()" :ripple=false>Reset</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </template>
+      </v-dialog>
     </v-app>
 
     <!-- Progress Bar -->

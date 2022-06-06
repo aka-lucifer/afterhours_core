@@ -43,7 +43,10 @@ import * as Database from './managers/database/database';
 import { StaffLogManager } from './managers/database/staffLogs';
 import { LogManager } from './managers/logging';
 
-import { LogTypes } from './enums/logTypes';
+// [Controllers] UI
+import { BugReporting } from './controllers/ui/bugReporting';
+
+import { LogTypes } from './enums/logging';
 import { Capitalize, Dist, Error, GetHash, Inform, Log, logCommand } from './utils';
 
 import serverConfig from '../configs/server.json';
@@ -58,6 +61,7 @@ import { SystemTypes } from '../shared/enums/ui/chat/types';
 import { PlayerManager } from './managers/database/players';
 import { ErrorCodes } from '../shared/enums/logging/errors';
 import { Weapon } from "../shared/interfaces/weapon";
+
 
 export class Server {
   // Debug Data
@@ -104,6 +108,9 @@ export class Server {
   // [Managers] Logging
   public staffLogManager: StaffLogManager;
   public logManager: LogManager;
+
+  // [Controllers | UI] Bug Reporting
+  private bugReporting: BugReporting;
 
   constructor() {
     this.debugMode = serverConfig.debug;
@@ -175,10 +182,12 @@ export class Server {
 
     // [Managers] Logging
     this.staffLogManager = new StaffLogManager(server);
-
     this.logManager = new LogManager(server);
 
-    // Run Manager Methods
+    // [Controllers | UI] Bug Reporting
+    this.bugReporting = new BugReporting(server);
+
+    // Initiate Managers
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager
     this.banManager.processBans(); // Check if the ban time has passed, if so, update the state and apply that to DB, allowing them to connect
 
@@ -201,6 +210,9 @@ export class Server {
     await this.charVehicleManager.init();
     await this.vehicleManager.init();
     this.jobManager.init();
+
+    // Initiate Controllers
+    this.bugReporting.init();
 
     // Register Components
     this.registerCommands();

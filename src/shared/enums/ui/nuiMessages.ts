@@ -47,5 +47,8 @@ export enum NuiMessages {
 
   // Progress Bar
   StartProgress = "PROGRESS_START",
-  CancelProgress = "CANCEL_PROGRESS"
+  CancelProgress = "CANCEL_PROGRESS",
+
+  // Bug Reporting
+  OpenBugReport = "OPEN_BUG_REPORT"
 }

@@ -198,7 +198,21 @@ const HUD = new Vue({
     progressElement: null,
     runningProgress: false,
     progressBar: false,
-    staticProgressBar: false
+    staticProgressBar: false,
+
+    // Bug Reporting
+    bugRules: [
+      (v) => !!v || "Field Required"
+    ],
+    bugData: {
+      type: null,
+      reportTypes: ["Script", "Vehicle", "EUP", "Map"],
+      description: null,
+      reproduce: null,
+      evidence: null
+    },
+    reportingBug: false,
+    bugReportMenu: null
   },
   methods: {
     // Spawn UI
@@ -1021,6 +1035,35 @@ const HUD = new Vue({
       }
 
       HUD.Post("PROGRESS_CANCELLED");
+    },
+
+    // Bug Reporting
+    OpenBugReport() {
+      this.reportingBug = true;
+    },
+    
+    CloseBugReport() {
+      this.reportingBug = false;
+      this.$refs.bugReportForm.reset();
+      this.Post("CLOSE_BUG_REPORT", {});
+    },
+
+    submitBug() {
+      const isFormComplete = this.$refs.bugReportForm.validate();
+      if (isFormComplete) {
+        this.Post("SUBMIT_BUG", {
+          type: this.bugData.type.toUpperCase(),
+          description: this.bugData.description,
+          reproduction: this.bugData.reproduce,
+          evidence: this.bugData.evidence
+        }, (charData) => {
+          if (this.reportingBug !== !charData) this.reportingBug = !charData; // If it's posted (true), then set the display to (false).
+        });
+      }
+    },
+
+    resetBugData() {
+      this.$refs.bugReportForm.reset();
     }
   },
 
@@ -1174,12 +1217,13 @@ const HUD = new Vue({
     RegisterEvent("HIDE_MENU", this.HideMenu);
     RegisterEvent("SHOW_MENU", this.ShowMenu);
 
+    // Progress UI
     this.progressElement = document.getElementById("progressBar");
     RegisterEvent("PROGRESS_START", this.StartProgress);
     RegisterEvent("CANCEL_PROGRESS", this.CancelProgress);
 
-    // HUD Events
-    RegisterEvent("SET_COMPASS", this.SetCompass);
+    // Bug Reporting
+    RegisterEvent("OPEN_BUG_REPORT", this.OpenBugReport);
 
     // Key Presses
     window.addEventListener("keydown", function(event) {
@@ -1188,10 +1232,11 @@ const HUD = new Vue({
           if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
             HUD.CloseChat();
           } else if ($("#warnings_container").is(":visible")) {
-            HUD.CloseChat();
             HUD.CloseWarnings();
           } else if ($("#commends_container").is(":visible")) {
             HUD.CloseCommends();
+          } else if ($("#Bug-Reporting").is(":visible")) {
+            HUD.CloseBugReport();
           }
           break;
 
@@ -1260,30 +1305,4 @@ const HUD = new Vue({
 
 function isDateValid(date) {
   return date.getTime() === date.getTime(); // If the date object is invalid, it will return 'NaN' on getTime() and NaN is never equal to itself.
-}
-
-async function Delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-function setCaretPosition(elemId, caretPos) {
-  var elem = document.getElementById(elemId);
-
-  if(elem != null) {
-    if(elem.createTextRange) {
-      console.log("ONE!");
-      var range = elem.createTextRange();
-      range.move('character', caretPos);
-      range.select();
-    }
-    else {
-      console.log("TWO!");
-      if(elem.selectionStart) {
-        elem.focus();
-        elem.setSelectionRange(caretPos, caretPos);
-      }
-      else
-        elem.focus();
-    }
-  }
 }

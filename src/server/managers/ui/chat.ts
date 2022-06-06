@@ -1,6 +1,6 @@
 import {server, Server} from "../../server";
 import { Dist, Log, Inform, Error, NumToVector3 } from "../../utils";
-import {LogTypes} from "../../enums/logTypes";
+import {LogTypes} from "../../enums/logging";
 
 import { ChatLog } from "../../models/database/chatLog";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";

@@ -16,5 +16,8 @@ export enum Callbacks {
   deleteVehicle = "astrid:server:deleteVehicle",
   
   // Chat
-  sendMessage = "astrid:server:sendMessage"
+  sendMessage = "astrid:server:sendMessage",
+
+  // Bug Reporting
+  submitBug = "astrid:server:controllers:ui:submitBug"
 }

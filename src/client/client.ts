@@ -45,6 +45,9 @@ import { WeaponManager } from "./managers/weapon";
 // [Controllers] World
 import { WorldBlips } from './controllers/world/worldBlips';
 
+// [Controllers] UI
+import { BugReporting } from './controllers/ui/bugReporting';
+
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
@@ -128,6 +131,9 @@ export class Client {
   // [Controllers] World
   private worldBlips: WorldBlips;
 
+  // [Controllers] UI
+  private bugReporting: BugReporting;
+
   // [Controllers] Normal
   private playerNames: PlayerNames;
   private afk: AFK;
@@ -168,6 +174,8 @@ export class Client {
             const myPed = Game.PlayerPed;
             if (IsPedInAnyVehicle(myPed.Handle, false)) {
               console.log(`Vehicle Hash: ${myPed.CurrentVehicle.Model.Hash}`);
+            } else {
+              console.log(`Weapon Hash: ${GetSelectedPedWeapon(myPed.Handle)}`);
             }
           }
         }
@@ -268,6 +276,10 @@ export class Client {
     // [Controllers] World
     this.worldBlips = new WorldBlips(client);
     this.worldBlips.init();
+
+    // [Controllers] UI
+    this.bugReporting = new BugReporting(client);
+    this.bugReporting.init();
 
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
@@ -423,9 +435,7 @@ export class Client {
 
     // Load New Character Data
     this.character = new Character(character);
-    console.log("loaded char", this.character.firstName, this.character.job);
     if (this.character.isLeoJob()) {
-      console.log("is leo 1!");
 
       this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone
       this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
@@ -449,9 +459,7 @@ export class Client {
     // Load New Character Data
     this.character = new Character(character);
 
-    console.log("loaded new char", this.character.firstName, this.character.job);
     if (this.character.isLeoJob()) {
-      console.log("is leo 2!");
 
       // Start the necessary police controllers
       this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone

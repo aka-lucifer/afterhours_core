@@ -143,8 +143,11 @@ export enum Events {
   ejectFromVeh = "astrid:client:ejectFromVeh",
   harmPassenger = "astrid:client:harmPassenger",
 
-  // Astrid Client ([Controllers] | Vehicle] - Seating)
+  // Astrid Client ([Controllers] | Vehicle - Seating)
   seatCuffAnim = "astrid:client:controllers:vehicle:seating:seatCuffAnim",
+
+  // Astrid Client ([Controllers | UI] - Bug Reporting)
+  startReporting = "astrid:client:controllers:ui:startBugReporting",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

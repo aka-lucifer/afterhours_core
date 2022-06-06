@@ -26,6 +26,12 @@
             "commendURL": "https://discord.com/api/webhooks/944681275975954432/6jCSIW0hpgzPxXfebM0sQrAEoQwqWh5Al_qiJyU5faZ5UmRietUObSPIwQqsZA49chy7",
             "timesheetURL": "https://discord.com/api/webhooks/978326826831200257/c7D0STWbPP3J9EL0UnKtlpAruZtr9ykFV1H42C3mtbaUgFSiCUIfgU51EfvyQoNNp1Kl"
         },
+        "bugs": {
+          "script": "https://discord.com/api/webhooks/983386759406686229/mTglNGLBPbc5MT93OChO9D0zUo_czj4iKBuWWLUIs1B7THPi2Lt2qZIcbj7wJF0yGtFE",
+          "vehicle": "https://discord.com/api/webhooks/983386867313573908/e9xLiRprPOIOb-LTrv9D65GLCmIyJZ-GFRL6rhtBHKc9zrqvPvX6TAVxrn8P4_wkRoMq",
+          "eup": "https://discord.com/api/webhooks/983386945449238608/-hG6E70COXvTlNwA9YqL1t952giB2mzVSzeZo0_NVjXxT_7G6fHK7dSeiNSVBU1iflDW",
+          "mlo": "https://discord.com/api/webhooks/983387016551104552/1hQMMK8y3FKTXytahWXP7xu3YkLwZ8u39XXJAEdfvpvreWL3Ww0jebf8k7gPue1iCK-T"
+        },
         "axiosData": {
           "guildId": "934499164979593226",
           "botToken": "ODAxNDQwODIyMjM1MTAzMjUy.YAgt7g.X3joLLfuqhyGYLpHHg8hDKW9pbM"

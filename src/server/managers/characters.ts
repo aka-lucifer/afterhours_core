@@ -7,7 +7,7 @@ import WebhookMessage from "../models/webhook/discord/webhookMessage";
 import { Command } from "../models/ui/chat/command";
 import { Ban } from "../models/database/ban";
 
-import { LogTypes } from "../enums/logTypes";
+import { LogTypes } from "../enums/logging";
 
 import * as Database from "../managers/database/database"
 
