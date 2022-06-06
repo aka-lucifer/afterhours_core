@@ -7965,16 +7965,16 @@
               "scale": 0.7
             },
             {
-              "x": 440.74,
-              "y": -976.14,
-              "z": 29.70,
+              "x": 441.31,
+              "y": -981.76,
+              "z": 30.69,
               "label": "Mission Row Police Station",
               "sprite": 60,
               "colour": 3,
               "scale": 0.7
             },
             {
-              "x": 825.99, "y": -1289.85, "z": 28.24,
+              "x": 835, "y": -1289.91, "z": 28.23,
               "label": "La Mesa Highway Station",
               "sprite": 60,
               "colour": 3,
