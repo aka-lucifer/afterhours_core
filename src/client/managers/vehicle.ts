@@ -45,7 +45,6 @@ export class VehicleManager {
 
   // Methods
   public init(): void {
-    console.log("veh manager init!");
     this.speedZones = new Speedzones(this.client); // done (0.01ms-0.02ms)
     this.weapon = new VehicleWeapon(); // done (0.01ms-0.03ms)
     this.antiControl = new AntiControl(); // done (0.02ms)

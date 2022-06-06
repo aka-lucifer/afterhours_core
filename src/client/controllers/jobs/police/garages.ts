@@ -114,8 +114,6 @@ export class Garages {
       });
     }
 
-    console.log("creates zones!");
-
     this.menu = new Menu(`Garage`, GetCurrentResourceName(), MenuPositions.MiddleRight);
   }
 

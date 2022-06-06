@@ -310,8 +310,9 @@ export class Player {
     return updated.data.length > 0;
   }
 
-  public RefreshPing(): void {
+  public RefreshPing(): number {
     this.ping = GetPlayerPing(this.handle);
+    return this.ping;
   }
 
   public async CurrentPlaytime(): Promise<number> {

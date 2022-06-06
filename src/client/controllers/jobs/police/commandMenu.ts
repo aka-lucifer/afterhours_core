@@ -117,8 +117,6 @@ export class CommandMenu {
       });
     }
 
-    console.log("creates zones!");
-
     this.menu = new Menu("Unit Management Menu", GetCurrentResourceName(), MenuPositions.MiddleRight);
     this.units = this.menu.BindSubmenu("Units");
     this.recruitment = this.menu.BindSubmenu("Recruitment");

@@ -37,7 +37,6 @@ export class WeaponManager {
 
   // Methods
   public init(): void {
-    console.log("weapon manager init!");
     this.removers = new WeaponRemovers(this.client); // done
     this.disarmers = new Disarmer(this.client); // done
     this.reloading = new Reloading(this.client); // done
@@ -51,7 +50,6 @@ export class WeaponManager {
   }
 
   public start(): void {
-    console.log("start weapon manager!");
     this.removers.start(); // done
     this.recoil.init(); // done
     this.disablers.start(); // done

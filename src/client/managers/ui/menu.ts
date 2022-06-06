@@ -191,7 +191,7 @@ export class MenuManager {
   public renameMenu(menuIndex: string, newName: string): void {
     const menuFound = menus[menuIndex];
     if (menuFound) {
-      console.log("Set menu name to", newName, menuIndex);
+      // console.log("Set menu name to", newName, menuIndex);
       menuFound.name = newName;
 
       SendNuiMessage(JSON.stringify({
@@ -207,7 +207,6 @@ export class MenuManager {
     const menuFound = menus[menuIndex];
     if (menuFound) {
       if (menuFound.type === "submenu") {
-        console.log("empty submenu components");
         menus[menuIndex].components = [];
 
         SendNuiMessage(JSON.stringify({
@@ -216,8 +215,6 @@ export class MenuManager {
             components: menus[menuIndex].components
           }
         }))
-      } else {
-        console.log("not submenu, so can't empty components");
       }
     }
   }
@@ -231,8 +228,6 @@ export class MenuManager {
         const parentMenuComponentsIndex = parentMenu.components.findIndex(component => component.index == menuIndex); // Get the components index of the submenu
         if (parentMenuComponentsIndex !== -1) parentMenu.components.splice(parentMenuComponentsIndex, 1); // Delete the submenus components
         await this.OpenMenu(menuFound.parent); // Opens the parent menu
-      } else {
-        console.log("not submenu, so can't delete menu");
       }
     }
   }
@@ -243,8 +238,6 @@ export class MenuManager {
       if (menuComponent.type == "button" || menuComponent.type == "checkbox" || menuComponent.type == "list") {
         let menuIndex = -1;
         let menuComponentIndex = -1;
-
-        console.log("delete menu component", menuComponent);
         components[elementIndex].delete();
 
         for (let i = 0; i < Object.keys(menus).length; i++) {
@@ -262,8 +255,6 @@ export class MenuManager {
             componentIndex: menuComponentIndex
           }
         }))
-      } else {
-        console.log("not submenu, so can't empty components");
       }
     }
   }

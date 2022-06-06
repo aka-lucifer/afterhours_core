@@ -21,7 +21,6 @@ export class WorldBlips {
 
   constructor(client: Client) {
     this.client = client;
-    console.log("start blips")
 
     Inform("Blips | World Controller", "Started!");
   }
