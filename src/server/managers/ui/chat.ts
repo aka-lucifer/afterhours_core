@@ -57,7 +57,17 @@ export class ChatManager {
               if (command == commands[a].name) {
                 if (player.Rank >= commands[a].permission) {
                   if (commands[a].argsRequired) {
+                    console.log("ONE", commands[a].args, "TWO", args)
                     if (Object.keys(commands[a].args).length > 0 && args.length >= Object.keys(commands[a].args).length) {
+                      // Make sure the entered args aren't empty strings
+                      for (let b = 0; b < args.length; b++) {
+                        if (args[b].length <= 0) {
+                          emitNet(Events.receiveServerCB, src, false, data);
+                          return await player.TriggerEvent(Events.sendSystemMessage, new Message("All command arguments must be entered!", SystemTypes.Error));
+                        }
+                      }
+
+                      // Run the command
                       commands[a].callback(player.Handle, args);
                       emitNet(Events.receiveServerCB, src, true, data);
                     } else {
