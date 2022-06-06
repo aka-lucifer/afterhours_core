@@ -6,7 +6,7 @@ import {Player} from "../../models/database/player";
 import {Command} from "../../models/ui/chat/command";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 
-import { LogTypes } from "../../enums/logTypes";
+import { LogTypes } from "../../enums/logging";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
@@ -309,6 +309,7 @@ export class TimeManager {
   }
 
   public startTime(): void {
+    // console.log("start time!");
     this.timeInterval = setInterval(() => { // 21,600 seconds (6 hours | 1,440 times) - Is a full day
       if (!this.timeFrozen) {
         const tempTime = GlobalState.time;

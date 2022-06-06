@@ -12,7 +12,7 @@ import { GPS } from "../controllers/vehicles/gps";
 import { Seatbelt } from "../controllers/vehicles/seatbelt";
 import { Seating } from "../controllers/vehicles/seating";
 
-import { LogTypes } from "../enums/logTypes";
+import { LogTypes } from "../enums/logging";
 
 import { Ranks } from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";

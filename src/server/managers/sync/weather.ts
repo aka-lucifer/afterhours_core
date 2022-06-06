@@ -5,7 +5,7 @@ import {Player} from "../../models/database/player";
 import {Command} from "../../models/ui/chat/command";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 
-import { LogTypes } from "../../enums/logTypes";
+import { LogTypes } from "../../enums/logging";
 
 import {Weathers, WinterWeathers} from "../../../shared/enums/sync/weather";
 import {Events} from "../../../shared/enums/events/events";

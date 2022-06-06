@@ -7,7 +7,7 @@ import {Ban} from "./ban";
 import WebhookMessage from "../webhook/discord/webhookMessage";
 import * as Database from "../../managers/database/database";
 
-import {LogTypes} from "../../enums/logTypes";
+import {LogTypes} from "../../enums/logging";
 
 import {addZero, Error, Inform} from "../../utils";
 

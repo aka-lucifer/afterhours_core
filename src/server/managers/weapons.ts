@@ -1,6 +1,6 @@
 import { Server } from "../server";
 
-import { LogTypes } from "../enums/logTypes";
+import { LogTypes } from "../enums/logging";
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
 
 import { Events } from "../../shared/enums/events/events";
