@@ -2,7 +2,7 @@ import axios, { AxiosError} from "axios";
 import {Vector3} from "fivem-js";
 
 import {server} from "./server";
-import {LogTypes} from "./enums/logTypes";
+import {LogTypes} from "./enums/logging";
 
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
 import {StaffLog} from "./models/database/staffLog";
@@ -266,14 +266,14 @@ export async function getClosestPlayer(myPlayer: Player): Promise<[Player, numbe
   for (let i = 0; i < svPlayers.length; i++) {
     const player = svPlayers[i];
 
-    // if (myPlayer.Handle !== player.Handle) { // DISABLED FOR SEATING TESTING
+    if (myPlayer.Handle !== player.Handle) { // DISABLED FOR SEATING TESTING
       const dist = myPlayer.Position.distance(player.Position);
 
       if (closestPlayer == undefined || dist < closestDistance) {
         closestPlayer = player;
         closestDistance = dist;
       }
-    // }
+    }
   }
 
   return [closestPlayer, closestDistance];
