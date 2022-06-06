@@ -91,58 +91,60 @@ export class Reloading {
   }
 
   // Events
-  private EVENT_gunshot(): void {
-    // Inform("LX Event (Gunshot)", "You've fired your weapon");
-    const myPed = Game.PlayerPed;
-    this.currentWeapon = GetSelectedPedWeapon(myPed.Handle);
-    if (this.currentWeapon != Weapons.Unarmed) {
-      const reloadIndex = this.reloadWeapons.findIndex(weapon => weapon == this.currentWeapon);
-    
-      // If weapon doesn't need to be reloaded, run below
-      if (reloadIndex === -1) {
-        const weaponIndex = clientConfig.controllers.weapons.manualReload.weaponWhitelist.findIndex(weapon => GetHash(weapon) == this.currentWeapon);
+  private EVENT_gunshot(shootersNet: number): void {
+    if (shootersNet === this.client.Player.NetworkId) {
+      // Inform("LX Event (Gunshot)", "You've fired your weapon");
+      const myPed = Game.PlayerPed;
+      this.currentWeapon = GetSelectedPedWeapon(myPed.Handle);
+      if (this.currentWeapon != Weapons.Unarmed) {
+        const reloadIndex = this.reloadWeapons.findIndex(weapon => weapon == this.currentWeapon);
 
-        // If the current weapon doesn't exist in the whitelist, run the reloader, otherwise don't make them manually reload
-        if (weaponIndex === -1) {
+        // If weapon doesn't need to be reloaded, run below
+        if (reloadIndex === -1) {
+          const weaponIndex = clientConfig.controllers.weapons.manualReload.weaponWhitelist.findIndex(weapon => GetHash(weapon) == this.currentWeapon);
 
-          // If current weapon shoots bullets
-          if (GetWeaponDamageType(this.currentWeapon) == 3) {
-            // Get the weapons magazine ammo
-            const [someBool, ammoCount] = GetAmmoInClip(myPed.Handle, this.currentWeapon);
-            this.currentAmmo = ammoCount;
-            // if first bullet
+          // If the current weapon doesn't exist in the whitelist, run the reloader, otherwise don't make them manually reload
+          if (weaponIndex === -1) {
 
-            if (this.currentAmmo <= 1) {
-              this.reloadWeapons.push(this.currentWeapon);
+            // If current weapon shoots bullets
+            if (GetWeaponDamageType(this.currentWeapon) == 3) {
+              // Get the weapons magazine ammo
+              const [someBool, ammoCount] = GetAmmoInClip(myPed.Handle, this.currentWeapon);
+              this.currentAmmo = ammoCount;
+              // if first bullet
 
-              if (this.notifyTick == undefined) this.notifyTick = setTick(async() => {
-                this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-                this.currentAmmo = ammoCount;
+              if (this.currentAmmo <= 1) {
+                this.reloadWeapons.push(this.currentWeapon);
 
-                const reloadIndex = this.reloadWeapons.findIndex(weapon => weapon == this.currentWeapon);
+                if (this.notifyTick == undefined) this.notifyTick = setTick(async () => {
+                  this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+                  this.currentAmmo = ammoCount;
 
-                // If your current weapon requires reloading
-                if (reloadIndex !== -1) {
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Reload);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackLight);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy);
-                  Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
+                  const reloadIndex = this.reloadWeapons.findIndex(weapon => weapon == this.currentWeapon);
 
-                  DisablePlayerFiring(Game.Player.Handle, true);
-                  
-                  if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
-                    // console.log("ammo count", someBool, this.currentAmmo);
-                    PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
-                    Screen.showSubtitle("~r~Reload your weapon!");
+                  // If your current weapon requires reloading
+                  if (reloadIndex !== -1) {
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Reload);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackLight);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy);
+                    Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
+
+                    DisablePlayerFiring(Game.Player.Handle, true);
+
+                    if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                      // console.log("ammo count", someBool, this.currentAmmo);
+                      PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                      Screen.showSubtitle("~r~Reload your weapon!");
+                    }
+
+                    if (!this.reloadingWeapon) {
+                      Screen.displayHelpTextThisFrame("~y~Reload your weapon!");
+                    }
+                  } else {
+                    await Delay(500);
                   }
-
-                  if (!this.reloadingWeapon) {
-                    Screen.displayHelpTextThisFrame("~y~Reload your weapon!");
-                  }
-                } else {
-                  await Delay(500);
-                }
-              });
+                });
+              }
             }
           }
         }

@@ -7,6 +7,7 @@ import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { AddonWeapons, Weapons } from "../../../shared/enums/weapons";
 
 import clientConfig from "../../../configs/client.json";
+import { Ranks } from '../../../shared/enums/ranks';
 
 export class WeaponRecoil {
   private client: Client;
@@ -69,7 +70,9 @@ export class WeaponRecoil {
   // Events
   private async gunshot(shootersNet: number): Promise<void> {
     if (shootersNet === this.client.Player.NetworkId) {
-      if (!this.client.staffManager.staffMenu.NoRecoil) {
+      const noRecoil = this.client.Player.Rank >= Ranks.Admin ? this.client.staffManager.staffMenu.NoRecoil : false; // Determines if no recoil should be applied or not.
+
+      if (!noRecoil) {
         this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
 
         // if we aren't unarmed

@@ -244,66 +244,68 @@ export class WeaponModes {
   }
 
   // Events
-  private async gunshot(): Promise<void> {
-    this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
+  private async gunshot(shootersNet: number): Promise<void> {
+    if (shootersNet === this.client.Player.NetworkId) {
+      this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
 
-    let currWeapData = await this.getWeaponFromHash();
-    // console.log("curr weap data", currWeapData);
+      let currWeapData = await this.getWeaponFromHash();
+      // console.log("curr weap data", currWeapData);
 
-    // If we have already inserted our weapon data into the array, update our state variable (once our firing mode is changed, the below will run)
-    if (currWeapData !== undefined) {
-      this.currentState = currWeapData.state;
-    }
+      // If we have already inserted our weapon data into the array, update our state variable (once our firing mode is changed, the below will run)
+      if (currWeapData !== undefined) {
+        this.currentState = currWeapData.state;
+      }
 
-    // if we aren't unarmed
-    if (this.currentWeapon != Weapons.Unarmed) {
-      // If our gun shoots bullets
-      if (GetWeaponDamageType(this.currentWeapon) == 3) {
-        const configIndex = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == this.currentWeapon);
+      // if we aren't unarmed
+      if (this.currentWeapon != Weapons.Unarmed) {
+        // If our gun shoots bullets
+        if (GetWeaponDamageType(this.currentWeapon) == 3) {
+          const configIndex = clientConfig.controllers.weapons.weaponModes.weapons.findIndex(weapon => GetHash(weapon) == this.currentWeapon);
 
-        // console.log("do it!");
-        // If weapon has multiple firing modes
-        if (configIndex !== -1) {
-          // insert weapon into array if not found!
-          const [weaponEntry, weaponIndex] = await this.weaponExists();
-          let wepIndex = weaponIndex;
+          // console.log("do it!");
+          // If weapon has multiple firing modes
+          if (configIndex !== -1) {
+            // insert weapon into array if not found!
+            const [weaponEntry, weaponIndex] = await this.weaponExists();
+            let wepIndex = weaponIndex;
 
-          if (weaponEntry) {
-            // console.log("set values to array data", this.weapons[wepIndex])
-            // Update values back to weapon settings
-            this.currentState = this.weapons[wepIndex].state;
-            this.safetyActive = this.weapons[wepIndex].safety;
-          } else {
-            // console.log("insert weapon data", this.currentWeapon, Modes.Automatic, false);
-            // Update values back to default and then insert new class
-            this.currentState = Modes.Automatic;
-            this.safetyActive = false;
+            if (weaponEntry) {
+              // console.log("set values to array data", this.weapons[wepIndex])
+              // Update values back to weapon settings
+              this.currentState = this.weapons[wepIndex].state;
+              this.safetyActive = this.weapons[wepIndex].safety;
+            } else {
+              // console.log("insert weapon data", this.currentWeapon, Modes.Automatic, false);
+              // Update values back to default and then insert new class
+              this.currentState = Modes.Automatic;
+              this.safetyActive = false;
 
-            this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
-            wepIndex = this.weapons.length - 1;
-            currWeapData = this.weapons[wepIndex];
-          }
-
-          // console.log("my local data", this.currentWeapon, this.currentState, this.safetyActive, this.weapons);
-            
-          // console.log("curr weapon data", currWeapData);
-
-          if (currWeapData.state == Modes.Burst) {
-            // console.log("this weapon is burst when firing!");
-            await Delay(300);
-
-            while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
-              DisablePlayerFiring(Game.Player.Handle, true);
-              await Delay(0);
-            }
-          } else if (currWeapData.state == Modes.Single) {
-            while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
-              await Delay(10);
-              DisablePlayerFiring(Game.Player.Handle, true);
-              // console.log("still holding fire button!");
+              this.weapons.push(new Weapon(this.currentWeapon, this.currentState, this.safetyActive));
+              wepIndex = this.weapons.length - 1;
+              currWeapData = this.weapons[wepIndex];
             }
 
-            // console.log("released trigger")
+            // console.log("my local data", this.currentWeapon, this.currentState, this.safetyActive, this.weapons);
+
+            // console.log("curr weapon data", currWeapData);
+
+            if (currWeapData.state == Modes.Burst) {
+              // console.log("this weapon is burst when firing!");
+              await Delay(300);
+
+              while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
+                DisablePlayerFiring(Game.Player.Handle, true);
+                await Delay(0);
+              }
+            } else if (currWeapData.state == Modes.Single) {
+              while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
+                await Delay(10);
+                DisablePlayerFiring(Game.Player.Handle, true);
+                // console.log("still holding fire button!");
+              }
+
+              // console.log("released trigger")
+            }
           }
         }
       }

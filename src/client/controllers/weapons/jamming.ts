@@ -127,17 +127,19 @@ export class WeaponJamming {
   }
 
   // Events
-  private async EVENT_gunshot(): Promise<void> {
-    this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
-    if (this.weapon !== Weapons.Unarmed) {
-      const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
-    
-      // If weapon isn't jammed, run below
-      if (jammedIndex === -1) {
-        const weaponIndex = clientConfig.controllers.weapons.jamming.weaponWhitelist.findIndex(weapon => GetHash(weapon) == this.weapon);
-    
-        // If the current weapon doesn't exist in the whitelist, run the reloader, otherwise don't run the jam chancer
-        if (weaponIndex === -1) {
+  private async EVENT_gunshot(shootersNet: number): Promise<void> {
+    console.log("shooter info", shootersNet, this.client.Player.NetworkId);
+    if (shootersNet === this.client.Player.NetworkId) {
+      this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+      if (this.weapon !== Weapons.Unarmed) {
+        const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
+
+        // If weapon isn't jammed, run below
+        if (jammedIndex === -1) {
+          const weaponIndex = clientConfig.controllers.weapons.jamming.weaponWhitelist.findIndex(weapon => GetHash(weapon) == this.weapon);
+
+          // If the current weapon doesn't exist in the whitelist, run the reloader, otherwise don't run the jam chancer
+          if (weaponIndex === -1) {
             if (GetWeaponDamageType(this.weapon) == 3) {
               if (!this.jamAttempted) {
                 // console.log("not ran jam attempt");
@@ -148,7 +150,7 @@ export class WeaponJamming {
                   const notify = new Notification("Weapon", "Your weapon has jammed!", NotificationTypes.Info);
                   await notify.send();
 
-                  if (this.jamTick == undefined) this.jamTick = setTick(async() => {
+                  if (this.jamTick == undefined) this.jamTick = setTick(async () => {
                     this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
                     const jammedIndex = this.jammedWeapons.findIndex(weapon => weapon == this.weapon);
 
@@ -182,6 +184,7 @@ export class WeaponJamming {
               //   console.log("can't run jam attempt until 20 second timeout is finished!");
               // }
             }
+          }
         }
       }
     }
