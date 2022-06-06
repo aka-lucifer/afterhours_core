@@ -122,7 +122,7 @@ export class JobManager {
 
   public async EVENT_setCallsign(): Promise<void> {
     const callsign = await keyboardInput("Callsign", 5);
-    if (callsign !== undefined) {
+    if (callsign !== undefined && callsign !== null) {
       if (callsign.length > 0) {
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.updateCallsign, {callsign: callsign}, async(cbData, passedData) => {
 
