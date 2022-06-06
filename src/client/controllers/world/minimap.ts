@@ -1,6 +1,6 @@
 import { Inform } from '../../utils';
 
-const zoomLevels = [ 900, 1000, 1100, 1200, 1300, 1400 ];
+const zoomLevels = [ 900, 1000, 1100, 1200, 1300 ];
 
 export class Minimap {
   private zoomLevel: number = 0;
