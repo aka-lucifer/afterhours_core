@@ -1,5 +1,6 @@
 import { Bone, Game, Model, Prop, Vehicle, VehicleSeat, World } from "fivem-js";
 
+import { Client } from '../../client';
 import { Delay, Inform, rightHandVehicle } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
@@ -8,6 +9,8 @@ import { Weapons } from "../../../shared/enums/weapons";
 import sharedConfig from "../../../configs/shared.json";
 
 export class VehicleWeapon {
+  private client: Client;
+
   private currentWeapon: number;
   private attachedWeaponHash: number;
   private attachedWeapon: Prop;
@@ -17,7 +20,8 @@ export class VehicleWeapon {
   // Ticks
   private propTick: number = undefined;
 
-  constructor() {
+  constructor(client: Client) {
+    this.client = client;
     this.currentWeapon = Weapons.Unarmed;
 
     Inform("Vehicle | Weapon Controller", "Started!");
@@ -130,7 +134,7 @@ export class VehicleWeapon {
         }
       }
 
-      if (IsPlayerFreeAiming(Game.Player.Handle)) {
+      if (IsPlayerFreeAiming(Game.Player.Handle) && this.client.vehicleManager.driveBy.Can) {
         if (this.visible) {
           if (this.attachedWeapon !== undefined) {
             this.attachedWeapon.IsVisible = false;
