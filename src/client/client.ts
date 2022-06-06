@@ -354,7 +354,7 @@ export class Client {
     // Jobs
     this.playerStates.state.set("cuffState", CuffState.Uncuffed, true);
     this.playerStates.state.set("grabState", GrabState.None, true);
-    this.playerStates.state.set("interationState", InteractionStates.None, true);
+    this.playerStates.state.set("interactionState", InteractionStates.None, true);
 
     this.statesTick = setTick(async() => {
 

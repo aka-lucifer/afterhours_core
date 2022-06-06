@@ -138,7 +138,7 @@ export class Cuffing {
         const character = await this.server.characterManager.Get(player);
         if (character.isLeoJob()) { // If your selected character is an LEO
           if (character.Job.Status) { // If your character is on duty
-            console.log("do perp back anim!");
+            // console.log("do perp back anim!");
             const perpStates = Player(netToArrest);
             perpStates.state.cuffState = CuffState.BeingCuffed;
             emitNet(JobEvents.playPerpBackAnim, netToArrest, perpPos, perpRot);
@@ -157,7 +157,7 @@ export class Cuffing {
         const character = await this.server.characterManager.Get(player);
         if (character.isLeoJob()) { // If your selected character is an LEO
           if (character.Job.Status) { // If your character is on duty
-            console.log("do perp front anim!");
+            // console.log("do perp front anim!");
             const perpStates = Player(netToArrest);
             perpStates.state.cuffState = CuffState.BeingCuffed;
             emitNet(JobEvents.playPerpFrontAnim, netToArrest, perpPos, perpRot);

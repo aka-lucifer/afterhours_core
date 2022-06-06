@@ -35,26 +35,27 @@ export class Seating {
                 if (currVehicle > 0) { // Have to use this native as `IsPedInAnyVehicle` isn't available on the server
                   const closestPlayersStates = Player(closestPlayer.Handle);
 
-                  if (closestPlayersStates.state.interationState == InteractionStates.Seated) {
+                  if (closestPlayersStates.state.interactionState == InteractionStates.Seated) {
                     TaskLeaveVehicle(closestPed, currVehicle, 256);
 
                     // Keep running this (Don't relow the below code, until the player has fully exited the vehicle)
                     while (GetVehiclePedIsIn(closestPed, false) > 0) {
-                      console.log("Still inside their vehicle");
+                      // console.log("Still inside their vehicle");
                       await Delay(100);
                     }
 
-                    console.log("exited vehicle!");
+                    // console.log("exited vehicle!");
 
-                    // Regrab them if they were grabbed
-                    const myStates = Player(player.Handle);
+                    // Set to no longer seated on their interaction statebag.
+                    closestPlayersStates.state.interactionState = InteractionStates.None;
+
+                    await Delay(1000); // Have to wait a second for some BS reason
+
+                    // console.log("grabState", closestPlayersStates.state.grabState, GrabState.Seated);
                     if (closestPlayersStates.state.grabState == GrabState.Seated) {
-                      console.log("player was previously held before being seated", closestPlayer.Handle);
-                      myStates.state.grabState = GrabState.Holding;
+                      // console.log("They were grabbed when they were seated!");
                       await player.TriggerEvent(JobEvents.startGrabbing, closestPlayer.Handle, player.Handle);
                     }
-
-                    closestPlayersStates.state.interationState = GrabState.None;
                   } else {
                     await player.Notify("Unseating", "This person hasn't been seated inside this vehicle!", NotificationTypes.Error);
                   }
@@ -88,27 +89,28 @@ export class Seating {
               const closestPed = GetPlayerPed(closestPlayer.Handle);
 
               if (closestPed > 0) { // If their ped exists in your world scope
-                const playerStates = Player(closestPlayer.Handle);
+                const playerStates = Player(player.Handle);
                 const closestPlayersStates = Player(closestPlayer.Handle);
 
                 // Disable Grabbing (If it's being done)
                 if (playerStates.state.grabState == GrabState.Holding) { // If we're holding the little shitbag
-                  playerStates.state.grabState = GrabState.Seating;
+                  playerStates.state.grabState = GrabState.None;
                   await player.TriggerEvent(JobEvents.stopGrabbing);
+                  console.log("stop grabbing on me!");
                 }
 
-                if (closestPlayersStates.state.grabState == GrabState.Held) { // If the fat cunt is being held
+                if (closestPlayersStates.state.grabState == GrabState.Held) { // If the fat cunt is being held (Maybe this is cause the detach issue when unseat grabbing)
                   closestPlayersStates.state.grabState = GrabState.Seated;
                   await closestPlayer.TriggerEvent(JobEvents.stopGrabbing);
                 }
 
-                closestPlayersStates.state.interationState = InteractionStates.Seated;
+                closestPlayersStates.state.interactionState = InteractionStates.Seated;
 
                 // Teleport the player into the vehicle, to the passed seat
                 TaskWarpPedIntoVehicle(closestPed, vehicle, freeSeat); // Teleport them inside the vehicle
 
                 // Play cuffed animation if the dipshit is handcuffed
-                console.log("cuff states", closestPlayersStates.state.cuffState)
+                // console.log("cuff states", closestPlayersStates.state.cuffState)
                 if (closestPlayersStates.state.cuffState == CuffState.Cuffed || closestPlayersStates.state.cuffState == CuffState.Shackled) {
                   await closestPlayer.TriggerEvent(Events.seatCuffAnim); // Have to do it this way as OneSync doesn't even let you use the server sided `TaskPlayAnim`
                 }
