@@ -18,60 +18,7 @@ export class Seating {
 
     // Events
     onNet(Events.seatPlayer, this.EVENT_seatPlayer.bind(this));
-
-    RegisterCommand("unseat", async (source: string) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          const [closestPlayer, dist] = await getClosestPlayer(player);
-
-          // If we have found a player
-          if (closestPlayer) { // If the player is close enough to you
-            if (dist <= 3.0) {
-              const closestPed = GetPlayerPed(closestPlayer.Handle);
-
-              if (closestPed > 0) { // If their ped exists in your world scope
-                const currVehicle = GetVehiclePedIsIn(closestPed, false);
-                if (currVehicle > 0) { // Have to use this native as `IsPedInAnyVehicle` isn't available on the server
-                  const closestPlayersStates = Player(closestPlayer.Handle);
-
-                  if (closestPlayersStates.state.interactionState == InteractionStates.Seated) {
-                    TaskLeaveVehicle(closestPed, currVehicle, 256);
-
-                    // Keep running this (Don't relow the below code, until the player has fully exited the vehicle)
-                    while (GetVehiclePedIsIn(closestPed, false) > 0) {
-                      // console.log("Still inside their vehicle");
-                      await Delay(100);
-                    }
-
-                    // console.log("exited vehicle!");
-
-                    // Set to no longer seated on their interaction statebag.
-                    closestPlayersStates.state.interactionState = InteractionStates.None;
-
-                    await Delay(1000); // Have to wait a second for some BS reason
-
-                    // console.log("grabState", closestPlayersStates.state.grabState, GrabState.Seated);
-                    if (closestPlayersStates.state.grabState == GrabState.Seated) {
-                      // console.log("They were grabbed when they were seated!");
-                      await player.TriggerEvent(JobEvents.startGrabbing, closestPlayer.Handle, player.Handle);
-                    }
-                  } else {
-                    await player.Notify("Unseating", "This person hasn't been seated inside this vehicle!", NotificationTypes.Error);
-                  }
-                } else {
-                  await player.Notify("Unseating", "Player isn't inside a vehicle!", NotificationTypes.Error);
-                }
-              }
-            } else {
-              await player.Notify("Unseating", "Player is too far away!", NotificationTypes.Error);
-            }
-          } else {
-            await player.Notify("Unseating", "No one found!", NotificationTypes.Error);
-          }
-        }
-      }
-    }, false);
+    onNet(Events.unseatPlayer, this.EVENT_unseatPlayer.bind(this));
   }
 
   // Events
@@ -121,6 +68,59 @@ export class Seating {
           } else {
             await player.Notify("Seating", "No one found!", NotificationTypes.Error);
           }
+        }
+      }
+    }
+  }
+  private async EVENT_unseatPlayer(): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      if (player.Spawned) {
+        const [closestPlayer, dist] = await getClosestPlayer(player);
+
+        // If we have found a player
+        if (closestPlayer) { // If the player is close enough to you
+          if (dist <= 3.0) {
+            const closestPed = GetPlayerPed(closestPlayer.Handle);
+
+            if (closestPed > 0) { // If their ped exists in your world scope
+              const currVehicle = GetVehiclePedIsIn(closestPed, false);
+              if (currVehicle > 0) { // Have to use this native as `IsPedInAnyVehicle` isn't available on the server
+                const closestPlayersStates = Player(closestPlayer.Handle);
+
+                if (closestPlayersStates.state.interactionState == InteractionStates.Seated) {
+                  TaskLeaveVehicle(closestPed, currVehicle, 256);
+
+                  // Keep running this (Don't relow the below code, until the player has fully exited the vehicle)
+                  while (GetVehiclePedIsIn(closestPed, false) > 0) {
+                    // console.log("Still inside their vehicle");
+                    await Delay(100);
+                  }
+
+                  // console.log("exited vehicle!");
+
+                  // Set to no longer seated on their interaction statebag.
+                  closestPlayersStates.state.interactionState = InteractionStates.None;
+
+                  await Delay(1000); // Have to wait a second for some BS reason
+
+                  // console.log("grabState", closestPlayersStates.state.grabState, GrabState.Seated);
+                  if (closestPlayersStates.state.grabState == GrabState.Seated) {
+                    // console.log("They were grabbed when they were seated!");
+                    await player.TriggerEvent(JobEvents.startGrabbing, closestPlayer.Handle, player.Handle);
+                  }
+                } else {
+                  await player.Notify("Unseating", "This person hasn't been seated inside this vehicle!", NotificationTypes.Error);
+                }
+              } else {
+                await player.Notify("Unseating", "Player isn't inside a vehicle!", NotificationTypes.Error);
+              }
+            }
+          } else {
+            await player.Notify("Unseating", "Player is too far away!", NotificationTypes.Error);
+          }
+        } else {
+          await player.Notify("Unseating", "No one found!", NotificationTypes.Error);
         }
       }
     }
