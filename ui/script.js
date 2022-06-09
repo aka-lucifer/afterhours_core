@@ -1306,3 +1306,93 @@ const HUD = new Vue({
 function isDateValid(date) {
   return date.getTime() === date.getTime(); // If the date object is invalid, it will return 'NaN' on getTime() and NaN is never equal to itself.
 }
+
+// Hex Menu
+AxMenu = {}
+AxMenu.Open = function(data) {
+  console.log("OPEN MENU!", JSON.stringify(data));
+  AxMenu.HomeMenu = data;
+  AxMenu.PreviousMenu = undefined;
+  AxMenu.CurrentMenu = undefined;
+  $(".hexMenu").show();
+  AxMenu.SetupMenu(data);
+}
+
+AxMenu.SetupMenu = function(table){
+  AxMenu.CurrentMenu = table;
+  AxMenu.Reset();
+
+  $.each(table, function(i, label){
+    i++
+    $('#label-'+i).html(label.label);
+    $('.hex-'+i).data(label);
+    // $('.i-'+i).addClass(label.icon+' fa');
+
+    $('.hex-'+i).click(function() {
+      var menu = $(this).data()
+      if (menu.submenu == false) {
+        HUD.Post("HEX_EVENT", {
+          event: menu.event,
+          parameters: menu.parameters,
+          type: menu.type
+        });
+
+        if (menu.shouldClose) {
+          AxMenu.Close()
+        }
+      } else {
+        AxMenu.PreviousMenu = AxMenu.CurrentMenu;
+        AxMenu.CurrentMenu = menu.submenu;
+        AxMenu.SetupMenu(menu.submenu)
+      }
+    })
+  })
+}
+
+AxMenu.Reset = function(){
+  for (i = 0; i < 7; i++) {
+    $('#label-'+i).html('')
+    $('.hex-'+i).data('')
+    $('.i-'+i).attr('class','i-'+i)
+  };
+
+  $('.hexagon').off()
+
+  $('.close').click(function(){
+    if (AxMenu.CurrentMenu == AxMenu.HomeMenu){
+      AxMenu.Close()
+    }else if(AxMenu.CurrentMenu == AxMenu.PreviousMenu){
+      AxMenu.SetupMenu(AxMenu.HomeMenu)
+    }else{
+      AxMenu.SetupMenu(AxMenu.PreviousMenu)
+    }
+  })
+
+  if(AxMenu.CurrentMenu == AxMenu.HomeMenu){
+    // $('.i-close').attr('class','i-close fa fa-times fa');
+    $('#label-close').html('Close')
+  } else{
+    // $('.i-close').attr('class','i-close fas fa-chevron-circle-right fa');
+    $('#label-close').html('Back')
+  }
+
+  $(".hexMenu").hide();
+  setTimeout(function(){$(".hexMenu").fadeIn(500)},100)
+}
+
+AxMenu.Close = function(){
+  HUD.Post("CLOSE_HEX_MENU", {});
+  $(".hexMenu").fadeOut()
+  $('.hexagon').off()
+}
+
+$(document).on('keydown', function(event) {
+  switch(event.keyCode) {
+    case 27:
+      AxMenu.Close()
+      break;
+  }
+});
+
+RegisterEvent("OPEN_HEX_MENU", AxMenu.Open);
+RegisterEvent("CLOSE_HEX_MENU", AxMenu.Close);

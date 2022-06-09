@@ -25,6 +25,7 @@ export enum JobEvents {
   // LEO (Server | Calls)
   send911Call = "astrid:server:jobs:police:send911Call",
   send311Call = "astrid:server:jobs:police:send311Call",
+  removeMask = "astrid:server:jobs:police:removeMask",
 
   // LEO (Client | Cuffing)
   startCuffing = "astrid:client:jobs:police:startCuffing",
@@ -33,6 +34,9 @@ export enum JobEvents {
   playPerpFrontAnim = "astrid:client:jobs:police:playPerpFrontAnim",
   setCuffed = "astrid:client:jobs:police:setCuffed",
   setUncuffed = "astrid:client:jobs:police:setUncuffed",
+
+  // LEO (Client | Remove Mask)
+  takeOffMask = "astrid:client:jobs:police:takeOffMask",
 
   // LEO (Server | Cuffing)
   cuffPlayer = "astrid:server:jobs:police:cuffPlayer",
@@ -47,6 +51,7 @@ export enum JobEvents {
   stopGrabbing = "astrid:client:police:stopGrabbing",
 
   // LEO (Server | Grabbing)
+  tryGrabbing = "astrid:server:police:tryGrabbing",
   grabPlayer = "astrid:server:police:grabPlayer",
 
   // LEO (Client | Unit Menu)

@@ -1,5 +1,5 @@
 import { Server } from '../../server';
-import { Capitalize } from '../../utils';
+import { Capitalize, getClosestPlayer } from '../../utils';
 
 import { Command, JobCommand } from '../../models/ui/chat/command';
 
@@ -15,6 +15,7 @@ import { SystemTypes } from '../../../shared/enums/ui/chat/types';
 import { Ranks } from '../../../shared/enums/ranks';
 import { concatArgs, formatFirstName } from '../../../shared/utils';
 import { JobEvents } from '../../../shared/enums/events/jobs/jobEvents';
+import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
 
 enum Calls {
   Normal,
@@ -48,6 +49,7 @@ export class PoliceJob {
     // Events
     onNet(JobEvents.send911Call, this.EVENT_send911Call.bind(this));
     onNet(JobEvents.send311Call, this.EVENT_send311Call.bind(this));
+    onNet(JobEvents.removeMask, this.EVENT_removeMask.bind(this));
 
     // Controllers
     this.cuffing = new Cuffing(this.server);
@@ -378,6 +380,38 @@ export class PoliceJob {
         }, 300000); // Delete blip after 5 minutes.
 
         await myPlayer.TriggerEvent(Events.sendSystemMessage, new Message("311 Call Sent!", SystemTypes.Success));
+      }
+    }
+  }
+
+  private async EVENT_removeMask(): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+    if (player) {
+      if (player.Spawned) {
+        const character = await this.server.characterManager.Get(player);
+        if (character.isLeoJob()) { // If your selected character is an LEO
+          if (character.Job.Status) { // If your character is on duty
+            const [closest, dist] = await getClosestPlayer(player);
+
+            if (closest) {
+              if (dist < 3) {
+                const closestCharacter = await this.server.characterManager.Get(closest);
+                if (closestCharacter) {
+                  await closest.TriggerEvent(JobEvents.takeOffMask);
+                } else {
+                  await player.Notify("Police", "This person hasn't selected a character!", NotificationTypes.Error);
+                }
+              } else {
+                await player.Notify("Police", "Player is too far away!", NotificationTypes.Error);
+              }
+            } else {
+              await player.Notify("Police", "No one found!", NotificationTypes.Error);
+            }
+          } else {
+            await player.Notify("Police", "You aren't on duty!", NotificationTypes.Error);
+          }
+        }
       }
     }
   }

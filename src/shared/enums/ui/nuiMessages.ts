@@ -50,5 +50,9 @@ export enum NuiMessages {
   CancelProgress = "CANCEL_PROGRESS",
 
   // Bug Reporting
-  OpenBugReport = "OPEN_BUG_REPORT"
+  OpenBugReport = "OPEN_BUG_REPORT",
+
+  // Hex Menu
+  OpenHexMenu = "OPEN_HEX_MENU",
+  CloseHexMenu = "CLOSE_HEX_MENU"
 }

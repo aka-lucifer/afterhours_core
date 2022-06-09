@@ -50,13 +50,7 @@ export class PoliceJob {
     onNet(JobEvents.start311Call, this.EVENT_start311Call.bind(this));
     onNet(JobEvents.receive311Call, this.EVENT_receive311Call.bind(this));
 
-    RegisterCommand("cuff", () => {
-      emitNet(JobEvents.cuffPlayer);
-    }, false);
-
-    RegisterCommand("uncuff", () => {
-      emitNet(JobEvents.uncuffPlayer);
-    }, false);
+    onNet(JobEvents.removeMask, this.EVENT_removeMask.bind(this));
 
     Inform("Police | Jobs Controller", "Started!");
   }
@@ -334,6 +328,16 @@ export class PoliceJob {
           });
         }
       }
+    }
+  }
+
+  private EVENT_removeMask(): void {
+    const myPed = Game.PlayerPed;
+    ClearPedProp(myPed.Handle, 0)
+
+    const myModel = myPed.Model.Hash;
+    if (myModel === GetHashKey("mp_m_freemode_01") || myModel === GetHashKey("mp_f_freemode_01")) { // Mp Model
+      SetPedComponentVariation(myPed.Handle, 1, 0, 0, 0);
     }
   }
 }

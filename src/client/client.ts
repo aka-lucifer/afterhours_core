@@ -47,12 +47,13 @@ import { WorldBlips } from './controllers/world/worldBlips';
 
 // [Controllers] UI
 import { BugReporting } from './controllers/ui/bugReporting';
+import { HexMenu } from './controllers/ui/hexMenu';
 
 // [Controllers] Normal
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import {Delay, Inform, RegisterNuiCallback} from "./utils";
+import { Delay, Inform, keyboardInput, RegisterNuiCallback } from './utils';
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -133,6 +134,7 @@ export class Client {
 
   // [Controllers] UI
   private bugReporting: BugReporting;
+  public hexMenu: HexMenu;
 
   // [Controllers] Normal
   private playerNames: PlayerNames;
@@ -281,6 +283,9 @@ export class Client {
     this.bugReporting = new BugReporting(client);
     this.bugReporting.init();
 
+    this.hexMenu = new HexMenu();
+    this.hexMenu.init();
+
     // [Controllers] Normal
     this.playerNames = new PlayerNames(client);
     this.afk = new AFK(client);
@@ -395,6 +400,8 @@ export class Client {
     });
 
     global.exports("usingKeyboard", this.UsingKeyboard);
+
+    global.exports("keyboardInput", keyboardInput);
 
     global.exports("isTeleporting", this.Teleporting);
 

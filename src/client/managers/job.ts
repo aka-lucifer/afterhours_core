@@ -151,11 +151,13 @@ export class JobManager {
     this.policeJob.garages.toggleBlips(newState);
 
     if (newState) { // If on duty
-      this.policeJob.registerInteractions();
+      this.policeJob.registerInteractions(); // Register test interactions
+      this.client.hexMenu.addPoliceOptions(); // Add police options to the hex menu
       this.policeJob.commandMenu.start();
       this.policeJob.garages.start();
     } else { // If off duty
       this.policeJob.deleteInteractions();
+      this.client.hexMenu.removePoliceOptions(); // Remove police options from the hex menu
       this.policeJob.commandMenu.stop();
       this.policeJob.garages.stop();
     }

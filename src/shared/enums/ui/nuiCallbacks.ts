@@ -28,5 +28,9 @@ export enum NuiCallbacks {
 
   // Bug Reporting
   CloseBugReport = "CLOSE_BUG_REPORT",
-  SubmitBug = "SUBMIT_BUG"
+  SubmitBug = "SUBMIT_BUG",
+
+  // Hex Menu
+  CloseHexMenu = "CLOSE_HEX_MENU",
+  HexEvent = "HEX_EVENT"
 }
