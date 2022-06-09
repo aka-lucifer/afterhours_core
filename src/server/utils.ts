@@ -266,7 +266,7 @@ export async function getClosestPlayer(myPlayer: Player): Promise<[Player, numbe
   for (let i = 0; i < svPlayers.length; i++) {
     const player = svPlayers[i];
 
-    if (myPlayer.Handle !== player.Handle) { // DISABLED FOR SEATING TESTING
+    if (myPlayer.Handle !== player.Handle) {
       const dist = myPlayer.Position.distance(player.Position);
 
       if (closestPlayer == undefined || dist < closestDistance) {
