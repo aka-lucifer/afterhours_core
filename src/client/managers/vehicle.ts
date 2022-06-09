@@ -69,7 +69,6 @@ export class VehicleManager {
     this.repairShops.init(); // done
     this.gps.init(); // done
     this.rolling.init(); // done
-    this.seating.init();
   }
 
   // Events
