@@ -48,7 +48,7 @@ export class WorldManager {
       this.disableIdleCam();
       this.disablePolice(myPed);
       this.disablePVP(myPed);
-      this.disableVehRewards(myPed);
+      // this.disableVehRewards(myPed);
       this.disableHealthRecharge(myPed);
       this.disableWorldTraffic(myPed);
       this.wipeInteriors();
@@ -97,9 +97,9 @@ export class WorldManager {
   }
 
   // Police Vehicle Rewards
-  private disableVehRewards(ped: Ped): void {
-    DisablePlayerVehicleRewards(ped.Handle);
-  }
+  // private disableVehRewards(ped: Ped): void {
+  //   DisablePlayerVehicleRewards(ped.Handle);
+  // }
 
   // Disable Health Recharge
   private disableHealthRecharge(ped: Ped) {
