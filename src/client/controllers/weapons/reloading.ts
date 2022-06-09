@@ -94,6 +94,7 @@ export class Reloading {
   private EVENT_gunshot(shootersNet: number): void {
     if (shootersNet === this.client.Player.NetworkId) {
       // Inform("LX Event (Gunshot)", "You've fired your weapon");
+
       const myPed = Game.PlayerPed;
       this.currentWeapon = GetSelectedPedWeapon(myPed.Handle);
       if (this.currentWeapon != Weapons.Unarmed) {

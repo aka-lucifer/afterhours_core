@@ -128,7 +128,6 @@ export class WeaponJamming {
 
   // Events
   private async EVENT_gunshot(shootersNet: number): Promise<void> {
-    console.log("shooter info", shootersNet, this.client.Player.NetworkId);
     if (shootersNet === this.client.Player.NetworkId) {
       this.weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
       if (this.weapon !== Weapons.Unarmed) {
