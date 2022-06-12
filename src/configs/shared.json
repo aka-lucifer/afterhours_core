@@ -1946,7 +1946,7 @@
     "-335937730": {
       "name": "vehicle_weapon_cannon_blazer", "label": "Cannon Blazer",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -1955,7 +1955,7 @@
     "1566990507": {
       "name": "vehicle_weapon_enemy_laser", "label": "Enemy Laser",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -1964,7 +1964,7 @@
     "1097917585": {
       "name": "vehicle_weapon_nose_turret_valkyrie", "label": "Valkyrie Nose Turret",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -1973,7 +1973,7 @@
     "-821520672": {
       "name": "vehicle_weapon_plane_rocket", "label": "Plane Rocket",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -1982,7 +1982,7 @@
     "1259576109": {
       "name": "vehicle_weapon_player_bullet", "label": "Player Bullet",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -1991,7 +1991,7 @@
     "1186503822": {
       "name": "vehicle_weapon_player_buzzard", "label": "Buzzard Mini Gun",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2000,7 +2000,7 @@
     "-1625648674": {
       "name": "vehicle_weapon_player_hunter", "label": "Hunter",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2009,7 +2009,7 @@
     "-268631733": {
       "name": "vehicle_weapon_player_laser", "label": "Laser",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2018,7 +2018,7 @@
     "-494786007": {
       "name": "vehicle_weapon_player_lazer", "label": "Lazer",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2027,7 +2027,7 @@
     "1638077257": {
       "name": "vehicle_weapon_player_salvage", "label": "Salvage",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2036,7 +2036,7 @@
     "-764006018": {
       "name": "vehicle_weapon_radar", "label": "Radar",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2045,7 +2045,7 @@
     "-1323279794": {
       "name": "vehicle_weapon_rotors", "label": "Rotor",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2054,7 +2054,7 @@
     "50118905": {
       "name": "vehicle_weapon_ruiner_bullet", "label": "Ruiner Bullet",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2063,7 +2063,7 @@
     "-844344963": {
       "name": "vehicle_weapon_searchlight", "label": "Search Light",
       "reason": "blinded",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2072,7 +2072,7 @@
     "-123497569": {
       "name": "vehicle_weapon_space_rocket", "label": "Space Rocket",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2081,7 +2081,7 @@
     "1945616459": {
       "name": "vehicle_weapon_tank", "label": "Tank",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2090,7 +2090,7 @@
     "-1253095144": {
       "name": "vehicle_weapon_turret_boxville", "label": "Boxville Turret",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2099,7 +2099,7 @@
     "1155224728": {
       "name": "vehicle_weapon_turret_insurgent", "label": "Insurgent Turret",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2108,7 +2108,7 @@
     "729375873": {
       "name": "vehicle_weapon_turret_limo", "label": "Limo Turret",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2117,7 +2117,7 @@
     "2144528907": {
       "name": "vehicle_weapon_turrent_technical", "label": "Technical Turret",
       "reason": "obliterated",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""
@@ -2126,7 +2126,7 @@
     "1741783703": {
       "name": "vehicle_weapon_water_cannon", "label": "Water Cannon",
       "reason": "knocked over",
-      "type": "weapon",
+      "type": "veh_weapon",
       "attaching": {
         "canAttach": false,
         "model": ""

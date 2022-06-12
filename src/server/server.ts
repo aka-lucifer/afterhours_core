@@ -569,7 +569,7 @@ export class Server {
         const weaponData: Weapon = sharedConfig.weapons[data.weapon];
 
         if (weaponData !== undefined) {
-          if (!data.inVeh && weaponData.type == "weapon") {
+          if (!data.inVeh && weaponData.type == "weapon" || weaponData.type == "veh_weapon") {
             const killDistance = Dist(player.Position, killer.Position, false);
             emitNet(Events.sendSystemMessage, -1, new Message(`${killer.GetName} killed ${player.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
           }
