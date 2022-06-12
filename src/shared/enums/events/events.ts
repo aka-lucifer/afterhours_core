@@ -194,5 +194,8 @@ export enum Events {
 
   // Astrid Client (Death)
   playerDead = "astrid:client:death:playerDead",
-  revivePlayer = "astrid:client:death:revivePlayer"
+  revive = "astrid:client:death:revive",
+
+  // Astrid Server (Death)
+  revivePlayer = "astrid:server:death:revivePlayer"
 }

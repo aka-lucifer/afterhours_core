@@ -1,5 +1,8 @@
 import { Server } from '../server';
+import { Delay } from '../utils';
+
 import { Command } from '../models/ui/chat/command';
+
 import { Ranks } from '../../shared/enums/ranks';
 import { Events } from '../../shared/enums/events/events';
 import { Message } from '../../shared/models/ui/chat/message';
@@ -15,6 +18,7 @@ export class Death {
 
     // Events
     onNet(Events.playerKilled, this.EVENT_playerDied.bind(this));
+    onNet(Events.revivePlayer, this.EVENT_revivePlayer.bind(this));
   }
 
   // Events
@@ -35,6 +39,40 @@ export class Death {
     }
   }
 
+  private async EVENT_revivePlayer(playerId: number): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+    if (player) {
+      if (player.Spawned) {
+        if (player.Rank >= Ranks.Admin) {
+          const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (foundPlayer) {
+            if (foundPlayer.Spawned) {
+              const playerStates = Player(foundPlayer.Handle);
+
+              if (playerStates.state.deathState == DeathStates.Dead) {
+                playerStates.state.deathState = DeathStates.Alive;
+                await foundPlayer.TriggerEvent(Events.revive); // Revive player
+                
+                // Send revived chat messages
+                await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have revived ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+                await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You have been revived by ^3${player.GetName}^0.`, SystemTypes.Admin));
+              } else {
+                await player.TriggerEvent(Events.sendSystemMessage, new Message("This player isn't dead!", SystemTypes.Error));
+              }
+            } else {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message("This player isn't spawned in!", SystemTypes.Error));
+            }
+          } else {
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("No player found with that server ID!", SystemTypes.Error));
+          }
+        } else {
+          await player.TriggerEvent(Events.sendSystemMessage, new Message("Access Denied!", SystemTypes.Error));
+        }
+      }
+    }
+  }
+
   // Methods
   private registerCommands(): void {
     new Command("revive", "Revive a player.", [{name: "server_id", help: "The server ID of the player you're reviving."}], true, async(source: string, args: any[]) => {
@@ -44,7 +82,6 @@ export class Death {
           const character = await this.server.characterManager.Get(player);
           if (character) {
             const hasPermission = player.Rank >= Ranks.Admin || character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status;
-            console.log("revive permission", hasPermission);
 
             if (hasPermission) {
               const reviving = await this.server.connectedPlayerManager.GetPlayer(args[0]);
@@ -54,7 +91,9 @@ export class Death {
 
                   if (playerStates.state.deathState == DeathStates.Dead) {
                     playerStates.state.deathState = DeathStates.Alive;
-                    await reviving.TriggerEvent(Events.revivePlayer);
+                    await reviving.TriggerEvent(Events.revive); // Revive player
+                    
+                    // Send revived chat messages
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have revived ^3${reviving.GetName}^0.`, SystemTypes.Admin));
                     await reviving.TriggerEvent(Events.sendSystemMessage, new Message(`You have been revived by ^3${player.GetName}^0.`, SystemTypes.Admin));
                   } else {

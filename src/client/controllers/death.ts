@@ -30,6 +30,7 @@ export class Death {
   private client: Client;
 
   // Death Data
+  private myState: DeathStates = DeathStates.Alive;
   private blackedOut: boolean = false;
   private lastAnim: {dict: string, anim: string};
 
@@ -67,7 +68,7 @@ export class Death {
     // Events
     onNet(Events.playerDead, this.EVENT_playerKilled.bind(this));
     onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
-    onNet(Events.revivePlayer, this.EVENT_revivePlayer.bind(this));
+    onNet(Events.revive, this.EVENT_revive.bind(this));
 
     // Keymapping
     RegisterKeyMapping("+respawn_player", "Respawn yourself", "keyboard", "R");
@@ -98,8 +99,7 @@ export class Death {
         }
       }));
 
-      // const playerStates = Player(this.client.Player.NetworkId);
-      // playerStates.state.deathState = DeathStates.Alive;
+      this.myState = DeathStates.Alive;
       this.client.staffManager.staffMenu.toggleGodmode(false);
 
       if (this.controlsTick !== undefined) {
@@ -118,7 +118,6 @@ export class Death {
 
   // Events
   private async EVENT_playerKilled(killer: number, killData: any): Promise<void> {
-    console.log("died");
     await this.processDeath();
   }
 
@@ -132,7 +131,7 @@ export class Death {
     }
   }
 
-  private EVENT_revivePlayer(): void {
+  private EVENT_revive(): void {
     const myPed = Game.PlayerPed;
     const myPos = myPed.Position;
 
@@ -148,8 +147,7 @@ export class Death {
     }));
 
     // Set your player state and godmode
-    // const playerStates = Player(this.client.Player.NetworkId);
-    // playerStates.state.deathState = DeathStates.Alive;
+      this.myState = DeathStates.Alive;
     this.client.staffManager.staffMenu.toggleGodmode(false);
 
     // Reset variables back to default
@@ -158,6 +156,11 @@ export class Death {
     this.respawnCounter = this.defaultCounter; // Set the respawn counter to the default time
 
     // Delete ticks
+    if (this.deathTick !== undefined) {
+      clearTick(this.deathTick);
+      this.deathTick = undefined;
+    }
+
     if (this.controlsTick !== undefined) {
       clearTick(this.controlsTick);
       this.controlsTick = undefined;
@@ -184,8 +187,7 @@ export class Death {
           NetworkResurrectLocalPlayer(positions[i].x, positions[i].y, positions[i].z, positions[i].heading, true, false);
           myPed.clearBloodDamage();
 
-          // const playerStates = Player(this.client.Player.NetworkId);
-          // playerStates.state.deathState = DeathStates.Alive;
+          this.myState = DeathStates.Alive;
           this.client.staffManager.staffMenu.toggleGodmode(false);
 
           // Disable Ticks
@@ -243,7 +245,7 @@ export class Death {
             const playerStates = Player(this.client.Player.NetworkId);
 
             // Set you to dead
-            if (playerStates.state.deathState !== DeathStates.Dead) {
+            if (this.myState === DeathStates.Alive) {
               // Make you alive again
               const myPos = myPed.Position;
               NetworkResurrectLocalPlayer(myPos.x, myPos.y, myPos.z, myPed.Heading, true, false);
@@ -252,6 +254,7 @@ export class Death {
 
               // Set you as dead
               // playerStates.state.deathState = DeathStates.Dead;
+              this.myState = DeathStates.Dead;
 
               // Play dead animations
               if (this.insideVeh) { // Have to check this way, as `IsPedInAnyVehicle` is ran too late
@@ -289,7 +292,6 @@ export class Death {
               if (this.UIState == UIState.Hidden) {
                 this.UIState = UIState.Counting;
 
-
                 SendNuiMessage(JSON.stringify({
                   event: NuiMessages.DisplayDeath,
                   data: {
@@ -312,10 +314,9 @@ export class Death {
 
                   // Set you as dead
                   // playerStates.state.deathState = DeathStates.Dead;
+                  this.myState = DeathStates.Dead;
 
                   // Play dead animations
-                  console.log("insideVeh", this.insideVeh, this.prevVehicle, this.vehicleSeat);
-
                   if (this.insideVeh) { // Have to check this way, as `IsPedInAnyVehicle` is ran too late
                     if (this.insideVeh) this.insideVeh = false; // Restore this data
 

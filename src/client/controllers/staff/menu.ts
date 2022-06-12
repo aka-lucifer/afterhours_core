@@ -218,35 +218,7 @@ export class StaffMenu {
     if (this.client.player.Rank >= Ranks.Admin) {
       this.playerActionsMenu.BindCheckbox("Godmode", this.godmode, (newState: boolean) => {
         this.godmode = newState;
-
-        if (this.godmode) {
-          if (this.godmodeTick === undefined) this.godmodeTick = setTick(() => {
-            const myPed = Game.PlayerPed;
-            myPed.IsInvincible = this.godmode;
-            SetPlayerInvincible(Game.Player.Handle, this.godmode);
-
-            myPed.CanRagdoll = false;
-            myPed.clearBloodDamage();
-            myPed.resetVisibleDamage();
-            myPed.clearLastWeaponDamage();
-            SetEntityProofs(myPed.Handle, true, true, true, true, true, true, true, true);
-            myPed.IsOnlyDamagedByPlayer = false;
-            SetEntityCanBeDamaged(myPed.Handle, false);
-          });
-        } else {
-          if (this.godmodeTick !== undefined) {
-            clearTick(this.godmodeTick);
-            this.godmodeTick = undefined;
-
-            const myPed = Game.PlayerPed;
-            myPed.IsInvincible = false;
-            SetPlayerInvincible(Game.Player.Handle, false);
-            myPed.CanRagdoll = true;
-            SetEntityProofs(myPed.Handle, false, false, false, false, false, false, false, false);
-            myPed.IsOnlyDamagedByPlayer = true;
-            SetEntityCanBeDamaged(myPed.Handle, true);
-          }
-        }
+        this.toggleGodmode(this.godmode);
       });
 
       this.playerActionsMenu.BindCheckbox("NoClip", this.client.staffManager.noclip.Active, () => {
@@ -298,15 +270,15 @@ export class StaffMenu {
           SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
         }
       });
-    }
 
-    this.playerActionsMenu.BindButton("Teleport To Marker", async() => {
-      await this.EVENT_tpm();
-    });
-    
-    this.playerActionsMenu.BindButton("Go To Previous Location", async() => {
-      await this.EVENT_teleportBack();
-    });
+      this.playerActionsMenu.BindButton("Teleport To Marker", async() => {
+        await this.EVENT_tpm();
+      });
+
+      this.playerActionsMenu.BindButton("Go To Previous Location", async() => {
+        await this.EVENT_teleportBack();
+      });
+    }
 
     // Vehicle Actions Menu
     this.vehicleActionsMenu = this.menu.BindSubmenu("Vehicle Actions");
@@ -475,6 +447,10 @@ export class StaffMenu {
         emitNet(Events.freezePlayer, playerData.Id);
       });
 
+      menu.BindButton("Revive", () => {
+        emitNet(Events.revivePlayer, playerData.Id);
+      });
+
       menu.BindButton("Teleport To", () => {
         emitNet(Events.tpToPlayer, playerData.Id);
       });
@@ -539,6 +515,39 @@ export class StaffMenu {
       if (!await this.client.menuManager.IsMenuOpen(this.menu.handle)) {
         this.refreshPlayers();
         await this.menu.Open();
+      }
+    }
+  }
+
+  public toggleGodmode(newState: boolean): void {
+    console.log("set godmode to", newState);
+
+    if (this.godmode) {
+      if (this.godmodeTick === undefined) this.godmodeTick = setTick(() => {
+        const myPed = Game.PlayerPed;
+        myPed.IsInvincible = this.godmode;
+        SetPlayerInvincible(Game.Player.Handle, this.godmode);
+
+        myPed.CanRagdoll = false;
+        myPed.clearBloodDamage();
+        myPed.resetVisibleDamage();
+        myPed.clearLastWeaponDamage();
+        SetEntityProofs(myPed.Handle, true, true, true, true, true, true, true, true);
+        myPed.IsOnlyDamagedByPlayer = false;
+        SetEntityCanBeDamaged(myPed.Handle, false);
+      });
+    } else {
+      if (this.godmodeTick !== undefined) {
+        clearTick(this.godmodeTick);
+        this.godmodeTick = undefined;
+
+        const myPed = Game.PlayerPed;
+        myPed.IsInvincible = false;
+        SetPlayerInvincible(Game.Player.Handle, false);
+        myPed.CanRagdoll = true;
+        SetEntityProofs(myPed.Handle, false, false, false, false, false, false, false, false);
+        myPed.IsOnlyDamagedByPlayer = true;
+        SetEntityCanBeDamaged(myPed.Handle, true);
       }
     }
   }
