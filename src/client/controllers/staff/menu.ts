@@ -1,12 +1,13 @@
 import { Audio, Game, Ped, Scaleform, Vector3 } from "fivem-js";
 
 import { Client } from "../../client";
-import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform } from "../../utils";
+import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons } from "../../utils";
 
 import { Menu } from "../../models/ui/menu/menu";
 import { Submenu } from "../../models/ui/menu/submenu";
 import { Notification } from "../../models/ui/notification";
 import { svPlayer } from "../../models/player";
+import { ServerCallback } from '../../models/serverCallback';
 
 import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
 import { Events } from "../../../shared/enums/events/events";
@@ -16,8 +17,9 @@ import { Ranks } from "../../../shared/enums/ranks";
 import { Weathers, WinterWeathers } from "../../../shared/enums/sync/weather";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
-import { ServerCallback } from '../../models/serverCallback';
 import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
+
+import sharedConfig from "../../../configs/shared.json";
 
 interface PlayerMenu {
   netId: number,
@@ -68,6 +70,7 @@ export class StaffMenu {
   // Menus [Actions]
   private playerActionsMenu: Submenu;
   private vehicleActionsMenu: Submenu;
+  private weaponActionsMenu: Submenu;
 
   // Menu Components
 
@@ -240,37 +243,6 @@ export class StaffMenu {
         myPed.IsVisible = this.visible;
       });
 
-      this.playerActionsMenu.BindCheckbox("Infinite Ammo", this.infiniteAmmo, (newState: boolean) => {
-        this.infiniteAmmo = newState;
-        SetPedInfiniteAmmoClip(Game.PlayerPed.Handle, this.infiniteAmmo);
-      });
-
-      this.playerActionsMenu.BindCheckbox("No Reload", this.noReload, (newState: boolean) => {
-        this.noReload = newState;
-      });
-
-      this.playerActionsMenu.BindCheckbox("No Recoil", this.noRecoil, (newState: boolean) => {
-        this.noRecoil = newState;
-      });
-
-      this.playerActionsMenu.BindCheckbox("Gravity Gun", this.usingGravityGun, (newState: boolean) => {
-        this.usingGravityGun = newState;
-
-        if (this.usingGravityGun) {
-          if (!HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-            Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
-          } else {
-            SetCurrentPedWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, true);
-          }
-        } else {
-          if (HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-            Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
-          }
-
-          SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
-        }
-      });
-
       this.playerActionsMenu.BindButton("Teleport To Marker", async() => {
         await this.EVENT_tpm();
       });
@@ -299,6 +271,89 @@ export class StaffMenu {
           const notify = new Notification("Staff Menu", "Your vehicle isn't damaged!", NotificationTypes.Error);
           await notify.send();
         }
+      }
+    });
+
+    this.weaponActionsMenu = this.menu.BindSubmenu("Weapon Actions");
+      
+    this.weaponActionsMenu.BindButton("Give Weapon", async() => {
+      const weaponName = await keyboardInput("Weapon Name", 25);
+      if (weaponName !== undefined && weaponName !== null) {
+        if (weaponName.length > 0) {
+          const weapons = await sortWeapons(sharedConfig.weapons); // Sort the weapons array, so it's just weapon data and no hash
+          const weaponIndex = weapons.findIndex(weapon => weapon.name == weaponName);
+
+          if (weaponIndex !== -1) {
+            const hash = GetHashKey(weaponName);
+            const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
+            Game.PlayerPed.giveWeapon(hash, maxAmmo, false, true);
+
+            const notify = new Notification("Staff Menu", `You've gave yourself an ${weapons[weaponIndex].label}.`, NotificationTypes.Info);
+            await notify.send();
+          } else {
+            const notify = new Notification("Staff Menu", `Weapon name not found or is incorrect!`, NotificationTypes.Error);
+            await notify.send();
+          }
+        } else {
+          const notify = new Notification("Staff Menu", `You haven't entered a weapon!`, NotificationTypes.Error);
+          await notify.send();
+        }
+      } else {
+        const notify = new Notification("Job", `You haven't entered a weapon!`, NotificationTypes.Error);
+        await notify.send();
+      }
+    });
+
+    this.weaponActionsMenu.BindButton("Give All Weapons", async() => {
+      const weapons = await sortWeapons(sharedConfig.weapons); // Sort the weapons array, so it's just weapon data and no hash
+      for (let i = 0; i < weapons.length; i++) {
+        if (weapons[i].type == "weapon") {
+          const hash = GetHashKey(weapons[i].name);
+          const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
+          Game.PlayerPed.giveWeapon(hash, maxAmmo, false, false);
+        }
+
+        if (i == (weapons.length - 1)) {
+          const notify = new Notification("Staff Menu", "All weapons added.", NotificationTypes.Info);
+          await notify.send();
+        }
+      }
+    });
+
+    this.weaponActionsMenu.BindButton("Remove All Weapons", async() => {
+      Game.PlayerPed.removeAllWeapons();
+      const notify = new Notification("Staff Menu", "All weapons removed!", NotificationTypes.Error);
+      await notify.send();
+    });
+
+    this.weaponActionsMenu.BindCheckbox("Infinite Ammo", this.infiniteAmmo, (newState: boolean) => {
+      this.infiniteAmmo = newState;
+      SetPedInfiniteAmmoClip(Game.PlayerPed.Handle, this.infiniteAmmo);
+    });
+
+    this.weaponActionsMenu.BindCheckbox("No Reload", this.noReload, (newState: boolean) => {
+      this.noReload = newState;
+    });
+
+    this.weaponActionsMenu.BindCheckbox("No Recoil", this.noRecoil, (newState: boolean) => {
+      this.noRecoil = newState;
+    });
+
+    this.weaponActionsMenu.BindCheckbox("Gravity Gun", this.usingGravityGun, (newState: boolean) => {
+      this.usingGravityGun = newState;
+
+      if (this.usingGravityGun) {
+        if (!HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
+          Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
+        } else {
+          SetCurrentPedWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, true);
+        }
+      } else {
+        if (HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
+          Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
+        }
+
+        SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
       }
     });
   }
