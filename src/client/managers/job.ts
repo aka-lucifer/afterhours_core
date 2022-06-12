@@ -59,8 +59,8 @@ export class JobManager {
               if (this.client.Character.isLeoJob()) {
                 const myPed = Game.PlayerPed;
 
-                // global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
-                // global.exports["pma-voice"].setRadioChannel(1, "[State Trooper] - RTO");
+                global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
+                global.exports["pma-voice"].setRadioChannel(245.1, "LEO (Main RTO)");
 
                 // // Apply Weapons & Armour
                 // if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
@@ -83,8 +83,8 @@ export class JobManager {
               if (this.client.Character.isLeoJob()) {
                 const myPed = Game.PlayerPed;
 
-                // global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
-                // global.exports["pma-voice"].setRadioChannel(0);
+                global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
+                global.exports["pma-voice"].setRadioChannel(0);
 
                 // if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
                 //   myPed.removeWeapon(Weapons.AR15);
