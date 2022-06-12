@@ -54,5 +54,11 @@ export enum NuiMessages {
 
   // Hex Menu
   OpenHexMenu = "OPEN_HEX_MENU",
-  CloseHexMenu = "CLOSE_HEX_MENU"
+  CloseHexMenu = "CLOSE_HEX_MENU",
+
+  // Death System
+  DisplayDeath = "DISPLAY_DEATH",
+  UpdateRespawnTimer = "UPDATE_RESPAWN_TIMER",
+  StartRespawnable = "START_RESPAWNABLE",
+  UpdateRespawnCounter = "UPDATE_RESPAWN_COUNTDOWN",
 }

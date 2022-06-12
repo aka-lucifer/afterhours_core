@@ -46,6 +46,9 @@ import { LogManager } from './managers/logging';
 // [Controllers] UI
 import { BugReporting } from './controllers/ui/bugReporting';
 
+// [Controllers] Death
+import { Death } from './controllers/death';
+
 import { LogTypes } from './enums/logging';
 import { Capitalize, Dist, Error, GetHash, Inform, Log, logCommand } from './utils';
 
@@ -112,6 +115,9 @@ export class Server {
 
   // [Controllers | UI] Bug Reporting
   private bugReporting: BugReporting;
+
+  // [Controllers] Death
+  private death: Death;
 
   constructor() {
     this.debugMode = serverConfig.debug;
@@ -187,6 +193,10 @@ export class Server {
 
     // [Controllers | UI] Bug Reporting
     this.bugReporting = new BugReporting(server);
+
+    // [Controllers] Death
+    this.death = new Death(server);
+    this.death.init();
 
     // Initiate Managers
     await this.banManager.loadBans(); // Load all bans from the DB, into the ban manager

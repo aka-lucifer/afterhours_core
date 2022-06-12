@@ -50,6 +50,7 @@ import { BugReporting } from './controllers/ui/bugReporting';
 import { HexMenu } from './controllers/ui/hexMenu';
 
 // [Controllers] Normal
+import { Death } from './controllers/death';
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
@@ -69,6 +70,7 @@ import { GrabState } from '../shared/enums/jobs/grabStates';
 
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
+import { DeathStates } from '../shared/enums/deathStates';
 
 let takingScreenshot = false;
 
@@ -137,6 +139,7 @@ export class Client {
   public hexMenu: HexMenu;
 
   // [Controllers] Normal
+  private death: Death;
   private playerNames: PlayerNames;
   private afk: AFK;
 
@@ -148,7 +151,8 @@ export class Client {
     
     // Events
     // (Resources)
-    // on(Events.resourceStart, this.EVENT_resourceRestarted.bind(this));
+    on(Events.mapStarted, this.disableAutospawn.bind(this));
+    on(Events.resourceStart, this.disableAutospawn.bind(this));
     on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
 
     // NUI/Game Ready
@@ -230,7 +234,12 @@ export class Client {
     this.teleporting = newState;
   }
 
-  // Methods
+  // Methods (Handles disabling auto respawning when you die)
+  private disableAutospawn(): void {
+    global.exports["spawnmanager"].setAutoSpawn(false);
+    console.log("auto spawn disabled!");
+  }
+
   public async initialize(): Promise<void> {
     // [Managers] Server Data
     this.richPresence = new RichPresence(client);
@@ -287,6 +296,9 @@ export class Client {
     this.hexMenu.init();
 
     // [Controllers] Normal
+    this.death = new Death(client);
+    await this.death.init();
+
     this.playerNames = new PlayerNames(client);
     this.afk = new AFK(client);
 
@@ -323,6 +335,7 @@ export class Client {
       this.spawner.requestUI();
       this.richPresence.Text = "Viewing Changelog, Keybinds, Commands & Rules";
     } else {
+      global.exports["spawnmanager"].spawnPlayer(); // Ensure player spawns into server (As we have disabled automatic spawning/respawning).
       this.characters.displayCharacters(true);
       this.richPresence.Text = "Selecting Character";
     }
@@ -360,6 +373,7 @@ export class Client {
     this.playerStates.state.set("cuffState", CuffState.Uncuffed, true);
     this.playerStates.state.set("grabState", GrabState.None, true);
     this.playerStates.state.set("interactionState", InteractionStates.None, true);
+    this.playerStates.state.set("deathState", DeathStates.Alive, true);
 
     this.statesTick = setTick(async() => {
 

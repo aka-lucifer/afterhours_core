@@ -2010,3 +2010,37 @@ body {
   font-size: 1.5vh;
   margin-top: 13%;
 }
+
+/* Death UI */
+#Death_Container {
+  position: absolute;
+
+  transform: translate(-50%, 2%);
+  bottom: 2%;
+  left: 50%;
+
+  width: 35%;
+  height: fit-content;
+}
+
+.respawnCounter {
+  text-align: center;
+
+  color: white;
+  text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  font-family: "Tanseek";
+
+  font-size: 2.3em;
+}
+
+.holdCounter {
+  text-align: center;
+}
+
+.holdText {
+  color: white;
+  text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  font-family: "Tanseek";
+
+  font-size: 2.3em;
+}

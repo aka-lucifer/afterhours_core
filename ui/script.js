@@ -212,7 +212,15 @@ const HUD = new Vue({
       evidence: null
     },
     reportingBug: false,
-    bugReportMenu: null
+    bugReportMenu: null,
+
+    // Death System
+    deathDisplaying: false,
+    deathState: "counting_down",
+    deathData: {
+      respawnCounter: "34",
+      holdCounter: "5"
+    }
   },
   methods: {
     // Spawn UI
@@ -1064,6 +1072,39 @@ const HUD = new Vue({
 
     resetBugData() {
       this.$refs.bugReportForm.reset();
+    },
+
+    // Death UI
+    DisplayDeath(data) {
+      console.log("display death init fam!", JSON.stringify(data));
+      if (Object.keys(data).length > 0) {
+
+        if (data.type === "counting_down") {
+          this.deathData.respawnCounter = data.respawnRemaining;
+          this.deathState = data.type;
+        }
+
+        this.deathDisplaying = data.display;
+      }
+    },
+
+    UpdateRespawnTimer(data) {
+      if (this.deathState === "counting_down") {
+        this.deathData.respawnCounter = data.newTimer;
+      }
+    },
+
+    StartRespawnable(data) {
+      if (data.type === "respawn_now") {
+        this.deathData.holdCounter = data.counter;
+        this.deathState = data.type;
+      }
+    },
+
+    UpdateRespawnCountdown(data) {
+      if (this.deathState === "respawn_now") {
+        this.deathData.holdCounter = data.newCounter;
+      }
     }
   },
 
@@ -1094,7 +1135,7 @@ const HUD = new Vue({
         return [];
       }
 
-      if (this.chatMessage[0] == "/") { // if chat content is a command
+      if (this.chatMessage[0] === "/") { // if chat content is a command
         const currentSuggestions = this.suggestions.filter((s) => {
           if (!s.name.startsWith(this.chatMessage)) {
             const suggestionSplitted = s.name.split(" ");
@@ -1224,6 +1265,12 @@ const HUD = new Vue({
 
     // Bug Reporting
     RegisterEvent("OPEN_BUG_REPORT", this.OpenBugReport);
+
+    // Death System
+    RegisterEvent("DISPLAY_DEATH", this.DisplayDeath);
+    RegisterEvent("UPDATE_RESPAWN_TIMER", this.UpdateRespawnTimer);
+    RegisterEvent("START_RESPAWNABLE", this.StartRespawnable);
+    RegisterEvent("UPDATE_RESPAWN_COUNTDOWN", this.UpdateRespawnCountdown);
 
     // Key Presses
     window.addEventListener("keydown", function(event) {

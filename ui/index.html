@@ -792,6 +792,18 @@
           </v-card>
         </template>
       </v-dialog>
+
+      <div id="Death_Container" v-show="deathDisplaying">
+        <div v-if="deathState == 'counting_down'">
+          <div class='respawnCounter'>You have {{ deathData.respawnCounter }} seconds until you can respawn.</div>
+        </div>
+
+        <div v-else-if="deathState == 'respawn_now'">
+          <div class='holdCounter'>
+            <span class='holdText'>Hold <span style="font-size: .6em;"><kbd>E</kbd></span> for {{ deathData.holdCounter }} seconds to respawn.</span>
+          </div>
+        </div>
+      </div>
     </v-app>
 
     <!-- Progress Bar -->

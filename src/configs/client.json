@@ -8240,6 +8240,30 @@
             },
             "nearVehiclesDist": 3.5
           }
+        },
+        "death": {
+          "disabledControls": [
+            59,
+            68,
+            69,
+            71,
+            72,
+            73,
+            74,
+            75,
+            76,
+            85,
+            86
+          ],
+          "defaultCountdownTimer": 60,
+          "defaultRespawnCount": 5,
+          "respawnPositions": [
+            {"label": "Sandy Shores", "x": 1817.57, "y": 3680.57, "z": 34.27, "heading": 17.80},
+            {"label": "Grapeseed", "x": 1659.16, "y": 4826.03, "z": 41.99, "heading": 278.10},
+            {"label": "Paleto Bay", "x": -242.52, "y": 6326.15, "z": 32.42, "heading": 220.21},
+            {"label": "Pillbox", "x": 357.82, "y": -592.92, "z": 28.79, "heading": 259.0},
+            {"label": "Central Los Santos", "x": 341.07, "y": -1397.31, "z": 32.51, "heading": 48.5}
+          ]
         }
     },
     "spawnInfo": {

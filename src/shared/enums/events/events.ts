@@ -1,6 +1,7 @@
 export enum Events {
   // CitizenFX Events
   gameEventTriggered = "gameEventTriggered",
+  mapStarted = "onClientMapStart",
   entityCreated = "entityCreated",
   entityCreating = "entityCreating",
   entityRemoved = "entityRemoved",
@@ -17,7 +18,6 @@ export enum Events {
   playerDisconnected = "playerDropped",
   populationPedCreating = "populationPedCreating",
   playerSpawned = "playerSpawned",
-  chatSuggestion = "chat:addSuggestion",
 
   // Base Events
   playerDied = "baseevents:onPlayerDied",
@@ -190,5 +190,9 @@ export enum Events {
   receiveCommends = "astrid:client:receiveCommends",
 
   // Astrid Client ([Hex Menu] - Civilian)
-  dropWeapon = "astrid:client:hexMenu:dropWeapon"
+  dropWeapon = "astrid:client:hexMenu:dropWeapon",
+
+  // Astrid Client (Death)
+  playerDead = "astrid:client:death:playerDead",
+  revivePlayer = "astrid:client:death:revivePlayer"
 }
