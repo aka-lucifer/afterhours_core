@@ -69,50 +69,7 @@ export class Death {
     onNet(Events.playerDead, this.EVENT_playerKilled.bind(this));
     onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
     onNet(Events.revive, this.EVENT_revive.bind(this));
-
-    // Keymapping
-    RegisterKeyMapping("+respawn_player", "Respawn yourself", "keyboard", "R");
-    // RegisterCommand("+respawn_player", this.Respawn.bind(this), false);
-
-    RegisterCommand("explode", () => {
-      const pedCoords = Game.PlayerPed.Position;
-      AddExplosion(pedCoords.x, pedCoords.y, pedCoords.z, ExplosionType.Propane, 10.0, true, false, 10.0);
-    }, false);
-
-    RegisterCommand("die", () => {
-      const myPed = Game.PlayerPed;
-      myPed.kill();
-    }, false);
-
-    RegisterCommand("alive", async() => {
-      const myPed = Game.PlayerPed;
-      const myPos = myPed.Position;
-
-      NetworkResurrectLocalPlayer(myPos.x, myPos.y, myPos.z, myPed.Heading, true, false);
-      myPed.clearBloodDamage();
-
-      // Set Alive Shite
-      SendNuiMessage(JSON.stringify({
-        event: NuiMessages.DisplayDeath,
-        data: {
-          display: false
-        }
-      }));
-
-      this.myState = DeathStates.Alive;
-      this.client.staffManager.staffMenu.toggleGodmode(false);
-
-      if (this.controlsTick !== undefined) {
-        clearTick(this.controlsTick);
-        this.controlsTick = undefined;
-      }
-
-      if (this.animTick !== undefined) {
-        clearTick(this.animTick);
-        this.animTick = undefined;
-      }
-    }, false);
-
+    
     Inform("Death | Controller", "Started!");
   }
 
@@ -191,6 +148,11 @@ export class Death {
           this.client.staffManager.staffMenu.toggleGodmode(false);
 
           // Disable Ticks
+          if (this.deathTick !== undefined) {
+            clearTick(this.deathTick);
+            this.deathTick = undefined;
+          }
+
           if (this.controlsTick !== undefined) {
             clearTick(this.controlsTick);
             this.controlsTick = undefined;

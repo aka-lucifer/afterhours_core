@@ -4,12 +4,15 @@ import { client } from './client';
 
 import { Postal } from './controllers/vehicles/gps';
 
+import { Notification } from './models/ui/notification';
+
+import { Events } from '../shared/enums/events/events';
+import { NotificationTypes } from '../shared/enums/ui/notifications/types';
 import { RightHandsideVehs } from '../shared/enums/vehicles';
+import { VehData } from '../shared/interfaces/vehicle';
+import { Weapon } from '../shared/interfaces/weapon';
 
 import clientConfig from '../configs/client.json';
-import { Events } from '../shared/enums/events/events';
-import { Notification } from './models/ui/notification';
-import { NotificationTypes } from '../shared/enums/ui/notifications/types';
 
 /**
  * @param reference Title for organisation logs
@@ -702,3 +705,40 @@ export async function getClosestVehicle(ped: Ped): Promise<[number, Vehicle]> {
 onNet(Events.soundFrontEnd, (sound: string, set?: string) => {
   Audio.playSoundFrontEnd(sound, set);
 })
+
+/**
+ * 
+ * @param vehicles The vehicle array/object from the JSON to sort
+ * @returns A sorted array of the vehicles information
+ */
+export async function sortVehicles(vehicles: Record<string, any>): Promise<VehData[]> {
+  let vehs: VehData[] = [];
+  for (const [hash, vehData] of Object.entries(vehicles)) {
+    const vehicle = vehData as VehData;
+    vehs.push(vehicle);
+  }
+
+  vehs = vehs.sort(function(a, b) {
+    const textA = a.brand.toUpperCase();
+    const textB = b.brand.toUpperCase();
+    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+  });
+
+  return vehs;
+}
+
+/**
+ * 
+ * @param weapons The weapon array/object from the JSON to sort
+ * @returns A sorted array of the weapon information
+ */
+ export async function sortWeapons(weapons: Record<string, any>): Promise<Weapon[]> {
+  const weaps: Weapon[] = [];
+  
+  for (const [hash, weapData] of Object.entries(weapons)) {
+    const weapon = weapData as Weapon;
+    weaps.push(weapon);
+  }
+
+  return weaps;
+}

@@ -20,7 +20,7 @@ export class AFK {
     this.client = client;
 
     // Methods
-    this.startAFK();
+    // this.startAFK();
 
     // Events
     onNet(Events.setAFK, this.EVENT_setAFK.bind(this));
@@ -29,13 +29,13 @@ export class AFK {
   }
 
   // Methods
-  private startAFK(): void {
-    // this.afkInterval = setInterval(() => {
-      // if (this.client.Player.Spawned) {
-        console.log("AFK TIMER!");
-      // }
-    // }, 5000);
-  }
+  // private startAFK(): void {
+  //   // this.afkInterval = setInterval(() => {
+  //     // if (this.client.Player.Spawned) {
+  //       console.log("AFK TIMER!");
+  //     // }
+  //   // }, 5000);
+  // }
 
   // Events
   private EVENT_setAFK(manually?: boolean): void {

@@ -1,24 +1,23 @@
 import { Blip, Color, Control, Game, InputMode, Screen, Vector3, Vehicle, VehicleSeat, World } from 'fivem-js';
 
 import { Client } from '../../../client';
-import { createVeh, Delay, Inform } from '../../../utils';
+import { createVeh, Delay, Inform, sortVehicles } from '../../../utils';
 
 import { Menu } from '../../../models/ui/menu/menu';
 import { Submenu } from '../../../models/ui/menu/submenu';
+import { Notification } from '../../../models/ui/notification';
 
 import { MarkerData } from '../../../interfaces/ui/marker';
 import { BlipData } from '../../../interfaces/ui/blip';
 
 import { MenuPositions } from '../../../../shared/enums/ui/menu/positions';
 import { JobLabels, Jobs } from '../../../../shared/enums/jobs/jobs';
+import { Ranks } from '../../../../shared/enums/ranks';
+import { NotificationTypes } from '../../../../shared/enums/ui/notifications/types';
 import { VehData } from '../../../../shared/interfaces/vehicle';
 
 import clientConfig from '../../../../configs/client.json';
 import serverConfig from '../../../../configs/server.json';
-import { Ranks } from '../../../../shared/enums/ranks';
-import { spawn } from 'child_process';
-import { Notification } from '../../../models/ui/notification';
-import { NotificationTypes } from '../../../../shared/enums/ui/notifications/types';
 
 interface SpawnLocation {
   x: number,
@@ -130,25 +129,9 @@ export class Garages {
     return [false, null, -1];
   }
 
-  private async sortVehicles(vehicles: Record<string, any>): Promise<VehData[]> {
-    let vehs: VehData[] = [];
-    for (const [hash, vehData] of Object.entries(vehicles)) {
-      const vehicle = vehData as VehData;
-      vehs.push(vehicle);
-    }
-
-    vehs = vehs.sort(function(a, b) {
-      const textA = a.brand.toUpperCase();
-      const textB = b.brand.toUpperCase();
-      return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-    });
-
-    return vehs;
-  }
-
   public async setup(): Promise<void> {
     this.client.menuManager.emptyMenu(this.menu.handle); // Empty current vehicles
-    const vehicles = await this.sortVehicles(serverConfig.vehicles.blacklister); // Sort the vehicles array, so it's just VehData and no hash
+    const vehicles = await sortVehicles(serverConfig.vehicles.blacklister); // Sort the vehicles array, so it's just VehData and no hash
 
     for (let b = 0; b < vehicles.length; b++) {
       const vehicle = vehicles[b]; // Get second entry from array, as first entry is vehicle hash.
