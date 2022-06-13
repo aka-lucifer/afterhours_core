@@ -103,7 +103,7 @@ export enum Events {
 
   // Astrid Client ([Staff] - Commands)
   teleportToMarker = "astrid:client:teleportToMarker",
-  teleportBack = "astrid:client:teleportToMarker",
+  teleportBack = "astrid:client:teleportBack",
   clearWorldVehs = "astrid:client:clearWorldVehs",
   showRank = "astrid:client:showRank",
   
