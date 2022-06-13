@@ -26,11 +26,11 @@ export class GravityGun {
       onNet(Events.getGravitied, this.EVENT_getGravitied.bind(this));
 
       // Key Mapped Commands
-      RegisterCommand("attach_entity", this.attachEntity.bind(this), false);
-      RegisterCommand("shoot_attached_entity", this.shootEntity.bind(this), false);
-      RegisterCommand("scroll_attached_entity_forward", this.scrollForward.bind(this), false);
-      RegisterCommand("scroll_attached_entity_backward", this.scrollBackward.bind(this), false);
-      RegisterCommand("delete_attached_entity", this.deleteEntity.bind(this), false);
+      RegisterCommand("+attach_entity", this.attachEntity.bind(this), false);
+      RegisterCommand("+shoot_attached_entity", this.shootEntity.bind(this), false);
+      RegisterCommand("+scroll_attached_entity_forward", this.scrollForward.bind(this), false);
+      RegisterCommand("+scroll_attached_entity_backward", this.scrollBackward.bind(this), false);
+      RegisterCommand("+delete_attached_entity", this.deleteEntity.bind(this), false);
       
       Inform("Staff | Gravity Gun Controller", "Started!");
     }

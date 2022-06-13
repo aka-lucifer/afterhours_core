@@ -75,7 +75,7 @@ export class ChatManager {
   private registerKeybinds(): void {
     // Chat Input Toggling
     // RegisterKeyMapping("open_chat", "Opens the chat", "keyboard", "T");
-    RegisterCommand("open_chat", () => {
+    RegisterCommand("+open_chat", () => {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {
           if (this.client.player.Rank >= Ranks.Admin) {
@@ -121,7 +121,7 @@ export class ChatManager {
 
     // Chat Visibility Toggling
     // RegisterKeyMapping("toggle_chat", "Toggles chat", "keyboard", "home");
-    RegisterCommand("toggle_chat", async() => {
+    RegisterCommand("+toggle_chat", async() => {
       if (!IsPauseMenuActive()) {
         if (this.chatState != ChatStates.Hidden) {
           this.chatState = ChatStates.Hidden;
