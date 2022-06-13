@@ -110,6 +110,7 @@ export class StaffMenu {
       onNet(Events.teleportBack, this.EVENT_teleportBack.bind(this));
       onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
+      onNet(Events.getSummoned, this.EVENT_getSummoned.bind(this));
       onNet(Events.startSpectating, this.EVENT_startSpectating.bind(this));
 
       // Key Mapped Commands
@@ -514,6 +515,10 @@ export class StaffMenu {
         emitNet(Events.tpToVehicle, playerData.Id);
       });
 
+      menu.BindButton("Summon", () => {
+        emitNet(Events.summonPlayer, playerData.Id);
+      });
+
       menu.BindButton("Spectate", () => {
         emitNet(Events.spectatePlayer, playerData.Id);
       });
@@ -680,7 +685,19 @@ export class StaffMenu {
         this.lastLocation = Game.PlayerPed.Position;
         const teleported = await teleportToCoords(playerPos);
         if (teleported) {
-          emit(Events.sendSystemMessage, new Message(`You've teleported to ${foundPlayer.Name}.`, SystemTypes.Admin));
+          emit(Events.sendSystemMessage, new Message(`You've teleported to ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+        }
+      }
+    }
+  }
+
+  private async EVENT_getSummoned(player: svPlayer, playerPos: Vector3): Promise<void> {
+    if (this.client.player.Rank >= Ranks.Admin) {
+      const foundPlayer = new svPlayer(player);
+      if (foundPlayer) {
+        const teleported = await teleportToCoords(playerPos);
+        if (teleported) {
+          emit(Events.sendSystemMessage, new Message(`You've been brought to ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
         }
       }
     }
@@ -702,7 +719,7 @@ export class StaffMenu {
           if (teleported) {
             NetworkSetInSpectatorMode(true, foundPlayer.Ped.Handle);
             this.spectateTarget = foundPlayer.Ped;
-            emit(Events.sendSystemMessage, new Message(`You've started spectating ${foundPlayer.Name}.`, SystemTypes.Admin));
+            emit(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
           }
         } else {
           Game.PlayerPed.IsVisible = true;
@@ -710,7 +727,7 @@ export class StaffMenu {
           if (teleported) {
             NetworkSetInSpectatorMode(false, foundPlayer.Ped.Handle);
             this.spectateTarget = undefined;
-            emit(Events.sendSystemMessage, new Message(`You've stopped spectating ${foundPlayer.Name}.`, SystemTypes.Admin));
+            emit(Events.sendSystemMessage, new Message(`You've stopped spectating ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
           }
         }
       }

@@ -28,6 +28,7 @@ export class StaffMenu {
     onNet(Events.freezePlayer, this.EVENT_freezePlayer.bind(this));
     onNet(Events.tpToPlayer, this.EVENT_tpToPlayer.bind(this));
     onNet(Events.tpToVehicle, this.EVENT_tpToVehicle.bind(this));
+    onNet(Events.summonPlayer, this.EVENT_summonPlayer.bind(this));
     onNet(Events.spectatePlayer, this.EVENT_spectatePlayer.bind(this));
 
     // [Server Management]
@@ -359,6 +360,32 @@ export class StaffMenu {
           } else {
             await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
           }
+        }
+      }
+    } else {
+      console.log("player id doesn't exist!");
+    }
+  }
+  
+  private async EVENT_summonPlayer(playerId: number): Promise<void> {
+    if (playerId > 0) {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        const havePerm = this.havePermission(player.Rank);
+        console.log("have permission!", havePerm);
+
+        if (havePerm) {
+          // if (player.Id !== playerId) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+
+            if (foundPlayer) {
+              await foundPlayer.TriggerEvent(Events.getSummoned, Object.assign({}, player), player.Position);
+            } else {
+              await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
+            }
+          // } else {
+            // await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          // }
         }
       }
     } else {
