@@ -178,6 +178,8 @@ export class JobBlips {
                     }
 
                     blip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    blip.Rotation = units[i].heading;
+                    blip.ShowHeadingIndicator = true;
 
                     if (units[i].sirenOn) {
                       if (blipTick === undefined) blipTick = setTick(async() => {
@@ -344,6 +346,8 @@ export class JobBlips {
                       }
 
                       foundBlip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      foundBlip.Rotation = units[i].heading;
+                      foundBlip.ShowHeadingIndicator = true;
 
                       if (units[i].sirenOn && units[i].inVeh) {
                         if (blipData.tick === undefined) blipData.tick = setTick(async() => {
