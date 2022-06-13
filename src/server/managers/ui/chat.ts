@@ -57,7 +57,6 @@ export class ChatManager {
               if (command == commands[a].name) {
                 if (player.Rank >= commands[a].permission) {
                   if (commands[a].argsRequired) {
-                    console.log("ONE", commands[a].args, "TWO", args)
                     if (Object.keys(commands[a].args).length > 0 && args.length >= Object.keys(commands[a].args).length) {
                       // Make sure the entered args aren't empty strings
                       for (let b = 0; b < args.length; b++) {
