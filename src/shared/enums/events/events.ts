@@ -104,8 +104,6 @@ export enum Events {
   setAFK = "astrid:client:setAFK",
 
   // Astrid Client ([Staff] - Commands)
-  teleportToMarker = "astrid:client:teleportToMarker",
-  teleportBack = "astrid:client:teleportBack",
   clearWorldVehs = "astrid:client:clearWorldVehs",
   showRank = "astrid:client:showRank",
   
@@ -118,6 +116,9 @@ export enum Events {
   getGravitied = "astrid:client:getGravitied",
   
   // Astrid Client ([Controllers] | Staff] - Menu)
+  teleportToMarker = "astrid:client:teleportToMarker",
+  teleportBack = "astrid:client:teleportBack",
+  updatePlayerBlips = "astrid:client:controllers:staff:menu:updatePlayerBlips",
   receiveWarning = "astrid:client:receiveWarning",
   goToPlayer = "astrid:client:goToPlayer",
   startSpectating = "astrid:client:startSpectating",

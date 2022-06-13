@@ -1,5 +1,7 @@
+import { Vector3 } from "fivem-js";
+
 import { Server } from "../../server";
-import { addZero } from "../../utils";
+import { addZero, Delay } from "../../utils";
 
 import { Kick } from "../../models/database/kick";
 import { Warning } from "../../models/database/warning";
@@ -14,8 +16,20 @@ import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 
+interface ConnectedPlayer {
+  netId: string;
+  coords: Vector3;
+  heading: number;
+  name: string,
+  inVeh: boolean;
+  vehType?: string
+}
+
 export class StaffMenu {
   private server: Server;
+
+  // Ticks
+  private playerBlipTicks: number = undefined;
 
   constructor(server: Server) {
     this.server = server;
@@ -39,12 +53,47 @@ export class StaffMenu {
     onNet(Events.changeTime, this.EVENT_changeTime.bind(this));
     onNet(Events.bringAll, this.EVENT_bringAll.bind(this));
     onNet(Events.freezeAll, this.EVENT_freezeAll.bind(this));
-
-    // [Player Actions]
-    // onNet(Events.toggleBlips, this.EVENT_toggleBlips.bind(this));
   }
 
   // Methods
+  private startPlayerBlips(): void {
+    if (this.playerBlipTicks === undefined) this.playerBlipTicks = setTick(async() => {
+      // loop through on duty LEO, Fire/EMS & Community Officers and send their location and info to every on duty client.
+      const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+      const connectedPlayers: ConnectedPlayer[] = [];
+
+      for (let a = 0; a < svPlayers.length; a++) { // Loop through all server players
+        if (svPlayers[a].Spawned) { // If selected their character
+          const ped = GetPlayerPed(svPlayers[a].Handle); // Get their characters ped
+          const currVeh = GetVehiclePedIsIn(ped, false); // Check if they're inside a vehicle
+
+          connectedPlayers.push({ // Push new element into active units array.
+            netId: svPlayers[a].Handle,
+            coords: svPlayers[a].Position,
+            heading: Math.ceil(GetEntityHeading(ped)),
+            name: svPlayers[a].GetName,
+            inVeh: currVeh > 0,
+            vehType: GetVehicleType(currVeh)
+          });
+        }
+
+        if (a == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
+          for (let b = 0; b < svPlayers.length; b++) {
+            if (svPlayers[b].Rank >= Ranks.Admin) {
+              await svPlayers[b].TriggerEvent(Events.updatePlayerBlips, connectedPlayers);
+            }
+          }
+        }
+      }
+
+      await Delay(1500);
+    });
+  }
+
+  public init(): void {
+    this.startPlayerBlips();
+  }
+
   private havePermission(rank: Ranks): boolean {
     let havePermission = rank >= Ranks.Admin;
 
@@ -365,8 +414,6 @@ export class StaffMenu {
           }
         }
       }
-    } else {
-      console.log("player id doesn't exist!");
     }
   }
   
@@ -375,10 +422,9 @@ export class StaffMenu {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         const havePerm = this.havePermission(player.Rank);
-        console.log("have permission!", havePerm);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
+          if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -392,13 +438,11 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-            // await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          }
         }
       }
-    } else {
-      console.log("player id doesn't exist!");
     }
   }
   
@@ -407,10 +451,9 @@ export class StaffMenu {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         const havePerm = this.havePermission(player.Rank);
-        console.log("have permission!", havePerm);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
+          if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -426,13 +469,11 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-            // await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          }
         }
       }
-    } else {
-      console.log("player id doesn't exist!");
     }
   }
 
@@ -547,23 +588,6 @@ export class StaffMenu {
           } else {
             console.log("can't bring yourself!");
           }
-        }
-      }
-    }
-  }
-
-  private async EVENT_toggleBlips(toggledState: boolean): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
-    if (player) {
-      if (player.Rank >= Ranks.Admin) {
-        const states = Player(player.Handle);
-        states.state.playerBlips = toggledState;
-        console.log("states", states.state.playerBlips);
-    
-        if (states.state.playerBlips) {
-          console.log("Enable player blips!");
-        } else {
-          console.log("Disable player blips!");
         }
       }
     }

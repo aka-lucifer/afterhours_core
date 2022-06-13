@@ -1,4 +1,4 @@
-import { Audio, Game, Ped, Scaleform, Vector3 } from "fivem-js";
+import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, World } from "fivem-js";
 
 import { Client } from "../../client";
 import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons } from "../../utils";
@@ -36,6 +36,21 @@ const banTypes = [
   "Months",
   "Years"
 ]
+
+interface ConnectedPlayer {
+  netId: string;
+  coords: Vector3;
+  heading: number;
+  name: string,
+  inVeh: boolean;
+  vehType?: string
+}
+
+interface PlayerBlip {
+  netId: number;
+  blip: Blip;
+  tick: number;
+}
 
 export class StaffMenu {
   private client: Client;
@@ -94,6 +109,9 @@ export class StaffMenu {
   private lastLocation: Vector3;
   private summonLastLocation: Vector3;
 
+  private playersBlips: boolean = false;
+  private createdBlips: PlayerBlip[] = [];
+
   // [Weapon] Data
   private noReload: boolean = false;
   private infiniteAmmo: boolean = false;
@@ -111,6 +129,7 @@ export class StaffMenu {
       // Events
       onNet(Events.teleportToMarker, this.EVENT_tpm.bind(this));
       onNet(Events.teleportBack, this.EVENT_teleportBack.bind(this));
+      onNet(Events.updatePlayerBlips, this.EVENT_updatePlayerBlips.bind(this));
       onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
       onNet(Events.startSpectating, this.EVENT_startSpectating.bind(this));
@@ -233,6 +252,18 @@ export class StaffMenu {
 
       this.playerActionsMenu.BindCheckbox("NoClip", this.client.staffManager.noclip.Active, () => {
         this.client.staffManager.noclip.toggleNoclip();
+      });
+
+      this.playerActionsMenu.BindCheckbox("Player Blips", this.playersBlips, async(newState: boolean) => {
+        this.playersBlips = newState;
+
+        if (this.playersBlips) {
+          const notify = new Notification("Staff Menu", "Player blips enabled", NotificationTypes.Info);
+          await notify.send();
+        } else {
+          const notify = new Notification("Staff Menu", "Player blips disabled!", NotificationTypes.Error);
+          await notify.send();
+        }
       });
 
       this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
@@ -661,6 +692,88 @@ export class StaffMenu {
       } else {
         const notify = new Notification("Teleporter", "You haven't teleported anywhere!", NotificationTypes.Error);
         await notify.send();
+      }
+    }
+  }
+
+  private async EVENT_updatePlayerBlips(units: ConnectedPlayer[]) {
+    if (this.client.Player.Spawned && this.client.Player.Rank >= Ranks.Admin) {
+      if (this.playersBlips) {
+        for (let i = 0; i < units.length; i++) {
+          const netId = parseInt(units[i].netId);
+
+          // if (netId !== this.client.Player.NetworkId) {
+            if (units[i].coords !== undefined) {
+              const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
+
+              if (blipIndex === -1) { // If the blip doesn't exist make it
+                const blip = World.createBlip(new Vector3(units[i].coords.x, units[i].coords.y, units[i].coords.z));
+                blip.IsShortRange = false;
+                blip.Display = 2;
+                let blipTick = undefined;
+
+                if (units[i].inVeh) {
+                  if (units[i].vehType == "automobile") {
+                    blip.Sprite = BlipSprite.PersonalVehicleCar;
+                  } else if (units[i].vehType == "bike") {
+                    blip.Sprite = BlipSprite.PersonalVehicleBike;
+                  } else if (units[i].vehType == "heli") {
+                    blip.Sprite = BlipSprite.Helicopter;
+                  } else if (units[i].vehType == "boat") {
+                    blip.Sprite = BlipSprite.Boat;
+                  }
+
+                  blip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  blip.Rotation = units[i].heading;
+                  blip.ShowHeadingIndicator = true;
+                } else {
+                  blip.Sprite = BlipSprite.Standard;
+                  
+                  blip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  blip.Rotation = units[i].heading;
+                  blip.ShowHeadingIndicator = true;
+                }
+
+                this.createdBlips.push({
+                  netId: netId,
+                  blip: blip,
+                  tick: blipTick
+                });
+              } else { // If the blip exists, update it's properties
+                const blipData = this.createdBlips[blipIndex];
+                const foundBlip = new Blip(blipData.blip.Handle); // see if this fixes stupid bug
+                foundBlip.Position = units[i].coords;
+
+                if (units[i].inVeh) {
+                  if (units[i].vehType == "automobile") {
+                    foundBlip.Sprite = BlipSprite.PersonalVehicleCar;
+                  } else if (units[i].vehType == "bike") {
+                    foundBlip.Sprite = BlipSprite.PersonalVehicleBike;
+                  } else if (units[i].vehType == "heli") {
+                    foundBlip.Sprite = BlipSprite.Helicopter;
+                  } else if (units[i].vehType == "boat") {
+                    foundBlip.Sprite = BlipSprite.Boat;
+                  }
+
+                  foundBlip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  foundBlip.Rotation = units[i].heading;
+                  foundBlip.ShowHeadingIndicator = true;
+                } else {
+                  foundBlip.Sprite = BlipSprite.Standard;
+
+                  foundBlip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  foundBlip.Rotation = units[i].heading;
+                  foundBlip.ShowHeadingIndicator = true;
+                }
+              }
+            }
+          // }
+        }
+      } else {
+        for (let i = 0; i < this.createdBlips.length; i++) {
+          this.createdBlips[i].blip.delete();
+          this.createdBlips.splice(i, 1);
+        }
       }
     }
   }

@@ -158,6 +158,7 @@ export class StaffManager {
   public init(): void {
     this.gravityGun = new Gravity(this.server);
     this.staffMenu = new StaffMenu(this.server);
+    this.staffMenu.init();
     
     this.registerCommands();
     this.registerRCONCommands();
