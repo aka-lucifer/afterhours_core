@@ -58,7 +58,8 @@ export enum Events {
   freezePlayer = "astrid:server:freezePlayer",
   tpToPlayer = "astrid:server:tpToPlayer",
   tpToVehicle = "astrid:server:tpToVehicle",
-  summonPlayer = "astrid:server:summonPlayer",
+  summonPlayer = "astrid:server:controllers:staff:menu:summonPlayer",
+  returnSummonedPlayer = "astrid:server:controllers:staff:menu:returnSummonedPlayer",
   spectatePlayer = "astrid:server:spectatePlayer",
 
   // Astrid Server ([Controllers] | Staff] - Menu | [Server Management])
@@ -119,7 +120,6 @@ export enum Events {
   // Astrid Client ([Controllers] | Staff] - Menu)
   receiveWarning = "astrid:client:receiveWarning",
   goToPlayer = "astrid:client:goToPlayer",
-  getSummoned = "astrid:client:controllers:staff:menu:getSummoned",
   startSpectating = "astrid:client:startSpectating",
 
   // Astrid Client (Syncers)

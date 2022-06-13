@@ -5,12 +5,14 @@ import { Kick } from "../../models/database/kick";
 import { Warning } from "../../models/database/warning";
 import { Commend } from "../../models/database/commend";
 import { Ban } from "../../models/database/ban";
+import { ClientCallback } from "../../models/clientCallback";
 
 import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+import { Callbacks } from "../../../shared/enums/events/callbacks";
 
 export class StaffMenu {
   private server: Server;
@@ -29,6 +31,7 @@ export class StaffMenu {
     onNet(Events.tpToPlayer, this.EVENT_tpToPlayer.bind(this));
     onNet(Events.tpToVehicle, this.EVENT_tpToVehicle.bind(this));
     onNet(Events.summonPlayer, this.EVENT_summonPlayer.bind(this));
+    onNet(Events.returnSummonedPlayer, this.EVENT_returnSummonedPlayer.bind(this));
     onNet(Events.spectatePlayer, this.EVENT_spectatePlayer.bind(this));
 
     // [Server Management]
@@ -379,7 +382,47 @@ export class StaffMenu {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
-              await foundPlayer.TriggerEvent(Events.getSummoned, Object.assign({}, player), player.Position);
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState, passedData) => {
+                if (cbState == "SUCCESS") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+                } else if (cbState == "ERROR_TPING") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to summon ^3${foundPlayer.GetName} ^0to your location!`, SystemTypes.Error));
+                }
+              }));
+            } else {
+              await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
+            }
+          // } else {
+            // await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          // }
+        }
+      }
+    } else {
+      console.log("player id doesn't exist!");
+    }
+  }
+  
+  private async EVENT_returnSummonedPlayer(playerId: number): Promise<void> {
+    if (playerId > 0) {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        const havePerm = this.havePermission(player.Rank);
+        console.log("have permission!", havePerm);
+
+        if (havePerm) {
+          // if (player.Id !== playerId) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+
+            if (foundPlayer) {
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummonReturned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState, passedData) => {
+                if (cbState == "SUCCESS") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've returned ^3${foundPlayer.GetName}^0 to their original position.`, SystemTypes.Admin));
+                } else if (cbState == "ERROR_TPING") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message("Unable to teleport them to their previous location!", SystemTypes.Error));
+                } else if (cbState == "NO_SUMMON_LAST_LOCATION") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message("This player hasn't been summoned!", SystemTypes.Error));
+                }
+              }));
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }

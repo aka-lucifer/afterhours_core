@@ -107,7 +107,7 @@ export class Server {
   private aopManager: AOPManager;
 
   // [Managers] Client Callbacks
-  private clientCallbackManager: ClientCallbackManager;
+  public clientCallbackManager: ClientCallbackManager;
 
   // [Managers] Logging
   public staffLogManager: StaffLogManager;

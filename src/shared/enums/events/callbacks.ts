@@ -2,6 +2,10 @@ export enum Callbacks {
   // Astrid Client -> Server Callbacks
   takeScreenshot = "astrid:client:screenshot",
 
+  // Astrid Client -> Server Callbacks ([Controllers] | Staff] - Menu)
+  getSummoned = "astrid:client:controllers:staff:menu:getSummoned",
+  getSummonReturned = "astrid:client:controllers:staff:menu:getSummonReturned",
+
   // Astrid Server -> Client Callbacks
 
   // Characters
@@ -19,5 +23,5 @@ export enum Callbacks {
   sendMessage = "astrid:server:sendMessage",
 
   // Bug Reporting
-  submitBug = "astrid:server:controllers:ui:submitBug"
+  submitBug = "astrid:server:controllers:ui:submitBug",
 }

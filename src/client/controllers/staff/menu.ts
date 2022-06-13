@@ -11,6 +11,7 @@ import { ServerCallback } from '../../models/serverCallback';
 
 import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
 import { Events } from "../../../shared/enums/events/events";
+import { Callbacks } from "../../../shared/enums/events/callbacks";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { AddonWeapons, Weapons } from '../../../shared/enums/weapons';
 import { Ranks } from "../../../shared/enums/ranks";
@@ -90,8 +91,10 @@ export class StaffMenu {
   private visible: boolean = true;
   private onDuty: boolean = false;
 
-  // [Weapon] Data
   private lastLocation: Vector3;
+  private summonLastLocation: Vector3;
+
+  // [Weapon] Data
   private noReload: boolean = false;
   private infiniteAmmo: boolean = false;
   private noRecoil: boolean = false;
@@ -110,8 +113,11 @@ export class StaffMenu {
       onNet(Events.teleportBack, this.EVENT_teleportBack.bind(this));
       onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
-      onNet(Events.getSummoned, this.EVENT_getSummoned.bind(this));
       onNet(Events.startSpectating, this.EVENT_startSpectating.bind(this));
+      
+      // Callbacks
+      onNet(Callbacks.getSummoned, this.CALLBACK_getSummoned.bind(this));
+      onNet(Callbacks.getSummonReturned, this.CALLBACK_getSummonReturned.bind(this));
 
       // Key Mapped Commands
       RegisterCommand("+toggle_menu", this.toggleMenu.bind(this), false);
@@ -519,6 +525,10 @@ export class StaffMenu {
         emitNet(Events.summonPlayer, playerData.Id);
       });
 
+      menu.BindButton("Return Player", () => {
+        emitNet(Events.returnSummonedPlayer, playerData.Id);
+      });
+
       menu.BindButton("Spectate", () => {
         emitNet(Events.spectatePlayer, playerData.Id);
       });
@@ -683,6 +693,7 @@ export class StaffMenu {
       const foundPlayer = new svPlayer(player);
       if (foundPlayer) {
         this.lastLocation = Game.PlayerPed.Position;
+
         const teleported = await teleportToCoords(playerPos);
         if (teleported) {
           emit(Events.sendSystemMessage, new Message(`You've teleported to ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
@@ -691,13 +702,40 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_getSummoned(player: svPlayer, playerPos: Vector3): Promise<void> {
+  private async CALLBACK_getSummoned(data: any): Promise<void> {
     if (this.client.player.Rank >= Ranks.Admin) {
-      const foundPlayer = new svPlayer(player);
+      const foundPlayer = new svPlayer(data.player);
       if (foundPlayer) {
-        const teleported = await teleportToCoords(playerPos);
+        this.summonLastLocation = Game.PlayerPed.Position;
+
+        const teleported = await teleportToCoords(data.playerPos);
         if (teleported) {
-          emit(Events.sendSystemMessage, new Message(`You've been brought to ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+          emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+          emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff summoning you
+        } else {
+          emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff summoning you
+        }
+      }
+    }
+  }
+
+  
+  private async CALLBACK_getSummonReturned(data: any): Promise<void> {
+    if (this.client.player.Rank >= Ranks.Admin) {
+      const foundPlayer = new svPlayer(data.player);
+      if (foundPlayer) {
+        if (this.summonLastLocation !== undefined) {
+          const teleported = await teleportToCoords(this.summonLastLocation);
+          if (teleported) {
+            this.summonLastLocation = undefined; // Set our previous summon location to null
+
+            emit(Events.sendSystemMessage, new Message(`You've been returned to your previous location, by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+            emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff returning you
+          } else {
+            emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff returning you
+          }
+        } else {
+          emitNet(Events.receiveClientCB, "NO_SUMMON_LAST_LOCATION", data); // CB false to the staff returning you
         }
       }
     }
