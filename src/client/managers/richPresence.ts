@@ -53,14 +53,6 @@ export class RichPresence {
   
   constructor(client: Client) {
     this.client = client;
-
-    RegisterCommand("update", async(source: number, args: any[]) => {
-      if (args[0]) {
-        this.statusText = args[0];
-      } else {
-        this.statusText = null;
-      }
-    }, false);
   }
 
   // Getters & Setters

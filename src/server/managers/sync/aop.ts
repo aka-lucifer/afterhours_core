@@ -46,15 +46,15 @@ export class AOPManager {
     onNet(Events.setAOP, this.EVENT_setAOP.bind(this));
     onNet(Events.setCycling, this.EVENT_setCycling.bind(this));
 
-    RegisterCommand("players_add", () => {
-      this.playerCount = 17;
-      console.log("players set to", this.playerCount);
-    }, false);
+    // RegisterCommand("players_add", () => {
+    //   this.playerCount = 17;
+    //   console.log("players set to", this.playerCount);
+    // }, false);
 
-    RegisterCommand("players_remove", () => {
-      this.playerCount = 8;
-      console.log("players set to", this.playerCount);
-    }, false);
+    // RegisterCommand("players_remove", () => {
+    //   this.playerCount = 8;
+    //   console.log("players set to", this.playerCount);
+    // }, false);
   }
 
   // Getters

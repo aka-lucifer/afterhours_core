@@ -50,10 +50,6 @@ export class AOPManager {
     onNet(Events.syncAOP, this.EVENT_syncAOP.bind(this));
     onNet(Events.syncAOPCycling, this.EVENT_syncAOPCycling.bind(this));
     onNet(Events.aopMenu, this.EVENT_aopMenu.bind(this));
-
-    RegisterCommand("empty_menu", async() => {
-      this.aopChangerMenu.Empty();
-    }, false);
   }
 
   // Getters
