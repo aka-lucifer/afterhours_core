@@ -11,6 +11,14 @@ import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
 
 import clientConfig from "../../configs/client.json";
 
+interface GamerTag {
+  tag: number,
+  ped: Ped,
+  carIcon: boolean,
+  bikeIcon: boolean,
+  passengerIcon: boolean
+}
+
 export class PlayerNames {
   // Client Data
   private client: Client;
@@ -19,7 +27,7 @@ export class PlayerNames {
   private displayTick: number = undefined;
 
   // Names Data
-  private createdTags: Record<string, any> = {};
+  private createdTags: GamerTag[] = [];
 
   constructor(client: Client) {
     this.client = client;
@@ -95,13 +103,19 @@ export class PlayerNames {
                   this.createdTags[netId] = {
                     // tag: CreateMpGamerTagWithCrewColor(playerId, `${netId} | ${name}`, true, true, "Gold", 2, 0, 255, 0),
                     tag: CreateMpGamerTag(ped.Handle, `${netId} | ${name}`, false, false, null, -1),
-                    ped: ped
+                    ped: ped,
+                    carIcon: false,
+                    bikeIcon: false,
+                    passengerIcon: false
                   }
                 } else {
                   this.createdTags[netId] = {
                     // tag: CreateMpGamerTagWithCrewColor(playerId, `${netId} | ${name}`, true, true, "Gold", 2, 0, 255, 0),
                     tag: CreateMpGamerTag(ped.Handle, `${netId} | ${name}`, false, false, null, -1),
-                    ped: ped
+                    ped: ped,
+                    carIcon: this.createdTags[netId].carIcon,
+                    bikeIcon: this.createdTags[netId].bikeIcon,
+                    passengerIcon: this.createdTags[netId].passengerIcon
                   }
                 }
 
@@ -159,10 +173,12 @@ export class PlayerNames {
                   // SetMpGamerTagVisibility(tag, tagIcons.Passive, true); // Paused
                   // SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, true); // Person (Passenger)
 
-
                   SetMpGamerTagVisibility(tag, tagIcons.Talking, NetworkIsPlayerTalking(playerId)); // Talking
                   SetMpGamerTagAlpha(tag, tagIcons.Talking, 255);
                   // SetMpGamerTagVisibility(tag, tagIcons.UsingMenu, true); // Flag
+
+                  SetMpGamerTagVisibility(tag, tagIcons.Typing, playerStates.state.chatOpen); // Typing
+                  SetMpGamerTagAlpha(tag, tagIcons.Typing, 255);
                   
 
                   if (IsPedInAnyVehicle(ped.Handle, false)) {
@@ -173,27 +189,91 @@ export class PlayerNames {
                       console.log("they are driver");
                       if (currVeh.Model.IsBike || currVeh.Model.IsQuadbike) {
                         console.log("they are driving bike/quadbike");
-                        SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, true); // Driver (Bike)
-                        SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 255);
+                        if (!this.createdTags[netId].bikeIcon) { // If the bike icon is hidden, show it
+                          this.createdTags[netId].bikeIcon = true;
+                          SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, true); // Driver (Bike)
+                          SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 255);
+                        }
                       } else {
                         console.log("they're driving car")
-                        SetMpGamerTagVisibility(tag, tagIcons.Driver, true); // Driver (Wheel)
-                        SetMpGamerTagAlpha(tag, tagIcons.Driver, 255);
+                        if (!this.createdTags[netId].carIcon) { // If the car wheel icon is hidden, show it
+                          this.createdTags[netId].carIcon = true;
+                          SetMpGamerTagVisibility(tag, tagIcons.Driver, true); // Driver (Wheel)
+                          SetMpGamerTagAlpha(tag, tagIcons.Driver, 255);
+                        }
+                      }
+                      
+                      // Disable passenger icons
+                      if (this.createdTags[netId].passengerIcon) { // If the passenger icon is showing, hide it
+                        this.createdTags[netId].passengerIcon = false;
+                        SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, false); // Person (Passenger)
+                        SetMpGamerTagAlpha(tag, tagIcons.PedFollowing, 0);
                       }
                     } else {
                       console.log("they are passenger")
-                      SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, true); // Person (Passenger)
-                      SetMpGamerTagAlpha(tag, tagIcons.PedFollowing, 255);
-                    }
-                  }
+                      // Disable driver icons
+                      if (this.createdTags[netId].bikeIcon) { // If the bike icon is showing, hide it
+                        this.createdTags[netId].bikeIcon = false;
+                        SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, false); // Driver (Bike)
+                        SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 0);
+                      }
 
-                  SetMpGamerTagVisibility(tag, tagIcons.Typing, playerStates.state.chatOpen); // Typing
+                      if (this.createdTags[netId].carIcon) { // If the car wheel icon is showing, hide it
+                        this.createdTags[netId].carIcon = false;
+                        SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Bike)
+                        SetMpGamerTagAlpha(tag, tagIcons.Driver, 0);
+                      }
+
+                      // Enable passenger icons
+                      if (!this.createdTags[netId].passengerIcon) { // If the passenger icon is hidden, show it
+                        this.createdTags[netId].passengerIcon = true;
+                        SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, true); // Person (Passenger)
+                        SetMpGamerTagAlpha(tag, tagIcons.PedFollowing, 255);
+                      }
+                    }
+                  } else { // Disable driver related icons if you aren't inside a vehicle, exit a vehicle
+                    if (this.createdTags[netId].carIcon) { // If the car wheel icon is showing, hide it
+                      this.createdTags[netId].carIcon = false;
+                      SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Bike)
+                      SetMpGamerTagAlpha(tag, tagIcons.Driver, 0);
+                    }
+                    
+                    if (this.createdTags[netId].bikeIcon) { // If the bike icon is showing, hide it
+                      this.createdTags[netId].bikeIcon = false;
+                      SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, false); // Driver (Bike)
+                      SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 0);
+                    }
+
+                    if (this.createdTags[netId].passengerIcon) { // If the passenger icon is hidden, show it
+                      this.createdTags[netId].passengerIcon = false;
+                      SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, false); // Person (Passenger)
+                      SetMpGamerTagAlpha(tag, tagIcons.PedFollowing, 0);
+                    }
+
+                  }
                 } else {
                   SetMpGamerTagVisibility(tag, tagIcons.Name, false); // Name
                   SetMpGamerTagVisibility(tag, tagIcons.Health, false); // Health
                   SetMpGamerTagVisibility(tag, tagIcons.Talking, false); // Talking
-                  SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Wheel)
-                  SetMpGamerTagVisibility(tag, tagIcons.Passenger, false); // Driver (Wheel)
+                  SetMpGamerTagVisibility(tag, tagIcons.Typing, false); // Typing
+
+                  if (this.createdTags[netId].carIcon) {
+                    this.createdTags[netId].carIcon = false
+                    SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Bike)
+                    SetMpGamerTagAlpha(tag, tagIcons.Driver, 0);
+                  }
+
+                  if (this.createdTags[netId].bikeIcon) {
+                    this.createdTags[netId].bikeIcon = false
+                    SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, false); // Driver (Bike)
+                    SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 0);
+                  }
+
+                  if (this.createdTags[netId].passengerIcon) {
+                    this.createdTags[netId].passengerIcon = false
+                    SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, false); // Person (Passenger)
+                    SetMpGamerTagAlpha(tag, tagIcons.PedFollowing, 0);
+                  }
                 }
               }
             }
