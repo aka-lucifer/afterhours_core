@@ -168,7 +168,6 @@ export class PlayerNames {
                   SetMpGamerTagAlpha(tag, tagIcons.Health, 255);
                   SetMpGamerTagHealthBarColour(tag, 25); // Health Colour
 
-
                   // SetMpGamerTagVisibility(tag, tagIcons.CrewTag, true); // Crew Tag
                   // SetMpGamerTagVisibility(tag, tagIcons.Passive, true); // Paused
                   // SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, true); // Person (Passenger)
@@ -182,20 +181,16 @@ export class PlayerNames {
                   
 
                   if (IsPedInAnyVehicle(ped.Handle, false)) {
-                    console.log("they are inside veh!");
                     const currVeh = ped.CurrentVehicle;
 
                     if (currVeh.getPedOnSeat(VehicleSeat.Driver).Handle == ped.Handle) {
-                      console.log("they are driver");
                       if (currVeh.Model.IsBike || currVeh.Model.IsQuadbike) {
-                        console.log("they are driving bike/quadbike");
                         if (!this.createdTags[netId].bikeIcon) { // If the bike icon is hidden, show it
                           this.createdTags[netId].bikeIcon = true;
                           SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, true); // Driver (Bike)
                           SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 255);
                         }
                       } else {
-                        console.log("they're driving car")
                         if (!this.createdTags[netId].carIcon) { // If the car wheel icon is hidden, show it
                           this.createdTags[netId].carIcon = true;
                           SetMpGamerTagVisibility(tag, tagIcons.Driver, true); // Driver (Wheel)
@@ -210,7 +205,6 @@ export class PlayerNames {
                         SetMpGamerTagAlpha(tag, tagIcons.PedFollowing, 0);
                       }
                     } else {
-                      console.log("they are passenger")
                       // Disable driver icons
                       if (this.createdTags[netId].bikeIcon) { // If the bike icon is showing, hide it
                         this.createdTags[netId].bikeIcon = false;
@@ -285,7 +279,7 @@ export class PlayerNames {
 
   private async hideNames(): Promise<void> {
     if (this.client.Player.Spawned) {
-      const notify = new Notification("Player Names", "Disabled", NotificationTypes.Success);
+      const notify = new Notification("Player Names", "Disabled", NotificationTypes.Error);
       await notify.send();
 
       for (const [key, value] of Object.entries(this.createdTags)) {
