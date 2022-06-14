@@ -3,10 +3,13 @@ import { Game, Ped, VehicleSeat } from "fivem-js";
 import { Client } from "../client";
 import { Inform, insideVeh } from "../utils";
 
-import clientConfig from "../../configs/client.json";
+import { Notification } from "../models/ui/notification";
 
 import { Ranks } from "../../shared/enums/ranks";
 import { getRankFromValue } from "../../shared/utils";
+import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
+
+import clientConfig from "../../configs/client.json";
 
 export class PlayerNames {
   // Client Data
@@ -21,15 +24,28 @@ export class PlayerNames {
   constructor(client: Client) {
     this.client = client;
     
-    RegisterCommand("+toggle_names", this.displayNames.bind(this), false);
-    RegisterCommand("-toggle_names", this.hideNames.bind(this), false);
+    RegisterCommand("+toggle_names", this.toggleNames.bind(this), false);
+    // RegisterCommand("-toggle_names", this.hideNames.bind(this), false);
     
     Inform("Player Names | Disablers Controller", "Started!");
   }
 
   // Methods
-  private displayNames(): void {
+  private async toggleNames(): Promise<void> {
     if (this.client.Player.Spawned) {
+      if (this.displayTick === undefined) {
+        await this.displayNames();
+      } else {
+        await this.hideNames();
+      }
+    }
+  }
+
+  private async displayNames(): Promise<void> {
+    if (this.client.Player.Spawned) {
+      const notify = new Notification("Player Names", "Enabled", NotificationTypes.Success);
+      await notify.send();
+
       if (this.displayTick == undefined) this.displayTick = setTick(async() => {
         const myPed = Game.PlayerPed;
         const svPlayers = this.client.Players;
@@ -39,7 +55,7 @@ export class PlayerNames {
           const netId = svPlayers[i].NetworkId;
 
           // If the other connected players aren't you
-          if (this.client.player.NetworkId != netId) {
+          // if (this.client.player.NetworkId != netId) {
             if (svPlayers[i].spawned) {
               const playerStates = Player(netId);
               const playerId = GetPlayerFromServerId(netId);
@@ -47,7 +63,6 @@ export class PlayerNames {
               // If they're inside your scope or not (THIS IS HOW U BEAT ONESYNC INFINITY PLAYER ID NOT FOUND BS)
               if (playerId != -1) {
                 const ped = new Ped(GetPlayerPed(playerId));
-                // console.log("ped shit", playerId, svPlayers[i].NetworkId, this.client.player.NetworkId, GetPlayerFromServerId(svPlayers[i].NetworkId), GetPlayerFromServerId(this.client.player.NetworkId));
 
                 // Name formatting
                 let name;
@@ -149,26 +164,30 @@ export class PlayerNames {
                   SetMpGamerTagAlpha(tag, tagIcons.Talking, 255);
                   // SetMpGamerTagVisibility(tag, tagIcons.UsingMenu, true); // Flag
                   
-                  const [currVeh, inside] = await insideVeh(ped);
 
-                  if (inside) {
+                  if (IsPedInAnyVehicle(ped.Handle, false)) {
+                    console.log("they are inside veh!");
+                    const currVeh = ped.CurrentVehicle;
+
                     if (currVeh.getPedOnSeat(VehicleSeat.Driver).Handle == ped.Handle) {
-                      if (IsThisModelABike(currVeh.Model.Hash) || IsThisModelAQuadbike(currVeh.Model.Hash)) {
+                      console.log("they are driver");
+                      if (currVeh.Model.IsBike || currVeh.Model.IsQuadbike) {
+                        console.log("they are driving bike/quadbike");
                         SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, true); // Driver (Bike)
                         SetMpGamerTagAlpha(tag, tagIcons.BikerArrow, 255);
                       } else {
+                        console.log("they're driving car")
                         SetMpGamerTagVisibility(tag, tagIcons.Driver, true); // Driver (Wheel)
                         SetMpGamerTagAlpha(tag, tagIcons.Driver, 255);
                       }
                     } else {
+                      console.log("they are passenger")
                       SetMpGamerTagVisibility(tag, tagIcons.PedFollowing, true); // Person (Passenger)
                       SetMpGamerTagAlpha(tag, tagIcons.PedFollowing, 255);
                     }
                   }
 
                   SetMpGamerTagVisibility(tag, tagIcons.Typing, playerStates.state.chatOpen); // Typing
-
-                  // console.log(`Gamertag [${netId}]: Talking: (${NetworkIsPlayerTalking(playerId)} | ${playerId})`);
                 } else {
                   SetMpGamerTagVisibility(tag, tagIcons.Name, false); // Name
                   SetMpGamerTagVisibility(tag, tagIcons.Health, false); // Health
@@ -178,14 +197,17 @@ export class PlayerNames {
                 }
               }
             }
-          }
+          // }
         }
       });
     }
   }
 
-  private hideNames(): void {
+  private async hideNames(): Promise<void> {
     if (this.client.Player.Spawned) {
+      const notify = new Notification("Player Names", "Disabled", NotificationTypes.Success);
+      await notify.send();
+
       for (const [key, value] of Object.entries(this.createdTags)) {
         RemoveMpGamerTag(value["tag"]);
       }
