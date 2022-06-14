@@ -620,10 +620,14 @@ export class Server {
     const svPlayers = this.connectedPlayerManager.GetPlayers;
 
     for (let a = 0; a < svPlayers.length; a++) {
-      svPlayers[a].RefreshPing();
-      // const currPlaytime = await svPlayers[a].CurrentPlaytime();
-      // svPlayers[a].formattedPlaytime = await new Playtime(currPlaytime).FormatTime();
-      svPlayers[a].formattedPlaytime = "DISABLED_FOR_TESTING";
+      if (svPlayers[a].Spawned) {
+        svPlayers[a].RefreshPing();
+        // const currPlaytime = await svPlayers[a].CurrentPlaytime();
+        // svPlayers[a].formattedPlaytime = await new Playtime(currPlaytime).FormatTime();
+        svPlayers[a].formattedPlaytime = "DISABLED_FOR_TESTING";
+      } else {
+        svPlayers[a].Handle = "N/A";
+      }
     }
 
     await player.TriggerEvent(Events.receivePlayers, this.maxPlayers, Object.assign({}, svPlayers));
