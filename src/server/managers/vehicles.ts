@@ -174,11 +174,12 @@ export class VehicleManager {
                             await player.Notify("Sheriffs Office", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
                           } else if (vehData.job == Jobs.Police) {
                             await player.Notify("Police Department", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
-                          } else if (vehData.job == Jobs.Fire) {
-                            await player.Notify("Fire Department", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
-                          } else if (vehData.job == Jobs.EMS) {
-                            await player.Notify("Medical Services", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
                           }
+                          // else if (vehData.job == Jobs.Fire) {
+                          //   await player.Notify("Fire Department", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
+                          // } else if (vehData.job == Jobs.EMS) {
+                          //   await player.Notify("Medical Services", "Your rank isn't high enough to spawn this vehicle!", NotificationTypes.Error, 4000);
+                          // }
 
                           // Log it via a webhook
                           await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -209,11 +210,13 @@ export class VehicleManager {
                           await player.Notify("Sheriffs Office", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
                         } else if (vehData.job == Jobs.Police) {
                           await player.Notify("Police Department", "You don't have permission to spawn this vehicle!!", NotificationTypes.Error, 4000);
-                        } else if (vehData.job == Jobs.Fire) {
-                          await player.Notify("Fire Department", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
-                        } else if (vehData.job == Jobs.EMS) {
-                          await player.Notify("Medical Services", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
-                        }
+                        } 
+                        
+                        // else if (vehData.job == Jobs.Fire) {
+                        //   await player.Notify("Fire Department", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
+                        // } else if (vehData.job == Jobs.EMS) {
+                        //   await player.Notify("Medical Services", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
+                        // }
 
                         // Log it via a webhook
                         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({

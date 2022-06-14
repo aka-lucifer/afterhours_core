@@ -51,16 +51,17 @@ export enum Events {
   harmPassengers = "astrid:server:harmPassengers",
   
   // Astrid Server ([Controllers] | Staff] - Menu | [Connected Players])
-  banPlayer = "astrid:server:banPlayer",
-  kickPlayer = "astrid:server:kickPlayer",
-  warnPlayer = "astrid:server:warnPlayer",
-  commendPlayer = "astrid:server:commendPlayer",
-  freezePlayer = "astrid:server:freezePlayer",
-  tpToPlayer = "astrid:server:tpToPlayer",
-  tpToVehicle = "astrid:server:tpToVehicle",
+  banPlayer = "astrid:server:controllers:staff:menu:banPlayer",
+  kickPlayer = "astrid:server:controllers:staff:menu:kickPlayer",
+  warnPlayer = "astrid:server:controllers:staff:menu:warnPlayer",
+  commendPlayer = "astrid:server:controllers:staff:menu:commendPlayer",
+  updatePlayerRank = "astrid:server:controllers:staff:menu:controllers:updatePlayerRank",
+  freezePlayer = "astrid:server:controllers:staff:menu:freezePlayer",
+  tpToPlayer = "astrid:server:controllers:staff:menu:tpToPlayer",
+  tpToVehicle = "astrid:server:controllers:staff:menu:tpToVehicle",
   summonPlayer = "astrid:server:controllers:staff:menu:summonPlayer",
   returnSummonedPlayer = "astrid:server:controllers:staff:menu:returnSummonedPlayer",
-  spectatePlayer = "astrid:server:spectatePlayer",
+  spectatePlayer = "astrid:server:controllers:staff:menu:spectatePlayer",
 
   // Astrid Server ([Controllers] | Staff] - Menu | [Server Management])
   changeWeather = "astrid:server:changeWeather",

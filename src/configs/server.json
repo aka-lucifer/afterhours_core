@@ -4,6 +4,7 @@
   "maxPing": 350,
   "trustscore": {
     "default": 75,
+    "honourableRequirement": 90,
     "playtimeDivider": 14000,
     "warningRemoval": 3,
     "kickRemoval": 6,

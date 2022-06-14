@@ -6,7 +6,6 @@ import * as Database from './database/database';
 import { LogTypes } from '../enums/logging';
 
 import { Job } from '../models/jobs/job';
-import { Character } from '../models/database/character';
 import WebhookMessage from '../models/webhook/discord/webhookMessage';
 import { Playtime } from '../models/database/playtime';
 
@@ -21,7 +20,7 @@ import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
 import { EmbedColours } from '../../shared/enums/logging/embedColours';
 import { formatFirstName, getRankFromValue } from '../../shared/utils';
 import { CountyRanks, PoliceRanks, StateRanks } from '../../shared/enums/jobs/ranks';
-import { JobLabels, Jobs } from '../../shared/enums/jobs/jobs';
+import { Jobs } from '../../shared/enums/jobs/jobs';
 
 import sharedConfig from '../../configs/shared.json';
 
@@ -76,6 +75,8 @@ export class JobManager {
         const character = await this.server.characterManager.Get(player);
         if (character) {
           character.Job.Status = data.state;
+          character.Job.Active = data.state; // Sets your active status
+
           if (data.state) {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} On Duty`);
             await player.Notify("Job", `You've gone on duty`, NotificationTypes.Success);
@@ -337,16 +338,8 @@ export class JobManager {
                   if (foundCharacter) {
 
                     // Sets their job (Controls what dept rank is FTO/High Command)
-                    let updatedJob;
                     const highCommand = this.server.jobManager.highCommand(data.jobName, data.jobRank);
-
-                    if (data.jobName === Jobs.County) {
-                      updatedJob = await foundCharacter.updateJob(data.jobName, JobLabels.County, data.jobRank, highCommand, sharedConfig.jobs.defaultCallsign, false);
-                    } else if (data.jobName == Jobs.Police) {
-                      updatedJob = await foundCharacter.updateJob(data.jobName, JobLabels.Police, data.jobRank, highCommand, sharedConfig.jobs.defaultCallsign, false);
-                    } else if (data.jobName == Jobs.State) {
-                      updatedJob = await foundCharacter.updateJob(data.jobName, JobLabels.State, data.jobRank, highCommand, sharedConfig.jobs.defaultCallsign, false);
-                    }
+                    const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel, data.jobRank, highCommand, sharedConfig.jobs.defaultCallsign, false);
 
                     if (updatedJob !== undefined) {
                       // Set your selected character fuck thing
@@ -377,7 +370,7 @@ export class JobManager {
                       await foundPlayer.TriggerEvent(Events.updateSuggestions);
 
                       await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
-                      await foundPlayer.Notify("Character", `You've have been set to [${data.jobLabel}] - ${JobLabels.County}`, NotificationTypes.Info);
+                      await foundPlayer.Notify("Character", `You've have been set to [${data.jobLabel}] - ${data.jobLabel}`, NotificationTypes.Info);
                     }
 
                     await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)

@@ -16,6 +16,10 @@ import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 
+import serverConfig from "../../../configs/server.json";
+import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
+import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
+
 interface ConnectedPlayer {
   netId: string;
   coords: Vector3;
@@ -37,11 +41,12 @@ export class StaffMenu {
 
     // Events
 
-    // [Connected Players]
+    // [Events | Connected Players]
     onNet(Events.banPlayer, this.EVENT_banPlayer.bind(this));
     onNet(Events.kickPlayer, this.EVENT_kickPlayer.bind(this));
     onNet(Events.warnPlayer, this.EVENT_warnPlayer.bind(this));
     onNet(Events.commendPlayer, this.EVENT_commendPlayer.bind(this));
+    onNet(Events.updatePlayerRank, this.EVENT_updatePlayerRank.bind(this));
     onNet(Events.freezePlayer, this.EVENT_freezePlayer.bind(this));
     onNet(Events.tpToPlayer, this.EVENT_tpToPlayer.bind(this));
     onNet(Events.tpToVehicle, this.EVENT_tpToVehicle.bind(this));
@@ -49,11 +54,14 @@ export class StaffMenu {
     onNet(Events.returnSummonedPlayer, this.EVENT_returnSummonedPlayer.bind(this));
     onNet(Events.spectatePlayer, this.EVENT_spectatePlayer.bind(this));
 
-    // [Server Management]
+    // [Events | Server Management]
     onNet(Events.changeWeather, this.EVENT_changeWeather.bind(this));
     onNet(Events.changeTime, this.EVENT_changeTime.bind(this));
     onNet(Events.bringAll, this.EVENT_bringAll.bind(this));
     onNet(Events.freezeAll, this.EVENT_freezeAll.bind(this));
+
+    // Callbacks
+    onNet(Callbacks.updatePlayerJob, this.CALLBACK_updatePlayerJob.bind(this));
   }
 
   // Methods
@@ -314,6 +322,90 @@ export class StaffMenu {
     }
   }
 
+  private async EVENT_updatePlayerRank(playerId: number, newRank: Ranks): Promise<void> {
+    if (playerId > 0) {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        const havePerm = this.havePermission(player.Rank);
+        console.log("have permission!", havePerm);
+
+        if (havePerm) {
+          // if (player.Id !== playerId) {
+            // const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
+            const foundPlayer = player;
+
+            if (foundPlayer) {
+              const hasBypass = player.Rank >= Ranks.Management ? true : false; // If you have management bypass or not
+              if (!hasBypass) { // If you don't have the management rank bypass
+                if (newRank < player.Rank) { // If the new rank is less than yours (double check, since we have already done this on our client)
+                  if (newRank >= Ranks.Honorable) { // If the rank is honourable or above (Honourable, Trusted, All of staff)
+                    const canHaveRank = foundPlayer.Trustscore >= serverConfig.trustscore.honourableRequirement ? true : false; // Trustscore auto checks bans/kicks & warnings, so we don't have to
+                    if (canHaveRank) { // If their trustscore is high enough, give them the rank
+                      const updatedRank = await foundPlayer.UpdateRank(newRank);
+                      if (updatedRank) {
+                        console.log("give them honourable or above");
+                        const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
+                        const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+  
+                        const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
+                        const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
+  
+                        await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                        await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                      } else {
+                        await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
+                      }
+                    } else { // Their trustscore is too low
+                      console.log("this person has too low of a trustscore to do this, contact management if they really deserve/need it bitch!");
+                    }
+                  } else {
+                    const updatedRank = await foundPlayer.UpdateRank(newRank);
+                    if (updatedRank) { // Give them their new rank (user & donator ranks [these ranks aren't used yet, just a placeholder, if we decide to])
+                      console.log("gave the new rank!");
+                      const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
+                      const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+                      const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
+                      const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
+
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                      await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                    } else {
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
+                    }
+                  }
+                } else { // Their new rank is the same or higher than yours, so deny
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You can't give someone a rank higher than or the same as yours!`, SystemTypes.Admin));
+                }
+              } else { // You're management so u can give whatever u want slut
+                const updatedRank = await foundPlayer.UpdateRank(newRank);
+                if (updatedRank) {
+                  const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
+                  const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+                  const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
+                  const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
+
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                  console.log("gave them new rank")
+                } else {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
+                }
+              }
+            } else {
+              await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
+            }
+          // } else {
+          //   await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
+          // }
+        }
+      }
+    } else {
+      console.log("player id doesn't exist!");
+    }
+  }
+
   private async EVENT_freezePlayer(playerId: number): Promise<void> {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
@@ -390,21 +482,37 @@ export class StaffMenu {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         const havePerm = this.havePermission(player.Rank);
-        console.log("have permission!", havePerm);
-
         if (havePerm) {
-          // if (player.Id !== playerId) {
+          if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
-              const ped = GetPlayerPed(foundPlayer.Handle);
+              const foundPed = GetPlayerPed(foundPlayer.Handle);
 
-              if (ped > 0) {
-                const currVeh = GetVehiclePedIsIn(ped, false)
+              if (foundPed > 0) {
+                let tpVehicle = GetVehiclePedIsIn(foundPed, false);
 
-                if (currVeh != 0) {
-                  const myPed = GetPlayerPed(player.Handle);
-                  SetPedIntoVehicle(myPed, currVeh, 0); // See if this places u into other seats, if that seat is full
+                if (tpVehicle > 0) {
+                  this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleFreeSeat, foundPlayer.Handle, {netId: NetworkGetNetworkIdFromEntity(tpVehicle)}, async (cbState, passedData) => {
+                    if (cbState == "SEATS_FREE") {
+                      const foundPosition = foundPlayer.Position;
+
+                      // TP to their location
+                      const myPed = GetPlayerPed(player.Handle);
+                      SetEntityCoords(myPed, foundPosition.x, foundPosition.y, foundPosition.z, false, false, false, false);
+
+                      // Spawn inside the vehicle
+                      await Delay(500); // Have a half a second delay, to make sure we've teleported inside the players scope.
+                      tpVehicle = GetVehiclePedIsIn(foundPed, false); // Redefine the vehicle
+                      
+                      // TP into the vehicle
+                      SetPedIntoVehicle(myPed, tpVehicle, passedData.freeSeat); // See if this places u into other seats, if that seat is full
+                    } else if (cbState == "NO_SEATS_FOUND") {
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to find an available seat inside ^3${foundPlayer.GetName}^0's vehicle!`, SystemTypes.Error));
+                    } else if (cbState == "ERROR") {
+                      console.log("TP VEH ERROR TINGS!");
+                    }
+                  }));
                 } else {
                   await player.Notify("Staff Menu", "This player isn't inside a vehicle!", NotificationTypes.Error);
                 }
@@ -412,9 +520,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          }
         }
       }
     }
@@ -485,11 +593,10 @@ export class StaffMenu {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         const havePerm = this.havePermission(player.Rank);
-        console.log("have permission!", havePerm);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer("2");
+          if (player.Id !== playerId) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
               console.log("ply stuff", player.Position, foundPlayer.Position);
@@ -507,9 +614,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
+          }
         }
       }
     } else {
@@ -601,6 +708,118 @@ export class StaffMenu {
             }
           } else {
             console.log("can't bring yourself!");
+          }
+        }
+      }
+    }
+  }
+
+  // Callbacks
+  private async CALLBACK_updatePlayerJob(data: Record<string, any>): Promise<void> {
+    console.log("ZERO")
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      console.log("ONE!");
+      if (player.Spawned) {
+        console.log("TWO!");
+        const character = await this.server.characterManager.Get(player);
+        if (character) {
+          console.log("THREE!");
+
+          const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsNet);
+          if (foundPlayer) {
+            console.log("FOUR!");
+            if (foundPlayer.Spawned) {
+              console.log("FIVE!");
+              const foundCharacter = await this.server.characterManager.Get(foundPlayer);
+              if (foundCharacter) {
+                console.log("SIX!");
+                // Sets their job (Controls what dept rank is FTO/High Command)
+
+                if (data.jobName !== Jobs.Community && data.jobName !== Jobs.Civilian) {
+                  console.log("SEVEN!");
+                  const highCommand = this.server.jobManager.highCommand(data.jobName, data.jobRank);
+                  const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel, data.jobRank, highCommand, foundCharacter.Job.Callsign, false);
+
+                  if (updatedJob !== undefined) {
+                    // Set your selected character fuck thing
+                    foundPlayer.selectedCharacter = { // Update selected character to have new job
+                      id: foundCharacter.Id,
+                      firstName: foundCharacter.firstName,
+                      lastName: foundCharacter.lastName,
+                      nationality: foundCharacter.nationality,
+                      backstory: foundCharacter.backstory,
+                      dob: foundCharacter.DOB,
+                      age: foundCharacter.Age,
+                      isFemale: foundCharacter.Female,
+                      phone: foundCharacter.Phone,
+                      job: foundCharacter.Job,
+                      metadata: foundCharacter.Metadata,
+                      createdAt: foundCharacter.CreatedAt,
+                      lastUpdated: foundCharacter.LastEdited,
+                    };
+
+                    // Empty owned characters table
+                    foundPlayer.characters = [];
+
+                    // Sync all players & selected characters to all clients
+                    emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
+
+                    // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                    this.server.commandManager.createChatSuggestions(foundPlayer);
+                    await foundPlayer.TriggerEvent(Events.updateSuggestions);
+
+                    await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
+                    await foundPlayer.Notify("Character", `${player.GetName} has set your job to [${data.jobLabel}] - ${data.jobRankLabel}.`, NotificationTypes.Info);
+                  }
+
+                  await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                } else {
+                  console.log("EIGHT!");
+                  const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel);
+
+                  if (updatedJob !== undefined) {
+                    // Set your selected character fuck thing
+                    foundPlayer.selectedCharacter = { // Update selected character to have new job
+                      id: foundCharacter.Id,
+                      firstName: foundCharacter.firstName,
+                      lastName: foundCharacter.lastName,
+                      nationality: foundCharacter.nationality,
+                      backstory: foundCharacter.backstory,
+                      dob: foundCharacter.DOB,
+                      age: foundCharacter.Age,
+                      isFemale: foundCharacter.Female,
+                      phone: foundCharacter.Phone,
+                      job: foundCharacter.Job,
+                      metadata: foundCharacter.Metadata,
+                      createdAt: foundCharacter.CreatedAt,
+                      lastUpdated: foundCharacter.LastEdited,
+                    };
+
+                    // Empty owned characters table
+                    foundPlayer.characters = [];
+
+                    // Sync all players & selected characters to all clients
+                    emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
+
+                    // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                    this.server.commandManager.createChatSuggestions(foundPlayer);
+                    await foundPlayer.TriggerEvent(Events.updateSuggestions);
+
+                    await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
+                    await foundPlayer.Notify("Character", `${player.GetName} has set your job to ${data.jobLabel}.`, NotificationTypes.Info);
+                  }
+
+                  await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                }
+              } else {
+                await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+              }
+            } else {
+              await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+            }
+          } else {
+            await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
           }
         }
       }

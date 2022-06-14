@@ -3,6 +3,7 @@ export enum Callbacks {
   takeScreenshot = "astrid:client:screenshot",
 
   // Astrid Client -> Server Callbacks ([Controllers] | Staff] - Menu)
+  getVehicleFreeSeat = "astrid:client:controllers:staff:menu:getVehicleFreeSeat",
   spectatePlayer = "astrid:client:controllers:staff:menu:spectatePlayer",
   getSummoned = "astrid:client:controllers:staff:menu:getSummoned",
   getSummonReturned = "astrid:client:controllers:staff:menu:getSummonReturned",
@@ -25,4 +26,7 @@ export enum Callbacks {
 
   // Bug Reporting
   submitBug = "astrid:server:controllers:ui:submitBug",
+  
+  // Astrid Server -> Client Callbacks ([Controllers] | Staff] - Menu)
+  updatePlayerJob = "astrid:client:controllers:staff:menu:updatePlayerJob",
 }

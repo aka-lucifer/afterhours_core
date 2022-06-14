@@ -193,7 +193,7 @@ export class Character {
     }
   }
 
-  public async updateJob(name: string, label: string, rank: number, isBoss?: boolean, callsign?: string, status?: boolean): Promise<boolean> {
+  public async updateJob(name: string, label: string, rank?: number, isBoss?: boolean, callsign?: string, status?: boolean): Promise<boolean> {
     this.Job = new Job(name, label, rank, isBoss, callsign, status);
 
     const updatedJob = await Database.SendQuery("UPDATE `player_characters` SET `job` = :newJob WHERE `id` = :id AND `player_id` = :playerId", {
@@ -250,7 +250,8 @@ export class Character {
   }
 
   public isSAFREMSJob(): boolean {
-    return this.job.name == Jobs.Fire || this.job.name == Jobs.EMS
+    // return this.job.name == Jobs.Fire || this.job.name == Jobs.EMS
+    return false;
   }
 
   // Formatters

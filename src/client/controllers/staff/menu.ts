@@ -1,4 +1,4 @@
-import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, World } from "fivem-js";
+import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, World } from "fivem-js";
 
 import { Client } from "../../client";
 import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons } from "../../utils";
@@ -19,6 +19,9 @@ import { Weathers, WinterWeathers } from "../../../shared/enums/sync/weather";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
+import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
+import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
+import { CountyRanks, PoliceRanks, StateRanks } from "../../../shared/enums/jobs/ranks";
 
 import sharedConfig from "../../../configs/shared.json";
 
@@ -134,6 +137,7 @@ export class StaffMenu {
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
       
       // Callbacks
+      onNet(Callbacks.getVehicleFreeSeat, this.CALLBACK_getVehicleFreeSeat.bind(this));
       onNet(Callbacks.spectatePlayer, this.CALLBACK_spectatePlayer.bind(this));
       onNet(Callbacks.getSummoned, this.CALLBACK_getSummoned.bind(this));
       onNet(Callbacks.getSummonReturned, this.CALLBACK_getSummonReturned.bind(this));
@@ -536,6 +540,146 @@ export class StaffMenu {
         }
       });
 
+      const rankMenu = menu.BindSubmenu("Update Rank");
+      for (let b = 0; b < Object.keys(Ranks).length / 2; b++) {
+        if (b < this.client.Player.Rank) { // If this rank is less than yours (you can't give someone a higher rank than you)
+          const rankLabelSplit = splitCapitalsString(Ranks[b]);
+          const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+          rankMenu.BindButton(formattedRankLabel, () => {
+            emitNet(Events.updatePlayerRank, playerData.Id, b);
+          })
+        }
+      }
+
+      if (this.client.Player.Rank >= Ranks.SeniorAdmin) {
+        const jobMenu = menu.BindSubmenu("Update Job");
+
+        const jobs = Object.keys(Jobs);
+        const jobLabels = Object.keys(JobLabels);
+
+        for (let b = 0; b < jobs.length; b++) {
+          const job = Jobs[jobs[b]]
+
+          if (job == Jobs.Police) {
+            const jobLabel = JobLabels[jobLabels[b]];
+            const jobTypeMenu = jobMenu.BindSubmenu(jobLabel);
+            const policeRanks = Object.keys(PoliceRanks);
+
+            for (let c = 0; c < policeRanks.length / 2; c++) {
+              const rankLabelSplit = splitCapitalsString(PoliceRanks[policeRanks[c]]);
+              const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+              const updateJob = jobTypeMenu.BindButton(formattedRankLabel, () => {
+                this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
+                  unitsNet: playerData.Id,
+                  jobName: job,
+                  jobLabel: jobLabel,
+                  jobRank: c,
+                  jobRankLabel: formattedRankLabel
+                }, async (recruitedUnit, passedData) => {
+                  if (recruitedUnit) {
+                    const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
+                    await notify.send();
+                  } else {
+                    const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
+                    await notify.send();
+                  }
+                }));
+              });
+            }
+          } else if (job == Jobs.County) {
+            const jobLabel = JobLabels[jobLabels[b]];
+            const jobTypeMenu = jobMenu.BindSubmenu(jobLabel);
+            const countyRanks = Object.keys(CountyRanks);
+
+            for (let c = 0; c < countyRanks.length / 2; c++) {
+              const rankLabelSplit = splitCapitalsString(CountyRanks[countyRanks[c]]);
+              const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+              const updateJob = jobTypeMenu.BindButton(formattedRankLabel, () => {
+                this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
+                  unitsNet: playerData.Id,
+                  jobName: job,
+                  jobLabel: jobLabel,
+                  jobRank: c,
+                  jobRankLabel: formattedRankLabel
+                }, async (recruitedUnit, passedData) => {
+                  if (recruitedUnit) {
+                    const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
+                    await notify.send();
+                  } else {
+                    const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
+                    await notify.send();
+                  }
+                }));
+              });
+            }
+          } else if (job == Jobs.State) {
+            const jobLabel = JobLabels[jobLabels[b]];
+            const jobTypeMenu = jobMenu.BindSubmenu(jobLabel);
+            const stateRanks = Object.keys(StateRanks);
+
+            for (let c = 0; c < stateRanks.length / 2; c++) {
+              const rankLabelSplit = splitCapitalsString(StateRanks[stateRanks[c]]);
+              const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+              const updateJob = jobTypeMenu.BindButton(formattedRankLabel, () => {
+                this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
+                  unitsNet: playerData.Id,
+                  jobName: job,
+                  jobLabel: jobLabel,
+                  jobRank: c,
+                  jobRankLabel: formattedRankLabel
+                }, async (recruitedUnit, passedData) => {
+                  if (recruitedUnit) {
+                    const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
+                    await notify.send();
+                  } else {
+                    const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
+                    await notify.send();
+                  }
+                }));
+              });
+            }
+          } else if (job == Jobs.Community) {
+            const jobLabel = JobLabels.Community;
+            const updateJob = jobMenu.BindButton(jobLabel, () => {
+              this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
+                unitsNet: playerData.Id,
+                jobName: job,
+                jobLabel: jobLabel
+              }, async (recruitedUnit, passedData) => {
+                if (recruitedUnit) {
+                  const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to ${jobLabel}.`, NotificationTypes.Info);
+                  await notify.send();
+                } else {
+                  const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
+                  await notify.send();
+                }
+              }));
+            });
+          } else if (job == Jobs.Civilian) {
+            const jobLabel = JobLabels.Civilian;
+            const updateJob = jobMenu.BindButton(jobLabel, () => {
+              this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
+                unitsNet: playerData.Id,
+                jobName: job,
+                jobLabel: jobLabel
+              }, async (recruitedUnit, passedData) => {
+                if (recruitedUnit) {
+                  const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to ${jobLabel}.`, NotificationTypes.Info);
+                  await notify.send();
+                } else {
+                  const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
+                  await notify.send();
+                }
+              }));
+            });
+          }
+        }
+      }
+
       menu.BindButton("Freeze", () => {
         emitNet(Events.freezePlayer, playerData.Id);
       });
@@ -833,6 +977,32 @@ export class StaffMenu {
           emit(Events.sendSystemMessage, new Message(`You've teleported to ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
         }
       }
+    }
+  }
+
+  private CALLBACK_getVehicleFreeSeat(data: any): void {
+    const vehicleHandle = NetworkGetEntityFromNetworkId(data.netId);
+
+    if (vehicleHandle > 0) {
+      const vehicle = new Vehicle(vehicleHandle);
+      const maxSeats = GetVehicleMaxNumberOfPassengers(vehicle.Handle);
+      let freeSeat = undefined;
+
+      // Loop through all available seats and store them into our number array
+      for (let i = 0; i < maxSeats; i++) {
+        if (vehicle.isSeatFree(i)) {
+          freeSeat = i;
+        }
+      }
+
+      if (freeSeat !== undefined) {
+        data.freeSeat = freeSeat;
+        emitNet(Events.receiveClientCB, "SEATS_FREE", data);
+      } else {
+        emitNet(Events.receiveClientCB, "NO_SEATS_FOUND", data);
+      }
+    } else {
+      emitNet(Events.receiveClientCB, "ERROR", data);
     }
   }
 

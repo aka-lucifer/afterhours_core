@@ -11,13 +11,28 @@ export async function getRankFromValue(rank: PoliceRanks | StateRanks | CountyRa
 
   if (job == Jobs.Police) {
     rankString = PoliceRanks[rank];
-    rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
+    
+    const rankLabelSplit = splitCapitalsString(rankString);
+    const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+    rankString = formattedRankLabel;
+    // rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
   } else if (job == Jobs.State) {
     rankString = StateRanks[rank];
-    rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
+    
+    const rankLabelSplit = splitCapitalsString(rankString);
+    const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+    rankString = formattedRankLabel;
+    // rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
   } else if (job == Jobs.County) {
     rankString = CountyRanks[rank];
-    rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
+    
+    const rankLabelSplit = splitCapitalsString(rankString);
+    const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+    rankString = formattedRankLabel;
+    // rankString = rankString.replace("_", " "); // Replace _ symbol with a space, so it's properly formatted for UI
   }
 
   return rankString
@@ -69,4 +84,31 @@ export function formatSQLDate(timestamp: Date): string {
  */
 export function formatFirstName(name: string): string {
   return name.slice(0, name.indexOf(name[1])); // Converts first name, to first letter (Lucy -> L)
+}
+
+/**
+ * 
+ * @param toUpdate The string to convert into a string array
+ * @returns Takes a string with multiple uppercase sections in one `word` e.g. rank term or vehicle colour (SeniorAdmin | MetallicBlack)
+ */
+export function splitCapitalsString(toUpdate: string): string[] {
+  return toUpdate.match(/[A-Z][a-z]+/g);
+}
+
+/**
+ * 
+ * @param toFormat The string array to return into a formatted string
+ * @returns Take each entry in the split string array and formats it neatly into a new string
+ */
+export function formatSplitCapitalString(toFormat: string[]): string {
+  let newString = "";
+  if (toFormat.length > 1) { // If more than one word e.g. (Admin)
+    for (let a = 0; a < toFormat.length; a++) {
+      newString = `${newString} ${toFormat[a]}`; 
+    }
+  } else {
+    newString = toFormat[0]; // Only one entry so just use that
+  }
+
+  return newString;
 }

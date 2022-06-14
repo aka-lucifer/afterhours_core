@@ -307,7 +307,7 @@ export class Player {
       id: this.id
     });
     
-    return updated.data.length > 0;
+    return updated.meta.affectedRows > 0;
   }
 
   public RefreshPing(): number {
