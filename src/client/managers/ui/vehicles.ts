@@ -1,3 +1,5 @@
+import { Game, VehicleClass, VehicleColor } from "fivem-js";
+
 import { Client } from "../../client";
 import { insideVeh, RegisterNuiCallback } from "../../utils";
 
@@ -9,7 +11,7 @@ import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 
 import { Callbacks } from "../../../shared/enums/events/callbacks";
-import { Game, VehicleClass, VehicleColor } from "fivem-js";
+import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
 
 export class Vehicles {
   private client: Client;
@@ -75,9 +77,12 @@ export class Vehicles {
       const model = currVeh.DisplayName;
       const label = GetLabelText(model);
       const type = VehicleClass[currVeh.ClassType];
-      const primaryColour = VehicleColor[currVeh.Mods.PrimaryColor];
-      const secondaryColour = VehicleColor[currVeh.Mods.SecondaryColor];
-      const colour = `${primaryColour}, ${secondaryColour}`;
+      const primaryColourSplit = splitCapitalsString(VehicleColor[currVeh.Mods.PrimaryColor]);
+      const formattedPrimaryColour = formatSplitCapitalString(primaryColourSplit);
+      const secondaryColourSplit = splitCapitalsString(VehicleColor[currVeh.Mods.SecondaryColor]);
+      const formattedSecondaryColour = formatSplitCapitalString(secondaryColourSplit);
+
+      const colour = `${formattedPrimaryColour}, ${formattedSecondaryColour}`;
       const plate = currVeh.NumberPlate;
       
       vehData = {
