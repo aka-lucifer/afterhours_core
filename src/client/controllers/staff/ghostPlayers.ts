@@ -1,21 +1,14 @@
-import { Control, Font, Game, InputMode, Ped, Vector3, World } from "fivem-js";
+import { Control, Font, Game, InputMode, Ped, Vector3 } from "fivem-js";
 
 import { Delay, Dist, Draw3DText, Inform } from "../../utils";
 
 import { svPlayer } from "../../models/player";
 import { Notification } from "../../models/ui/notification";
 
-import { Callbacks } from "../../../shared/enums/events/callbacks";
-import { pedComponents, pedProps } from "../../../shared/enums/pedClothing";
 import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
-
-interface ClothingPiece {
-  drawable: number,
-  texture: number
-}
 
 interface GhostPlayer {
   netId: number,

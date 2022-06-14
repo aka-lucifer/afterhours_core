@@ -3,12 +3,9 @@ import { Vector3 } from "fivem-js";
 import { Server } from "../../server";
 
 import { Player } from "../../models/database/player";
-import { ClientCallback } from "../../models/clientCallback";
 
-import { Callbacks } from "../../../shared/enums/events/callbacks";
 import { Ranks } from "../../../shared/enums/ranks";
 import { Events } from "../../../shared/enums/events/events";
-import { privateEncrypt } from "crypto";
 
 interface ClothingPiece {
   drawable: number,
