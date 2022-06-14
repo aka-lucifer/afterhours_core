@@ -76,7 +76,6 @@ export class StaffMenu {
   // Spectate Data
   private spectatingPlayer: boolean = false;
   private spectateLastPos: Vector3 = undefined;
-  private spectateTarget: Ped = undefined;
 
   // Menus [Server Management]
   private serverMenu: Submenu;
@@ -133,9 +132,9 @@ export class StaffMenu {
       onNet(Events.deleteLeftPlayer, this.EVENT_deleteLeftPlayer.bind(this));
       onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
-      onNet(Events.startSpectating, this.EVENT_startSpectating.bind(this));
       
       // Callbacks
+      onNet(Callbacks.spectatePlayer, this.CALLBACK_spectatePlayer.bind(this));
       onNet(Callbacks.getSummoned, this.CALLBACK_getSummoned.bind(this));
       onNet(Callbacks.getSummonReturned, this.CALLBACK_getSummonReturned.bind(this));
 
@@ -837,6 +836,37 @@ export class StaffMenu {
     }
   }
 
+  private async CALLBACK_spectatePlayer(data: any): Promise<void> {
+    if (this.client.player.Rank >= Ranks.Admin) {
+      const myPed = Game.PlayerPed;
+      const player = new svPlayer(data.player);
+
+      this.spectatingPlayer = !this.spectatingPlayer;
+
+      if (this.spectatingPlayer) {
+        this.spectateLastPos = myPed.Position;
+        myPed.IsVisible = false;
+        
+        const teleported = await teleportToCoords(data.playerPos);
+        if (teleported) {
+          NetworkSetInSpectatorMode(true, player.Ped.Handle);
+          emitNet(Events.receiveClientCB, "STARTED", data);
+        } else {
+          emitNet(Events.receiveClientCB, "ERROR_TPING", data);
+        }
+      } else {
+        const teleported = await teleportToCoords(this.spectateLastPos);
+        if (teleported) {
+          myPed.IsVisible = true;
+          NetworkSetInSpectatorMode(false, player.Ped.Handle);
+          emitNet(Events.receiveClientCB, "STOPPED", data);
+        } else {
+          emitNet(Events.receiveClientCB, "ERROR_TPING", data);
+        }
+      }
+    }
+  }
+
   private async CALLBACK_getSummoned(data: any): Promise<void> {
     if (this.client.player.Rank >= Ranks.Admin) {
       const foundPlayer = new svPlayer(data.player);
@@ -871,37 +901,6 @@ export class StaffMenu {
           }
         } else {
           emitNet(Events.receiveClientCB, "NO_SUMMON_LAST_LOCATION", data); // CB false to the staff returning you
-        }
-      }
-    }
-  }
-
-  private async EVENT_startSpectating(player: svPlayer, playerPos: Vector3): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
-      const foundPlayer = new svPlayer(player);
-      if (foundPlayer) {
-        if (this.spectateTarget !== undefined && this.spectateTarget.Handle !== foundPlayer.Ped.Handle) this.spectatingPlayer = false;
-
-        this.spectatingPlayer = !this.spectatingPlayer;
-
-        if (this.spectatingPlayer) {
-          this.spectateLastPos = Game.PlayerPed.Position;
-          Game.PlayerPed.IsVisible = false;
-          
-          const teleported = await teleportToCoords(playerPos);
-          if (teleported) {
-            NetworkSetInSpectatorMode(true, foundPlayer.Ped.Handle);
-            this.spectateTarget = foundPlayer.Ped;
-            emit(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
-          }
-        } else {
-          Game.PlayerPed.IsVisible = true;
-          const teleported = await teleportToCoords(this.spectateLastPos);
-          if (teleported) {
-            NetworkSetInSpectatorMode(false, foundPlayer.Ped.Handle);
-            this.spectateTarget = undefined;
-            emit(Events.sendSystemMessage, new Message(`You've stopped spectating ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
-          }
         }
       }
     }

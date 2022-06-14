@@ -3,6 +3,7 @@ export enum Callbacks {
   takeScreenshot = "astrid:client:screenshot",
 
   // Astrid Client -> Server Callbacks ([Controllers] | Staff] - Menu)
+  spectatePlayer = "astrid:client:controllers:staff:menu:spectatePlayer",
   getSummoned = "astrid:client:controllers:staff:menu:getSummoned",
   getSummonReturned = "astrid:client:controllers:staff:menu:getSummonReturned",
 

@@ -489,9 +489,20 @@ export class StaffMenu {
 
         if (havePerm) {
           // if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer("2");
 
             if (foundPlayer) {
+              console.log("ply stuff", player.Position, foundPlayer.Position);
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.spectatePlayer, player.Handle, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, async (cbState, passedData) => {
+                if (cbState == "STARTED") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+                } else if (cbState == "STOPPED") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've stopped spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+                } else if (cbState == "ERROR_TPING") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to spectate ^3${foundPlayer.GetName} ^0!`, SystemTypes.Error));
+                }
+              }));
+
               await player.TriggerEvent(Events.startSpectating, Object.assign({}, foundPlayer), foundPlayer.Position);
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
