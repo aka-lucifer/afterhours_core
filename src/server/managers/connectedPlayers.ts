@@ -24,6 +24,13 @@ export class ConnectedPlayerManager {
   
   constructor(server: Server) {
     this.server = server;
+
+    RegisterCommand("disc_player", async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      emitNet(Events.deleteLeftPlayer, -1, player.Handle); // Remove this players blip to all staff members, showing players blips
+      this.server.characterManager.Disconnect(player);
+      await player.Disconnect("testing");
+    }, false);
   }
 
   // Get Requests
@@ -157,6 +164,8 @@ export class ConnectedPlayerManager {
 
       if (player) {
         emitNet(JobEvents.deleteOffDutyUnit, -1, player.Handle); // Remove this players on duty blip to all on duty players
+        emitNet(Events.deleteLeftPlayer, -1, player.Handle); // Remove this players blip to all staff members, showing players blips
+        await this.server.staffManager.ghostPlayers.playerLeft(player);
         this.server.characterManager.Disconnect(player);
         await player.Disconnect(disconnectReason);
       }

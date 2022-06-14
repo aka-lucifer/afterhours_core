@@ -6,6 +6,7 @@ import { Ban } from "../models/database/ban";
 
 import {Gravity} from "../controllers/staff/gravity";
 import { StaffMenu } from "../controllers/staff/menu";
+import { GhostPlayers } from "../controllers/staff/ghostPlayers";
 
 import {Ranks} from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";
@@ -19,6 +20,7 @@ export class StaffManager {
   // Controllers
   private gravityGun: Gravity;
   private staffMenu: StaffMenu;
+  public ghostPlayers: GhostPlayers;
 
   constructor(server: Server) {
     this.server = server;
@@ -158,6 +160,8 @@ export class StaffManager {
   public init(): void {
     this.gravityGun = new Gravity(this.server);
     this.staffMenu = new StaffMenu(this.server);
+    this.ghostPlayers = new GhostPlayers(this.server);
+    
     this.staffMenu.init();
     
     this.registerCommands();

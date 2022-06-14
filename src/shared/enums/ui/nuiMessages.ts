@@ -61,4 +61,7 @@ export enum NuiMessages {
   UpdateRespawnTimer = "UPDATE_RESPAWN_TIMER",
   StartRespawnable = "START_RESPAWNABLE",
   UpdateRespawnCounter = "UPDATE_RESPAWN_COUNTDOWN",
+
+  // Ghost Players
+  CopyCode = "COPY_CODE"
 }

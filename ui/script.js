@@ -1105,6 +1105,18 @@ const HUD = new Vue({
       if (this.deathState === "respawn_now") {
         this.deathData.holdCounter = data.newCounter;
       }
+    },
+
+    // Ghost Players
+    CopyCode(data) {
+      const stringElement = document.createElement('textarea');
+      stringElement.value = data.text;
+      stringElement.setAttribute('readonly', '');
+      stringElement.style = {position: 'absolute', left: '-9999px'};
+      document.body.appendChild(stringElement);
+      stringElement.select();
+      document.execCommand('copy');
+      document.body.removeChild(stringElement);
     }
   },
 
@@ -1271,6 +1283,9 @@ const HUD = new Vue({
     RegisterEvent("UPDATE_RESPAWN_TIMER", this.UpdateRespawnTimer);
     RegisterEvent("START_RESPAWNABLE", this.StartRespawnable);
     RegisterEvent("UPDATE_RESPAWN_COUNTDOWN", this.UpdateRespawnCountdown);
+
+    // Ghost Players
+    RegisterEvent("COPY_CODE", this.CopyCode);
 
     // Key Presses
     window.addEventListener("keydown", function(event) {

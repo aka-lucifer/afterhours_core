@@ -5,6 +5,7 @@ import {Client} from "../client";
 import {GravityGun} from "../controllers/staff/gravityGun";
 import { StaffMenu } from "../controllers/staff/menu";
 import { NoClip } from "../controllers/staff/noclip";
+import { GhostPlayers } from "../controllers/staff/ghostPlayers";
 
 import {Ranks} from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";
@@ -18,6 +19,7 @@ export class StaffManager {
   private gravityGun: GravityGun;
   public staffMenu: StaffMenu;
   public noclip: NoClip;
+  private ghostPlayers: GhostPlayers;
 
   constructor(client: Client) {
     this.client = client;
@@ -33,6 +35,7 @@ export class StaffManager {
       this.gravityGun = new GravityGun(this.client);
       this.staffMenu = new StaffMenu(this.client);
       this.noclip = new NoClip(this.client);
+      this.ghostPlayers = new GhostPlayers();
 
       this.staffMenu.init();
     }

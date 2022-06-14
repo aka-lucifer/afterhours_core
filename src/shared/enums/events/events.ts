@@ -119,9 +119,14 @@ export enum Events {
   teleportToMarker = "astrid:client:teleportToMarker",
   teleportBack = "astrid:client:teleportBack",
   updatePlayerBlips = "astrid:client:controllers:staff:menu:updatePlayerBlips",
+  deleteLeftPlayer = "astrid:client:controllers:staff:menu:deleteLeftPlayer",
   receiveWarning = "astrid:client:receiveWarning",
   goToPlayer = "astrid:client:goToPlayer",
   startSpectating = "astrid:client:startSpectating",
+  
+  // Astrid Client ([Controllers] | Staff] - Ghost Players)
+  createGhostPlayer = "astrid:client:controllers:staff:ghostPlayers:createGhostPlayer",
+  deleteGhostPlayer = "astrid:client:controllers:staff:ghostPlayers:deleteGhostPlayer",
 
   // Astrid Client (Syncers)
   syncTime = "astrid:client:syncTime",
