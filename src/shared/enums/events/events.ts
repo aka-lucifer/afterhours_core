@@ -49,6 +49,9 @@ export enum Events {
   // Astrid Server ([Controllers | Vehicle] - Seatbelt)
   ejectPassengers = "astrid:server:ejectPassengers",
   harmPassengers = "astrid:server:harmPassengers",
+
+  // Astrid Server ([Controllers] | Staff) - Menu
+  logAdminAction = "astrid:server:controllers:staff:menu:logAdminAction",
   
   // Astrid Server ([Controllers] | Staff] - Menu | [Connected Players])
   banPlayer = "astrid:server:controllers:staff:menu:banPlayer",

@@ -1,13 +1,16 @@
 import { Vector3 } from "fivem-js";
 
 import { Server } from "../../server";
-import { addZero, Delay } from "../../utils";
+import { addZero, Capitalize, Delay } from "../../utils";
+
+import { LogTypes } from "../../enums/logging";
 
 import { Kick } from "../../models/database/kick";
 import { Warning } from "../../models/database/warning";
 import { Commend } from "../../models/database/commend";
 import { Ban } from "../../models/database/ban";
 import { ClientCallback } from "../../models/clientCallback";
+import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 
 import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
@@ -15,10 +18,13 @@ import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
-
-import serverConfig from "../../../configs/server.json";
 import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
 import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
+import { EmbedColours } from "../../../shared/enums/logging/embedColours";
+import { AdminActions } from "../../../shared/enums/adminActions";
+
+import serverConfig from "../../../configs/server.json";
+import sharedConfig from "../../../configs/shared.json";
 
 interface ConnectedPlayer {
   netId: string;
@@ -40,6 +46,7 @@ export class StaffMenu {
     this.server = server;
 
     // Events
+    onNet(Events.logAdminAction, this.EVENT_logAdminAction.bind(this));
 
     // [Events | Connected Players]
     onNet(Events.banPlayer, this.EVENT_banPlayer.bind(this));
@@ -98,6 +105,34 @@ export class StaffMenu {
 
       await Delay(1500);
     });
+  }
+
+  private async updateRank(myPlayer: any, otherPlayer: any, newRank: Ranks): Promise<void> {
+    const updatedRank = await otherPlayer.UpdateRank(newRank);
+    if (updatedRank) {
+      console.log("give them honourable or above");
+      const rankLabelSplit = splitCapitalsString(Ranks[myPlayer.Rank]);
+      const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+      const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
+      const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
+
+      await myPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${otherPlayer.GetName}^0 the rank ^3${formattedNewRankLabel}^0.`, SystemTypes.Admin));
+      await otherPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${myPlayer.GetName}^0 has updated your rank to ^3${formattedNewRankLabel}^0.`, SystemTypes.Admin));
+
+      const updatersDiscord = await myPlayer.GetIdentifier("discord");
+      await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+        username: "Staff Logs", embeds: [{
+          color: EmbedColours.Green,
+          title: "__Player Rank Updated__",
+          description: `A player has had his rank updated.\n\n**Username**: ${otherPlayer.GetName}\n**New Rank**: ${Ranks[newRank]}\n**Updated By**: ${myPlayer.GetName}\n**Updaters Rank**: ${Ranks[myPlayer.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+          footer: {
+            text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+            icon_url: sharedConfig.serverLogo
+          }
+        }]
+      }));
+    }
   }
 
   public init(): void {
@@ -344,14 +379,7 @@ export class StaffMenu {
                       const updatedRank = await foundPlayer.UpdateRank(newRank);
                       if (updatedRank) {
                         console.log("give them honourable or above");
-                        const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
-                        const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
-  
-                        const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
-                        const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
-  
-                        await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
-                        await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                        this.updateRank(player, foundPlayer, newRank);
                       } else {
                         await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
                       }
@@ -362,14 +390,15 @@ export class StaffMenu {
                     const updatedRank = await foundPlayer.UpdateRank(newRank);
                     if (updatedRank) { // Give them their new rank (user & donator ranks [these ranks aren't used yet, just a placeholder, if we decide to])
                       console.log("gave the new rank!");
-                      const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
-                      const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+                      this.updateRank(player, foundPlayer, newRank);
+                      // const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
+                      // const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
-                      const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
-                      const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
+                      // const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
+                      // const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
 
-                      await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
-                      await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                      // await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                      // await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
                     } else {
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
                     }
@@ -380,14 +409,15 @@ export class StaffMenu {
               } else { // You're management so u can give whatever u want slut
                 const updatedRank = await foundPlayer.UpdateRank(newRank);
                 if (updatedRank) {
-                  const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
-                  const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+                  this.updateRank(player, foundPlayer, newRank);
+                  // const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
+                  // const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
-                  const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
-                  const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
+                  // const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
+                  // const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
 
-                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
-                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                  // await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                  // await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
                   console.log("gave them new rank")
                 } else {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
@@ -433,9 +463,35 @@ export class StaffMenu {
                 if (states.state.frozen) {
                   await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin));
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've frozen ${foundPlayer.GetName}.`, SystemTypes.Admin));
+        
+                  const playersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Red,
+                      title: "__Player Frozen__",
+                      description: `A player has been frozen.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Freezers Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 } else {
                   await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been unfrozen by ${player.GetName}.`, SystemTypes.Admin));
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've unfrozen ${foundPlayer.GetName}.`, SystemTypes.Admin));
+        
+                  const playersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Unfrozen__",
+                      description: `A player has been unfrozen.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Freezers Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 }
               }
             } else {
@@ -464,6 +520,19 @@ export class StaffMenu {
 
             if (foundPlayer) {
               await player.TriggerEvent(Events.goToPlayer, Object.assign({}, foundPlayer), foundPlayer.Position);
+
+              const playersDiscord = await player.GetIdentifier("discord");
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Staff Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Player Teleported__",
+                  description: `A player has to teleported to another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Teleported To**: ${foundPlayer.GetName}\n**Teleportees Rank**: ${Ranks[foundPlayer.Rank]}\n**Teleporters Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
@@ -507,6 +576,19 @@ export class StaffMenu {
                       
                       // TP into the vehicle
                       SetPedIntoVehicle(myPed, tpVehicle, passedData.freeSeat); // See if this places u into other seats, if that seat is full
+
+                      const playersDiscord = await player.GetIdentifier("discord");
+                      await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                        username: "Staff Logs", embeds: [{
+                          color: EmbedColours.Green,
+                          title: "__Player Teleported Into Vehicle__",
+                          description: `A player has to teleported into another players vehicle.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Teleported To**: ${foundPlayer.GetName}\n**Teleportees Rank**: ${Ranks[foundPlayer.Rank]}\n**Teleporters Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                          footer: {
+                            text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                            icon_url: sharedConfig.serverLogo
+                          }
+                        }]
+                      }));
                     } else if (cbState == "NO_SEATS_FOUND") {
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to find an available seat inside ^3${foundPlayer.GetName}^0's vehicle!`, SystemTypes.Error));
                     } else if (cbState == "ERROR") {
@@ -542,6 +624,19 @@ export class StaffMenu {
               this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState, passedData) => {
                 if (cbState == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+
+                  const playersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Summoned__",
+                      description: `A player has been summoned.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Summoned By**: ${player.GetName}\n**Summoners Rank**: ${Ranks[player.Rank]}\n**Summoners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 } else if (cbState == "ERROR_TPING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to summon ^3${foundPlayer.GetName} ^0to your location!`, SystemTypes.Error));
                 }
@@ -571,6 +666,19 @@ export class StaffMenu {
               this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummonReturned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState, passedData) => {
                 if (cbState == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've returned ^3${foundPlayer.GetName}^0 to their original position.`, SystemTypes.Admin));
+
+                  const playersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Returned__",
+                      description: `A player has been returned to their original location.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Returned By**: ${foundPlayer.GetName}\n**Returners Rank**: ${Ranks[foundPlayer.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 } else if (cbState == "ERROR_TPING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("Unable to teleport them to their previous location!", SystemTypes.Error));
                 } else if (cbState == "NO_SUMMON_LAST_LOCATION") {
@@ -603,8 +711,34 @@ export class StaffMenu {
               this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.spectatePlayer, player.Handle, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, async (cbState, passedData) => {
                 if (cbState == "STARTED") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+                  
+                  const playersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Spectating__",
+                      description: `A player has started spectating another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Spectated Player**: ${foundPlayer.GetName}\n**Spectatees Rank**: ${Ranks[foundPlayer.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 } else if (cbState == "STOPPED") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've stopped spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+                  
+                  const playersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Spectating__",
+                      description: `A player has stopped spectating another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Spectated Player**: ${foundPlayer.GetName}\n**Spectatees Rank**: ${Ranks[foundPlayer.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 } else if (cbState == "ERROR_TPING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to spectate ^3${foundPlayer.GetName} ^0!`, SystemTypes.Error));
                 }
@@ -639,7 +773,6 @@ export class StaffMenu {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       const havePerm = this.havePermission(player.Rank);
-      console.log("have permission!", havePerm);
 
       if (havePerm) {
         emitNet(Events.sendSystemMessage, -1, new Message(`A server administrator has changed the time to ${addZero(newHour)}:${addZero(newMinute)}.`, SystemTypes.Announcement));
@@ -673,6 +806,19 @@ export class StaffMenu {
             console.log("can't bring yourself!");
           }
         }
+
+        const playersDiscord = await player.GetIdentifier("discord");
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+          username: "Staff Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__All Players Brought__",
+            description: `A player has brought all server players to them.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+            footer: {
+              text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+              icon_url: sharedConfig.serverLogo
+            }
+          }]
+        }));
       }
     }
   }
@@ -710,36 +856,42 @@ export class StaffMenu {
             console.log("can't bring yourself!");
           }
         }
+        
+        const playersDiscord = await player.GetIdentifier("discord");
+        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+          username: "Staff Logs", embeds: [{
+            color: EmbedColours.Green,
+            title: "__All Players Frozen/Unfrozen__",
+            description: `A player has frozen/unfrozen all server players to them.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+            footer: {
+              text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+              icon_url: sharedConfig.serverLogo
+            }
+          }]
+        }));
       }
     }
   }
 
   // Callbacks
   private async CALLBACK_updatePlayerJob(data: Record<string, any>): Promise<void> {
-    console.log("ZERO")
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
-      console.log("ONE!");
       if (player.Spawned) {
-        console.log("TWO!");
         const character = await this.server.characterManager.Get(player);
         if (character) {
-          console.log("THREE!");
 
           const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsNet);
           if (foundPlayer) {
-            console.log("FOUR!");
             if (foundPlayer.Spawned) {
-              console.log("FIVE!");
               const foundCharacter = await this.server.characterManager.Get(foundPlayer);
               if (foundCharacter) {
-                console.log("SIX!");
                 // Sets their job (Controls what dept rank is FTO/High Command)
 
                 if (data.jobName !== Jobs.Community && data.jobName !== Jobs.Civilian) {
-                  console.log("SEVEN!");
                   const highCommand = this.server.jobManager.highCommand(data.jobName, data.jobRank);
-                  const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel, data.jobRank, highCommand, foundCharacter.Job.Callsign, false);
+                  const callsign = foundCharacter.Job.Callsign !== undefined ? foundCharacter.Job.Callsign : sharedConfig.jobs.defaultCallsign;
+                  const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel, data.jobRank, highCommand, callsign, false);
 
                   if (updatedJob !== undefined) {
                     // Set your selected character fuck thing
@@ -774,8 +926,20 @@ export class StaffMenu {
                   }
 
                   await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+
+                  const updatersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Job Updated__",
+                      description: `A player has had his job updated.\n\n**Username**: ${foundPlayer.GetName}\n**Character Name**: ${foundCharacter.Name}\n**New Job**: ${JSON.stringify(foundCharacter.Job, null, 4)}\n**Updated By**: ${player.GetName}\n**Updaters Rank**: ${Ranks[player.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 } else {
-                  console.log("EIGHT!");
                   const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel);
 
                   if (updatedJob !== undefined) {
@@ -811,6 +975,19 @@ export class StaffMenu {
                   }
 
                   await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+
+                  const updatersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Job Updated__",
+                      description: `A player has had his job updated.\n\n**Username**: ${foundPlayer.GetName}\n**Character Name**: ${foundCharacter.Name}\n**New Job**: ${JSON.stringify(foundCharacter.Job, null, 4)}\n**Updated By**: ${player.GetName}\n**Updaters Rank**: ${Ranks[player.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 }
               } else {
                 await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
@@ -820,6 +997,385 @@ export class StaffMenu {
             }
           } else {
             await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+          }
+        }
+      }
+    }
+  }
+
+  public async EVENT_logAdminAction(logType: AdminActions, data: Record<string, any>): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    if (player) {
+      if (player.Spawned) {
+        if (player.Rank >= Ranks.Admin) {
+          const updatersDiscord = await player.GetIdentifier("discord");
+
+          switch (logType) {
+            case AdminActions.Godmode:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Godmode Enabled__",
+                    description: `A player has enabled godmode.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Godmode Disabled__",
+                    description: `A player has disabled godmode.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+              
+            case AdminActions.PlayerBlips:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Player Blips Enabled__",
+                    description: `A player has enabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Player Blips Disabled__",
+                    description: `A player has disabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+              
+            case AdminActions.PlayerBlips:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Player Blips Enabled__",
+                    description: `A player has enabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Player Blips Disabled__",
+                    description: `A player has disabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+              
+            case AdminActions.Invisible:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Invisibility Enabled__",
+                    description: `A player has enabled invisibility.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Invisibility Disabled__",
+                    description: `A player has disabled invisibility.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+
+            case AdminActions.TPM:
+              if (data.crossing.length > 0) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Teleported To Marker__",
+                    description: `A player has teleported to their marker.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Coords**: ${JSON.stringify(data.position, null, 4)}\n**Street**: ${data.street} / ${data.crossing}\n**Zone**: ${data.zone}\n**Postal**: ${data.postal}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Teleported To Marker__",
+                    description: `A player has teleported to their marker.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Coords**: ${JSON.stringify(data.position, null, 4)}\n**Street**: ${data.street}\n**Zone**: ${data.zone}\n**Postal**: ${data.postal}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+
+            case AdminActions.GoBack:
+
+              if (data.crossing.length > 0) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Gone To Previous Location__",
+                    description: `A player has gone back to their previous location.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Coords**: ${JSON.stringify(data.position, null, 4)}\n**Street**: ${data.street} / ${data.crossing}\n**Zone**: ${data.zone}\n**Postal**: ${data.postal}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Gone To Previous Location__",
+                    description: `A player has gone back to their previous location.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Coords**: ${JSON.stringify(data.position, null, 4)}\n**Street**: ${data.street}\n**Zone**: ${data.zone}\n**Postal**: ${data.postal}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+
+            case AdminActions.RepairedVehicle:
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Staff Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Vehicle Repaired__",
+                  description: `A player has repaired their vehicle.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+
+              break;
+
+            case AdminActions.RepairedVehicle:
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Staff Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Vehicle Repaired__",
+                  description: `A player has repaired their vehicle.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+
+              break;
+
+            case AdminActions.GiveWeapon:
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Staff Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Gave Weapon__",
+                  description: `A player has gave themselves a weapon.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Weapon**: ${data.weapon}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+
+              break;
+
+            case AdminActions.GiveAllWeapons:
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Staff Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Gave All Weapons__",
+                  description: `A player has gave themselves all weapons.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+
+              break;
+
+            case AdminActions.RemoveAllWeapons:
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Staff Logs", embeds: [{
+                  color: EmbedColours.Red,
+                  title: "__Removed All Weapons__",
+                  description: `A player has removed all their weapons.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+
+              break;
+
+            case AdminActions.InfiniteAmmo:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Infinite Ammo Enabled__",
+                    description: `A player has enabled infinite ammo.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Infinite Ammo Disabled__",
+                    description: `A player has disabled infinite ammo.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+
+            case AdminActions.NoReload:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__No Reload Enabled__",
+                    description: `A player has enabled no reload.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__No Reload Disabled__",
+                    description: `A player has disabled no reload.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+
+            case AdminActions.NoRecoil:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__No Recoil Enabled__",
+                    description: `A player has enabled no recoil.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__No Recoil Disabled__",
+                    description: `A player has disabled no recoil.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
+
+            case AdminActions.GravityGun:
+              if (data.toggled) {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Gravity Gun Added__",
+                    description: `A player has gave themselves the Gravity Gun.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Gravity Gun Removed__",
+                    description: `A player has removed the Gravity Gun from themselves.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
+
+              break;
           }
         }
       }

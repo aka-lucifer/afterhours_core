@@ -1,7 +1,7 @@
 import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, World } from "fivem-js";
 
 import { Client } from "../../client";
-import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons } from "../../utils";
+import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone } from "../../utils";
 
 import { Menu } from "../../models/ui/menu/menu";
 import { Submenu } from "../../models/ui/menu/submenu";
@@ -22,6 +22,7 @@ import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
 import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
 import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
 import { CountyRanks, PoliceRanks, StateRanks } from "../../../shared/enums/jobs/ranks";
+import { AdminActions } from "../../../shared/enums/adminActions";
 
 import sharedConfig from "../../../configs/shared.json";
 
@@ -268,6 +269,21 @@ export class StaffMenu {
           const notify = new Notification("Staff Menu", "Player blips disabled!", NotificationTypes.Error);
           await notify.send();
         }
+
+        emitNet(Events.logAdminAction, AdminActions.PlayerBlips, {
+          toggled: this.playersBlips
+        });
+      });
+
+      this.playerActionsMenu.BindCheckbox("Invisible", !this.visible, (newState: boolean) => {
+        this.visible = !newState;
+
+        const myPed = Game.PlayerPed;
+        myPed.IsVisible = this.visible;
+
+        emitNet(Events.logAdminAction, AdminActions.Invisible, {
+          toggled: !this.visible
+        });
       });
 
       this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
@@ -278,13 +294,6 @@ export class StaffMenu {
         }));
       });
 
-      this.playerActionsMenu.BindCheckbox("Invisible", this.visible, (newState: boolean) => {
-        this.visible = newState;
-
-        const myPed = Game.PlayerPed;
-        myPed.IsVisible = this.visible;
-      });
-
       this.playerActionsMenu.BindButton("Teleport To Marker", async() => {
         await this.EVENT_tpm();
       });
@@ -293,28 +302,6 @@ export class StaffMenu {
         await this.EVENT_teleportBack();
       });
     }
-
-    // Vehicle Actions Menu
-    this.vehicleActionsMenu = this.menu.BindSubmenu("Vehicle Actions");
-
-    this.vehicleActionsMenu.BindButton("Repair Vehicle", async() => {
-      const myPed = Game.PlayerPed;
-      if (IsPedInAnyVehicle(myPed.Handle, false)) {
-        const currVeh = myPed.CurrentVehicle;
-        if (currVeh.Health < currVeh.MaxHealth) {
-          currVeh.repair();
-          global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
-          currVeh.DirtLevel = 0.0;
-          currVeh.IsEngineRunning = true;
-
-          const notify = new Notification("Staff Menu", "Vehicle fixed!", NotificationTypes.Success);
-          await notify.send();
-        } else {
-          const notify = new Notification("Staff Menu", "Your vehicle isn't damaged!", NotificationTypes.Error);
-          await notify.send();
-        }
-      }
-    });
 
     this.weaponActionsMenu = this.menu.BindSubmenu("Weapon Actions");
       
@@ -329,6 +316,10 @@ export class StaffMenu {
             const hash = GetHashKey(weaponName);
             const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
             Game.PlayerPed.giveWeapon(hash, maxAmmo, false, true);
+
+            emitNet(Events.logAdminAction, AdminActions.GiveWeapon, {
+              weapon: weapons[weaponIndex].label
+            });
 
             const notify = new Notification("Staff Menu", `You've gave yourself an ${weapons[weaponIndex].label}.`, NotificationTypes.Info);
             await notify.send();
@@ -356,6 +347,8 @@ export class StaffMenu {
         }
 
         if (i == (weapons.length - 1)) {
+          emitNet(Events.logAdminAction, AdminActions.GiveAllWeapons);
+
           const notify = new Notification("Staff Menu", "All weapons added.", NotificationTypes.Info);
           await notify.send();
         }
@@ -364,6 +357,8 @@ export class StaffMenu {
 
     this.weaponActionsMenu.BindButton("Remove All Weapons", async() => {
       Game.PlayerPed.removeAllWeapons();
+      emitNet(Events.logAdminAction, AdminActions.RemoveAllWeapons);
+
       const notify = new Notification("Staff Menu", "All weapons removed!", NotificationTypes.Error);
       await notify.send();
     });
@@ -371,14 +366,26 @@ export class StaffMenu {
     this.weaponActionsMenu.BindCheckbox("Infinite Ammo", this.infiniteAmmo, (newState: boolean) => {
       this.infiniteAmmo = newState;
       SetPedInfiniteAmmoClip(Game.PlayerPed.Handle, this.infiniteAmmo);
+
+      emitNet(Events.logAdminAction, AdminActions.InfiniteAmmo, {
+        toggled: this.infiniteAmmo
+      });
     });
 
     this.weaponActionsMenu.BindCheckbox("No Reload", this.noReload, (newState: boolean) => {
       this.noReload = newState;
+
+      emitNet(Events.logAdminAction, AdminActions.NoReload, {
+        toggled: this.noReload
+      });
     });
 
     this.weaponActionsMenu.BindCheckbox("No Recoil", this.noRecoil, (newState: boolean) => {
       this.noRecoil = newState;
+
+      emitNet(Events.logAdminAction, AdminActions.NoRecoil, {
+        toggled: this.noRecoil
+      });
     });
 
     this.weaponActionsMenu.BindCheckbox("Gravity Gun", this.usingGravityGun, (newState: boolean) => {
@@ -396,6 +403,34 @@ export class StaffMenu {
         }
 
         SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
+      }
+
+      emitNet(Events.logAdminAction, AdminActions.GravityGun, {
+        toggled: this.usingGravityGun
+      });
+    });
+
+    // Vehicle Actions Menu
+    this.vehicleActionsMenu = this.menu.BindSubmenu("Vehicle Actions");
+
+    this.vehicleActionsMenu.BindButton("Repair Vehicle", async() => {
+      const myPed = Game.PlayerPed;
+      if (IsPedInAnyVehicle(myPed.Handle, false)) {
+        const currVeh = myPed.CurrentVehicle;
+        if (currVeh.Health < currVeh.MaxHealth) {
+          currVeh.repair();
+          global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
+          currVeh.DirtLevel = 0.0;
+          currVeh.IsEngineRunning = true;
+
+          emitNet(Events.logAdminAction, AdminActions.RepairedVehicle);
+
+          const notify = new Notification("Staff Menu", "Vehicle fixed!", NotificationTypes.Success);
+          await notify.send();
+        } else {
+          const notify = new Notification("Staff Menu", "Your vehicle isn't damaged!", NotificationTypes.Error);
+          await notify.send();
+        }
       }
     });
   }
@@ -795,6 +830,10 @@ export class StaffMenu {
         SetEntityCanBeDamaged(myPed.Handle, true);
       }
     }
+
+    emitNet(Events.logAdminAction, AdminActions.Godmode, {
+      toggled: this.godmode
+    });
   }
 
   // Events
@@ -816,6 +855,17 @@ export class StaffMenu {
         const waypointCoords = NumToVector3(GetBlipInfoIdCoord(waypointHandle));
         const teleported = await teleportToCoords(waypointCoords);
         if (teleported) {
+          const [street, crossing, postal] = await getLocation(myPed);
+          const zone = await getZone(myPed);
+
+          emitNet(Events.logAdminAction, AdminActions.TPM, {
+            position: waypointCoords,
+            street: street,
+            crossing: crossing,
+            zone: zone,
+            postal: postal.code
+          });
+
           const notify = new Notification("Teleporter", "Teleported to waypoint", NotificationTypes.Success);
           await notify.send();
         }
@@ -830,6 +880,17 @@ export class StaffMenu {
         if (teleported) {
           const notify = new Notification("Teleporter", "Teleported to previous location", NotificationTypes.Success);
           await notify.send();
+
+          const [street, crossing, postal] = await getLocation(Game.PlayerPed);
+          const zone = await getZone(Game.PlayerPed);
+
+          emitNet(Events.logAdminAction, AdminActions.GoBack, {
+            position: this.lastLocation,
+            street: street,
+            crossing: crossing,
+            zone: zone,
+            postal: postal.code
+          });
 
           this.lastLocation = undefined;
         }

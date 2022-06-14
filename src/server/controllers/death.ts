@@ -1,14 +1,18 @@
 import { Server } from '../server';
-import { Delay } from '../utils';
+
+import { LogTypes } from "../enums/logging";
 
 import { Command } from '../models/ui/chat/command';
+import WebhookMessage from '../models/webhook/discord/webhookMessage';
 
 import { Ranks } from '../../shared/enums/ranks';
 import { Events } from '../../shared/enums/events/events';
 import { Message } from '../../shared/models/ui/chat/message';
 import { SystemTypes } from '../../shared/enums/ui/chat/types';
 import { DeathStates } from '../../shared/enums/deathStates';
-import { LXEvents } from '../../shared/enums/events/lxEvents';
+import { EmbedColours } from '../../shared/enums/logging/embedColours';
+
+import sharedConfig from "../../configs/shared.json";
 
 export class Death {
   private server: Server;
@@ -57,6 +61,20 @@ export class Death {
                 // Send revived chat messages
                 await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have revived ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
                 await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You have been revived by ^3${player.GetName}^0.`, SystemTypes.Admin));
+
+                // Log revive here
+                const updatersDiscord = await player.GetIdentifier("discord");
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Staff Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Player Revived__",
+                    description: `A player has been revived.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Revived By**: ${player.GetName}\n**Revivers Rank**: ${Ranks[player.Rank]}\n**Revivers Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
               } else {
                 await player.TriggerEvent(Events.sendSystemMessage, new Message("This player isn't dead!", SystemTypes.Error));
               }
