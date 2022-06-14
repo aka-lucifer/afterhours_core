@@ -21,6 +21,7 @@ interface ConnectedPlayer {
   coords: Vector3;
   heading: number;
   name: string,
+  rank: Ranks,
   inVeh: boolean;
   vehType?: string
 }
@@ -63,7 +64,7 @@ export class StaffMenu {
       const connectedPlayers: ConnectedPlayer[] = [];
 
       for (let a = 0; a < svPlayers.length; a++) { // Loop through all server players
-        if (svPlayers[a].Spawned) { // If selected their character
+        if (svPlayers[a].Spawned) {
           const ped = GetPlayerPed(svPlayers[a].Handle); // Get their characters ped
           const currVeh = GetVehiclePedIsIn(ped, false); // Check if they're inside a vehicle
 
@@ -72,6 +73,7 @@ export class StaffMenu {
             coords: svPlayers[a].Position,
             heading: Math.ceil(GetEntityHeading(ped)),
             name: svPlayers[a].GetName,
+            rank: svPlayers[a].Rank,
             inVeh: currVeh > 0,
             vehType: GetVehicleType(currVeh)
           });
@@ -115,11 +117,11 @@ export class StaffMenu {
             console.log("have permission!", havePerm);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
+              // if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  if (foundPlayer.Rank < player.Rank) {
+                  // if (foundPlayer.Rank < player.Rank) {
                     let banSeconds = 0;
                     if (!banPermanent) {
                       if (banType == "SECONDS") {
@@ -161,15 +163,15 @@ export class StaffMenu {
                         await player.Notify("Ban", `You've permanently banned ${foundPlayer.GetName}, for ${banReason}.`, NotificationTypes.Info, 5000);
                       }
                     }
-                  } else {
-                    await player.Notify("Ban", "You can't ban someone who has a higher rank than you!", NotificationTypes.Error);
-                  }
+                  // } else {
+                  //   await player.Notify("Ban", "You can't ban someone who has a higher rank than you!", NotificationTypes.Error);
+                  // }
                 } else {
                   await player.Notify("Ban", "Player not found!", NotificationTypes.Error);
                 }
-              } else {
-                await player.Notify("Ban", "You can't ban yourself!", NotificationTypes.Error);
-              }
+              // } else {
+              //   await player.Notify("Ban", "You can't ban yourself!", NotificationTypes.Error);
+              // }
             }
           }
         } else {
@@ -193,11 +195,11 @@ export class StaffMenu {
             console.log("have permission!", havePerm);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
+              // if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  if (foundPlayer.Rank < player.Rank) {
+                  // if (foundPlayer.Rank < player.Rank) {
                     const kick = new Kick(foundPlayer.Id, kickReason, player.Id);
                     kick.Kicker = player;
   
@@ -206,15 +208,15 @@ export class StaffMenu {
                       kick.drop();
                       await player.Notify("Kick", `You've kicked ${foundPlayer.GetName}, for ${kickReason}.`, NotificationTypes.Info, 5000);
                     }
-                  } else {
-                    await player.Notify("Kick", "You can't kick someone who has a higher rank than you!", NotificationTypes.Error);
-                  }
+                  // } else {
+                  //   await player.Notify("Kick", "You can't kick someone who has a higher rank than you!", NotificationTypes.Error);
+                  // }
                 } else {
                   await player.Notify("Kick", "Player not found!", NotificationTypes.Error);
                 }
-              } else {
-                await player.Notify("Kick", "You can't kick yourself!", NotificationTypes.Error);
-              }
+              // } else {
+              //   await player.Notify("Kick", "You can't kick yourself!", NotificationTypes.Error);
+              // }
             }
           }
         } else {
@@ -238,11 +240,11 @@ export class StaffMenu {
             console.log("have permission!", havePerm);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
+              // if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  if (foundPlayer.Rank < player.Rank) {
+                  // if (foundPlayer.Rank < player.Rank) {
                     const warning = new Warning(foundPlayer.Id, warnReason, player.Id);
                     warning.Warner = player;
                     
@@ -251,15 +253,15 @@ export class StaffMenu {
                       await warning.send();
                       await player.Notify("Warn", `You've warned ${foundPlayer.GetName}, for ${warnReason}.`, NotificationTypes.Info, 5000);
                     }
-                  } else {
-                    await player.Notify("Warn", "You can't warn someone who has a higher rank than you!", NotificationTypes.Error);
-                  }
+                  // } else {
+                  //   await player.Notify("Warn", "You can't warn someone who has a higher rank than you!", NotificationTypes.Error);
+                  // }
                 } else {
                   await player.Notify("Warn", "Player not found!", NotificationTypes.Error);
                 }
-              } else {
-                await player.Notify("Warn", "You can't warn yourself!", NotificationTypes.Error);
-              }
+              // } else {
+              //   await player.Notify("Warn", "You can't warn yourself!", NotificationTypes.Error);
+              // }
             }
           }
         } else {
@@ -283,7 +285,7 @@ export class StaffMenu {
             console.log("have permission!", havePerm);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
+              // if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
@@ -291,13 +293,14 @@ export class StaffMenu {
                   const saved = await commend.save();
                   if (saved) {
                     await player.Notify("Commend", `You've commended ${foundPlayer.GetName}, for ${commendReason}.`, NotificationTypes.Info, 5000);
+                    await commend.log();
                   }
                 } else {
                   await player.Notify("Commend", "Player not found!", NotificationTypes.Error);
                 }
-              } else {
-                await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
-              }
+              // } else {
+              //   await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
+              // }
             }
           }
         } else {
@@ -319,7 +322,7 @@ export class StaffMenu {
         console.log("have permission!", havePerm);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
+          // if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -346,9 +349,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't freeze yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't freeze yourself!", NotificationTypes.Error);
+          // }
         }
       }
     } else {
@@ -364,7 +367,7 @@ export class StaffMenu {
         console.log("have permission!", havePerm);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
+          // if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -372,9 +375,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          // }
         }
       }
     } else {
@@ -390,7 +393,7 @@ export class StaffMenu {
         console.log("have permission!", havePerm);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
+          // if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -409,9 +412,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          // }
         }
       }
     }
@@ -424,7 +427,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
+          // if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -438,9 +441,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't summon yourself!", NotificationTypes.Error);
+          // }
         }
       }
     }
@@ -453,7 +456,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
+          // if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -469,9 +472,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't return yourself!", NotificationTypes.Error);
+          // }
         }
       }
     }
@@ -485,7 +488,7 @@ export class StaffMenu {
         console.log("have permission!", havePerm);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
+          // if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -493,9 +496,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
+          // }
         }
       }
     } else {

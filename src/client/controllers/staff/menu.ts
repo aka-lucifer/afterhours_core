@@ -42,6 +42,7 @@ interface ConnectedPlayer {
   coords: Vector3;
   heading: number;
   name: string,
+  rank: Ranks,
   inVeh: boolean;
   vehType?: string
 }
@@ -49,7 +50,6 @@ interface ConnectedPlayer {
 interface PlayerBlip {
   netId: number;
   blip: Blip;
-  tick: number;
 }
 
 export class StaffMenu {
@@ -130,6 +130,7 @@ export class StaffMenu {
       onNet(Events.teleportToMarker, this.EVENT_tpm.bind(this));
       onNet(Events.teleportBack, this.EVENT_teleportBack.bind(this));
       onNet(Events.updatePlayerBlips, this.EVENT_updatePlayerBlips.bind(this));
+      onNet(Events.deleteLeftPlayer, this.EVENT_deleteLeftPlayer.bind(this));
       onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
       onNet(Events.startSpectating, this.EVENT_startSpectating.bind(this));
@@ -698,19 +699,21 @@ export class StaffMenu {
 
   private async EVENT_updatePlayerBlips(units: ConnectedPlayer[]) {
     if (this.client.Player.Spawned && this.client.Player.Rank >= Ranks.Admin) {
+      // console.log("passed players", units);
+      
       if (this.playersBlips) {
         for (let i = 0; i < units.length; i++) {
           const netId = parseInt(units[i].netId);
 
-          // if (netId !== this.client.Player.NetworkId) {
+          if (netId !== this.client.Player.NetworkId) {
             if (units[i].coords !== undefined) {
               const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
 
               if (blipIndex === -1) { // If the blip doesn't exist make it
+                console.log("create blip on", units[i].netId);
                 const blip = World.createBlip(new Vector3(units[i].coords.x, units[i].coords.y, units[i].coords.z));
                 blip.IsShortRange = false;
                 blip.Display = 2;
-                let blipTick = undefined;
 
                 if (units[i].inVeh) {
                   if (units[i].vehType == "automobile") {
@@ -723,25 +726,26 @@ export class StaffMenu {
                     blip.Sprite = BlipSprite.Boat;
                   }
 
-                  blip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  blip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
                   blip.Rotation = units[i].heading;
                   blip.ShowHeadingIndicator = true;
                 } else {
                   blip.Sprite = BlipSprite.Standard;
                   
-                  blip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  blip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
                   blip.Rotation = units[i].heading;
                   blip.ShowHeadingIndicator = true;
                 }
 
                 this.createdBlips.push({
                   netId: netId,
-                  blip: blip,
-                  tick: blipTick
+                  blip: blip
                 });
               } else { // If the blip exists, update it's properties
                 const blipData = this.createdBlips[blipIndex];
                 const foundBlip = new Blip(blipData.blip.Handle); // see if this fixes stupid bug
+
+                console.log("blip 2");
                 foundBlip.Position = units[i].coords;
 
                 if (units[i].inVeh) {
@@ -755,26 +759,44 @@ export class StaffMenu {
                     foundBlip.Sprite = BlipSprite.Boat;
                   }
 
-                  foundBlip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  foundBlip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
                   foundBlip.Rotation = units[i].heading;
                   foundBlip.ShowHeadingIndicator = true;
                 } else {
                   foundBlip.Sprite = BlipSprite.Standard;
 
-                  foundBlip.Name = `[${units[i].netId}] ${units[i].name}`;
+                  foundBlip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
                   foundBlip.Rotation = units[i].heading;
                   foundBlip.ShowHeadingIndicator = true;
                 }
               }
             }
-          // }
+          }
         }
       } else {
-        for (let i = 0; i < this.createdBlips.length; i++) {
-          this.createdBlips[i].blip.delete();
-          this.createdBlips.splice(i, 1);
+        if (this.createdBlips.length > 0) {
+          for (let i = 0; i < this.createdBlips.length; i++) {
+            const blip = new Blip(this.createdBlips[i].blip.Handle);
+            blip.delete();
+            this.createdBlips.splice(i, 1);
+          }
         }
       }
+    }
+  }
+  
+  private EVENT_deleteLeftPlayer(netId: number): void { //
+    const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
+    console.log("blipindex from connected player!", netId, blipIndex);
+    
+    if (blipIndex !== -1) {
+      console.log("delete connected player blip for ", netId, this.createdBlips[blipIndex], netId, " as they have left the server!");
+      const blip = new Blip(this.createdBlips[blipIndex].blip.Handle);
+      console.log("players blip", blip.Position);
+      blip.delete();
+      this.createdBlips[blipIndex].blip.delete();
+      this.createdBlips.splice(blipIndex, 1);
+      console.log("blips", this.createdBlips);
     }
   }
 
