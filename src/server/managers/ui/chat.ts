@@ -258,7 +258,7 @@ export class ChatManager {
               const sent = await this.server.characterManager.proximityMessage(ProximityTypes.Local, message, character);
               emitNet(Events.receiveServerCB, src, sent, data);
             }
-          } else { // Global Chat
+          } else if (message.type == ChatTypes.Global) { // Global Chat
             const character = await this.server.characterManager.Get(player);
 
             if (character) {
