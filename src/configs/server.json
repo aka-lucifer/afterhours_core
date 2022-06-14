@@ -5613,5 +5613,12 @@
       {"name": "Statewide", "automaticCycling": true, "playerMax": 64, "positions": "all"}
     ]
   },
-  "maxClosestDistance": 5
+  "maxClosestDistance": 5,
+  "controllers": {
+    "staff": {
+      "ghostPlayers": {
+        "deleteTimer": 20000
+      }
+    }
+  }
 }

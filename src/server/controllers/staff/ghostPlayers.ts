@@ -7,10 +7,7 @@ import { Player } from "../../models/database/player";
 import { Ranks } from "../../../shared/enums/ranks";
 import { Events } from "../../../shared/enums/events/events";
 
-interface ClothingPiece {
-  drawable: number,
-  texture: number
-}
+import serverConfig from "../../../configs/server.json";
 
 interface LeftPlayer {
   netId: string,
@@ -68,6 +65,6 @@ export class GhostPlayers {
           }
         }
       }
-    }, 4000); // Wait 20 seconds
+    }, serverConfig.controllers.staff.ghostPlayers.deleteTimer); // Wait 20 seconds
   }
 }
