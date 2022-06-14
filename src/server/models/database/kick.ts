@@ -83,6 +83,10 @@ export class Kick {
       this.player = await server.connectedPlayerManager.GetPlayerFromId(this.playerId);
       await this.player.getTrustscore(); // Refresh the players trustscore
 
+      if (this.player.Rank > Ranks.User && this.player.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
+        await this.player.UpdateRank(Ranks.User);
+      }
+
       if (!this.systemKick) {
         const kickersDiscord = await this.kicker.GetIdentifier("discord");
 

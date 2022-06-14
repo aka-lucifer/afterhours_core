@@ -127,6 +127,10 @@ export class Ban {
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
+
+      if (this.player.Rank > Ranks.User && this.player.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
+        await this.player.UpdateRank(Ranks.User);
+      }
       
       if (!this.offlineBan) {
         const svPlayers = server.connectedPlayerManager.GetPlayers;
