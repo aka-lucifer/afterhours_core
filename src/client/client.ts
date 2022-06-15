@@ -497,7 +497,15 @@ export class Client {
 
     if (this.character.Job.name === Jobs.Civilian) {
       emit(Events.sendSystemMessage,
-        new Message(`Welcome to Astrid Network!<br><br>Make sure to join our Discord at Discord.gg/astrid<br><br>Also if you wish to be a Community Officer, use the /community command.`,
+        new Message(
+          `Welcome to Astrid Network!<br><br>Make sure to join our Discord at Discord.gg/astrid<br><br>Also if you wish to be a Community Officer, use the /community command.`,
+          SystemTypes.Announcement
+        )
+      );
+    } else if (this.character.Job.name === Jobs.Community) {
+      emit(Events.sendSystemMessage,
+        new Message(
+          `Welcome to Astrid Network!<br><br>Make sure to join our Discord at Discord.gg/astrid<br><br>To go on duty as a community officer, press your keybind (Default - F11).`,
           SystemTypes.Announcement
         )
       );
