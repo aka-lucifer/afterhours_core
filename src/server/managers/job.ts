@@ -94,32 +94,40 @@ export class JobManager {
           // Resync all players & selected characters to all clients, as your on duty status has changed
           emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.connectedPlayers));
 
-          // Logs your clock in/out time to the discord channel
-          const discord = await player.GetIdentifier("discord");
-          if (data.state) {
-            character.Job.statusTime = await GetTimestamp();
+          if (character.isLeoJob()) {
+            // Logs your clock in/out time to the discord channel
+            const discord = await player.GetIdentifier("discord");
+            if (data.state) {
+              character.Job.statusTime = await GetTimestamp();
 
-            await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
-              username: "Timesheet Logging", embeds: [{
-                color: EmbedColours.Green,
-                title: `__Unit On Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
-                description: `A player has clocked on duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Timestamp**: ${new Date(character.Job.statusTime).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
-                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-              }]
-            }));
-          } else {
-            const currTime = new Date();
-            const timeCalculated = (currTime.getTime() / 1000) - (new Date(character.Job.statusTime).getTime() / 1000);
-            const dutyTime = new Playtime(timeCalculated);
+              await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
+                username: "Timesheet Logging", embeds: [{
+                  color: EmbedColours.Green,
+                  title: `__Unit On Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
+                  description: `A player has clocked on duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Timestamp**: ${new Date(character.Job.statusTime).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+            } else {
+              const currTime = new Date();
+              const timeCalculated = (currTime.getTime() / 1000) - (new Date(character.Job.statusTime).getTime() / 1000);
+              const dutyTime = new Playtime(timeCalculated);
 
-            await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
-              username: "Timesheet Logging", embeds: [{
-                color: EmbedColours.Red,
-                title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
-                description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: ${await dutyTime.FormatTime()}\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
-                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-              }]
-            }));
+              await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
+                username: "Timesheet Logging", embeds: [{
+                  color: EmbedColours.Red,
+                  title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
+                  description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: ${await dutyTime.FormatTime()}\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+            }
           }
         }
       }
