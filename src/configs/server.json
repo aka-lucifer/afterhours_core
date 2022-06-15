@@ -4,12 +4,12 @@
   "maxPing": 350,
   "trustscore": {
     "default": 75,
-    "honourableRequirement": 90,
+    "trustedRequirement": 90,
     "playtimeDivider": 14000,
     "warningRemoval": 3,
     "kickRemoval": 6,
     "banRemoval": 10,
-    "commendAddition": 2
+    "commendAddition": 3
   },
   "warningActers": {
     "kick": {
@@ -168,28 +168,6 @@
       "interval": 30
     },
     "blacklister": {
-      "-1291952903": {
-        "model": "entityxf",
-        "brand": "Overflod",
-        "name": "Entity XF",
-        "type": "super",
-        "rank": 2
-      },
-      "-1216765807": {
-        "model": "adder",
-        "brand": "Truffade",
-        "name": "Adder",
-        "type": "super",
-        "rank": [2, 5]
-      },
-      "338562499": {
-        "model": "vacca",
-        "brand": "Pegassi",
-        "name": "Vacca",
-        "type": "super",
-        "rank": 2
-      },
-
       "-1530015901": {
         "model": "sasp1",
         "brand": "Ford",
