@@ -67,10 +67,13 @@ import { Ranks } from '../shared/enums/ranks';
 import { CuffState } from '../shared/enums/jobs/cuffStates';
 import { InteractionStates } from '../shared/enums/jobs/interactionStates';
 import { GrabState } from '../shared/enums/jobs/grabStates';
+import { DeathStates } from '../shared/enums/deathStates';
+import { Jobs } from '../shared/enums/jobs/jobs';
+import { Message } from '../shared/models/ui/chat/message';
+import { SystemTypes } from '../shared/enums/ui/chat/types';
 
 import clientConfig from "../configs/client.json";
 import sharedConfig from "../configs/shared.json";
-import { DeathStates } from '../shared/enums/deathStates';
 
 let takingScreenshot = false;
 
@@ -400,11 +403,11 @@ export class Client {
   }
   
   private registerExports(): void {
-    global.exports("getPlayer", async(source: string) => {
+    global.exports("getPlayer", async() => {
       return this.player;
     });
 
-    global.exports("getCharacter", async(source: string) => {
+    global.exports("getCharacter", async() => {
       return this.character;
     });
 
@@ -422,14 +425,27 @@ export class Client {
     global.exports("teleporting", (newState: boolean) => {
       this.Teleporting = newState;
     });
+
+    global.exports("getRanks", async() => {
+      const ranks: Record<string, any> = {};
+      for (let i = 0; i < Object.keys(Ranks).length; i++) {
+        if (Ranks[i] != undefined) {
+          ranks[i] = Ranks[i];
+        }
+      }
+
+      return ranks;
+    });
   }
 
   // Events
   private EVENT_resourceStop(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
       this.vehicleManager.weapon.stop();
-      this.jobManager.policeJob.cuffing.stop();
-      this.jobManager.policeJob.grabbing.stop();
+      if (this.jobManager.policeJob !== undefined) {
+        this.jobManager.policeJob.cuffing.stop();
+        this.jobManager.policeJob.grabbing.stop();
+      }
     }
   }
 
@@ -439,53 +455,76 @@ export class Client {
     // Manager Inits
     this.staffManager.init();
     await this.worldManager.init();
-    await this.jobManager.init();
 
     this.setupUI();
     
     // Register Player Statebags
     this.registerStates();
+
+    emit(Events.playerReady, this.player);
   }
 
   private async EVENT_setCharacter(character: any): Promise<void> {
     // Clear Previous Character Data
     Game.PlayerPed.removeAllWeapons();
     this.weaponManager.onBack.clearWeapons();
-    this.jobManager.policeJob.deleteInteractions();
-    this.jobManager.policeJob.commandMenu.stop();
 
     // Load New Character Data
     this.character = new Character(character);
-    if (this.character.isLeoJob()) {
 
-      this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone
-      this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
-      await this.jobManager.policeJob.garages.setup();
+    await this.jobManager.init();
+
+    if (this.character.isLeoJob()) {
+      if (!this.jobManager.policeJob.ClockZonesCreated) this.jobManager.policeJob.createClockZones(); // Register clock on/off interactive zone
+      // if (!this.jobManager.policeJob.commandMenu.Created) this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
+      if (!this.jobManager.policeJob.garages.Setup) await this.jobManager.policeJob.garages.setup(); // If we haven't set up the police garages yet, set them up
     } else {
-      this.jobManager.policeJob.deleteInteractions();
-      this.jobManager.policeJob.commandMenu.stop();
+      if (this.jobManager.policeJob !== undefined) if (this.jobManager.policeJob.ClockZonesCreated) this.jobManager.policeJob.deleteClockZones(); // Delete clock on zones
+      // if (!this.jobManager.policeJob.commandMenu.Created) this.jobManager.policeJob.commandMenu.stop(); // Delete command menu assets
+    }
+
+    if (this.character.Job.name !== Jobs.Community) {
+      if (this.jobManager.communityJob !== undefined) {
+        if (this.jobManager.communityJob.MenuBuilt) {
+          this.jobManager.communityJob.destroyMenu();
+        }
+      }
     }
 
     // Set Rich Presence
     this.richPresence.Text = "Loading In As Character";
     this.richPresence.start();
+
+    if (this.character.Job.name === Jobs.Civilian) {
+      emit(Events.sendSystemMessage,
+        new Message(`Welcome to Astrid Network!<br><br>Make sure to join our Discord at Discord.gg/astrid<br><br>Also if you wish to be a Community Officer, use the /community command.`,
+          SystemTypes.Announcement
+        )
+      );
+    }
+
     // console.log("Character Set To", this.Character);
   }
 
   private async EVENT_updateCharacter(character: any): Promise<void> {
-    // Set the necessary police controllers stopped
-    this.jobManager.policeJob.deleteInteractions();
-    this.jobManager.policeJob.commandMenu.stop();
-
     // Load New Character Data
     this.character = new Character(character);
 
     if (this.character.isLeoJob()) {
+      if (!this.jobManager.policeJob.ClockZonesCreated) this.jobManager.policeJob.createClockZones(); // Register clock on/off interactive zone
+      // if (!this.jobManager.policeJob.commandMenu.Created) this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
+      if (!this.jobManager.policeJob.garages.Setup) await this.jobManager.policeJob.garages.setup(); // If we haven't set up the police garages yet, set them up
+    } else {
+      if (this.jobManager.policeJob !== undefined) if (this.jobManager.policeJob.ClockZonesCreated) this.jobManager.policeJob.deleteClockZones(); // Delete clock on zones
+      // if (!this.jobManager.policeJob.commandMenu.Created) this.jobManager.policeJob.commandMenu.stop(); // Delete command menu assets
+    }
 
-      // Start the necessary police controllers
-      this.jobManager.policeJob.registerDuty(); // Register clock on/off interactive zone
-      this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
-      await this.jobManager.policeJob.garages.setup();
+    if (this.character.Job.name !== Jobs.Community) {
+      if (this.jobManager.communityJob !== undefined) {
+        if (this.jobManager.communityJob.MenuBuilt) {
+          this.jobManager.communityJob.destroyMenu();
+        }
+      }
     }
   }
 

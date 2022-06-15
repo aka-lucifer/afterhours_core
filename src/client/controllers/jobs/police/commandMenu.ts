@@ -63,6 +63,11 @@ export class CommandMenu {
     Inform("Command Menu | Jobs (Police) Controller", "Started!");
   }
 
+  // Getters
+  public get Created(): boolean {
+    return this.distTick !== undefined;
+  }
+
   public get Open(): boolean {
     return this.usingMenu;
   }

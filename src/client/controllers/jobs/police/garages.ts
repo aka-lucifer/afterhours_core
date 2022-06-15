@@ -54,6 +54,7 @@ export class Garages {
   private stateVehicles: Submenu;
 
   private usingMenu: boolean = false;
+  private setupMenu: boolean = false;
 
   // Ticks
   private distTick: number = undefined;
@@ -63,6 +64,10 @@ export class Garages {
     this.client = client;
 
     Inform("Garages | Jobs (Police) Controller", "Started!");
+  }
+
+  public get Setup(): boolean {
+    return this.setupMenu;
   }
 
   public get Open(): boolean {
@@ -130,39 +135,43 @@ export class Garages {
   }
 
   public async setup(): Promise<void> {
-    this.client.menuManager.emptyMenu(this.menu.handle); // Empty current vehicles
-    const vehicles = await sortVehicles(serverConfig.vehicles.blacklister); // Sort the vehicles array, so it's just VehData and no hash
+    if (!this.setupMenu) {
+      this.client.menuManager.emptyMenu(this.menu.handle); // Empty current vehicles
+      const vehicles = await sortVehicles(serverConfig.vehicles.blacklister); // Sort the vehicles array, so it's just VehData and no hash
 
-    for (let b = 0; b < vehicles.length; b++) {
-      const vehicle = vehicles[b]; // Get second entry from array, as first entry is vehicle hash.
+      for (let b = 0; b < vehicles.length; b++) {
+        const vehicle = vehicles[b]; // Get second entry from array, as first entry is vehicle hash.
 
-      if (vehicle.type == "emergency") {
-        const menuPermission = await this.hasPermission(vehicle);
+        if (vehicle.type == "emergency") {
+          const menuPermission = await this.hasPermission(vehicle);
 
-        // Spawn Button (With spawn logic)
-        if (menuPermission) {
-          const spawnButton = this.menu.BindButton(`${vehicle.brand}, ${vehicle.name}`, async () => {
-            const [positionAvailable, position, heading] = await this.findPosition(this.currentGarage.spawnLocations);
-            const myPed = Game.PlayerPed;
-            let spawnPos = position;
-            let spawnHeading = heading;
+          // Spawn Button (With spawn logic)
+          if (menuPermission) {
+            const spawnButton = this.menu.BindButton(`${vehicle.brand}, ${vehicle.name}`, async () => {
+              const [positionAvailable, position, heading] = await this.findPosition(this.currentGarage.spawnLocations);
+              const myPed = Game.PlayerPed;
+              let spawnPos = position;
+              let spawnHeading = heading;
 
-            if (!positionAvailable) {
-              spawnPos = myPed.Position;
-              spawnHeading = myPed.Heading;
-            } else {
-              const notify = new Notification("Garage", "Your vehicle is ready at one of the parking spots.", NotificationTypes.Info);
-              await notify.send();
-            }
+              if (!positionAvailable) {
+                spawnPos = myPed.Position;
+                spawnHeading = myPed.Heading;
+              } else {
+                const notify = new Notification("Garage", "Your vehicle is ready at one of the parking spots.", NotificationTypes.Info);
+                await notify.send();
+              }
 
-            if (IsPedInAnyVehicle(myPed.Handle, false)) myPed.CurrentVehicle.delete();
+              if (IsPedInAnyVehicle(myPed.Handle, false)) myPed.CurrentVehicle.delete();
 
-            const createdVeh = await createVeh(vehicle.model, spawnPos, spawnHeading);
-            TaskWarpPedIntoVehicle(myPed.Handle, createdVeh.Handle, VehicleSeat.Driver); // Set you in the drivers seat of the vehicle
-            await this.menu.Close();
-          });
+              const createdVeh = await createVeh(vehicle.model, spawnPos, spawnHeading);
+              TaskWarpPedIntoVehicle(myPed.Handle, createdVeh.Handle, VehicleSeat.Driver); // Set you in the drivers seat of the vehicle
+              await this.menu.Close();
+            });
+          }
         }
       }
+
+      this.setupMenu = true;
     }
   }
 

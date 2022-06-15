@@ -1,26 +1,29 @@
+import { Game } from 'fivem-js';
+
 import { Capitalize, keyboardInput } from '../utils';
 import { Client } from '../client';
 
 import { Notification } from '../models/ui/notification';
 import { ServerCallback } from '../models/serverCallback';
 
-import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
-import { JobCallbacks } from '../../shared/enums/events/jobs/jobCallbacks';
-
 // Jobs
 import { PoliceJob } from '../controllers/jobs/policeJob';
-import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
+import { CommunityJob } from '../controllers/jobs/communityJob';
 
 // Controllers
 import { JobBlips } from '../controllers/jobs/features/jobBlips';
-import { Weapons } from '../../shared/enums/weapons';
-import { AmmoType, Game } from 'fivem-js';
+
+import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
+import { JobCallbacks } from '../../shared/enums/events/jobs/jobCallbacks';
+import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
+import { Jobs } from '../../shared/enums/jobs/jobs';
 
 export class JobManager {
-  private client: Client;
+  private readonly client: Client;
 
   // Jobs
   public policeJob: PoliceJob;
+  public communityJob: CommunityJob;
 
   // Controllers
   private jobBlips: JobBlips;
@@ -36,9 +39,20 @@ export class JobManager {
 
   // Methods
   public async init(): Promise<void> {
-    // Jobs
     this.policeJob = new PoliceJob(this.client);
+
+    // Job Initiators
     await this.policeJob.init();
+
+    if (this.client.Character.job.name === Jobs.Community) {
+      this.communityJob = new CommunityJob(this.client);
+
+      // Job Initiators
+      await this.communityJob.init();
+
+      // Job Methods
+      this.communityJob.createMenu();
+    }
 
     // Controllers
     this.jobBlips = new JobBlips(this.client);
@@ -151,12 +165,10 @@ export class JobManager {
     this.policeJob.garages.toggleBlips(newState);
 
     if (newState) { // If on duty
-      this.policeJob.registerInteractions(); // Register test interactions
       this.client.hexMenu.addPoliceOptions(); // Add police options to the hex menu
       this.policeJob.commandMenu.start();
       this.policeJob.garages.start();
     } else { // If off duty
-      this.policeJob.deleteInteractions();
       this.client.hexMenu.removePoliceOptions(); // Remove police options from the hex menu
       this.policeJob.commandMenu.stop();
       this.policeJob.garages.stop();

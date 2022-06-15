@@ -21,6 +21,8 @@ interface Call {
 export class PoliceJob {
   private client: Client
 
+  private madeClockInZones: boolean = false;
+
   // 911/311 Blips
   private callBlips: Call[] = [];
 
@@ -55,8 +57,12 @@ export class PoliceJob {
     Inform("Police | Jobs Controller", "Started!");
   }
 
-  // Methods
+  // Getters
+  public get ClockZonesCreated(): boolean {
+    return this.madeClockInZones;
+  }
 
+  // Methods
   private registerExports(): void {
     global.exports("getJob", () => {
       if (this.client.Player.Spawned) {
@@ -76,7 +82,7 @@ export class PoliceJob {
     });
   }
 
-  public registerDuty(): void {
+  public createClockZones(): void {
     emit("astrid_target:client:addBoxZone", "Sandy PD", new Vector3(1852.24, 3687.0, 34.27), 2.4, 1.4, {
       name: "sandy_pd_options",
       heading: 301,
@@ -173,6 +179,7 @@ export class PoliceJob {
       distance: 1
     });
 
+
     emit("astrid_target:client:addBoxZone", "La Mesa PD", new Vector3(835.83, -1289.7, 28.24), 5.2, 1.2, {
       name: "la_mesa_pd_options",
       heading: 0,
@@ -204,42 +211,15 @@ export class PoliceJob {
       ],
       distance: 1
     });
+
+    this.madeClockInZones = true;
   }
 
-  public registerInteractions(): void {
-    emit("astrid_target:client:player", {
-      options: [
-        {
-          event: JobEvents.cuffPlayer,
-          type: "server",
-          icon: "fas fa-solid fa-handcuffs",
-          label: "Cuff Player",
-        }
-      ],
-      distance: 3
-    });
-
-    emit("astrid_target:client:player", {
-      options: [
-        {
-          event: JobEvents.uncuffPlayer,
-          type: "server",
-          icon: "fas fa-solid fa-key",
-          label: "Uncuff Player",
-        }
-      ],
-      distance: 3
-    });
-  }
-
-  public deleteInteractions(): void {
-    emit("astrid_target:client:removePlayer", [
-      "Cuff Player", "Uncuff Player"
-    ]);
-
-    emit("astrid_target:client:removeZone", [
-      "sandy_pd_options"
-    ]);
+  public deleteClockZones(): void {
+    emit("astrid_target:client:removeZone", "Sandy PD");
+    emit("astrid_target:client:removeZone", "Paleto PD");
+    emit("astrid_target:client:removeZone", "Mission Row PD");
+    emit("astrid_target:client:removeZone", "La Mesa PD");
   }
 
   public async init(): Promise<void> {

@@ -238,6 +238,27 @@ export class PoliceJob {
       }
     }, [Jobs.State, Jobs.Police, Jobs.County]);
 
+    new JobCommand("active", "Sets your priority to active or busy.", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const character = await this.server.characterManager.Get(player);
+          if (character.isLeoJob() && character.Job.status) {
+            console.log("curr active state", character.Job.Active);
+
+            const newState = !character.Job.Active;
+            character.Job.Active = newState;
+
+            if (newState) {
+              console.log("active bby");
+            }
+          } else {
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("You aren't on duty!", SystemTypes.Error));
+          }
+        }
+      }
+    }, [Jobs.State, Jobs.Police, Jobs.County]);
+
     new Command("911", "Call 911 with an emergency", [{name: "description", help: "The description of your 911 call."}], true, async(source: string, args: any[]) => {
       if (args[0]) {
         const player = await this.server.connectedPlayerManager.GetPlayer(source);
