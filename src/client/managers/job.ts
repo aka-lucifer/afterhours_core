@@ -160,7 +160,6 @@ export class JobManager {
   }
 
   private EVENT_dutyStateChange(newState: boolean): void {
-    console.log("set duty", newState);
     this.policeJob.commandMenu.toggleBlips(newState);
     this.policeJob.garages.toggleBlips(newState);
 
