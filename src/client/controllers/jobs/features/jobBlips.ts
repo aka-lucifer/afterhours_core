@@ -81,16 +81,8 @@ export class JobBlips {
                           blip.Sprite = BlipSprite.PoliceCar;
                           blip.Color = BlipColor.Blue;
                           break;
-                        case Jobs.Fire:
-                          blip.Sprite = BlipSprite.ArmoredTruck;
-                          blip.Color = BlipColor.Red;
-                          break;
-                        case Jobs.EMS:
-                          blip.Sprite = BlipSprite.Hospital;
-                          blip.Color = BlipColor.Red;
-                          break;
                         case Jobs.Community:
-                          blip.Sprite = 58
+                          blip.Sprite = BlipSprite.PoliceCar;
                           blip.Color = BlipColor.Green;
                           break;
                       }
@@ -108,16 +100,8 @@ export class JobBlips {
                           blip.Sprite = 348;
                           blip.Color = BlipColor.Blue;
                           break;
-                        case Jobs.Fire:
-                          blip.Sprite = 348;
-                          blip.Color = BlipColor.Red;
-                          break;
-                        case Jobs.EMS:
-                          blip.Sprite = 348;
-                          blip.Color = BlipColor.Red;
-                          break;
                         case Jobs.Community:
-                          blip.Sprite = 58
+                          blip.Sprite = 348;
                           blip.Color = BlipColor.Green;
                           break;
                       }
@@ -135,16 +119,8 @@ export class JobBlips {
                           blip.Sprite = BlipSprite.PoliceHelicopter;
                           blip.Color = BlipColor.Blue;
                           break;
-                        case Jobs.Fire:
-                          blip.Sprite = BlipSprite.PoliceHelicopter;
-                          blip.Color = BlipColor.Red;
-                          break;
-                        case Jobs.EMS:
-                          blip.Sprite = BlipSprite.PoliceHelicopter;
-                          blip.Color = BlipColor.Red;
-                          break;
                         case Jobs.Community:
-                          blip.Sprite = 58
+                          blip.Sprite = BlipSprite.PoliceHelicopter;
                           blip.Color = BlipColor.Green;
                           break;
                       }
@@ -162,22 +138,18 @@ export class JobBlips {
                           blip.Sprite = BlipSprite.Speedboat;
                           blip.Color = BlipColor.Blue;
                           break;
-                        case Jobs.Fire:
-                          blip.Sprite = BlipSprite.Speedboat;
-                          blip.Color = BlipColor.Red;
-                          break;
-                        case Jobs.EMS:
-                          blip.Sprite = BlipSprite.Speedboat;
-                          blip.Color = BlipColor.Red;
-                          break;
                         case Jobs.Community:
-                          blip.Sprite = 58
+                          blip.Sprite = BlipSprite.Speedboat;
                           blip.Color = BlipColor.Green;
                           break;
                       }
                     }
 
-                    blip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    if (units[i].job === Jobs.Community) {
+                      blip.Name = `[${units[i].netId}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    } else {
+                      blip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    }
                     blip.Rotation = units[i].heading;
                     blip.ShowHeadingIndicator = true;
 
@@ -206,18 +178,16 @@ export class JobBlips {
                       case Jobs.State:
                         blip.Color = BlipColor.Blue;
                         break;
-                      case Jobs.Fire:
-                        blip.Color = BlipColor.Red;
-                        break;
-                      case Jobs.EMS:
-                        blip.Color = BlipColor.Red;
-                        break;
                       case Jobs.Community:
                         blip.Color = BlipColor.Green;
                         break;
                     }
 
-                    blip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    if (units[i].job === Jobs.Community) {
+                      blip.Name = `[${units[i].netId}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    } else {
+                      blip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                    }
                     blip.Rotation = units[i].heading;
                     blip.ShowHeadingIndicator = true;
                   }
@@ -249,16 +219,8 @@ export class JobBlips {
                             foundBlip.Sprite = BlipSprite.PoliceCar;
                             foundBlip.Color = BlipColor.Blue;
                             break;
-                          case Jobs.Fire:
-                            foundBlip.Sprite = BlipSprite.ArmoredTruck;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
-                          case Jobs.EMS:
-                            foundBlip.Sprite = BlipSprite.Hospital;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
                           case Jobs.Community:
-                            foundBlip.Sprite = 58
+                            foundBlip.Sprite = BlipSprite.PoliceCar;
                             foundBlip.Color = BlipColor.Green;
                             break;
                         }
@@ -276,16 +238,8 @@ export class JobBlips {
                             foundBlip.Sprite = 348;
                             foundBlip.Color = BlipColor.Blue;
                             break;
-                          case Jobs.Fire:
-                            foundBlip.Sprite = 348;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
-                          case Jobs.EMS:
-                            foundBlip.Sprite = 348;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
                           case Jobs.Community:
-                            foundBlip.Sprite = 58
+                            foundBlip.Sprite = 348;
                             foundBlip.Color = BlipColor.Green;
                             break;
                         }
@@ -303,16 +257,8 @@ export class JobBlips {
                             foundBlip.Sprite = BlipSprite.PoliceHelicopter;
                             foundBlip.Color = BlipColor.Blue;
                             break;
-                          case Jobs.Fire:
-                            foundBlip.Sprite = BlipSprite.PoliceHelicopter;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
-                          case Jobs.EMS:
-                            foundBlip.Sprite = BlipSprite.PoliceHelicopter;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
                           case Jobs.Community:
-                            foundBlip.Sprite = 58
+                            foundBlip.Sprite = BlipSprite.PoliceHelicopter;
                             foundBlip.Color = BlipColor.Green;
                             break;
                         }
@@ -330,22 +276,18 @@ export class JobBlips {
                             foundBlip.Sprite = BlipSprite.Speedboat;
                             foundBlip.Color = BlipColor.Blue;
                             break;
-                          case Jobs.Fire:
-                            foundBlip.Sprite = BlipSprite.Speedboat;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
-                          case Jobs.EMS:
-                            foundBlip.Sprite = BlipSprite.Speedboat;
-                            foundBlip.Color = BlipColor.Red;
-                            break;
                           case Jobs.Community:
-                            foundBlip.Sprite = 58
+                            foundBlip.Sprite = BlipSprite.Speedboat;
                             foundBlip.Color = BlipColor.Green;
                             break;
                         }
                       }
 
-                      foundBlip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      if (units[i].job === Jobs.Community) {
+                        foundBlip.Name = `[${units[i].netId}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      } else {
+                        foundBlip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      }
                       foundBlip.Rotation = units[i].heading;
                       foundBlip.ShowHeadingIndicator = true;
 
@@ -384,18 +326,16 @@ export class JobBlips {
                         case Jobs.State:
                           foundBlip.Color = BlipColor.Blue;
                           break;
-                        case Jobs.Fire:
-                          foundBlip.Color = BlipColor.Red;
-                          break;
-                        case Jobs.EMS:
-                          foundBlip.Color = BlipColor.Red;
-                          break;
                         case Jobs.Community:
                           foundBlip.Color = BlipColor.Green;
                           break;
                       }
 
-                      foundBlip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      if (units[i].job === Jobs.Community) {
+                        foundBlip.Name = `[${units[i].netId}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      } else {
+                        foundBlip.Name = `[${units[i].callsign}] | ${formatFirstName(units[i].firstName)}. ${units[i].lastName}`;
+                      }
                       foundBlip.Rotation = units[i].heading;
                       foundBlip.ShowHeadingIndicator = true;
                     }
