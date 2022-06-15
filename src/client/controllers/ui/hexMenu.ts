@@ -76,7 +76,7 @@ const leoMenus: any = {
           label: "Radar",
           submenu: false,
           type: EventType.Client,
-          event: "Astrid_Radar:Client:ToggleRadar"
+          event: "Astrid_Radar:Client:ToggleRemote"
         }
       ]
     },
