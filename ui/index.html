@@ -116,8 +116,8 @@
               <div v-if="hoveredCharacter.gender == 0"><span style="font-family: 'PT-Sans-Caption';"><b>Gender</b>: Male</span><br></div>
               <div v-if="hoveredCharacter.gender == 1"><span style="font-family: 'PT-Sans-Caption';"><b>Gender</b>: Female</span><br></div>
               <span style="font-family: 'PT-Sans-Caption';"><b>Nationality</b>: {{ hoveredCharacter.nationality }}</span><br>
-              <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName != 'civilian'"><b>Job</b>: {{ hoveredCharacter.jobLabel }} ({{ hoveredCharacter.jobRank }})</span>
-              <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName == 'civilian'"><b>Job</b>: {{ hoveredCharacter.jobLabel }}</span>
+              <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName !== 'civilian' && hoveredCharacter.jobName !== 'cofficer'"><b>Job</b>: {{ hoveredCharacter.jobLabel }} ({{ hoveredCharacter.jobRank }})</span>
+              <span style="font-family: 'PT-Sans-Caption';" v-else><b>Job</b>: {{ hoveredCharacter.jobLabel }}</span>
               <!-- <span style="font-family: 'PT-Sans-Caption';"><b>Phone</b>: {{ hoveredCharacter.phone }}</span><br> -->
               <br><span style="font-family: 'PT-Sans-Caption';"><b>Backstory</b>: {{ hoveredCharacter.backstory }}</span>
             </v-card-text>
