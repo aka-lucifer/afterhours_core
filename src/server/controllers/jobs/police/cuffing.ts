@@ -10,6 +10,7 @@ import { Message } from '../../../../shared/models/ui/chat/message';
 import { SystemTypes } from '../../../../shared/enums/ui/chat/types';
 import { formatFirstName } from '../../../../shared/utils';
 import { Events } from '../../../../shared/enums/events/events';
+import { Jobs } from '../../../../shared/enums/jobs/jobs';
 
 export class Cuffing {
   private server: Server;
@@ -32,7 +33,7 @@ export class Cuffing {
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
-        if (character.isLeoJob()) { // If your selected character is an LEO
+        if (character.isLeoJob() || character.Job.name === Jobs.Community) { // If your selected character is an LEO
           if (character.Job.Status) { // If your character is on duty
             const [closest, dist] = await getClosestPlayer(player);
 
@@ -72,7 +73,7 @@ export class Cuffing {
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
-        if (character.isLeoJob()) { // If your selected character is an LEO
+        if (character.isLeoJob() || character.Job.name === Jobs.Community) { // If your selected character is an LEO
           if (character.Job.Status) { // If your character is on duty
             const [closest, dist] = await getClosestPlayer(player);
 
@@ -136,7 +137,7 @@ export class Cuffing {
     if (player) {
       if (player.Spawned) { // If you have spawned in as a character
         const character = await this.server.characterManager.Get(player);
-        if (character.isLeoJob()) { // If your selected character is an LEO
+        if (character.isLeoJob() || character.Job.name === Jobs.Community) { // If your selected character is an LEO
           if (character.Job.Status) { // If your character is on duty
             // console.log("do perp back anim!");
             const perpStates = Player(netToArrest);
@@ -155,7 +156,7 @@ export class Cuffing {
     if (player) {
       if (player.Spawned) { // If you have spawned in as a character
         const character = await this.server.characterManager.Get(player);
-        if (character.isLeoJob()) { // If your selected character is an LEO
+        if (character.isLeoJob() || character.Job.name === Jobs.Community) { // If your selected character is an LEO
           if (character.Job.Status) { // If your character is on duty
             // console.log("do perp front anim!");
             const perpStates = Player(netToArrest);
@@ -174,7 +175,7 @@ export class Cuffing {
     if (player) {
       if (player.Spawned) { // If you have spawned in as a character
         const character = await this.server.characterManager.Get(player);
-        if (character.isLeoJob()) { // If your selected character is an LEO
+        if (character.isLeoJob() || character.Job.name === Jobs.Community) { // If your selected character is an LEO
           if (character.Job.Status) { // If your character is on duty
             const perpsPlayer = await this.server.connectedPlayerManager.GetPlayer(netToArrest);
             if (perpsPlayer) {
