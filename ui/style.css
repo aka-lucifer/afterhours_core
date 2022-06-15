@@ -1140,7 +1140,8 @@ body {
 }
 
 .advert {
-  color: rgb(167, 59, 255);
+  /* color: rgba(0, 255, 0, 0.75); */
+  color: rgb(51, 226, 104);
   font-weight: bold;
 }
 

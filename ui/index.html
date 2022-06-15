@@ -584,7 +584,7 @@
             <div id="Chat-Message" class="gps" v-if="message.notificationType == 'gps'">[GPS]: <span style="color: white;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
-            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Advert - {{ message.sender}}): <span v-html="message.contents"></div>
+            <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Ad - {{ message.sender}}): <span v-html="message.contents"></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">*{{ message.sender}} <span v-html="message.contents"></span>*</div>
           </div>
 

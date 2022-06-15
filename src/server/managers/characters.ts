@@ -84,6 +84,26 @@ export class CharacterManager {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
       }
     }, Ranks.User);
+
+    new Command("ad", "Send an advert to the server.", [{name: "content", help: "The content of your advert."}], true, async(source: string, args: any[]) => {
+      const messageContents = args.join(" ");
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+      if (messageContents.length > 0) {
+        if (player) {
+          if (player.Spawned) {
+            const character = await this.Get(player);
+            
+            if (character) {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message(messageContents, SystemTypes.Advert), character.Name);
+              await logCommand("/ad", player, messageContents);
+            }
+          }
+        }
+      } else {
+        await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
+      }
+    }, Ranks.User);
   }
 
   public async proximityMessage(type: ProximityTypes, message: Message, character: Character): Promise<boolean> {
