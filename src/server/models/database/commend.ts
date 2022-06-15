@@ -74,37 +74,40 @@ export class Commend {
       const myPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.receiver);
       await myPlayer.getTrustscore(); // Refresh the players trustscore
 
-      const issuersPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.issuedBy);
-
-      const inDisc = await inDiscord(myPlayer);
-      let receiver: string;
-
-      if (inDisc) {
-        const commendeesDiscord = await myPlayer.GetIdentifier("discord");
-        receiver = `<@${commendeesDiscord}>`;
-      } else {
-        receiver = `[${Ranks[myPlayer.Rank]}] - ${myPlayer.GetName}`;
-      }
-
-      let commendersDiscord = await issuersPlayer.GetIdentifier("discord");
-      commendersDiscord = commendersDiscord != "Unknown" ? `<@${commendersDiscord}>` : commendersDiscord
-
-      await server.logManager.Send(LogTypes.Commend, new WebhookMessage({
-        username: "Commend Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Player Commended__",
-          description: `A player has received a commendation.\n\n**Commend ID**: #${this.id}\n**Commended**: ${receiver}\n**Reason**: ${this.reason}\n**Commended By**: [${Ranks[myPlayer.Rank]}] - ${myPlayer.GetName}\n**Commenders Discord**: ${commendersDiscord}`,
-          footer: {
-            text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-            icon_url: sharedConfig.serverLogo
-          }
-        }]
-      }));
-
       emitNet(Events.sendSystemMessage, -1, new Message(`^3${myPlayer.GetName} ^0has received a commend from ^3[${Ranks[myPlayer.Rank]}] - ^3${myPlayer.GetName}^0, for ^3${this.reason}`, SystemTypes.Admin));
       return true
     }
 
     return false;
+  }
+
+  public async log(): Promise<void> {
+    const myPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.receiver);
+    const issuersPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.issuedBy);
+
+    const inDisc = await inDiscord(myPlayer);
+    let receiver: string;
+
+    if (inDisc) {
+      const commendeesDiscord = await myPlayer.GetIdentifier("discord");
+      receiver = `<@${commendeesDiscord}>`;
+    } else {
+      receiver = `[${Ranks[myPlayer.Rank]}] - ${myPlayer.GetName}`;
+    }
+
+    let commendersDiscord = await issuersPlayer.GetIdentifier("discord");
+    commendersDiscord = commendersDiscord != "Unknown" ? `<@${commendersDiscord}>` : commendersDiscord
+
+    await server.logManager.Send(LogTypes.Commend, new WebhookMessage({
+      username: "Commend Logs", embeds: [{
+        color: EmbedColours.Green,
+        title: "__Player Commended__",
+        description: `A player has received a commendation.\n\n**Commend ID**: #${this.id}\n**Commended**: ${receiver}\n**Reason**: ${this.reason}\n**Commended By**: [${Ranks[myPlayer.Rank]}] - ${myPlayer.GetName}\n**Commendees Discord**: ${commendersDiscord}`,
+        footer: {
+          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+          icon_url: sharedConfig.serverLogo
+        }
+      }]
+    }));
   }
 }
