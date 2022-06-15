@@ -55,7 +55,8 @@ export class Character {
   }
 
   public isSAFREMSJob(): boolean {
-    return this.job.name == Jobs.Fire || this.job.name == Jobs.EMS
+    // return this.job.name == Jobs.Fire || this.job.name == Jobs.EMS; // Disabled until I've implemented Fire & EMS jobs.
+    return false;
   }
 }
 
