@@ -10,6 +10,7 @@ import { getRankFromValue } from "../../shared/utils";
 import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
 
 import clientConfig from "../../configs/client.json";
+import { Jobs } from "../../shared/enums/jobs/jobs";
 
 interface GamerTag {
   tag: number,
@@ -83,8 +84,12 @@ export class PlayerNames {
                 }
 
                 // Job department and rank in name (if their job is LEO, Fire, or EMS & they're on duty)
-                if (svPlayers[i].Character.job.name != "civilian" && svPlayers[i].Character.job.status) {
-                  name = `${name} | ${svPlayers[i].Character.job.label} (${await getRankFromValue(svPlayers[i].Character.job.rank, svPlayers[i].Character.job.name)})`;
+                if (svPlayers[i].Character.job.name == Jobs.State || svPlayers[i].Character.job.name == Jobs.County || svPlayers[i].Character.job.name == Jobs.Police) { // If LEO
+                  if (svPlayers[i].Character.job.status) { // If on duty
+                    name = `${name} | ${svPlayers[i].Character.job.label} (${await getRankFromValue(svPlayers[i].Character.job.rank, svPlayers[i].Character.job.name)})`;
+                  }
+                } else if (svPlayers[i].Character.job.name === Jobs.Community && svPlayers[i].Character.job.status) { // If on duty Community Officer
+                  name = `${name} | ${svPlayers[i].Character.job.label}`;
                 }
 
                 // Whether or not to display staffs ranks in their name
@@ -97,6 +102,8 @@ export class PlayerNames {
                   name = `${name} | PAUSED`;
                 } else if (playerStates.state.paused && playerStates.state.afk) {
                   name = `${name} | PAUSED | AFK`;
+                } else {
+                  name = name + "";
                 }
 
                 if (this.createdTags[netId] === undefined) {
