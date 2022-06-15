@@ -1,7 +1,7 @@
 import { Vector3 } from "fivem-js";
 
 import { Server } from "../../server";
-import { addZero, Capitalize, Delay } from "../../utils";
+import { addZero, Delay } from "../../utils";
 
 import { LogTypes } from "../../enums/logging";
 
@@ -19,7 +19,7 @@ import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
-import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
+import { Jobs } from "../../../shared/enums/jobs/jobs";
 import { EmbedColours } from "../../../shared/enums/logging/embedColours";
 import { AdminActions } from "../../../shared/enums/adminActions";
 
@@ -157,14 +157,13 @@ export class StaffMenu {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
             const havePerm = this.havePermission(player.Rank);
-            console.log("have permission!", havePerm);
 
             if (havePerm) {
-              // if (player.Id !== playerId) {
+              if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  // if (foundPlayer.Rank < player.Rank) {
+                  if (foundPlayer.Rank < player.Rank) {
                     let banSeconds = 0;
                     if (!banPermanent) {
                       if (banType == "SECONDS") {
@@ -206,25 +205,19 @@ export class StaffMenu {
                         await player.Notify("Ban", `You've permanently banned ${foundPlayer.GetName}, for ${banReason}.`, NotificationTypes.Info, 5000);
                       }
                     }
-                  // } else {
-                  //   await player.Notify("Ban", "You can't ban someone who has a higher rank than you!", NotificationTypes.Error);
-                  // }
+                  } else {
+                    await player.Notify("Ban", "You can't ban someone who has a higher rank than you!", NotificationTypes.Error);
+                  }
                 } else {
                   await player.Notify("Ban", "Player not found!", NotificationTypes.Error);
                 }
-              // } else {
-              //   await player.Notify("Ban", "You can't ban yourself!", NotificationTypes.Error);
-              // }
+              } else {
+                await player.Notify("Ban", "You can't ban yourself!", NotificationTypes.Error);
+              }
             }
           }
-        } else {
-          console.log("no ban reason 2!");
         }
-      } else {
-        console.log("no ban reason 1!");
       }
-    } else {
-      console.log("player id doesn't exist!");
     }
   }
 
@@ -235,14 +228,13 @@ export class StaffMenu {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
             const havePerm = this.havePermission(player.Rank);
-            console.log("have permission!", havePerm);
 
             if (havePerm) {
-              // if (player.Id !== playerId) {
+              if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  // if (foundPlayer.Rank < player.Rank) {
+                  if (foundPlayer.Rank < player.Rank) {
                     const kick = new Kick(foundPlayer.Id, kickReason, player.Id);
                     kick.Kicker = player;
   
@@ -251,25 +243,19 @@ export class StaffMenu {
                       kick.drop();
                       await player.Notify("Kick", `You've kicked ${foundPlayer.GetName}, for ${kickReason}.`, NotificationTypes.Info, 5000);
                     }
-                  // } else {
-                  //   await player.Notify("Kick", "You can't kick someone who has a higher rank than you!", NotificationTypes.Error);
-                  // }
+                  } else {
+                    await player.Notify("Kick", "You can't kick someone who has a higher rank than you!", NotificationTypes.Error);
+                  }
                 } else {
                   await player.Notify("Kick", "Player not found!", NotificationTypes.Error);
                 }
-              // } else {
-              //   await player.Notify("Kick", "You can't kick yourself!", NotificationTypes.Error);
-              // }
+              } else {
+                await player.Notify("Kick", "You can't kick yourself!", NotificationTypes.Error);
+              }
             }
           }
-        } else {
-          console.log("no kick reason 2!");
         }
-      } else {
-        console.log("no kick reason 1!");
       }
-    } else {
-      console.log("player id doesn't exist!");
     }
   }
 
@@ -280,14 +266,13 @@ export class StaffMenu {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
             const havePerm = this.havePermission(player.Rank);
-            console.log("have permission!", havePerm);
 
             if (havePerm) {
-              // if (player.Id !== playerId) {
+              if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
-                  // if (foundPlayer.Rank < player.Rank) {
+                  if (foundPlayer.Rank < player.Rank) {
                     const warning = new Warning(foundPlayer.Id, warnReason, player.Id);
                     warning.Warner = player;
                     
@@ -296,25 +281,19 @@ export class StaffMenu {
                       await warning.send();
                       await player.Notify("Warn", `You've warned ${foundPlayer.GetName}, for ${warnReason}.`, NotificationTypes.Info, 5000);
                     }
-                  // } else {
-                  //   await player.Notify("Warn", "You can't warn someone who has a higher rank than you!", NotificationTypes.Error);
-                  // }
+                  } else {
+                    await player.Notify("Warn", "You can't warn someone who has a higher rank than you!", NotificationTypes.Error);
+                  }
                 } else {
                   await player.Notify("Warn", "Player not found!", NotificationTypes.Error);
                 }
-              // } else {
-              //   await player.Notify("Warn", "You can't warn yourself!", NotificationTypes.Error);
-              // }
+              } else {
+                await player.Notify("Warn", "You can't warn yourself!", NotificationTypes.Error);
+              }
             }
           }
-        } else {
-          console.log("no warn reason 2!");
         }
-      } else {
-        console.log("no warn reason 1!");
       }
-    } else {
-      console.log("player id doesn't exist!");
     }
   }
 
@@ -325,10 +304,9 @@ export class StaffMenu {
           const player = await this.server.connectedPlayerManager.GetPlayer(source);
           if (player) {
             const havePerm = this.havePermission(player.Rank);
-            console.log("have permission!", havePerm);
 
             if (havePerm) {
-              // if (player.Id !== playerId) {
+              if (player.Id !== playerId) {
                 const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
 
                 if (foundPlayer) {
@@ -341,19 +319,13 @@ export class StaffMenu {
                 } else {
                   await player.Notify("Commend", "Player not found!", NotificationTypes.Error);
                 }
-              // } else {
-              //   await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
-              // }
+              } else {
+                await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
+              }
             }
           }
-        } else {
-          console.log("no commend reason 2!");
         }
-      } else {
-        console.log("no commend reason 1!");
       }
-    } else {
-      console.log("player id doesn't exist!");
     }
   }
 
@@ -362,43 +334,31 @@ export class StaffMenu {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         const havePerm = this.havePermission(player.Rank);
-        console.log("have permission!", havePerm);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
-            // const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
-            const foundPlayer = player;
+          if (player.Id !== playerId) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
-              const hasBypass = player.Rank >= Ranks.Management ? true : false; // If you have management bypass or not
+              const hasBypass = player.Rank >= Ranks.SeniorAdmin; // If you have management bypass or not
               if (!hasBypass) { // If you don't have the management rank bypass
                 if (newRank < player.Rank) { // If the new rank is less than yours (double check, since we have already done this on our client)
-                  if (newRank >= Ranks.Honorable) { // If the rank is honourable or above (Honourable, Trusted, All of staff)
-                    const canHaveRank = foundPlayer.Trustscore >= serverConfig.trustscore.honourableRequirement ? true : false; // Trustscore auto checks bans/kicks & warnings, so we don't have to
+                  if (newRank >= Ranks.Trusted) { // If the rank is honourable or above (Honourable, Trusted, All of staff)
+                    const canHaveRank = foundPlayer.Trustscore >= serverConfig.trustscore.trustedRequirement; // Trustscore auto checks bans/kicks & warnings, so we don't have to
                     if (canHaveRank) { // If their trustscore is high enough, give them the rank
                       const updatedRank = await foundPlayer.UpdateRank(newRank);
                       if (updatedRank) {
-                        console.log("give them honourable or above");
-                        this.updateRank(player, foundPlayer, newRank);
+                        await this.updateRank(player, foundPlayer, newRank);
                       } else {
                         await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
                       }
                     } else { // Their trustscore is too low
-                      console.log("this person has too low of a trustscore to do this, contact management if they really deserve/need it bitch!");
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message(`This person has too low of a trustscore to be given this rank, open a staff ticket on the website!`, SystemTypes.Admin));
                     }
                   } else {
                     const updatedRank = await foundPlayer.UpdateRank(newRank);
                     if (updatedRank) { // Give them their new rank (user & donator ranks [these ranks aren't used yet, just a placeholder, if we decide to])
-                      console.log("gave the new rank!");
-                      this.updateRank(player, foundPlayer, newRank);
-                      // const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
-                      // const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
-
-                      // const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
-                      // const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
-
-                      // await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
-                      // await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
+                      await this.updateRank(player, foundPlayer, newRank);
                     } else {
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
                     }
@@ -409,16 +369,7 @@ export class StaffMenu {
               } else { // You're management so u can give whatever u want slut
                 const updatedRank = await foundPlayer.UpdateRank(newRank);
                 if (updatedRank) {
-                  this.updateRank(player, foundPlayer, newRank);
-                  // const rankLabelSplit = splitCapitalsString(Ranks[player.Rank]);
-                  // const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
-
-                  // const newRankLabelSplit = splitCapitalsString(Ranks[newRank]);
-                  // const formattedNewRankLabel = formatSplitCapitalString(newRankLabelSplit);
-
-                  // await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${foundPlayer.GetName}^0 the rank ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
-                  // await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${player.GetName}^0 has updated your rank to ^3${newRankLabelSplit}^0.`, SystemTypes.Admin));
-                  console.log("gave them new rank")
+                  await this.updateRank(player, foundPlayer, newRank);
                 } else {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`There was an error updating this players rank!`, SystemTypes.Admin));
                 }
@@ -426,9 +377,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
+          }
         }
       }
     } else {
@@ -441,10 +392,9 @@ export class StaffMenu {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         const havePerm = this.havePermission(player.Rank);
-        console.log("have permission!", havePerm);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
+          if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -461,8 +411,8 @@ export class StaffMenu {
                 }
 
                 if (states.state.frozen) {
-                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin));
-                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've frozen ${foundPlayer.GetName}.`, SystemTypes.Admin));
+                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ^3${player.GetName}^0.`, SystemTypes.Admin));
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've frozen ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
         
                   const playersDiscord = await player.GetIdentifier("discord");
                   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -477,8 +427,8 @@ export class StaffMenu {
                     }]
                   }));
                 } else {
-                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been unfrozen by ${player.GetName}.`, SystemTypes.Admin));
-                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've unfrozen ${foundPlayer.GetName}.`, SystemTypes.Admin));
+                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been ^3unfrozen by ${player.GetName}^0.`, SystemTypes.Admin));
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've unfrozen ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
         
                   const playersDiscord = await player.GetIdentifier("discord");
                   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -497,9 +447,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't freeze yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't freeze yourself!", NotificationTypes.Error);
+          }
         }
       }
     } else {
@@ -512,10 +462,9 @@ export class StaffMenu {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         const havePerm = this.havePermission(player.Rank);
-        console.log("have permission!", havePerm);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
+          if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -536,9 +485,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't teleport to yourself!", NotificationTypes.Error);
+          }
         }
       }
     } else {
@@ -617,7 +566,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
+          if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -644,9 +593,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't summon yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't summon yourself!", NotificationTypes.Error);
+          }
         }
       }
     }
@@ -659,7 +608,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank);
 
         if (havePerm) {
-          // if (player.Id !== playerId) {
+          if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
@@ -688,9 +637,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't return yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't return yourself!", NotificationTypes.Error);
+          }
         }
       }
     }
@@ -786,7 +735,6 @@ export class StaffMenu {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       const havePerm = this.havePermission(player.Rank);
-      console.log("have permission!", havePerm);
 
       if (havePerm) {
         const myPos = player.Position;
@@ -798,7 +746,7 @@ export class StaffMenu {
             console.log("players ped!", ped);
             if (ped > 0) {
               SetEntityCoords(ped, myPos.x, myPos.y, myPos.z, false, false, false, false);
-              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been brought to ${player.GetName}.`, SystemTypes.Admin));
+              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been brought to ^3${player.GetName}^0.`, SystemTypes.Admin));
             } else {
               console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
             }
@@ -827,7 +775,6 @@ export class StaffMenu {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       const havePerm = this.havePermission(player.Rank);
-      console.log("have permission!", havePerm);
 
       if (havePerm) {
         const svPlayers = this.server.connectedPlayerManager.GetPlayers;
@@ -847,8 +794,8 @@ export class StaffMenu {
               }
 
               states.state.frozen ?
-              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ${player.GetName}.`, SystemTypes.Admin)) :
-              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been unfrozen by ${player.GetName}.`, SystemTypes.Admin));
+              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been frozen by ^3${player.GetName}^0.`, SystemTypes.Admin)) :
+              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been unfrozen by ^3${player.GetName}^0.`, SystemTypes.Admin));
             } else {
               console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
             }
@@ -1069,35 +1016,6 @@ export class StaffMenu {
 
               break;
               
-            case AdminActions.PlayerBlips:
-              if (data.toggled) {
-                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                  username: "Staff Logs", embeds: [{
-                    color: EmbedColours.Green,
-                    title: "__Player Blips Enabled__",
-                    description: `A player has enabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
-                    footer: {
-                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                      icon_url: sharedConfig.serverLogo
-                    }
-                  }]
-                }));
-              } else {
-                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                  username: "Staff Logs", embeds: [{
-                    color: EmbedColours.Red,
-                    title: "__Player Blips Disabled__",
-                    description: `A player has disabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
-                    footer: {
-                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                      icon_url: sharedConfig.serverLogo
-                    }
-                  }]
-                }));
-              }
-
-              break;
-              
             case AdminActions.Invisible:
               if (data.toggled) {
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -1183,21 +1101,6 @@ export class StaffMenu {
                   }]
                 }));
               }
-
-              break;
-
-            case AdminActions.RepairedVehicle:
-              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                username: "Staff Logs", embeds: [{
-                  color: EmbedColours.Green,
-                  title: "__Vehicle Repaired__",
-                  description: `A player has repaired their vehicle.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
-                  footer: {
-                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                    icon_url: sharedConfig.serverLogo
-                  }
-                }]
-              }));
 
               break;
 
