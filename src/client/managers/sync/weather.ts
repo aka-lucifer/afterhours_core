@@ -1,6 +1,6 @@
 import {Client} from "../../client";
 import {Events} from "../../../shared/enums/events/events";
-import {Delay} from "../../utils";
+import { Delay, Inform } from '../../utils';
 import {WinterWeathers} from "../../../shared/enums/sync/weather";
 
 export class WeatherManager {
@@ -45,7 +45,7 @@ export class WeatherManager {
   // Events
   public EVENT_syncWeather(newWeather: string): void {
     if (!GlobalState.weatherFrozen) {
-      console.log("Recieved New Weather", newWeather);
+      Inform("Recieved New Weather", newWeather);
       this.weather = newWeather;
 
       if (this.weatherTick === undefined) {
