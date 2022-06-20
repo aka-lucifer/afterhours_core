@@ -28,6 +28,9 @@
     <!-- Material -->
     <link rel="stylesheet" href="./libraries/css/material.css">
 
+    <!-- Loading Bar SVG -->
+    <link rel="stylesheet" href="./libraries/css/loading-bar.min.css">
+
     <!-- Default -->
     <link rel="stylesheet" href="style.css">
   </head>
@@ -782,8 +785,8 @@
                     </v-col>
 
                     <v-col cols="12" sm="12" md="20">
-                      <v-btn color="success" class="mr-4" @click="submitBug()" :ripple=false>Submit</v-btn>
-                      <v-btn color="error" class="mr-4" @click="resetBugData()" :ripple=false>Reset</v-btn>
+                      <v-btn color="success" class="mr-4" @click="submitBug()" :ripple="false">Submit</v-btn>
+                      <v-btn color="error" class="mr-4" @click="resetBugData()" :ripple="false">Reset</v-btn>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -795,12 +798,101 @@
 
       <div id="Death_Container" v-show="deathDisplaying">
         <div v-if="deathState == 'counting_down'">
-          <div class='respawnCounter'>You have {{ deathData.respawnCounter }} seconds until you can respawn.</div>
+          <div class='respawnCounter dropShadow'>You have {{ deathData.respawnCounter }} seconds until you can respawn.</div>
         </div>
 
         <div v-else-if="deathState == 'respawn_now'">
           <div class='holdCounter'>
-            <span class='holdText'>Hold <span style="font-size: .6em;"><kbd>E</kbd></span> for {{ deathData.holdCounter }} seconds to respawn.</span>
+            <span class='holdText dropShadow'>Hold <span style="font-size: .6em;"><kbd>E</kbd></span> for {{ deathData.holdCounter }} seconds to respawn.</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="Hud_Container">
+        <div id="Location_Hud" v-show='locationData.visible'>
+          <span class="clock dropShadow">{{ locationData.time }} <v-icon style="font-size: 1.3vw; margin-top: -0.3vw" color="white">mdi-clock</v-icon></span>
+          <div class="street dropShadow">{{ locationData.street }}</div>
+          <div v-if='locationData.crossing !== undefined && locationData.crossing.length > 0' class="postal dropShadow">{{ locationData.crossing }}, {{ locationData.postal }}</div>
+          <div v-else class="postal dropShadow">Address - {{ locationData.postal }}</div>
+          <div class="compassDirection dropShadow">{{ locationData.direction }}</div>
+        </div>
+
+        <div id="Vehicle_Hud">
+          <div id="Speedometer_Container">
+            <div id="Speedometer_Dial_Container">
+              <svg id="speedometerDial">
+                <circle id="atess"
+                        r="120"
+                        cx="50%"
+                        cy="50%"
+                        stroke="white"
+                        stroke-width="11"
+                        stroke-dasharray="0, 943"
+                        fill="none">
+                </circle>
+                <circle id="atess2" r="120" cx="50%" cy="50%"
+                        stroke="white" stroke-width="13"
+                        stroke-dasharray="0, 943" fill="none">
+                </circle>
+              </svg>
+            </div>
+
+            <div id="Speedometer_Fill_Container">
+              <svg id="speedometerFill">
+                <circle id="siyah"
+                        r="120"
+                        cx="50%"
+                        cy="50%"
+                        stroke="rgba(0, 0, 0, 0.864)"
+                        stroke-width="13"
+                        stroke-dasharray="500, 943"
+                        fill="none">
+                </circle>
+              </svg>
+            </div>
+
+            <div id="rpmContainer">
+              <svg id="rpmMeter">
+                <circle id="icibre" r="105" cx="40%" cy="49%" stroke="#ffce00" stroke-width="5" stroke-dasharray="480, 943" fill="none">
+                </circle>
+              </svg>
+            </div>
+
+            <svg height="0" width="0">
+              <filter id='prupl' color-interpolation-filters="sRGB" >
+                <feDropShadow dx="3" dy="3" stdDeviation="9" flood-opacity="0.5" flood-color="#ffce00"/>
+              </filter>
+            </svg>
+
+            <svg height="0" width="0">
+              <filter id='shadow' color-interpolation-filters="sRGB" >
+                <feDropShadow dx="3" dy="3" stdDeviation="9" flood-opacity="0.5" />
+              </filter>
+            </svg>
+
+            <!-- Speedometer -->
+            <div class="speedoContainer">
+              <div class="rpm" id="rpmText">{{ vehicleData.rpm }} mi</div>
+
+              <div v-if='vehicleData.mph >= 100' id="mph">{{ vehicleData.mph }}</div>
+              <div v-else-if='vehicleData.mph < 10' id="mph">00{{ vehicleData.mph }}</div>
+              <div v-else id="mph">0{{ vehicleData.mph }}</div>
+              <div class="mphText">MPH</div>
+            </div>
+
+            <div class="iconContainer">
+              &nbsp;
+              <i class="fas fa-gas-pump" style ="color:white;"></i>&nbsp;&nbsp;&nbsp;
+              <i class="fas fa-gas-pump" id="fuelFull" style="display: none; color: #ffce00; position: absolute; left: 18px; top: 11.5px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);"></i>
+              <i class="fas fa-gas-pump" id="fuelHalf" style="display: none; color: #f45a04; position: absolute; left: 18px; top: 11.5px; clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);"></i>
+              <i class="fas fa-gas-pump" id="fuelLow" style="display: none; color: rgb(207, 32, 32); position: absolute; left: 18px; top: 11.5px; clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);"></i>
+
+              <i class="fas fa-bacon" id="seatbelt" style='color: rgb(207, 32, 32);'></i>
+            </div>
+          </div>
+
+          <div id="Priority_Container">
+            <span class="priority dropShadow">Priority: </span><span class="dropShadow" style="color: #15b122; font-family: 'PT-Sans'; font-size: 1vw;">{{ priorityState }}</span>
           </div>
         </div>
       </div>
@@ -866,6 +958,12 @@
 
     <!-- Progress Bar -->
     <script src="./libraries/js/radialProgress.js"></script>
+
+    <!-- Loading Bar SVG -->
+    <script src="./libraries/js/loading-bar.min.js"></script>
+
+    <!-- Loading Bar Speedo -->
+    <script src="./libraries/js/progressbar.min.js"></script>
 
     <!-- Moment JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

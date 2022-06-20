@@ -63,5 +63,9 @@ export enum NuiMessages {
   UpdateRespawnCounter = "UPDATE_RESPAWN_COUNTDOWN",
 
   // Ghost Players
-  CopyCode = "COPY_CODE"
+  CopyCode = "COPY_CODE",
+
+  // HUD
+  UpdateLocation = "UPDATE_LOCATION",
+  UpdateVeh = "UPDATE_VEH"
 }

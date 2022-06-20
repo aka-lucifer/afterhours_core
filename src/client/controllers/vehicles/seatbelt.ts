@@ -46,6 +46,10 @@ export class Seatbelt {
     return this.tick !== undefined;
   }
 
+  public get Toggled(): boolean {
+    return this.seatbeltToggled;
+  }
+
   // Methods
   private async toggleSeatbelt(): Promise<void> {
     const myPed = Game.PlayerPed;

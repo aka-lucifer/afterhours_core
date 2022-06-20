@@ -1,5 +1,5 @@
 import {Client} from "../../client";
-import {Delay} from "../../utils";
+import { addZero, Delay } from '../../utils';
 
 import {Events} from "../../../shared/enums/events/events";
 
@@ -17,6 +17,10 @@ export class TimeManager {
   }
 
   // Getters
+  public get Time(): string {
+    return `${addZero(this.hour)}:${addZero(this.minute)}`;
+  }
+
   public get Hour(): number {
     return this.hour;
   }

@@ -34,6 +34,10 @@
   src: url('./assets/fonts/scoreboard/Inter-Regular.ttf');
 }
 
+@font-face { font-family: roboto-regular;
+  src: url('./assets/fonts/WorkSans-SemiBold.ttf');
+}
+
 :root {
   /* Vars */
   --menuHeaderFontWeight: 90px;
@@ -73,8 +77,8 @@ html {
 body {
   margin: 0;
   padding: 0;
-  /* background-color: var(--notificationBG) !important; */
-  background-color: transparent !important;
+  /*background-color: var(--notificationBG) !important;*/
+   background-color: transparent !important;
 }
 
 #HUD {
@@ -150,7 +154,7 @@ body {
 
   color: white;
   font-family: "Inter-Light";
-  font-size: 4em;
+  font-size: 3.4vw;
   font-weight: bolder;
   letter-spacing: .07em;
   text-shadow: var(--charactersHeaderShadow);
@@ -217,13 +221,13 @@ body {
   display: flex;
 
   /* margin-bottom: 0.5em; */
-  top: 0%;
-  left: 10%;
+  /* top: 0.2vh; */
+  left: 3.5vw;
   transform: translate(-10%, 0%);
   
   color: white;
   font-family: "Inter-Light";
-  font-size: 1.5em;
+  font-size: 1.3vw;
   font-weight: bolder;
   letter-spacing: .1em;
 }
@@ -2028,7 +2032,6 @@ body {
   text-align: center;
 
   color: white;
-  text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
   font-family: "Tanseek";
 
   font-size: 2.3em;
@@ -2040,8 +2043,189 @@ body {
 
 .holdText {
   color: white;
-  text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
   font-family: "Tanseek";
 
   font-size: 2.3em;
+}
+
+/* Player & Veh HUD */
+#Location_Hud {
+  position: absolute;
+  
+  /* width: 97%; */
+  /* height: 95%; */
+
+  /*top: 1.2vh;*/
+  top: 0.2vh;
+  right: 0.8vw;
+  transform: translate(1%, 0%);
+
+  text-align: right;
+
+  z-index: 5;
+}
+
+/* Time & Location */
+.clock {
+  font-family: "PT-Sans-Bold";
+  font-size: 1.2vw;
+  color: white;
+}
+
+.street {
+  font-family: "PT-Sans-Bold";
+  font-size: 1.2vw;
+  
+  margin-top: -.5vw;
+
+  color: white;
+}
+
+.postal {
+  font-family: "PT-Sans-Bold";
+  font-size: 0.8vw;
+
+  margin-top: -.2vw;
+
+  color: white;
+}
+
+.compassDirection {
+  font-size: 1vw;
+  font-style: italic;
+  font-family: "Tanseek";
+
+  margin-top: -.3vw;
+
+  text-transform: uppercase;
+  color: gold;
+}
+
+/* Vehicle HUD */
+#Vehicle_Hud {
+  position: absolute;
+
+  bottom: 0.5%;
+  left: 0.5%;
+
+  transform: translate(-0.5%, 0.9%);
+
+  width: 35vw;
+  height: 30vh;
+
+  /*background-color: #15b122;*/
+}
+
+/* Speedometer */
+#Speedometer_Container {
+  display: none;
+}
+
+#Speedometer_Dial_Container {
+  position: fixed;
+  left: 13vw;
+  bottom: -80px;
+  width: 20.8vw;
+  height: 20.8vw;
+  z-index: 2;
+}
+
+#speedometerDial {
+  width: 100%;
+  height: 100%;
+  transform: rotate(180deg);
+}
+
+#Speedometer_Fill_Container {
+  position: fixed;
+  left: 13vw;
+  bottom: -80px;
+  width: 20.8vw;
+  height: 20.8vw;
+  z-index: 1;
+}
+
+#speedometerFill {
+  width: 100%;
+  height: 100%;
+  transform: rotate(180deg);
+}
+
+#rpmContainer {
+  position: fixed;
+  left: 10.9vw;
+  bottom: -76px;
+  width: 20.8vw;
+  height: 20.8vw;
+  z-index: 1;
+}
+
+#rpmMeter {
+  width: 100%;
+  height: 100%;
+  transform: rotate(180deg);
+}
+
+.speedoContainer {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+
+  left: 21vw;
+  bottom: 65px;
+  font-size: 2.5vw;
+  font-family:roboto-regular;
+
+  color: white;
+  font-weight: 600;
+}
+
+.mphText {
+  position: absolute;
+  font-size: 1vw;
+  bottom: 20px;
+  left: 2.5vw;
+}
+
+.rpm {
+  position: absolute;
+  font-size: 0.75vw;
+  bottom: 85px;
+  right: 0.6vw;
+}
+
+.iconContainer {
+  position: fixed;
+  left: 18vw;
+  bottom: 25px;
+  font-family: roboto-regular;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.864);
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+}
+
+/* Priority */
+#Priority_Container {
+  position: absolute;
+
+  bottom: 0;
+  left: 0.5vw;
+  
+  width: 14.7vw;
+  height: 4vh;
+
+  /*background-color: red;*/
+  text-align: center;
+}
+
+.priority {
+  font-family: "PT-Sans-Bold";
+  font-size: 1vw;
+  color: white;
+}
+
+.dropShadow {
+   text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 }

@@ -560,7 +560,7 @@ export async function getVehPassengers(vehicle: Vehicle): Promise<Passenger[]> {
 }
 
 export function speedToMph(speed: number): number {
-  return speed * 2.236936;
+  return Math.floor(speed * 2.236936);
 }
 
 export async function rightHandVehicle(vehicle: Vehicle): Promise<boolean> {
@@ -648,6 +648,32 @@ export async function getZone(ped: Ped): Promise<string> {
     }
   } else {
     return "Zone N/A";
+  }
+}
+
+const directions = [
+  { direction: 0, type: "North"},
+  { direction: 45, type: "North West"},
+  { direction: 90, type: "West"},
+  { direction: 135, type: "South West"},
+  { direction: 180, type: "South"},
+  { direction: 225, type: "North South"},
+  { direction: 270, type: "East"},
+  { direction: 315, type: "North East"},
+  { direction: 360, type: "North"},
+]
+
+/**
+ * @param ped The ped to get the current direction of.
+ * @returns Returns the current direction of the passed ped.
+ */
+export async function getDirection(ped: Ped): Promise<string> {
+  for (let i = 0; i < directions.length; i++) {
+    const myDirection = ped.Heading;
+
+    if (Math.abs(myDirection - directions[i].direction) < 22.5) {
+      return directions[i].type;
+    }
   }
 }
 
