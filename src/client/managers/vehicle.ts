@@ -33,7 +33,7 @@ export class VehicleManager {
   public gps: GPS;
   private keepWheel: KeepWheel;
   private rolling: Rolling;
-  private seatbelt: Seatbelt;
+  public seatbelt: Seatbelt;
   private reverseBraking: ReverseBraking;
   private seating: Seating;
   private shuffling: Shuffling;
@@ -86,6 +86,7 @@ export class VehicleManager {
     if (!this.repairShops.Started) this.repairShops.start(); // done
     if (!this.shuffling.Started) this.shuffling.start();
     if (!this.driveBy.Started) this.driveBy.start();
+    if (!this.client.hud.VehStarted) this.client.hud.startVeh();
   }
   
   private EVENT_leftVeh(): void {
@@ -101,5 +102,6 @@ export class VehicleManager {
     if (this.repairShops.Started) this.repairShops.stop(); // done
     if (this.shuffling.Started) this.shuffling.stop();
     if (this.driveBy.Started) this.driveBy.stop();
+    if (this.client.hud.VehStarted) this.client.hud.stopVeh();
   }
 }
