@@ -8296,6 +8296,7 @@
         "keybinds": [
             {"key": "T", "description": "Opens the chat"},
             {"key": "INSERT", "description": "Toggles chat visibility"},
+            {"key": "Right ALT", "description": "Toggles HUD visibility"},
             {"key": "L", "description": "Opens the scoreboard"},
             {"key": "X", "description": "Enable the target interaction (Locations, Peds, Vehicles, Players, Props)"},
             {"key": "E", "description": "Respawn."},

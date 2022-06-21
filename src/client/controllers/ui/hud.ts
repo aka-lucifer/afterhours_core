@@ -1,8 +1,12 @@
-import { Client } from '../../client';
-import { Delay, getDirection, getLocation, getZone, Inform, speedToMph } from '../../utils';
 import { Game } from 'fivem-js';
+
+import { Client } from '../../client';
+import { Delay, getDirection, getLocation, Inform, speedToMph } from '../../utils';
+
 import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
 import { Events } from '../../../shared/enums/events/events';
+import { Notification } from '../../models/ui/notification';
+import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
 
 enum PriorityState {
   Available,
@@ -12,6 +16,9 @@ enum PriorityState {
 
 export class Hud {
   private client: Client;
+
+  private hudActive: boolean = true;
+  private vehActive: boolean = false;
 
   // Priority Data
   private activeUnits: number = 0;
@@ -29,56 +36,124 @@ export class Hud {
     onNet(Events.updateUnits, this.EVENT_updateUnits.bind(this));
     onNet(Events.updatePriority, this.EVENT_updatePriority.bind(this));
 
+    // Keybindings
+    RegisterCommand("+toggle_hud", this.toggleHud.bind(this), false);
+
     Inform("Hud | UI Controller", "Started!");
   }
 
   // Getters
+  public get Active(): boolean {
+    return this.hudActive;
+  }
+
+  public set Active(newState: boolean) {
+    this.hudActive = newState;
+    DisplayRadar(this.hudActive);
+
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.UpdateHud,
+      data: {
+        active: this.hudActive
+      }
+    }));
+  }
+
   public get VehStarted(): boolean {
     return this.vehTick !== undefined;
   }
 
   // Methods
   public init(): void {
+    this.Active = true;
     this.startLocation();
+  }
+
+  private async toggleHud(): Promise<void> {
+    if (!this.hudActive) { // If the hud is hidden, enable it
+      this.Active = true; // Set the hud enabled to true
+      this.startLocation(); // Start the location HUD
+      if (this.vehActive) { // If the veh HUD was showing, start the vehicle hud
+        this.vehActive = false;
+        this.startVeh();
+      }
+
+      const notification = new Notification("HUD", "You have enabled the hud.", NotificationTypes.Info);
+      await notification.send();
+    } else {
+      this.Active = false; // Set the hud enabled to false
+      this.stopLocation(); // Stop the location HUD
+
+      if (this.VehStarted) { // If the vehicle HUD is started, define it and stop it
+        this.vehActive = true;
+        this.stopVeh();
+      }
+
+      const notification = new Notification("HUD", "You have hidden the hud!", NotificationTypes.Error);
+      await notification.send();
+    }
   }
 
   public startLocation(): void {
     if (this.locationTick === undefined) this.locationTick = setTick(async() => {
-      const myPed = Game.PlayerPed;
-      const [street, crossing, postal] = await getLocation(myPed);
-      const direction = await getDirection(myPed);
+      if (this.hudActive) {
+        const myPed = Game.PlayerPed;
+        const [street, crossing, postal] = await getLocation(myPed);
+        const direction = await getDirection(myPed);
 
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.UpdateLocation,
+          data: {
+            visible: true,
+            time: this.client.timeManager.Time,
+            street: street,
+            crossing: crossing,
+            postal: postal.code,
+            direction: `${direction.toUpperCase()} Bound`
+          }
+        }))
+
+        await Delay(500);
+      } else {
+        await Delay(500);
+      }
+    });
+  }
+
+  public stopLocation(): void {
+    if (this.locationTick !== undefined) {
       SendNuiMessage(JSON.stringify({
         event: NuiMessages.UpdateLocation,
         data: {
-          time: this.client.timeManager.Time,
-          street: street,
-          crossing: crossing,
-          postal: postal.code,
-          direction: `${direction.toUpperCase()} Bound`
+          visible: false
         }
-      }))
+      }));
 
-      await Delay(500);
-    });
+      clearTick(this.locationTick);
+      this.locationTick = undefined;
+    }
   }
 
   public startVeh(): void {
     if (this.vehTick === undefined) this.vehTick = setTick(async() => {
-      const ped = Game.PlayerPed;
-      if (IsPedInAnyVehicle(ped.Handle, false)) {
-        const currVeh = ped.CurrentVehicle;
+      if (this.hudActive) {
+        const ped = Game.PlayerPed;
+        if (IsPedInAnyVehicle(ped.Handle, false)) {
+          const currVeh = ped.CurrentVehicle;
 
-        SendNuiMessage(JSON.stringify({
-          event: NuiMessages.UpdateVeh,
-          data: {
-            visible: true,
-            mph: speedToMph(currVeh.Speed),
-            rpm: currVeh.CurrentRPM,
-            fuel: Math.floor(currVeh.FuelLevel),
-            seatbelt: this.client.vehicleManager.seatbelt.Toggled
-          }
-        }));
+          SendNuiMessage(JSON.stringify({
+            event: NuiMessages.UpdateVeh,
+            data: {
+              visible: true,
+              mph: speedToMph(currVeh.Speed),
+              rpm: currVeh.CurrentRPM,
+              fuel: Math.floor(currVeh.FuelLevel),
+              seatbelt: this.client.vehicleManager.seatbelt.Toggled
+            }
+          }));
+        } else {
+          await Delay(500);
+        }
       } else {
         await Delay(500);
       }
@@ -101,7 +176,6 @@ export class Hud {
 
   // Events
   private EVENT_updateUnits(newActiveUnits: number, newUnits: number): void {
-    console.log("received new units", newActiveUnits, newUnits);
     this.activeUnits = newActiveUnits;
     this.totalUnits = newUnits;
 
@@ -115,7 +189,6 @@ export class Hud {
   }
 
   private EVENT_updatePriority(newPriority: PriorityState): void {
-    console.log("new priority state", newPriority, this.priorityState);
     this.priorityState = newPriority;
 
     SendNuiMessage(JSON.stringify({

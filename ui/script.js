@@ -223,6 +223,7 @@ const HUD = new Vue({
     },
 
     // HUD
+    hudActive: false,
     activeUnits: 0,
     totalUnits: 0,
 
@@ -1142,6 +1143,16 @@ const HUD = new Vue({
     },
 
     // HUD
+    UpdateHud(data) {
+      this.hudActive = data.active;
+
+      if (this.hudActive) {
+        $("#Hud_Container").fadeIn(200);
+      } else {
+        $("#Hud_Container").fadeOut(200);
+      }
+    },
+
     UpdateUnits(data) {
       this.activeUnits = data.activeUnits;
       this.totalUnits = data.units;
@@ -1154,13 +1165,17 @@ const HUD = new Vue({
     },
 
     UpdateLocation(data) {
-      this.locationData = {
-        visible: true,
-        time: data.time,
-        street: data.street,
-        crossing: data.crossing,
-        postal: data.postal,
-        direction: data.direction
+      if (data.visible) {
+        this.locationData = {
+          visible: true,
+          time: data.time,
+          street: data.street,
+          crossing: data.crossing,
+          postal: data.postal,
+          direction: data.direction
+        }
+      } else {
+        this.locationData.visible = data.visible;
       }
     },
 
@@ -1401,6 +1416,7 @@ const HUD = new Vue({
     RegisterEvent("COPY_CODE", this.CopyCode);
 
     // HUD
+    RegisterEvent("UPDATE_HUD", this.UpdateHud);
     RegisterEvent("UPDATE_UNITS", this.UpdateUnits);
     RegisterEvent("UPDATE_PRIORITY", this.UpdatePriority);
     RegisterEvent("UPDATE_LOCATION", this.UpdateLocation);

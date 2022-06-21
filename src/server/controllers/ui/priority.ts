@@ -142,8 +142,6 @@ export class Priority {
 
     emitNet(Events.updateUnits, -1, activeUnits, units); // Update active & total units on all clients.
 
-    console.log("new priority", this.priority, newPriority);
-
     // If the new priority is different than our current priority state
     if (this.priority !== newPriority) {
       this.priority = newPriority;

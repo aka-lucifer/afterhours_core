@@ -66,6 +66,7 @@ export enum NuiMessages {
   CopyCode = "COPY_CODE",
 
   // HUD
+  UpdateHud = "UPDATE_HUD",
   UpdateUnits = "UPDATE_UNITS",
   UpdatePriority = "UPDATE_PRIORITY",
   UpdateLocation = "UPDATE_LOCATION",

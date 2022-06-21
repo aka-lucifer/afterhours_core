@@ -2049,6 +2049,10 @@ body {
 }
 
 /* Player & Veh HUD */
+#Hud_Container {
+  display: none;
+}
+
 #Location_Hud {
   position: absolute;
   
