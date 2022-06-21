@@ -51,7 +51,10 @@ export class GhostPlayers {
     SetBlockingOfNonTemporaryEvents(ped.Handle, true);
 
     // Set them transparent
-    SetEntityAlpha(ped.Handle, 200, 0)
+    SetEntityAlpha(ped.Handle, 200, 0);
+
+    // Remove their collision
+    SetEntityCollision(ped.Handle, false, true);
 
     // Insert players data into array
     this.createdPeds.push({
