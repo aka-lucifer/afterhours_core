@@ -145,6 +145,9 @@ export class VehicleManager {
                 // Permission Checker
                 const vehModel = GetEntityModel(entity);
                 const vehData = serverConfig.vehicles.blacklister[vehModel];
+
+                
+
                 if (vehData !== undefined) {
                   // console.log("spawning veh!", entity);
                   const discord = await player.GetIdentifier("discord");

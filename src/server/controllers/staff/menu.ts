@@ -125,7 +125,7 @@ export class StaffMenu {
         username: "Staff Logs", embeds: [{
           color: EmbedColours.Green,
           title: "__Player Rank Updated__",
-          description: `A player has had his rank updated.\n\n**Username**: ${otherPlayer.GetName}\n**New Rank**: ${Ranks[newRank]}\n**Updated By**: ${myPlayer.GetName}\n**Updaters Rank**: ${Ranks[myPlayer.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+          description: `A player has had their rank updated.\n\n**Username**: ${otherPlayer.GetName}\n**New Rank**: ${formattedRankLabel}\n**Updated By**: ${myPlayer.GetName}\n**Updaters Rank**: ${formattedNewRankLabel}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
           footer: {
             text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
             icon_url: sharedConfig.serverLogo
@@ -621,7 +621,7 @@ export class StaffMenu {
                     username: "Staff Logs", embeds: [{
                       color: EmbedColours.Green,
                       title: "__Player Returned__",
-                      description: `A player has been returned to their original location.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Returned By**: ${foundPlayer.GetName}\n**Returners Rank**: ${Ranks[foundPlayer.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      description: `A player has been returned to their original location.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Returned By**: ${player.GetName}\n**Returners Rank**: ${Ranks[player.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
                       footer: {
                         text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                         icon_url: sharedConfig.serverLogo
@@ -679,7 +679,7 @@ export class StaffMenu {
                   const playersDiscord = await player.GetIdentifier("discord");
                   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                     username: "Staff Logs", embeds: [{
-                      color: EmbedColours.Green,
+                      color: EmbedColours.Red,
                       title: "__Player Spectating__",
                       description: `A player has stopped spectating another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Spectated Player**: ${foundPlayer.GetName}\n**Spectatees Rank**: ${Ranks[foundPlayer.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
                       footer: {
@@ -809,7 +809,7 @@ export class StaffMenu {
           username: "Staff Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__All Players Frozen/Unfrozen__",
-            description: `A player has frozen/unfrozen all server players to them.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+            description: `A player has frozen/unfrozen all server players.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Returners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
               icon_url: sharedConfig.serverLogo
