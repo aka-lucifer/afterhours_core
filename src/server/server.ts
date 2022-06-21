@@ -45,6 +45,7 @@ import { LogManager } from './managers/logging';
 
 // [Controllers] UI
 import { BugReporting } from './controllers/ui/bugReporting';
+import { Priority } from './controllers/ui/priority';
 
 // [Controllers] Death
 import { Death } from './controllers/death';
@@ -113,8 +114,9 @@ export class Server {
   public staffLogManager: StaffLogManager;
   public logManager: LogManager;
 
-  // [Controllers | UI] Bug Reporting
+  // [Controllers | UI]
   private bugReporting: BugReporting;
+  public priority: Priority;
 
   // [Controllers] Death
   private death: Death;
@@ -193,6 +195,7 @@ export class Server {
 
     // [Controllers | UI] Bug Reporting
     this.bugReporting = new BugReporting(server);
+    this.priority = new Priority(server);
 
     // [Controllers] Death
     this.death = new Death(server);
@@ -225,6 +228,7 @@ export class Server {
 
     // Initiate Controllers
     this.bugReporting.init();
+    this.priority.init();
 
     // Register Components
     this.registerCommands();
@@ -529,6 +533,9 @@ export class Server {
         // Sync weather & time
         await this.timeManager.sync(player);
         await this.weatherManager.sync(player);
+
+        // Sync priority & active units
+        this.priority.sync();
 
         // Sync chat data
         await this.chatManager.generateTypes(player);

@@ -2,15 +2,32 @@ import { Client } from '../../client';
 import { Delay, getDirection, getLocation, getZone, Inform, speedToMph } from '../../utils';
 import { Game } from 'fivem-js';
 import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
+import { Events } from '../../../shared/enums/events/events';
+
+enum PriorityState {
+  Available,
+  Active,
+  Unavailable
+}
 
 export class Hud {
   private client: Client;
 
+  // Priority Data
+  private activeUnits: number = 0;
+  private totalUnits: number = 0;
+  private priorityState: PriorityState = PriorityState.Unavailable;
+
+  // Ticks
   private vehTick: number = undefined;
   private locationTick: number = undefined;
 
   constructor(client: Client) {
     this.client = client;
+
+    // Events
+    onNet(Events.updateUnits, this.EVENT_updateUnits.bind(this));
+    onNet(Events.updatePriority, this.EVENT_updatePriority.bind(this));
 
     Inform("Hud | UI Controller", "Started!");
   }
@@ -80,5 +97,32 @@ export class Hud {
       clearTick(this.vehTick);
       this.vehTick = undefined;
     }
+  }
+
+  // Events
+  private EVENT_updateUnits(newActiveUnits: number, newUnits: number): void {
+    console.log("received new units", newActiveUnits, newUnits);
+    this.activeUnits = newActiveUnits;
+    this.totalUnits = newUnits;
+
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.UpdateUnits,
+      data: {
+        activeUnits: this.activeUnits,
+        units: this.totalUnits
+      }
+    }));
+  }
+
+  private EVENT_updatePriority(newPriority: PriorityState): void {
+    console.log("new priority state", newPriority, this.priorityState);
+    this.priorityState = newPriority;
+
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.UpdatePriority,
+      data: {
+        priority: this.priorityState
+      }
+    }));
   }
 }

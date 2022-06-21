@@ -48,13 +48,14 @@ import { WorldBlips } from './controllers/world/worldBlips';
 // [Controllers] UI
 import { BugReporting } from './controllers/ui/bugReporting';
 import { HexMenu } from './controllers/ui/hexMenu';
+import { Hud } from './controllers/ui/hud';
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import { Delay, Inform, keyboardInput, RegisterNuiCallback } from './utils';
+import { Delay, Inform, keyboardInput, RegisterNuiCallback, speedToMph } from './utils';
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -140,6 +141,7 @@ export class Client {
   // [Controllers] UI
   private bugReporting: BugReporting;
   public hexMenu: HexMenu;
+  public hud: Hud;
 
   // [Controllers] Normal
   private death: Death;
@@ -238,9 +240,13 @@ export class Client {
   }
 
   // Methods (Handles disabling auto respawning when you die)
-  private disableAutospawn(): void {
-    global.exports["spawnmanager"].setAutoSpawn(false);
-    console.log("auto spawn disabled!");
+  private disableAutospawn(resourceName: string): void {
+    if (resourceName !== undefined) {
+      if (resourceName == GetCurrentResourceName()) {
+        global.exports["spawnmanager"].setAutoSpawn(false);
+        console.log("auto spawn disabled!");
+      }
+    }
   }
 
   public async initialize(): Promise<void> {
@@ -297,6 +303,8 @@ export class Client {
 
     this.hexMenu = new HexMenu();
     this.hexMenu.init();
+
+    this.hud = new Hud(client);
 
     // [Controllers] Normal
     this.death = new Death(client);
@@ -494,6 +502,9 @@ export class Client {
     // Set Rich Presence
     this.richPresence.Text = "Loading In As Character";
     this.richPresence.start();
+
+    // Display location UI
+    this.hud.init();
 
     if (this.character.Job.name === Jobs.Civilian) {
       emit(Events.sendSystemMessage,

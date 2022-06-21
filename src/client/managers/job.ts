@@ -17,6 +17,9 @@ import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
 import { JobCallbacks } from '../../shared/enums/events/jobs/jobCallbacks';
 import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
 import { Jobs } from '../../shared/enums/jobs/jobs';
+import { Events } from '../../shared/enums/events/events';
+import { Message } from '../../shared/models/ui/chat/message';
+import { SystemTypes } from '../../shared/enums/ui/chat/types';
 
 export class JobManager {
   private readonly client: Client;
@@ -27,6 +30,9 @@ export class JobManager {
 
   // Controllers
   private jobBlips: JobBlips;
+
+  // Other
+  private sentActiveNotify: boolean = false;
 
   constructor(client: Client) {
     this.client = client;
@@ -167,6 +173,16 @@ export class JobManager {
       this.client.hexMenu.addPoliceOptions(); // Add police options to the hex menu
       this.policeJob.commandMenu.start();
       this.policeJob.garages.start();
+
+      if (!this.sentActiveNotify) {
+        this.sentActiveNotify = true;
+        emit(Events.sendSystemMessage,
+          new Message(
+            `Make sure to use the /active command to go 10-7/10-8.`,
+            SystemTypes.Announcement
+          )
+        );
+      }
     } else { // If off duty
       this.client.hexMenu.removePoliceOptions(); // Remove police options from the hex menu
       this.policeJob.commandMenu.stop();

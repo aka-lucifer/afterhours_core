@@ -220,7 +220,29 @@ const HUD = new Vue({
     deathData: {
       respawnCounter: "34",
       holdCounter: "5"
-    }
+    },
+
+    // HUD
+    activeUnits: 0,
+    totalUnits: 0,
+
+    priorityState: 2,
+
+    locationData: {
+      visible: false,
+      time: "16:39",
+      street: "Senora Freeway",
+      crossing: "Crossing Road",
+      postal: 224,
+      direction: "North Bound"
+    },
+    vehicleData: {
+      visible: false,
+      rpm: undefined,
+      mph: undefined,
+      fuel: undefined,
+      seatbelt: false
+    },
   },
   methods: {
     // Spawn UI
@@ -1117,6 +1139,97 @@ const HUD = new Vue({
       stringElement.select();
       document.execCommand('copy');
       document.body.removeChild(stringElement);
+    },
+
+    // HUD
+    UpdateUnits(data) {
+      this.activeUnits = data.activeUnits;
+      this.totalUnits = data.units;
+
+      // console.log(`Recieved New Units (UI) | ${this.activeUnits} | ${this.totalUnits}`);
+    },
+
+    UpdatePriority(data) {
+      this.priorityState = data.priority;
+    },
+
+    UpdateLocation(data) {
+      this.locationData = {
+        visible: true,
+        time: data.time,
+        street: data.street,
+        crossing: data.crossing,
+        postal: data.postal,
+        direction: data.direction
+      }
+    },
+
+    UpdateVeh(data) {
+      if (data.visible) {
+        this.vehicleData.mph = data.mph;
+        const dialValue = Number(this.vehicleData.mph * 1.70);
+        const mphBackgroundElement = document.querySelector("#atess2");
+        var mphElement = document.querySelector("#atess");
+        mphBackgroundElement.setAttribute("stroke-dasharray", dialValue + "," + 943);
+        mphElement.setAttribute("stroke-dasharray", dialValue + "," + 943);
+
+        // RPM
+        this.vehicleData.rpm = data.rpm;
+        const rpmString = this.vehicleData.rpm.toFixed(2);
+        if (rpmString === 0.20) {
+          const rpmValue = 0;
+          const rpmElement = document.querySelector("#icibre");
+
+          rpmElement.setAttribute("stroke-dasharray", rpmValue + "," + 943);
+          document.getElementById("rpmText").innerHTML = rpmString + ' rpm';
+        } else {
+          const rpmValue = Number(Number(rpmString) * 440);
+          const rpmElement = document.querySelector("#icibre");
+
+          rpmElement.setAttribute("stroke-dasharray", rpmValue + "," + 943);
+          document.getElementById("rpmText").innerHTML = rpmString + ' rpm';
+        }
+
+        // Fuel
+        this.vehicleData.fuel = data.fuel;
+
+        if (this.vehicleData.fuel > 50 && this.vehicleData.fuel < 100) {
+          document.getElementById("fuelFull").style.display = "block";
+          document.getElementById("fuelHalf").style.display = "none";
+          document.getElementById("fuelLow").style.display = "none";
+        } else if (this.vehicleData.fuel > 30 && this.vehicleData.fuel < 50) {
+          document.getElementById("fuelFull").style.display = "none";
+          document.getElementById("fuelHalf").style.display = "block";
+          document.getElementById("fuelLow").style.display = "none";
+        } else if (this.vehicleData.fuel < 30) {
+          document.getElementById("fuelFull").style.display = "none";
+          document.getElementById("fuelHalf").style.display = "none";
+          document.getElementById("fuelLow").style.display = "block";
+        }
+
+        if (this.vehicleData.seatbelt !== data.seatbelt) {
+          this.vehicleData.seatbelt = data.seatbelt;
+          if (this.vehicleData.seatbelt) {
+            document.getElementById("seatbelt").style.color = "#1cbd1c";
+          } else {
+            document.getElementById("seatbelt").style.color = "rgb(207, 32, 32)";
+          }
+        }
+
+        if (!this.vehicleData.visible) {
+          this.vehicleData.visible = true;
+          $("#Speedometer_Container").fadeIn(200);
+        }
+      } else {
+        if (this.vehicleData.visible) {
+          this.vehicleData.visible = false;
+          $("#Speedometer_Container").fadeOut(200);
+
+          this.vehicleData.mph = undefined;
+          this.vehicleData.rpm = undefined;
+          this.vehicleData.fuel = undefined;
+        }
+      }
     }
   },
 
@@ -1286,6 +1399,12 @@ const HUD = new Vue({
 
     // Ghost Players
     RegisterEvent("COPY_CODE", this.CopyCode);
+
+    // HUD
+    RegisterEvent("UPDATE_UNITS", this.UpdateUnits);
+    RegisterEvent("UPDATE_PRIORITY", this.UpdatePriority);
+    RegisterEvent("UPDATE_LOCATION", this.UpdateLocation);
+    RegisterEvent("UPDATE_VEH", this.UpdateVeh);
 
     // Key Presses
     window.addEventListener("keydown", function(event) {

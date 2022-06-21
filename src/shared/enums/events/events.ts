@@ -167,6 +167,10 @@ export enum Events {
   // Astrid Client ([Controllers | UI] - Bug Reporting)
   startReporting = "astrid:client:controllers:ui:startBugReporting",
 
+  // Astrid Client ([Controllers | UI] - Hud)
+  updateUnits = "astrid:client:controllers:hud:updateUnits",
+  updatePriority = "astrid:client:controllers:hud:updatePriority",
+
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",
 

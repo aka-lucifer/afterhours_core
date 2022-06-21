@@ -892,7 +892,11 @@
           </div>
 
           <div id="Priority_Container">
-            <span class="priority dropShadow">Priority: </span><span class="dropShadow" style="color: #15b122; font-family: 'PT-Sans'; font-size: 1vw;">{{ priorityState }}</span>
+            <span class="priority dropShadow">Priority: </span>
+            <span v-if='priorityState == 0' class="priorityState dropShadow" style="color: #15b122;">Available</span>
+            <span v-if='priorityState == 1' class="priorityState dropShadow" style="color: #ffce00;">Active</span>
+            <span v-if='priorityState == 2'class="priorityState dropShadow" style="color: rgb(207, 32, 32);">Unavailable</span>
+            <div class="units dropShadow">Units Available: {{ activeUnits }}/{{ totalUnits }}</div>
           </div>
         </div>
       </div>

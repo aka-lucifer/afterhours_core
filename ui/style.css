@@ -2210,10 +2210,10 @@ body {
 #Priority_Container {
   position: absolute;
 
-  bottom: 0;
-  left: 0.5vw;
-  
-  width: 14.7vw;
+  bottom: 3vh;
+  left: -1vw;
+
+  width: 18.7vw;
   height: 4vh;
 
   /*background-color: red;*/
@@ -2221,6 +2221,17 @@ body {
 }
 
 .priority {
+  font-family: "PT-Sans-Bold";
+  font-size: 1vw;
+  color: white;
+}
+
+.priorityState {
+  font-family: 'Tanseek';
+  font-size: 1.4vw;
+}
+
+.units {
   font-family: "PT-Sans-Bold";
   font-size: 1vw;
   color: white;
