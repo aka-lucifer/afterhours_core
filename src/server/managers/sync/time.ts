@@ -150,10 +150,12 @@ export class TimeManager {
         if (!this.timeFrozen) {
           if (!isNaN(args[0])) {
             if (!isNaN(args[1])) {
+              const hour = addZero(parseInt(args[0]));
+              const minute = addZero(parseInt(args[1]));
               this.setChanging(true);
               
-              emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to (${addZero(args[0])}:${addZero(args[1])}) in 15 seconds.`, SystemTypes.Success));
-              await this.changeTime(args[0], args[1], true, player);
+              emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to (${hour}:${minute}) in 15 seconds.`, SystemTypes.Success));
+              await this.changeTime(parseInt(hour), parseInt(minute), true, player);
             } else {
               await player.TriggerEvent(Events.sendSystemMessage, new Message("Minute argument entered isn't a number!", SystemTypes.Error));
             }
@@ -256,11 +258,13 @@ export class TimeManager {
           if (!this.timeFrozen) {
             if (!isNaN(args[0])) {
               if (!isNaN(args[1])) {
+                const hour = addZero(parseInt(args[0]));
+                const minute = addZero(parseInt(args[1]));
                 this.setChanging(true);
                 
-                emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to (${addZero(args[0])}:${addZero(args[1])}) in 15 seconds.`, SystemTypes.Success));
-                Inform("Time Manager", `Changing time to ${addZero(args[0])}:${addZero(args[1])}`);
-                await this.changeTime(args[0], args[1], true);
+                emitNet(Events.sendSystemMessage, -1, new Message(`The time will change to (${hour}:${minute}) in 15 seconds.`, SystemTypes.Success));
+                Inform("Time Manager", `Changing time to ${hour}:${minute}`);
+                await this.changeTime(parseInt(hour), parseInt(minute), true);
               } else {
                 Error("Time Manager", "Minute argument entered isn't a number!");
               }
