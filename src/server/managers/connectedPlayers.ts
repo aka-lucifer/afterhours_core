@@ -165,7 +165,8 @@ export class ConnectedPlayerManager {
       if (player) {
         emitNet(JobEvents.deleteOffDutyUnit, -1, player.Handle); // Remove this players on duty blip to all on duty players
         emitNet(Events.deleteLeftPlayer, -1, player.Handle); // Remove this players blip to all staff members, showing players blips
-        await this.server.staffManager.ghostPlayers.playerLeft(player);
+        await this.server.staffManager.ghostPlayers.playerLeft(player); // Create this ped as a ghost ped
+        await this.server.priority.Remove(player); // Remove player from active unit if he exists and update priority
         this.server.characterManager.Disconnect(player);
         await player.Disconnect(disconnectReason);
       }
