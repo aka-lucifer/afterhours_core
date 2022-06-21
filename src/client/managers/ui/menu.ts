@@ -8,7 +8,7 @@ const components: Record<number, any> = {};
 const resources: string[] = [];
 
 // Basic Variables
-let openedMenu = null;
+let openedMenu = undefined;
 let hoveredIndex = 0;
 
 export class MenuManager {
@@ -260,35 +260,33 @@ export class MenuManager {
   }
 
   public async CloseMenu(): Promise<void> {
-    if (openedMenu) {
+    if (openedMenu !== undefined) {
       SendNuiMessage(JSON.stringify({
         event: NuiMessages.CloseMenu,
       }))
 
       // Close LEO Unit Recruitment Menu
-      if (this.client.jobManager.policeJob.commandMenu.Open) {
-        this.client.jobManager.policeJob.commandMenu.Open = false;
+      if (this.client.jobManager.policeJob !== undefined) {
+        if (this.client.jobManager.policeJob.commandMenu.Open) {
+          this.client.jobManager.policeJob.commandMenu.Open = false;
+        }
+
+        if (this.client.jobManager.policeJob.garages.Open) {
+          this.client.jobManager.policeJob.garages.Open = false;
+        }
       }
 
-      if (this.client.jobManager.policeJob.garages.Open) {
-        this.client.jobManager.policeJob.garages.Open = false;
-      }
-
-      openedMenu = null;
+      openedMenu = undefined;
       hoveredIndex = 0;
     }
   }
 
   public async IsAnyMenuOpen(): Promise<boolean> {
-    if (openedMenu) {
-      return true;
-    }
-
-    return false
+    return openedMenu !== undefined;
   }
 
   public async IsMenuOpen(menuIndex: string): Promise<boolean> {
-    if (openedMenu !== null) {
+    if (openedMenu !== undefined) {
       if (openedMenu.index == menuIndex) {
         return true;
       }
@@ -456,7 +454,7 @@ export class MenuManager {
 
   private async Enter(): Promise<void> {
     if (!IsPauseMenuActive()) {
-      if (openedMenu != undefined) {
+      if (openedMenu !== undefined) {
         const selected = openedMenu.components[hoveredIndex];
         if (selected) {
           if (selected.type == "submenu") {
