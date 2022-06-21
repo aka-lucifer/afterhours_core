@@ -4,7 +4,7 @@ import {Client} from "../../client";
 import {Delay, GetHash} from "../../utils";
 
 // Controllers
-import { Minimap } from '../../controllers/world/minimap';
+import { Minimap } from '../../controllers/ui/minimap';
 
 import clientConfig from "../../../configs/client.json";
 
@@ -14,19 +14,19 @@ export class WorldManager {
   private slowTick: number = undefined;
 
   // Controllers
-  private minimap: Minimap;
+  public minimap: Minimap;
 
   constructor(client: Client) {
     this.client = client;
 
     // Controllers
     this.minimap = new Minimap();
-
-    this.minimap.init();
   }
 
   // Methods
   public async init(): Promise<void> {
+    this.minimap.init();
+
     const pickups = clientConfig.world.weaponPickups;
 
     // Enable persistent flashlight
