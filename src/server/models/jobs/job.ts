@@ -1,5 +1,6 @@
-import { PoliceRanks, CountyRanks, StateRanks } from "../../../shared/enums/jobs/ranks"
-import { Departments } from "../../../shared/enums/jobs/departments";
+import { UnitStatus } from '../../controllers/ui/priority';
+
+import { CountyRanks, PoliceRanks, StateRanks } from '../../../shared/enums/jobs/ranks';
 
 export class Job {
   public name: string;
@@ -10,6 +11,7 @@ export class Job {
   public callsign: string;
   public status: boolean;
   public statusTime: string;
+  private active: UnitStatus = UnitStatus.Busy;
 
   constructor(name: string, label: string, rank?: number | PoliceRanks | CountyRanks | StateRanks, isBoss?: boolean, callsign?: string, status?: boolean) {
     this.name = name;
@@ -35,6 +37,14 @@ export class Job {
 
   public set Status(newState: boolean) {
     this.status = newState;
+  }
+
+  public get Active(): UnitStatus {
+    return this.active;
+  }
+
+  public set Active(newState: UnitStatus) {
+    this.active = newState;
   }
 
   public set RankLabel(newValue: string) {
