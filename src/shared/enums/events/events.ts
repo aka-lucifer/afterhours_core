@@ -76,6 +76,9 @@ export enum Events {
   seatPlayer = "astrid:server:controllers:vehicle:seatPlayer",
   unseatPlayer = "astrid:server:controllers:vehicle:unseatPlayer",
 
+  // Astrid Server ([Controllers] | Civilian] - Kidnapping)
+  tryKidnapping = "astrid:server:controllers:civilian:tryKidnapping",
+
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
 
@@ -170,6 +173,9 @@ export enum Events {
   // Astrid Client ([Controllers | UI] - Hud)
   updateUnits = "astrid:client:controllers:hud:updateUnits",
   updatePriority = "astrid:client:controllers:hud:updatePriority",
+
+  // Astrid Server ([Controllers] | Civilian] - Kidnapping)
+  kidnapPlayer = "astrid:client:controllers:civilian:kidnapPlayer",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

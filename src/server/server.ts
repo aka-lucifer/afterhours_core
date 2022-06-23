@@ -47,7 +47,10 @@ import { LogManager } from './managers/logging';
 import { BugReporting } from './controllers/ui/bugReporting';
 import { Priority } from './controllers/ui/priority';
 
-// [Controllers] Death
+// [Controllers] Civilian
+import { Kidnapping } from "./controllers/civilian/kidnapping";
+
+// [Controllers] Normal
 import { Death } from './controllers/death';
 
 import { LogTypes } from './enums/logging';
@@ -118,7 +121,10 @@ export class Server {
   private bugReporting: BugReporting;
   public priority: Priority;
 
-  // [Controllers] Death
+  // [Controllers] Civilian
+  private kidnapping: Kidnapping;
+
+  // [Controllers] Normal
   private death: Death;
 
   constructor() {
@@ -196,6 +202,9 @@ export class Server {
     // [Controllers | UI] Bug Reporting
     this.bugReporting = new BugReporting(server);
     this.priority = new Priority(server);
+
+    // [Controllers] Civilian
+    this.kidnapping = new Kidnapping(server);
 
     // [Controllers] Death
     this.death = new Death(server);

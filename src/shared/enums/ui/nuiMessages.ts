@@ -70,5 +70,8 @@ export enum NuiMessages {
   UpdateUnits = "UPDATE_UNITS",
   UpdatePriority = "UPDATE_PRIORITY",
   UpdateLocation = "UPDATE_LOCATION",
-  UpdateVeh = "UPDATE_VEH"
+  UpdateVeh = "UPDATE_VEH",
+
+  // Kidnapping
+  KidnapPlayer = "KIDNAP_PLAYER"
 }

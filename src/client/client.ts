@@ -50,6 +50,9 @@ import { BugReporting } from './controllers/ui/bugReporting';
 import { HexMenu } from './controllers/ui/hexMenu';
 import { Hud } from './controllers/ui/hud';
 
+// [Controllers] Civilian
+import { Kidnapping } from "./controllers/civilian/kidnapping";
+
 // [Controllers] Normal
 import { Death } from './controllers/death';
 import { PlayerNames } from "./controllers/playerNames";
@@ -69,6 +72,7 @@ import { CuffState } from '../shared/enums/jobs/cuffStates';
 import { InteractionStates } from '../shared/enums/jobs/interactionStates';
 import { GrabState } from '../shared/enums/jobs/grabStates';
 import { DeathStates } from '../shared/enums/deathStates';
+import { KidnapStates } from '../shared/enums/kidnapStates';
 import { Jobs } from '../shared/enums/jobs/jobs';
 import { Message } from '../shared/models/ui/chat/message';
 import { SystemTypes } from '../shared/enums/ui/chat/types';
@@ -142,6 +146,9 @@ export class Client {
   private bugReporting: BugReporting;
   public hexMenu: HexMenu;
   public hud: Hud;
+
+  // [Controllers] Civilian
+  private kidnapping: Kidnapping;
 
   // [Controllers] Normal
   private death: Death;
@@ -306,6 +313,9 @@ export class Client {
 
     this.hud = new Hud(client);
 
+    // [Controllers] Civilian
+    this.kidnapping = new Kidnapping(client);
+
     // [Controllers] Normal
     this.death = new Death(client);
     await this.death.init();
@@ -403,6 +413,9 @@ export class Client {
     this.playerStates.state.set("grabState", GrabState.None, true);
     this.playerStates.state.set("interactionState", InteractionStates.None, true);
     this.playerStates.state.set("deathState", DeathStates.Alive, true);
+
+    // Civilian
+    this.playerStates.state.set("kidnapState", KidnapStates.Free, true);
 
     this.statesTick = setTick(async() => {
 

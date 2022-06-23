@@ -1424,6 +1424,16 @@ const HUD = new Vue({
     RegisterEvent("UPDATE_LOCATION", this.UpdateLocation);
     RegisterEvent("UPDATE_VEH", this.UpdateVeh);
 
+    // Kidnap Blindfold
+    RegisterEvent("KIDNAP_PLAYER", (data) => {
+      const blackness = document.getElementById("kidnapBlindfold");
+      if (data.toggle) {
+        blackness.style.display = "block";
+      } else {
+        blackness.style.display = "none";
+      }
+    });
+
     // Key Presses
     window.addEventListener("keydown", function(event) {
       switch(event.key) {

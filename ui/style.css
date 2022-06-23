@@ -2242,5 +2242,14 @@ body {
 }
 
 .dropShadow {
-   text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+  text-shadow: 1px 1px 1px black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}
+
+/* Kidnap Blindfold */
+#kidnapBlindfold {
+  position: absolute;
+  display: none;
+  width: 100%;
+  height: 100%;
+  background-image: url("./assets/img/blindfold.jpg");
 }
