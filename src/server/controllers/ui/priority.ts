@@ -62,10 +62,8 @@ export class Priority {
               if (myIndex !== -1) {
                 if (this.units[myIndex].status === UnitStatus.Active) {
                   this.units[myIndex].status = UnitStatus.Busy;
-                  character.Job.Active = this.units[myIndex].status;
                 } else {
                   this.units[myIndex].status = UnitStatus.Active;
-                  character.Job.Active = this.units[myIndex].status;
                 }
 
                 this.sync(); // Update active & total units on all clients.
