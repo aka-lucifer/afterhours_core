@@ -72,7 +72,7 @@ export class WeaponsManager {
       // console.log("weap data", JSON.stringify(weaponData, null, 4));
 
       if (weaponData !== undefined) {
-        const donatorAsset = weaponData.donatorAsset !== undefined && true ? true : false;
+        const donatorAsset = weaponData.donatorAsset !== undefined && true;
         const hasPermission = await this.hasPermission(player.Rank, weaponData.rank, donatorAsset);
         
         if (!hasPermission) {
