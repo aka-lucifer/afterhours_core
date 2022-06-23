@@ -1191,18 +1191,20 @@ const HUD = new Vue({
         // RPM
         this.vehicleData.rpm = data.rpm;
         const rpmString = this.vehicleData.rpm.toFixed(2);
-        if (rpmString === 0.20) {
+
+        if (rpmString === "0.20") {
           const rpmValue = 0;
           const rpmElement = document.querySelector("#icibre");
 
           rpmElement.setAttribute("stroke-dasharray", rpmValue + "," + 943);
-          document.getElementById("rpmText").innerHTML = rpmString + ' rpm';
+          document.getElementById("rpmText").innerHTML = "0.00 rpm";
         } else {
           const rpmValue = Number(Number(rpmString) * 440);
           const rpmElement = document.querySelector("#icibre");
 
           rpmElement.setAttribute("stroke-dasharray", rpmValue + "," + 943);
           document.getElementById("rpmText").innerHTML = rpmString + ' rpm';
+          // document.getElementById("rpmText").innerHTML = rpmString + ' rpm';
         }
 
         // Fuel
