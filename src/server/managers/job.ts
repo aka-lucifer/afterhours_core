@@ -75,7 +75,6 @@ export class JobManager {
         const character = await this.server.characterManager.Get(player);
         if (character) {
           character.Job.Status = data.state;
-          character.Job.Active = data.state; // Sets your active status
 
           if (data.state) {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} On Duty`);

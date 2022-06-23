@@ -1,4 +1,4 @@
-import {Game, Ped, VehicleSeat, } from "fivem-js"
+import {Game, Ped, Vector3, VehicleSeat, } from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -346,7 +346,25 @@ export class Client {
       this.spawner.requestUI();
       this.richPresence.Text = "Viewing Changelog, Keybinds, Commands & Rules";
     } else {
-      global.exports["spawnmanager"].spawnPlayer(); // Ensure player spawns into server (As we have disabled automatic spawning/respawning).
+      const aopPosition = this.aopManager.AOP.positions[Math.floor(Math.random() * this.aopManager.AOP.positions.length)];
+
+      const spawnPosition = new Vector3(aopPosition.x, aopPosition.y, aopPosition.z);
+      const spawnHeading = aopPosition.heading;
+
+      // Get random model from AOP configuration.
+      const randomModel = sharedConfig.aop.spawnModels[Math.floor(Math.random() * sharedConfig.aop.spawnModels.length)];
+
+      // Spawn into the correct area
+      global.exports["spawnmanager"].spawnPlayer({
+        x: spawnPosition.x,
+        y: spawnPosition.y,
+        z: spawnPosition.z,
+        heading: spawnHeading,
+        model: randomModel,
+      }); // Ensure player spawns into server (As we have disabled automatic spawning/respawning).
+
+      DoScreenFadeIn(1200);
+
       this.characters.displayCharacters(true);
       this.richPresence.Text = "Selecting Character";
     }
