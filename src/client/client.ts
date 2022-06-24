@@ -54,6 +54,7 @@ import { Hud } from './controllers/ui/hud';
 import { Kidnapping } from "./controllers/civilian/kidnapping";
 import { Surrending } from "./controllers/civilian/surrending";
 import { Carrying } from "./controllers/civilian/carrying";
+import { Gagging } from "./controllers/civilian/gagging";
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
@@ -77,6 +78,7 @@ import { DeathStates } from '../shared/enums/deathStates';
 import { KidnapStates } from '../shared/enums/kidnapStates';
 import { SurrenderState } from "../shared/enums/surrenderState";
 import { CarryStates } from "../shared/enums/carryStates";
+import { GagStates } from "../shared/enums/gagStates";
 import { Jobs } from '../shared/enums/jobs/jobs';
 import { Message } from '../shared/models/ui/chat/message';
 import { SystemTypes } from '../shared/enums/ui/chat/types';
@@ -155,6 +157,7 @@ export class Client {
   private kidnapping: Kidnapping;
   private surrending: Surrending;
   public carrying: Carrying;
+  private gagging: Gagging;
 
   // [Controllers] Normal
   private death: Death;
@@ -327,6 +330,7 @@ export class Client {
     this.kidnapping = new Kidnapping(client);
     this.surrending = new Surrending(client);
     this.carrying = new Carrying(client);
+    this.gagging = new Gagging(client);
 
     // [Controllers] Normal
     this.death = new Death(client);
@@ -430,6 +434,7 @@ export class Client {
     this.playerStates.state.set("kidnapState", KidnapStates.Free, true);
     this.playerStates.state.set("surrenderState", SurrenderState.Down, true);
     this.playerStates.state.set("carryState", CarryStates.Free, true);
+    this.playerStates.state.set("gagState", GagStates.Free, true);
 
     this.statesTick = setTick(async() => {
 

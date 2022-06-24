@@ -82,6 +82,9 @@ export enum Events {
   // Astrid Server ([Controllers] | Civilian] - Carrying)
   tryCarrying = "astrid:server:controllers:civilian:tryCarrying",
 
+  // Astrid Server ([Controllers] | Civilian] - Gagging)
+  tryGagging = "astrid:server:controllers:civilian:tryGagging",
+
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
 
@@ -188,6 +191,9 @@ export enum Events {
   // Astrid Client ([Controllers] | Civilian] - Surrending)
   toggleHands = "astrid:client:controllers:civilian:toggleHands",
   startKneeling = "astrid:client:controllers:civilianstartKneeling",
+
+  // Astrid Server ([Controllers] | Civilian] - Gagging)
+  gagPlayer = "astrid:server:controllers:civilian:gagPlayer",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

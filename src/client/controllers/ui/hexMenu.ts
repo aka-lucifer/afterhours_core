@@ -125,10 +125,24 @@ const menus: any = [
       },
       {
         shouldClose: true,
-        label: "Drop Weapon",
+        label: "Carry Player",
         submenu: false,
-        type: EventType.Client,
-        event: Events.dropWeapon
+        type: EventType.Server,
+        event: Events.tryCarrying
+      },
+      {
+        shouldClose: true,
+        label: "Kidnap Player",
+        submenu: false,
+        type: EventType.Server,
+        event: Events.tryKidnapping
+      },
+      {
+        shouldClose: true,
+        label: "Gag Player",
+        submenu: false,
+        type: EventType.Server,
+        event: Events.tryGagging
       }
     ]
   },
@@ -157,17 +171,10 @@ const menus: any = [
   },
   {
     shouldClose: true,
-    label: "Carry Player",
+    label: "Drop Weapon",
     submenu: false,
-    type: EventType.Server,
-    event: Events.tryCarrying
-  },
-  {
-    shouldClose: true,
-    label: "Kidnap Player",
-    submenu: false,
-    type: EventType.Server,
-    event: Events.tryKidnapping
+    type: EventType.Client,
+    event: Events.dropWeapon
   }
 ]
 
