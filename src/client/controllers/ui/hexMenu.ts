@@ -131,7 +131,30 @@ const menus: any = [
         event: Events.dropWeapon
       }
     ]
-  }
+  },
+  {
+    shouldClose: true,
+    label: "Hands Up",
+    submenu: false,
+    type: EventType.Client,
+    event: Events.toggleHands,
+    parameters: true
+  },
+  {
+    shouldClose: true,
+    label: "Hands Down",
+    submenu: false,
+    type: EventType.Client,
+    event: Events.toggleHands,
+    parameters: false
+  },
+  {
+    shouldClose: true,
+    label: "Kneel",
+    submenu: false,
+    type: EventType.Client,
+    event: Events.startKneeling
+  },
 ]
 
 export class HexMenu {

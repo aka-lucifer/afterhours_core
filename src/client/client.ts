@@ -52,6 +52,7 @@ import { Hud } from './controllers/ui/hud';
 
 // [Controllers] Civilian
 import { Kidnapping } from "./controllers/civilian/kidnapping";
+import { Surrending } from "./controllers/civilian/surrending";
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
@@ -73,6 +74,7 @@ import { InteractionStates } from '../shared/enums/jobs/interactionStates';
 import { GrabState } from '../shared/enums/jobs/grabStates';
 import { DeathStates } from '../shared/enums/deathStates';
 import { KidnapStates } from '../shared/enums/kidnapStates';
+import { SurrenderState } from "../shared/enums/surrenderState";
 import { Jobs } from '../shared/enums/jobs/jobs';
 import { Message } from '../shared/models/ui/chat/message';
 import { SystemTypes } from '../shared/enums/ui/chat/types';
@@ -149,6 +151,7 @@ export class Client {
 
   // [Controllers] Civilian
   private kidnapping: Kidnapping;
+  private surrending: Surrending;
 
   // [Controllers] Normal
   private death: Death;
@@ -315,6 +318,7 @@ export class Client {
 
     // [Controllers] Civilian
     this.kidnapping = new Kidnapping(client);
+    this.surrending = new Surrending(client);
 
     // [Controllers] Normal
     this.death = new Death(client);
@@ -416,6 +420,7 @@ export class Client {
 
     // Civilian
     this.playerStates.state.set("kidnapState", KidnapStates.Free, true);
+    this.playerStates.state.set("surrenderState", SurrenderState.Down, true);
 
     this.statesTick = setTick(async() => {
 
@@ -450,7 +455,7 @@ export class Client {
       return this.character;
     });
 
-    global.exports("notify", async(header: string, body: string, type: NotificationTypes, timer?: number, progress?: boolean) => {
+    global.exports("notify", async(header: string, body: string, type: NotificationTypes = NotificationTypes.Success, timer?: number, progress?: boolean) => {
       const notify = new Notification(header, body, type, timer, progress);
       await notify.send();
     });

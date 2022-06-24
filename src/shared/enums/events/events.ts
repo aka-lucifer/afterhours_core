@@ -79,6 +79,9 @@ export enum Events {
   // Astrid Server ([Controllers] | Civilian] - Kidnapping)
   tryKidnapping = "astrid:server:controllers:civilian:tryKidnapping",
 
+  // Astrid Server ([Controllers] | Civilian] - Carrying)
+  tryCarrying = "astrid:server:controllers:civilian:tryCarrying",
+
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
 
@@ -174,8 +177,17 @@ export enum Events {
   updateUnits = "astrid:client:controllers:hud:updateUnits",
   updatePriority = "astrid:client:controllers:hud:updatePriority",
 
-  // Astrid Server ([Controllers] | Civilian] - Kidnapping)
+  // Astrid Client ([Controllers] | Civilian] - Kidnapping)
   kidnapPlayer = "astrid:client:controllers:civilian:kidnapPlayer",
+
+  // Astrid Client ([Controllers] | Civilian] - Carrying)
+  carryPlayer = "astrid:client:controllers:civilian:carryPlayer",
+  startCarrying = "astrid:client:controllers:civilian:startCarrying",
+  stopCarrying = "astrid:client:controllers:civilian:stopCarrying",
+
+  // Astrid Client ([Controllers] | Civilian] - Surrending)
+  toggleHands = "astrid:client:controllers:civilian:toggleHands",
+  startKneeling = "astrid:client:controllers:civilianstartKneeling",
 
   // Astrid Client (Notifications)
   notify = "astrid:client:notify",

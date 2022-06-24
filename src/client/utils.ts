@@ -187,9 +187,9 @@ export async function PlayAnim(ped: Ped, animDict: string, animName: string, fla
     return false;
   }
 
-  if (LoadAnim(animDict)) {
+  if (await LoadAnim(animDict)) {
 		TaskPlayAnim(ped.Handle, animDict, animName, blendInSpeed || 8.0, blendOutSpeed || 8.0, duration || -1, flag || -1, playbackRate || 0, lockX || false, lockY || false, lockZ || false);
-		while (!IsEntityPlayingAnim(ped.Handle, animDict, animName, flag || -1)) await Delay(0);
+		while (!IsEntityPlayingAnim(ped.Handle, animDict, animName, 3)) await Delay(0);
 		return true;
   } else {
 		return false;
