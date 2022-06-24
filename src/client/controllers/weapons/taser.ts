@@ -153,10 +153,11 @@ export class Taser {
           await notify.send();
         }
       }
-    } else {
-      const notify = new Notification("Laser Sight", "The laser sight is only supported on the taser!", NotificationTypes.Error);
-      await notify.send();
     }
+    // else {
+    //   const notify = new Notification("Laser Sight", "The laser sight is only supported on the taser!", NotificationTypes.Error);
+    //   await notify.send();
+    // }
   }
 
   private reloadCartridges(): void {
