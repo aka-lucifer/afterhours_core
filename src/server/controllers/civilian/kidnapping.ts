@@ -1,5 +1,3 @@
-import { Prop } from "fivem-js";
-
 import { Server } from "../../server";
 import { getClosestPlayer } from "../../utils";
 
@@ -31,11 +29,11 @@ export class Kidnapping {
               if (closestStates.state.kidnapState === KidnapStates.Free) { // If they haven't been kidnapped
                 closestStates.state.kidnapState = KidnapStates.Kidnapped; // Set them to kidnapped
                 await closest.TriggerEvent(Events.kidnapPlayer, true);
-                await player.Notify("Kidnapped", "You have placed a bag over this players head.", NotificationTypes.Info);
+                await player.Notify("Kidnapping", "You have placed a bag over this players head.", NotificationTypes.Info);
               } else {
                 closestStates.state.kidnapState = KidnapStates.Free; // Set them to free
                 await closest.TriggerEvent(Events.kidnapPlayer, false);
-                await player.Notify("Kidnapped", "You have removed the bag off this players head.", NotificationTypes.Error);
+                await player.Notify("Kidnapping", "You have removed the bag off this players head.", NotificationTypes.Error);
               }
             } else {
               await player.Notify("Kidnapping", "Player is too far away!", NotificationTypes.Error);

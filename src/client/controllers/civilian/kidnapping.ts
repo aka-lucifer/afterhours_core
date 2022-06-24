@@ -13,8 +13,6 @@ export class Kidnapping {
 
   constructor(client: Client) {
     this.client = client;
-    
-    RegisterCommand("kidnap_player", () => emitNet(Events.tryKidnapping), false);
 
     // Events
     onNet(Events.kidnapPlayer, this.EVENT_kidnapPlayer.bind(this));
@@ -69,6 +67,23 @@ export class Kidnapping {
                 toggle: false
               }
             }));
+          }
+        }
+      }
+    }
+  }
+
+  public stop(): void {
+    // Delete kidnap bag & stop tick
+    if (this.kidnapBag !== undefined) {
+      if (this.kidnapBag.Handle > 0) {
+        if (this.kidnapBag.exists()) {
+          this.kidnapBag.delete();
+          this.kidnapBag = undefined;
+
+          if (this.tick !== undefined) {
+            clearTick(this.tick);
+            this.tick = undefined;
           }
         }
       }
