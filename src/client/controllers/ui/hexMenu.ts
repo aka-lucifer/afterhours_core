@@ -100,7 +100,7 @@ const leoMenus: any = {
 const menus: any = [
   {
     shouldClose: false,
-    label: "Citizen",
+    label: "Civilian",
     submenu: [
       {
         shouldClose: true,
