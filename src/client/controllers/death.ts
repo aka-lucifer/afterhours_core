@@ -75,6 +75,10 @@ export class Death {
 
   // Events
   private async EVENT_playerKilled(killer: number, killData: any): Promise<void> {
+    if (this.client.carrying.Carrying || this.client.carrying.Carrying) { // If you're carrying someone, detach them
+      emitNet(Events.tryCarrying);
+    }
+
     await this.processDeath();
   }
 

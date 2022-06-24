@@ -49,6 +49,7 @@ import { Priority } from './controllers/ui/priority';
 
 // [Controllers] Civilian
 import { Kidnapping } from "./controllers/civilian/kidnapping";
+import { Carrying } from "./controllers/civilian/carrying";
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
@@ -123,6 +124,7 @@ export class Server {
 
   // [Controllers] Civilian
   private kidnapping: Kidnapping;
+  private carrying: Carrying;
 
   // [Controllers] Normal
   private death: Death;
@@ -205,6 +207,7 @@ export class Server {
 
     // [Controllers] Civilian
     this.kidnapping = new Kidnapping(server);
+    this.carrying = new Carrying(server);
 
     // [Controllers] Death
     this.death = new Death(server);

@@ -155,6 +155,20 @@ const menus: any = [
     type: EventType.Client,
     event: Events.startKneeling
   },
+  {
+    shouldClose: true,
+    label: "Carry Player",
+    submenu: false,
+    type: EventType.Server,
+    event: Events.tryCarrying
+  },
+  {
+    shouldClose: true,
+    label: "Kidnap Player",
+    submenu: false,
+    type: EventType.Server,
+    event: Events.tryKidnapping
+  }
 ]
 
 export class HexMenu {

@@ -53,6 +53,7 @@ import { Hud } from './controllers/ui/hud';
 // [Controllers] Civilian
 import { Kidnapping } from "./controllers/civilian/kidnapping";
 import { Surrending } from "./controllers/civilian/surrending";
+import { Carrying } from "./controllers/civilian/carrying";
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
@@ -75,6 +76,7 @@ import { GrabState } from '../shared/enums/jobs/grabStates';
 import { DeathStates } from '../shared/enums/deathStates';
 import { KidnapStates } from '../shared/enums/kidnapStates';
 import { SurrenderState } from "../shared/enums/surrenderState";
+import { CarryStates } from "../shared/enums/carryStates";
 import { Jobs } from '../shared/enums/jobs/jobs';
 import { Message } from '../shared/models/ui/chat/message';
 import { SystemTypes } from '../shared/enums/ui/chat/types';
@@ -152,6 +154,7 @@ export class Client {
   // [Controllers] Civilian
   private kidnapping: Kidnapping;
   private surrending: Surrending;
+  public carrying: Carrying;
 
   // [Controllers] Normal
   private death: Death;
@@ -201,6 +204,10 @@ export class Client {
           }
         }
       }
+    }, false);
+
+    RegisterCommand("suicide", () => {
+      Game.PlayerPed.kill();
     }, false);
   }
 
@@ -319,6 +326,7 @@ export class Client {
     // [Controllers] Civilian
     this.kidnapping = new Kidnapping(client);
     this.surrending = new Surrending(client);
+    this.carrying = new Carrying(client);
 
     // [Controllers] Normal
     this.death = new Death(client);
@@ -421,6 +429,7 @@ export class Client {
     // Civilian
     this.playerStates.state.set("kidnapState", KidnapStates.Free, true);
     this.playerStates.state.set("surrenderState", SurrenderState.Down, true);
+    this.playerStates.state.set("carryState", CarryStates.Free, true);
 
     this.statesTick = setTick(async() => {
 
@@ -486,9 +495,16 @@ export class Client {
   private EVENT_resourceStop(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
       this.vehicleManager.weapon.stop();
+
       if (this.jobManager.policeJob !== undefined) {
         this.jobManager.policeJob.cuffing.stop();
         this.jobManager.policeJob.grabbing.stop();
+      }
+
+      this.kidnapping.stop();
+
+      if (this.carrying.Carried || this.carrying.Carrying) { // If you're carrying someone or being carried
+        this.carrying.EVENT_stopCarrying();
       }
     }
   }
