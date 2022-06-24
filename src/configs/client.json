@@ -8305,6 +8305,7 @@
             {"key": "Num-Pad +", "description": "Zoom in the minimap."},
             {"key": "Num-Pad -", "description": "Zoom out the minimap."},
             {"key": "F3", "description": "Display the interaction menu."},
+            {"key": "K", "description": "Put your hands up/down."},
             {"key": "F4", "description": "Toggle vehicle cruise control."},
             {"key": "B", "description": "Toggle vehicle seatbelt."},
             {"key": "R", "description": "Reload your current weapon."},
@@ -8335,7 +8336,9 @@
             {"name": "cleargps", "description": "Clear the current route on the GPS."},
             {"name": "streets", "description": "Display all available streets, available on the GPS."},
             {"name": "shuffle", "description": "Shuffle to the driver seat in a vehicle."},
-            {"name": "me", "description": "Send an action in chat."}
+            {"name": "me", "description": "Send an action in chat."},
+            {"name": "ad", "description": "Send an advert in chat."},
+            {"name": "showid", "description": "Show your ID to the closest players."}
         ],
         "rules": [
             {"title": "Age Requirement", "description": "Players must be 13 years of age to play in order to comply with Discord ToS."},
