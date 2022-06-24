@@ -1149,6 +1149,11 @@ body {
   font-weight: bold;
 }
 
+.id {
+  color: rgb(255, 230, 0);
+  font-weight: bold;
+}
+
 .fault {
   color: #e21e1e;
   /* color: rgb(255, 81, 0); */

@@ -104,6 +104,23 @@ export class CharacterManager {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
       }
     }, Ranks.User);
+
+    new Command("showid", "Show your ID to the closest players", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+      if (player) {
+        if (player.Spawned) {
+          const character = await this.Get(player);
+          
+          if (character) {
+            await this.proximityMessage(ProximityTypes.ID, new Message(
+              `^0Name: ^3${character.Name} ^0| DOB: ^3${character.DOB} ^0| Nationality: ^3${character.Nationality} ^0| Gender: ^3${character.Gender}`,
+              SystemTypes.ID
+            ), character);
+          }
+        }
+      }
+    }, Ranks.User);
   }
 
   public async proximityMessage(type: ProximityTypes, message: Message, character: Character): Promise<boolean> {
@@ -114,11 +131,23 @@ export class CharacterManager {
         const otherPlayer = players[i];
         const dist = character.Owner.Position.distance(otherPlayer.Position);
 
-        Log("Proximity Message", `My Position: ${JSON.stringify(character.Owner.Position)} | Other Position: ${JSON.stringify(otherPlayer.Position)} | Dist: ${dist}`);
-
         if (dist <= 60.0) {
-          Inform("Proximity Message", `Player 1 (${otherPlayer.GetName}) is close enough to recieve the proximity message sent from (${character.Owner.GetName})`);
           await otherPlayer.TriggerEvent(Events.sendSystemMessage, message, character.Name);
+        }
+      }
+
+      return true;
+    } else if (type == ProximityTypes.ID) {
+      const players = this.server.connectedPlayerManager.GetPlayers;
+
+      for (let i = 0; i < players.length; i++) {
+        const otherPlayer = players[i];
+        const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.Handle)));
+        const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.Handle)));
+
+        const dist = Dist(myPos, otherPos, false);
+        if (dist <= 10.0) {
+          await otherPlayer.TriggerEvent(Events.sendSystemMessage, message);
         }
       }
 
@@ -128,15 +157,11 @@ export class CharacterManager {
 
       for (let i = 0; i < players.length; i++) {
         const otherPlayer = players[i];
-        console.log("otherPlayer Handle", otherPlayer.Handle);
         const myPos = NumToVector3(GetEntityCoords(GetPlayerPed(character.Owner.Handle)));
         const otherPos = NumToVector3(GetEntityCoords(GetPlayerPed(otherPlayer.Handle)));
 
         const dist = Dist(myPos, otherPos, false);
-        Log("Proximity Message", `My Position: ${JSON.stringify(myPos)} | Other Position: ${JSON.stringify(otherPos)} | Dist: ${dist}`);
-
         if (dist <= 60.0) {
-          Inform("Proximity Message", `Player (${otherPlayer.GetName}) is close enough to recieve the proximity message sent from (${character.Owner.GetName})`);
           await otherPlayer.TriggerEvent(Events.sendClientMessage, message, character.Name);
         }
       }
@@ -439,7 +464,8 @@ export class CharacterManager {
 
 export enum ProximityTypes {
   Local,
-  Me
+  Me,
+  ID
 }
 
 export class meDrawing {
