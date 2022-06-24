@@ -206,7 +206,7 @@ export class StaffMenu {
     this.getWeatherTypes();
     this.getTimes();
 
-    this.menu = new Menu("Staff Menu (Temp)", GetCurrentResourceName(), MenuPositions.MiddleRight);
+    this.menu = new Menu("Staff Menu", GetCurrentResourceName(), MenuPositions.MiddleRight);
 
     // Connected Players
     this.playersMenu = this.menu.BindSubmenu("Connected Players");
