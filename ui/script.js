@@ -1440,6 +1440,8 @@ const HUD = new Vue({
         case "Escape": // Close UI
           if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
             HUD.CloseChat();
+          } else if ($("#Vehicles_Container").is(":visible")) {
+            HUD.closeVehicles();
           } else if ($("#warnings_container").is(":visible")) {
             HUD.CloseWarnings();
           } else if ($("#commends_container").is(":visible")) {
