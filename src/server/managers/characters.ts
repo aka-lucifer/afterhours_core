@@ -105,7 +105,7 @@ export class CharacterManager {
       }
     }, Ranks.User);
 
-    new Command("showid", "Show your ID to the closest players", [], false, async(source: string) => {
+    new Command("showid", "Show your ID to the closest players.", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
 
       if (player) {
