@@ -28,6 +28,11 @@ export class Vehicles {
     onNet(Events.displayVehicles, this.EVENT_displayVehicles.bind(this));
   }
 
+  // Getters
+  public get HasVehicles(): boolean {
+    return this.myVehicles.length > 0;
+  }
+
   // Methods
   private registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.CloseVehicles, (data, cb) => {

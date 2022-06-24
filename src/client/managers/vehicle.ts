@@ -19,6 +19,9 @@ import { Shuffling } from '../controllers/vehicles/shuffling';
 import { DriveBy } from '../controllers/vehicles/driveBy';
 
 import { LXEvents } from "../../shared/enums/events/lxEvents";
+import { SystemTypes } from "../../shared/enums/ui/chat/types";
+import { Events } from "../../shared/enums/events/events";
+import { Message } from "../../shared/models/ui/chat/message";
 
 export class VehicleManager {
   private readonly client: Client;
@@ -87,6 +90,15 @@ export class VehicleManager {
     if (!this.shuffling.Started) this.shuffling.start();
     if (!this.driveBy.Started) this.driveBy.start();
     if (!this.client.hud.VehStarted) this.client.hud.startVeh();
+
+    if (!this.client.vehicles.HasVehicles) {
+      emit(Events.sendSystemMessage,
+        new Message(
+          `To register a vehicle to your current character, use the /vehicles command to open the UI.`,
+          SystemTypes.Announcement
+        )
+      );
+    }
   }
   
   private EVENT_leftVeh(): void {
