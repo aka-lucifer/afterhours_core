@@ -285,17 +285,29 @@
               <div id="Middle_Card_Body">
                 <div id="Changelog_Contents">
                   <div v-for="(change, index) in serverChangelog" style="margin-left: 10px;" :key="change.version">
-                    <div style="text-align: center; font-weight: bold; font-size: 2em; text-decoration: underline; color: white;">{{ change.version }}</div><br>
+                    <div style="text-align: center; font-weight: bold; font-size: 2em; text-decoration: underline; color: white;" v-if='change.additions.length > 0 || change.fixes.length > 0 || change.removals.length > 0'>{{ change.version }}</div><br>
 
-                    <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Additions</h2><br>
-                    <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="addition in change.additions">
-                      <li>{{ addition }}</li>
-                    </ul><br>
+                    <div v-if='change.additions.length > 0'>
+                      <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Additions</h2><br>
+                      <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="addition in change.additions">
+                        <li style='line-height: 2;'>{{ addition }}</li>
+                      </ul><br>
+                    </div>
 
-                    <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Bug Fixes</h2><br>
-                    <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="fix in change.fixes">
+                    <div v-if='change.fixes.length > 0'>
+                      <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Bug Fixes</h2><br>
+                      <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="fix in change.fixes">
+                          <li>{{ fix }}</li>
+                      </ul><br>
+                    </div>
+
+
+                    <div v-if='change.removals.length > 0'>
+                      <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Removals</h2><br>
+                      <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="fix in change.removals">
                         <li>{{ fix }}</li>
-                    </ul><br>
+                      </ul><br>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -589,7 +601,7 @@
             <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Ad - {{ message.sender}}): <span v-html="message.contents"></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'me'">*{{ message.sender}} <span v-html="message.contents"></span>*</div>
-            <div id="Chat-Message" class="id" v-if="message.notificationType == 'id'">(ID): <span v-html="message.contents"></div>
+            <div id="Chat-Message" class="characterId" v-if="message.notificationType == 'id'">(ID): <span v-html="message.contents"></div>
           </div>
 
           <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
