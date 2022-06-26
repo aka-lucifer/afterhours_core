@@ -54,6 +54,14 @@ export class CommunityJob {
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async(cbData, passedData) => {
           if (cbData) {
             this.client.Character.job.status = newState;
+
+            if (newState) {
+              global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
+              global.exports["pma-voice"].setRadioChannel(245.1, "LEO (Main RTO)");
+            } else {
+              global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
+              global.exports["pma-voice"].setRadioChannel(0);
+            }
           }
         }));
       })
