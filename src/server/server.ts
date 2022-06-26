@@ -486,6 +486,7 @@ export class Server {
     const loadedPlayer = await player.Load();
 
     if (loadedPlayer) {
+      player.Connected = true;
       this.connectedPlayerManager.Add(player);
       const discord = await player.GetIdentifier("discord");
 
@@ -646,14 +647,7 @@ export class Server {
     const svPlayers = this.connectedPlayerManager.GetPlayers;
 
     for (let a = 0; a < svPlayers.length; a++) {
-      if (svPlayers[a].Spawned) {
-        svPlayers[a].RefreshPing();
-        // const currPlaytime = await svPlayers[a].CurrentPlaytime();
-        // svPlayers[a].formattedPlaytime = await new Playtime(currPlaytime).FormatTime();
-        svPlayers[a].formattedPlaytime = "DISABLED_FOR_TESTING";
-      } else {
-        svPlayers[a].Handle = "N/A";
-      }
+      svPlayers[a].RefreshPing();
     }
 
     await player.TriggerEvent(Events.receivePlayers, this.maxPlayers, Object.assign({}, svPlayers));

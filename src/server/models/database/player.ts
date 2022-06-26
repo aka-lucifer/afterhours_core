@@ -44,6 +44,7 @@ export class Player {
   private whitelisted: boolean = false;
   public characters: any[] = [];
   public selectedCharacter: SelectedCharacter;
+  private connected: boolean;
   private spawned: boolean;
 
   constructor(handle: string) {
@@ -98,6 +99,14 @@ export class Player {
 
   public get Trustscore(): number {
     return this.trustscore;
+  }
+
+  public get Connected(): boolean {
+    return this.connected;
+  }
+
+  public set Connected(newValue: boolean) {
+    this.connected = newValue;
   }
 
   public get Spawned(): boolean {
