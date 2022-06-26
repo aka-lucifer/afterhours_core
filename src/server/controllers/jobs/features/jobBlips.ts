@@ -67,11 +67,13 @@ export class JobBlips {
         }
 
         if (i == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
-          emitNet(JobEvents.refreshBlipData, -1, activeUnits);
+          for (let b = 0; b < activeUnits.length; b++) { // For all of the active units, send the active units array to each of them
+            emitNet(JobEvents.refreshBlipData, activeUnits[b].netId, activeUnits);
+          }
         }
       }
 
-      await Delay(1500);
+      await Delay(3000);
     });
   }
 }
