@@ -17,7 +17,153 @@ import sharedConfig from "../../configs/shared.json";
 
 export class ConnectedPlayerManager {
   public server: Server;
-  public connectedPlayers: any[] = [];
+  public connectedPlayers: any[] = [
+    {
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "5",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    },{
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "6",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    },{
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "7",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    },{
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "8",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    },{
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "9",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    },{
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "10",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    },{
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "11",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    },{
+      id: 14,
+      license: "39026596a01d701dca9114baef6e2b373e6aad3e",
+      hardwareId: "3:a5fddbec4177ceb873f06b132780978179be252f13c990806ae01fcafafb8bd2",
+      steamAvatar: "",
+      handle: "12",
+      name: "HowyF",
+      rank: Ranks.User,
+      identifiers: { },
+      ping: 0,
+      playtime: 0,
+      trustscore: 0,
+      formattedPlaytime: "0d 0h 0m",
+      joinTime: "",
+      whitelisted: false,
+      characters: [],
+      selectedCharacter: undefined,
+      spawned: false
+    }
+  ];
 
   // Ticks
   private pingTick: number = undefined;
@@ -40,31 +186,31 @@ export class ConnectedPlayerManager {
 
   // Methods
   private processRanks(): void {
-    // console.log("process ranks")
-    setInterval(async() => {
-      for (let i = 0; i < this.connectedPlayers.length; i++) {
-        if (this.connectedPlayers[i].GetPlaytime.days >= 2) {
-          if (this.connectedPlayers[i].Rank < Ranks.Honorable && this.connectedPlayers[i].Trustscore >= 90) {
-            const oldRank = this.connectedPlayers[i].Rank;
-            const updatedRank = this.connectedPlayers[i].UpdateRank(Ranks.Honorable);
-            if (updatedRank) {
-              await this.connectedPlayers[i].Notify("Rank", "Your rank has been updated to Honorable, due to 2 days playtime & an outstanding trustscore.", NotificationTypes.Success);
-              Inform("Player Manager", `Successfully updated player ([${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}) rank to Honorable`);
-              
-              const playersDisc = await this.connectedPlayers[i].GetIdentifier("discord");
-              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Rank Logs", embeds: [{
-                color: EmbedColours.Green,
-                title: "__Rank Change__",
-                description: `A players rank has automatically been updated due to great playtime & an outstanding trustscore.\n\n**Old Rank**: ${Ranks[oldRank]}\n**New Rank**: ${Ranks[this.connectedPlayers[i].Rank]}\n**Discord**: ${playersDisc != "Unknown" ? `<@${playersDisc}>` : playersDisc}`,
-                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-              }]}));
-            } else {
-              Error("Player Manager", `There was an issue updating [${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}'s rank to Honorable!`);
-            }
-          }
-        }
-      }
-    }, serverConfig.rankCycling.interval * 1000);
+    console.log("process ranks")
+    // setInterval(async() => {
+    //   for (let i = 0; i < this.connectedPlayers.length; i++) {
+    //     if (this.connectedPlayers[i].GetPlaytime.days >= 2) {
+    //       if (this.connectedPlayers[i].Rank < Ranks.Honorable && this.connectedPlayers[i].Trustscore >= 90) {
+    //         const oldRank = this.connectedPlayers[i].Rank;
+    //         const updatedRank = this.connectedPlayers[i].UpdateRank(Ranks.Honorable);
+    //         if (updatedRank) {
+    //           await this.connectedPlayers[i].Notify("Rank", "Your rank has been updated to Honorable, due to 2 days playtime & an outstanding trustscore.", NotificationTypes.Success);
+    //           Inform("Player Manager", `Successfully updated player ([${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}) rank to Honorable`);
+    //
+    //           const playersDisc = await this.connectedPlayers[i].GetIdentifier("discord");
+    //           await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Rank Logs", embeds: [{
+    //             color: EmbedColours.Green,
+    //             title: "__Rank Change__",
+    //             description: `A players rank has automatically been updated due to great playtime & an outstanding trustscore.\n\n**Old Rank**: ${Ranks[oldRank]}\n**New Rank**: ${Ranks[this.connectedPlayers[i].Rank]}\n**Discord**: ${playersDisc != "Unknown" ? `<@${playersDisc}>` : playersDisc}`,
+    //             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+    //           }]}));
+    //         } else {
+    //           Error("Player Manager", `There was an issue updating [${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}'s rank to Honorable!`);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }, serverConfig.rankCycling.interval * 1000);
   }
 
   private processPing(): void {
@@ -122,17 +268,8 @@ export class ConnectedPlayerManager {
   }
 
   public async Exists(license: string): Promise<boolean> {
-    let result = false;
-
-    for (let i = 0; i < this.connectedPlayers.length; i++) {
-      const playerLicense = await this.connectedPlayers[i].GetIdentifier("license");
-      if (playerLicense == license) {
-        result = true;
-        break;
-      }
-    }
-
-    return result;
+    const playerIndex = this.connectedPlayers.findIndex(async player => await player.GetIdentifier("license") === license);
+    return playerIndex !== -1;
   }
 
   public async playerConnected(playerHandle: string): Promise<boolean> {
@@ -145,12 +282,12 @@ export class ConnectedPlayerManager {
     if (playerIndex != -1) {
       const player: Player = this.connectedPlayers[playerIndex];
       const name = player.GetName;
+      const license = await player.GetIdentifier("license");
       const tempData = `[${player.Handle}] - ${name}`;
 
       // Change Name Detection
-      const disconnectIndex = this.server.connectionsManager.disconnectedPlayers.findIndex(connectedPlayer => connectedPlayer.name == name);
-      if (disconnectIndex == -1) {
-        const license = await player.GetIdentifier("license");
+      const disconnectIndex = this.server.connectionsManager.disconnectedPlayers.findIndex(connectedPlayer => connectedPlayer.license === license);
+      if (disconnectIndex === -1) {
         const ip = await player.GetIdentifier("ip");
         const hardwareId = player.HardwareId;
 

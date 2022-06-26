@@ -205,6 +205,7 @@ export class Player {
   }
 
   public async Insert(): Promise<boolean> {
+    console.log("info", this.name, await this.GetIdentifier)
     const inserted = await Database.SendQuery("INSERT INTO `players` (`name`, `identifier`, `hardware_id`, `steam_hex`, `xbl`, `live`, `discord`, `fivem`, `ip`) VALUES (:name, :identifier, :hardwareId, :steam_hex, :xbl, :live, :discord, :fivem, :ip)", {
       name: this.name,
       identifier: await this.GetIdentifier("license"),
@@ -216,6 +217,8 @@ export class Player {
       fivem: await this.GetIdentifier("fivem"),
       ip: await this.GetIdentifier("ip"),
     });
+
+    console.log("insert data", inserted);
 
     return inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0;
   }
@@ -259,16 +262,8 @@ export class Player {
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
         this.trustscore = await this.getTrustscore();
-
-        // console.log("SECOND JOIN TIME", playerData.data[0]);
-        // let time: string = playerData.data[0].last_connection.toString();
-        // time = time.replace("T", " ");
-        // time = time.replace(".000Z", " ");
-        // this.joinTime = "DDD";
-        // this.joinTime = playerData.data[0].last_connection;
-
         this.joinTime = await Utils.GetTimestamp();
-        // console.log("join time now", this.joinTime);
+
         return true;
       }
     } else {
@@ -286,8 +281,8 @@ export class Player {
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
         console.log("FIRST JOIN TIME", playerData.data[0]);
-        // this.joinTime = playerData.data[0].last_connection;
         this.joinTime = await Utils.GetTimestamp();
+
         return true;
       }
     }

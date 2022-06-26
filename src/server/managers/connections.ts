@@ -24,6 +24,7 @@ export class ConnectionsManager {
     on(Events.playerConnecting, async(name, setKickReason, deferrals) => {
       deferrals.defer()
       const src = (global as any).source;
+      deferrals.update(`[${sharedConfig.serverName}]: Obtaining Player Data...`);
 
       const player = new Player(src);
       const playerExists = await player.Exists();
@@ -42,7 +43,7 @@ export class ConnectionsManager {
       if (playerExists) { // If your DB entry exists
         const myLicense = await player.GetIdentifier("license");
         if (player.Rank != Ranks.Developer && player.Rank < Ranks.Management && await this.server.connectedPlayerManager.Exists(myLicense)) {
-          deferrals.done(`[${sharedConfig.serverName}]: There is already a player connected to the server, with this license key, buy your own account, you fucking cheapskate!`);
+          deferrals.done(`[${sharedConfig.serverName}]: There is already a player connected to the server, with this license key!`);
         }
 
         const [isBanned, banData] = await player.isBanned();
@@ -73,7 +74,7 @@ export class ConnectionsManager {
               }
             }
 
-            await server.connectedPlayerManager.Remove(player.handle);
+            // await server.connectedPlayerManager.Remove(player.handle);
           }
         }
 
@@ -83,7 +84,7 @@ export class ConnectionsManager {
           const ban = new Ban(player.id, player.HardwareId, "We've detected you using the XSS exploit", player.id);
           await ban.save();
           deferrals.done(`[${sharedConfig.serverName}]: You've been permanently banned from ${sharedConfig.serverName}.\nBan Id: #${ban.Id}\nBy: System\nReason: ${ban.Reason}`);
-          await server.connectedPlayerManager.Remove(player.handle);
+          // await server.connectedPlayerManager.Remove(player.handle);
           return;
         }
 
@@ -289,7 +290,7 @@ export class ConnectionsManager {
           });
 
           deferrals.done();
-          this.server.connectedPlayerManager.Add(player);
+          // this.server.connectedPlayerManager.Add(player);
         }
       });
     } else {
@@ -303,7 +304,7 @@ export class ConnectionsManager {
       });
 
       deferrals.done();
-      this.server.connectedPlayerManager.Add(player);
+      // this.server.connectedPlayerManager.Add(player);
     }
   }
 }

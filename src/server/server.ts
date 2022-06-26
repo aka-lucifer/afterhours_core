@@ -48,9 +48,9 @@ import { BugReporting } from './controllers/ui/bugReporting';
 import { Priority } from './controllers/ui/priority';
 
 // [Controllers] Civilian
-import { Kidnapping } from "./controllers/civilian/kidnapping";
-import { Carrying } from "./controllers/civilian/carrying";
-import { Gagging } from "./controllers/civilian/gagging";
+import { Kidnapping } from './controllers/civilian/kidnapping';
+import { Carrying } from './controllers/civilian/carrying';
+import { Gagging } from './controllers/civilian/gagging';
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
@@ -97,7 +97,7 @@ export class Server {
   public charVehicleManager: CharVehicleManager;
   public commandManager: CommandManager;
   public chatManager: ChatManager;
-  
+
   // [Managers] Jobs
   public jobManager: JobManager;
 
@@ -232,7 +232,7 @@ export class Server {
     await this.staffLogManager.loadLogs(); // Loads all the server logs
 
     this.chatManager.init(); // Register all commands
-    
+
     this.staffManager.init();
 
     // Load below now as it has to be loaded after the chat & commands, otherwise commands wont work
@@ -267,9 +267,9 @@ export class Server {
 
   private registerCommands(): void {
     new Command("veh", "Spawns you inside a specified vehicle.", [{
-        name: "vehicleModel",
-        help: "The spawn name of the vehicle, you're wanting to spawn."
-      }], true, async (source: string, args: any[]) => {
+      name: "vehicleModel",
+      help: "The spawn name of the vehicle, you're wanting to spawn."
+    }], true, async (source: string, args: any[]) => {
       if (args[0]) {
         const player = await this.connectedPlayerManager.GetPlayer(source);
         if (player) {
@@ -481,18 +481,16 @@ export class Server {
     }
   }
 
-  private async EVENT_playerJoined(oldId: string) {
-    const src = source;
-    const player = await this.connectedPlayerManager.GetPlayer(oldId);
-    if (player) {
+  private async EVENT_playerJoined() {
+    const player = new Player(source);
+    const loadedPlayer = await player.Load();
 
-      // Update our connected ID to our established net server ID
-      player.Handle = src;
-
+    if (loadedPlayer) {
+      this.connectedPlayerManager.Add(player);
       const discord = await player.GetIdentifier("discord");
+
       const rejoined = this.connectionsManager.disconnectedPlayers.findIndex(tempPlayer => tempPlayer.license == player.GetIdentifier("license") || tempPlayer.ip == player.GetIdentifier("ip") || tempPlayer.hardwareId == player.HardwareId);
-  
-      if (rejoined != -1) { // If the player hasn't left the server
+      if (rejoined !== -1) { // If the player hasn't left the server
         if (this.connectionsManager.disconnectedPlayers[rejoined].name != player.GetName) {
           await this.logManager.Send(LogTypes.Anticheat, new WebhookMessage({
             username: "Anticheat Logs", embeds: [{
@@ -505,78 +503,84 @@ export class Server {
               }
             }]
           }));
-          this.connectionsManager.disconnectedPlayers.splice(rejoined, 1);
+          this.connectionsManager.disconnectedPlayers.splice(rejoined, 1); // Remove entry from array
         } else {
-          await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
+          await this.logManager.Send(LogTypes.Connection, new WebhookMessage({
+            username: "Connection Logs", embeds: [{
+              color: EmbedColours.Green,
+              title: "__Player Connected__",
+              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+              footer: {
+                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                icon_url: sharedConfig.serverLogo
+              }
+            }]
+          }));
+        }
+      } else {
+        await this.logManager.Send(LogTypes.Connection, new WebhookMessage({
+          username: "Connection Logs", embeds: [{
             color: EmbedColours.Green,
             title: "__Player Connected__",
             description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
-            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-          }]}));
-        }
-      } else {
-        await this.logManager.Send(LogTypes.Connection, new WebhookMessage({username: "Connection Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Player Connected__",
-          description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
-          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-        }]}));
+            footer: {
+              text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+              icon_url: sharedConfig.serverLogo
+            }
+          }]
+        }));
       }
-    } else {
-      console.log("unable to find player, on event playerJoined!");
     }
   }
 
   private async EVENT_playerConnected(): Promise<void> {
     const src = source;
     let player: Player;
-    let existed = false;
+    let entryExists = false;
 
     if (await this.connectedPlayerManager.playerConnected(src)) { // If connected to server
+      console.log("connected to sv!");
       player = await this.connectedPlayerManager.GetPlayer(src);
-      existed = true;
+      entryExists = true;
     } else { // If restarted resource
+      console.log("restarted CORE!");
       player = new Player(src);
+      await player.Load();
     }
 
     if (player) {
-      const loadedPlayer = await player.Load();
-      if (loadedPlayer) {
-        if (!existed) this.connectedPlayerManager.Add(player);
-        Log("Connection Manager", `Player data loaded for [${player.Handle}]: ${player.GetName}`);
+      if (!entryExists) this.connectedPlayerManager.Add(player); // If no entry found (add player data into the connected player manager | if restarted resource)
+      Log("Connection Manager", `Player data loaded for [${player.Handle}]: ${player.GetName}`);
 
-        // Sync weather & time
-        await this.timeManager.sync(player);
-        await this.weatherManager.sync(player);
+      // Sync weather & time
+      await this.timeManager.sync(player);
+      await this.weatherManager.sync(player);
 
-        // Sync priority & active units
-        this.priority.sync();
+      // Sync priority & active units
+      this.priority.sync();
 
-        // Sync chat data
-        await this.chatManager.generateTypes(player);
+      // Sync chat data
+      await this.chatManager.generateTypes(player);
 
-        // Sync Characters
-        const loadedChars = await player.getCharacters();
-        if (loadedChars) {
-          await player.TriggerEvent(Events.receiveCharacters, player.characters);
-        }
-
-        await player.TriggerEvent(Events.syncAOP, this.aopManager.AOP, AOPStates.None);
-
-        // Sync spawner data
-        if (!this.developmentMode) {
-          await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.GetMaxPlayers, await this.playerManager.getBestPlayer())
-        }
-
-        // Disables Population Density & Variety
-        SetConvarReplicated("profile_gfxCityDensity", "0");
-        SetConvarReplicated("profile_gfxDistScale", "0");
-
-        // Sync Player data
-        await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player));
-      } else {
-        console.log("error loading player load method!");
+      // Sync Characters
+      const loadedChars = await player.getCharacters();
+      if (loadedChars) {
+        await player.TriggerEvent(Events.receiveCharacters, player.characters);
       }
+
+      await player.TriggerEvent(Events.syncAOP, this.aopManager.AOP, AOPStates.None);
+
+      // Sync spawner data
+      if (!this.developmentMode) {
+        await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.GetMaxPlayers, await this.playerManager.getBestPlayer())
+      }
+
+      // Disables Population Density & Variety
+      SetConvarReplicated("profile_gfxCityDensity", "0");
+      SetConvarReplicated("profile_gfxDistScale", "0");
+
+      // Sync Player data
+      await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player));
     } else {
       console.log("error loading player!");
     }
