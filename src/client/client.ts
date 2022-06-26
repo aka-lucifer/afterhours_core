@@ -367,6 +367,13 @@ export class Client {
 
   private setupUI(): void {
     this.chatManager.setupData(); // Send types and any client sided suggestions
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.SetImportant,
+      data: {
+        ranks: Ranks,
+        myRank: this.player.Rank
+      }
+    }));
     
     if (!this.Developing) {
       this.spawner.requestUI();

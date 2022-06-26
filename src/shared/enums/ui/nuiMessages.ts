@@ -1,4 +1,7 @@
 export enum NuiMessages {
+  // Important Default
+  SetImportant = "SET_IMPORTANT",
+
   // Spawn UI
   OpenSpawner = "OPEN_SPAWNER",
 

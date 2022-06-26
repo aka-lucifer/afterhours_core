@@ -4,6 +4,8 @@ const HUD = new Vue({
   data: {
     // Important 
     resource: "astrid_core",
+    ranks: {},
+    myRank: 0,
 
     // [SPAWN INFO]
     // IMPORTANT
@@ -1355,6 +1357,14 @@ const HUD = new Vue({
   },
 
   mounted() {
+    // Important Data
+    RegisterEvent("SET_IMPORTANT", (data) => {
+      this.ranks = data.ranks;
+      this.myRank = data.myRank;
+
+      console.log(`Recieved Rank Data | ${JSON.stringify(this.ranks)} | ${this.myRank} | ${this.ranks[this.myRank]}`)
+    });
+
     // Spawner UI
     RegisterEvent("OPEN_SPAWNER", this.SetupSpawn);
 

@@ -542,8 +542,8 @@
               <div class="name_header">
                 Name
               </div>
-              <div class="playtime_header">
-                Playtime
+              <div class="rank_header" v-if='myRank >= ranks.Moderator'>
+                Rank
               </div>
               <div class="ping_header">
                 Ping
@@ -558,8 +558,8 @@
                   <div class="name">
                     {{ player.name }}
                   </div>
-                  <div class="playtime">
-                    {{ player.formattedPlaytime }}
+                  <div class="rank" v-if='myRank >= ranks.Moderator'>
+                    {{ ranks[player.rank] }}
                   </div>
                   <div class="ping">
                     <span :class="{
