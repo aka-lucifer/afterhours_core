@@ -2219,17 +2219,30 @@ body {
 #Priority_Container {
   position: absolute;
 
-  bottom: 3vh;
+  bottom: 0.5vh;
   left: -1vw;
 
   width: 18.7vw;
-  height: 4vh;
+  height: fit-content;
 
   /*background-color: red;*/
   text-align: center;
 }
 
+.aop {
+  font-family: "PT-Sans-Bold";
+  font-size: 1vw;
+  color: white;
+  line-height: 80%;
+}
+
+.currentAOP {
+  font-family: 'Tanseek';
+  font-size: 1.4vw;
+}
+
 .priority {
+  margin-top: -50px;
   font-family: "PT-Sans-Bold";
   font-size: 1vw;
   color: white;

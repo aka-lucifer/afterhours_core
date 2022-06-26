@@ -1155,6 +1155,11 @@ const HUD = new Vue({
       }
     },
 
+    UpdateAOP(data) {
+      this.currentAOP = data.newAOP;
+      console.log("aop name", this.currentAOP);
+    },
+
     UpdateUnits(data) {
       this.activeUnits = data.activeUnits;
       this.totalUnits = data.units;
@@ -1429,6 +1434,7 @@ const HUD = new Vue({
 
     // HUD
     RegisterEvent("UPDATE_HUD", this.UpdateHud);
+    RegisterEvent("UPDATE_AOP", this.UpdateAOP);
     RegisterEvent("UPDATE_UNITS", this.UpdateUnits);
     RegisterEvent("UPDATE_PRIORITY", this.UpdatePriority);
     RegisterEvent("UPDATE_LOCATION", this.UpdateLocation);

@@ -70,6 +70,7 @@ export enum NuiMessages {
 
   // HUD
   UpdateHud = "UPDATE_HUD",
+  UpdateAOP = "UPDATE_AOP",
   UpdateUnits = "UPDATE_UNITS",
   UpdatePriority = "UPDATE_PRIORITY",
   UpdateLocation = "UPDATE_LOCATION",

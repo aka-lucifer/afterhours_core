@@ -11,6 +11,7 @@ import { Events } from "../../../shared/enums/events/events";
 import sharedConfig from "../../../configs/shared.json";
 import { Audio, Scaleform } from "fivem-js";
 import { Ranks } from "../../../shared/enums/ranks";
+import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
 
 export interface AOPLayout {
   name: string,
@@ -31,6 +32,7 @@ export class AOPManager {
   // Menu Data
   private aopMenu: Menu;
   private aopChangerMenu: Submenu;
+  private aopCyclingCheckbox: string;
 
   // AOP Data
   private aopCycling: boolean;
@@ -39,6 +41,7 @@ export class AOPManager {
   // AOP Scaleform
   private aopScaleform: Scaleform;
   private scaleformTick: number = undefined;
+  private scaleformTimeout: NodeJS.Timeout = undefined;
   
   constructor(client: Client) {
     this.client = client;
@@ -69,7 +72,7 @@ export class AOPManager {
       })
     }
 
-    this.aopMenu.BindCheckbox(`Player Based AOP`, this.aopCycling, (newState: boolean) => {
+    this.aopCyclingCheckbox = this.aopMenu.BindCheckbox(`Player Based AOP`, this.aopCycling, (newState: boolean) => {
       if (newState != this.aopCycling) {
         emitNet(Events.setCycling, newState);
       }
@@ -82,12 +85,14 @@ export class AOPManager {
 
     Inform("AOP Updated", `New AOP: ${this.currentAOP.name}`);
 
-    if (aopState == AOPStates.Automatic) {
-      // this.aopScaleform = new Scaleform("mp_big_message_freemode");
-      // const loadedScaleform = await this.aopScaleform.load();
-      // if (loadedScaleform) {
-      //   this.aopScaleform.callFunction("SHOW_SHARD_CENTERED_MP_MESSAGE");
-      //   this.aopScaleform.callFunction("SHARD_SET_TEXT", "~y~AOP Change", `The Area of Patrol has changed to ~y~${this.currentAOP.name}~w~!`, 0);
+    SendNuiMessage(JSON.stringify({
+      event: NuiMessages.UpdateAOP,
+      data: {
+        newAOP: this.currentAOP.name
+      }
+    }));
+
+    if (aopState === AOPStates.Automatic || aopState === AOPStates.Updated) {
       this.aopScaleform = new Scaleform("MIDSIZED_MESSAGE");
       const loadedScaleform = await this.aopScaleform.load();
       if (loadedScaleform) {
@@ -98,28 +103,21 @@ export class AOPManager {
           await this.aopScaleform.render2D();
         })
 
-        await Delay(5000);
-
-        if (this.scaleformTick != undefined) {
-          clearTick(this.scaleformTick);
-          this.scaleformTick = undefined;
-        }
-      }
-    } else if (aopState == AOPStates.Updated) {this.aopScaleform = new Scaleform("MIDSIZED_MESSAGE");
-      const loadedScaleform = await this.aopScaleform.load();
-      if (loadedScaleform) {
-        this.aopScaleform.callFunction("SHOW_COND_SHARD_MESSAGE", "~y~AOP Change", `The Area of Patrol has changed to ~y~${this.currentAOP.name}~w~!`, 2);
-        Audio.playSoundFrontEnd("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET");
-
-        if (this.scaleformTick == undefined) this.scaleformTick = setTick(async() => {
-          await this.aopScaleform.render2D();
-        })
-
-        await Delay(5000);
-
-        if (this.scaleformTick != undefined) {
-          clearTick(this.scaleformTick);
-          this.scaleformTick = undefined;
+        if (this.scaleformTimeout === undefined) {
+          this.scaleformTimeout = setTimeout(() => {
+            if (this.scaleformTick != undefined) {
+              clearTick(this.scaleformTick);
+              this.scaleformTick = undefined;
+            }
+          }, 5000);
+        } else {
+          clearTimeout(this.scaleformTimeout);
+          this.scaleformTimeout = setTimeout(() => {
+            if (this.scaleformTick != undefined) {
+              clearTick(this.scaleformTick);
+              this.scaleformTick = undefined;
+            }
+          }, 5000);
         }
       }
     }
