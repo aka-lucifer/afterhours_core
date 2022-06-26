@@ -80,7 +80,7 @@ export class JobManager {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} On Duty`);
             await player.Notify("Job", `You've gone on duty`, NotificationTypes.Success);
 
-            this.server.priority.Add(player); // Insert you into the active units
+            if (character.isLeoJob()) this.server.priority.Add(player); // Insert you into the active units
           } else {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} Off Duty`);
             emitNet(JobEvents.deleteOffDutyUnit, -1, player.Handle); // Remove this players on duty blip to all on duty players
@@ -88,8 +88,10 @@ export class JobManager {
             await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you as you have gone off duty
             await player.Notify("Job", `You've gone off duty`, NotificationTypes.Error);
 
-            if (await this.server.priority.Exists(player)) { // If you're already inside the units array
-              await this.server.priority.Remove(player); // Remove your entry from the active units array
+            if (character.isLeoJob()) {
+              if (await this.server.priority.Exists(player)) { // If you're already inside the units array
+                await this.server.priority.Remove(player); // Remove your entry from the active units array
+              }
             }
           }
 
