@@ -12,6 +12,9 @@ import sharedConfig from "../../../configs/shared.json";
 import { Audio, Scaleform } from "fivem-js";
 import { Ranks } from "../../../shared/enums/ranks";
 import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
+import { ServerCallback } from '../../models/serverCallback';
+import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
+import { Callbacks } from '../../../shared/enums/events/callbacks';
 
 export interface AOPLayout {
   name: string,
@@ -62,13 +65,17 @@ export class AOPManager {
 
   // Methods
   public init(): void {
-    this.aopMenu = new Menu("AOP Selector", GetCurrentResourceName(), MenuPositions.MiddleRight);
+    this.aopMenu = new Menu("AOP Selector", GetCurrentResourceName(), MenuPositions.MiddleLeft);
     this.aopChangerMenu = new Submenu("Change AOP", this.aopMenu.resource, this.aopMenu.handle, this.aopMenu.position);
 
     for (let i = 0; i < sharedConfig.aop.locations.length; i++) {
       this.aopChangerMenu.BindButton(sharedConfig.aop.locations[i].name, () => {
-        // console.log("update aop to", JSON.stringify(sharedConfig.aop.locations[i]))
-        emitNet(Events.setAOP, sharedConfig.aop.locations[i]);
+        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.setAOP, {newAOP: sharedConfig.aop.locations[i]}, async(cbData, passedData) => {
+          if (cbData) {
+            this.aopCycling = false;
+            this.client.menuManager.UpdateState(this.aopCyclingCheckbox, false);
+          }
+        }));
       })
     }
 

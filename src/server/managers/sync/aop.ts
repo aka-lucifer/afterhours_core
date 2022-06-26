@@ -8,6 +8,8 @@ import { Ranks } from "../../../shared/enums/ranks";
 import { Events } from "../../../shared/enums/events/events";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
+import { Callbacks } from '../../../shared/enums/events/callbacks';
+import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
 
 interface AOPLayout {
   name: string,
@@ -43,8 +45,10 @@ export class AOPManager {
     this.aopCycling = (GetConvar('player_based_aop', 'false') === "true");
     
     // Events
-    onNet(Events.setAOP, this.EVENT_setAOP.bind(this));
     onNet(Events.setCycling, this.EVENT_setCycling.bind(this));
+
+    // Callbacks
+    onNet(Callbacks.setAOP, this.CALLBACK_setAOP.bind(this));
 
     // RegisterCommand("players_add", () => {
     //   this.playerCount = 17;
@@ -192,33 +196,20 @@ export class AOPManager {
   }
 
   private closestCycleAOP(): number {
-    let closest = this.aopLocations[1].playerMax; // 1 for sandy shores
+    let closest = 1; // 1 for sandy shores
     for (let i = 0; i < this.aopLocations.length; i++) {
-      if (Math.abs(this.aopLocations[i].playerMax - this.playerCount) < Math.abs(closest - this.playerCount)) {
+      if (Math.abs(this.aopLocations[i].playerMax - this.playerCount) < Math.abs(this.aopLocations[closest].playerMax - this.playerCount)) {
         closest = i;
       }
     }
     return closest;
   }
-  // private closestCycleAOP(): number {
-  //   let closestNum: number;
-  //   this.aopLocations.reduce((a, b) => {
-  //     if (a !== undefined && b !== undefined)
-  //     console.log("a1 data", JSON.stringify(a), "\n\nb1 data", JSON.stringify(b));
-  //     if (a.automaticCycling && b.automaticCycling) {
-  //       console.log("a2 data", JSON.stringify(a), "\n\nb2 data", JSON.stringify(b));
-  //       closestNum = Math.abs(b.playerMax - this.playerCount) < Math.abs(a.playerMax - this.playerCount) ? b : a;
-  //     }
-  //   });
-
-  //   return closestNum;
-  // }
 
   private startCycling(): void {
     this.cycleInterval = setInterval(async() => {
       if (this.aopCycling) {
         // Inform("Player Checker", `Player Count: ${this.server.connectedPlayerManager.GetPlayers.length} | Current AOP: ${JSON.stringify(this.currentAOP)}`);
-        const playerCount = this.server.connectedPlayerManager.GetPlayers.length;
+        this.playerCount = this.server.connectedPlayerManager.GetPlayers.length;
 
         // -- If our current player count, is greater than our current max allowed
         if (this.playerCount > this.currentAOP.playerMax) {
@@ -283,28 +274,31 @@ export class AOPManager {
   }
 
   // Events
-  public async EVENT_setAOP(newAOP: AOPLayout): Promise<void> {
+  public async CALLBACK_setAOP(data: Record<string, any>): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       if (player.Spawned) {
         if (player.Rank >= Ranks.Admin) {
+          const newAOP: AOPLayout = data.newAOP;
           if (newAOP.name != this.currentAOP.name) {
             this.aopCycling = false; // Disable AOP cycling
             // console.log("disabled aop cycling bool", this.aopCycling);
-            
+
             // Clear interval and set back to null
             clearInterval(this.cycleInterval);
             this.cycleInterval = undefined;
-            // console.log("clear aop cycling interval", this.cycleInterval);
 
             // Set the current AOP to the passed AOP, and sync it to every client.
             this.currentAOP = newAOP;
             emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Automatic);
 
+            await player.TriggerEvent(Events.receiveServerCB, true, data);
+
             // console.log("updated AOP here!", this.currentAOP);
             // log who changed it here
           } else {
-            await player.TriggerEvent(Events.sendSystemMessage, new Message("You can't change the AOP to the same AOP!", SystemTypes.Error));
+            await player.Notify("AOP", "You can't change the AOP to the same AOP!", NotificationTypes.Error);
+            await player.TriggerEvent(Events.receiveServerCB, false, data);
           }
         }
       }
@@ -312,7 +306,6 @@ export class AOPManager {
   }
 
   public async EVENT_setCycling(newState: boolean): Promise<void> {
-    console.log(this.aopCycling, newState)
     const player = await this.server.connectedPlayerManager.GetPlayer(source);
     if (player) {
       if (player.Spawned) {
@@ -324,15 +317,17 @@ export class AOPManager {
             // console.log("aop cycling disabled, clear interval, until re-enabled!");
             clearInterval(this.cycleInterval);
             this.cycleInterval = undefined;
+            await player.Notify("AOP", "Automatic AOP disabled!", NotificationTypes.Error);
           } else {
             // Get correct cycling AOP & sync to all clients
             this.aopIndex = this.closestCycleAOP();
             this.currentAOP = this.aopLocations[this.aopIndex];
             emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Updated);
 
-            if (this.cycleInterval == undefined) {
+            if (this.cycleInterval === undefined) {
               // console.log("create aop cycle interval!");
               this.startCycling();
+              await player.Notify("AOP", "Automatic AOP enabled!", NotificationTypes.Success);
             }
           }
 

@@ -24,9 +24,12 @@ export enum Callbacks {
   // Chat
   sendMessage = "astrid:server:sendMessage",
 
+  // AOP
+  setAOP = "astrid:server:managers:aop:setAOP",
+
   // Bug Reporting
   submitBug = "astrid:server:controllers:ui:submitBug",
   
   // Astrid Server -> Client Callbacks ([Controllers] | Staff] - Menu)
-  updatePlayerJob = "astrid:client:controllers:staff:menu:updatePlayerJob",
+  updatePlayerJob = "astrid:server:controllers:staff:menu:updatePlayerJob",
 }
