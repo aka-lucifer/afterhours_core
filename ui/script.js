@@ -1322,7 +1322,7 @@ const HUD = new Vue({
     searchKeybinds() {
       if (this.keybindSearch !== "" || this.keybindSearch != null) {
         return this.serverKeybinds.filter(keybind => {
-          if (keybind.description.toLowerCase().search(this.keybindSearch.toLowerCase()) !== -1)
+          if (keybind.key.toLowerCase().search(this.keybindSearch.toLowerCase()) !== -1 || keybind.description.toLowerCase().search(this.keybindSearch.toLowerCase()) !== -1)
           return keybind;
         })
       }
