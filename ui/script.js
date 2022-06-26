@@ -1610,7 +1610,9 @@ AxMenu.Close = function(){
 $(document).on('keydown', function(event) {
   switch(event.keyCode) {
     case 27:
-      AxMenu.Close()
+      if ($(".hexMenu").is(":visible")) {
+        AxMenu.Close()
+      }
       break;
   }
 });
