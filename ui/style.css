@@ -270,7 +270,7 @@ body {
   
   font-family: "Inter-Light";
   font-weight: bolder;
-  font-size: 1.2em;
+  font-size: 1vw;
 
   user-select: none;
 }
@@ -1673,7 +1673,7 @@ body {
 }
 
 #astrid_menu_header {
-  font-size: 30px;
+  font-size: 1.75vw;
   font-weight: var(--menuHeaderFontWeight);
   /* background-color: red; */
   /* padding: 15px; */
@@ -1703,7 +1703,7 @@ body {
   text-align: left;
   background-color: var(--menuButton);
   color: var(--menuText);
-  font-size: 22px;
+  font-size: 1.15vw;
   margin: 5px;
 }
 
@@ -1712,7 +1712,7 @@ body {
 }
 
 .astrid_menu_button_text {
-  margin-top: -7px;
+  margin-top: -0.3vh;
 }
 
 /* [Astrid Menu] CHECKBOX CLASSES */
@@ -1722,7 +1722,7 @@ body {
 
   padding: 12px;
   text-align: left;
-  font-size: 22px;
+  font-size: 1.15vw;
   background-color: var(--menuButton);
   color: var(--menuText);
   margin: 5px;
@@ -1747,7 +1747,7 @@ body {
   text-align: center;
   background-color: var(--menuButton);
   color: var(--menuText);
-  font-size: 22px;
+  font-size: 1.15vw;
   margin: 5px;
 }
 
