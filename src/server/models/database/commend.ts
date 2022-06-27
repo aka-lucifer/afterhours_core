@@ -71,10 +71,12 @@ export class Commend {
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
-      const myPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.receiver);
-      await myPlayer.getTrustscore(); // Refresh the players trustscore
 
-      emitNet(Events.sendSystemMessage, -1, new Message(`^3${myPlayer.GetName} ^0has received a commend from ^3[${Ranks[myPlayer.Rank]}] - ^3${myPlayer.GetName}^0, for ^3${this.reason}`, SystemTypes.Admin));
+      const receiver = await server.connectedPlayerManager.GetPlayerFromId(this.receiver);
+      const issuedBy = await server.connectedPlayerManager.GetPlayerFromId(this.issuedBy);
+      await receiver.getTrustscore(); // Refresh the players trustscore
+
+      emitNet(Events.sendSystemMessage, -1, new Message(`^3${receiver.GetName} ^0has received a commend from ^3[${Ranks[issuedBy.Rank]}] - ^3${issuedBy.GetName}^0, for ^3${this.reason}`, SystemTypes.Admin));
       return true
     }
 
