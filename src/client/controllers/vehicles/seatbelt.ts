@@ -54,20 +54,24 @@ export class Seatbelt {
   private async toggleSeatbelt(): Promise<void> {
     const myPed = Game.PlayerPed;
     if (IsPedInAnyVehicle(myPed.Handle, false)) {
-      this.updateState(!this.seatbeltToggled);
+      const currVeh = myPed.CurrentVehicle;
 
-      if (this.seatbeltToggled) {
-        console.log("toggle seatbelt & play sound");
-        const notify = new Notification("Seatbelt", "You've toggled your seatbelt", NotificationTypes.Success);
-        await notify.send();
-        
-        global.exports["xsound"].PlayUrl("seatbeltOn", Sounds.SeatbeltOn, 0.3, false);
-      } else {
-        console.log("remove seatbelt & stop sound");
-        
-        const notify = new Notification("Seatbelt", "You've removed your seatbelt", NotificationTypes.Error);
-        await notify.send();
-        global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false);
+      if (!currVeh.Model.IsBicycle && !currVeh.Model.IsBike || !currVeh.Model.IsBike) {
+        this.updateState(!this.seatbeltToggled);
+
+        if (this.seatbeltToggled) {
+          console.log("toggle seatbelt & play sound");
+          const notify = new Notification("Seatbelt", "You've toggled your seatbelt", NotificationTypes.Success);
+          await notify.send();
+
+          global.exports["xsound"].PlayUrl("seatbeltOn", Sounds.SeatbeltOn, 0.3, false);
+        } else {
+          console.log("remove seatbelt & stop sound");
+
+          const notify = new Notification("Seatbelt", "You've removed your seatbelt", NotificationTypes.Error);
+          await notify.send();
+          global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false);
+        }
       }
     }
   }
