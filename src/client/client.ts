@@ -93,7 +93,7 @@ export class Client {
   private debugging: boolean;
   private initialSpawn: boolean;
   private developmentMode: boolean = false;
-  private readonly maxPlayers: number;
+  private maxPlayers: number;
   private players: svPlayer[] = [];
   private nuiReady: boolean = false;
   private started: boolean = false;
@@ -166,14 +166,13 @@ export class Client {
 
   constructor() {
     this.debugging = clientConfig.debug;
-    this.developmentMode = (GetConvar('development_server', 'false') === "true");
-    this.maxPlayers = GetConvarInt("sv_maxclients", 32);
     this.initialSpawn = true;
     
     // Events
-    // (Resources)
-    on(Events.mapStarted, this.disableAutospawn.bind(this));
-    on(Events.resourceStart, this.disableAutospawn.bind(this));
+    // Resources & Importance
+    on(Events.mapStarted, Client.disableAutospawn.bind(this));
+    on(Events.serverStarted, this.EVENT_serverStarted.bind(this));
+    on(Events.resourceStart, Client.disableAutospawn.bind(this));
     on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
 
     // NUI/Game Ready
@@ -260,13 +259,18 @@ export class Client {
   }
 
   // Methods (Handles disabling auto respawning when you die)
-  private disableAutospawn(resourceName: string): void {
+  private static disableAutospawn(resourceName: string): void {
     if (resourceName !== undefined) {
       if (resourceName == GetCurrentResourceName()) {
         global.exports["spawnmanager"].setAutoSpawn(false);
         console.log("auto spawn disabled!");
       }
     }
+  }
+
+  private EVENT_serverStarted(development: boolean, maxPlayers: number): void {
+    this.developmentMode = development;
+    this.maxPlayers = maxPlayers;
   }
 
   public async initialize(): Promise<void> {
@@ -521,8 +525,12 @@ export class Client {
     }
   }
 
-  private async EVENT_playerLoaded(player: any): Promise<void> {
+  private async EVENT_playerLoaded(player: any, development: boolean, maxPlayers: number): Promise<void> {
     this.player = new svPlayer(player);
+
+    // Define server convars
+    this.developmentMode = development;
+    this.maxPlayers = maxPlayers;
 
     // Manager Inits
     this.staffManager.init();

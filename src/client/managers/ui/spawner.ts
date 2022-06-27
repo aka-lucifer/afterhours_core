@@ -71,28 +71,6 @@ export class Spawner {
           debugPoly: false
         },
       }).create();
-
-      // Add it to our safezone manager
-      // this.client.safezoneManager.add(this.spawnBoxZone);
-  
-      // this.spawnBoxZone.onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
-      //   if (!isInside) {
-      //     // console.log("left spawn zone!, delete from manager and then spawnzone");
-      //     const removed = await this.client.safezoneManager.removeByName(this.spawnBoxZone.options.name);
-      //     if (removed) {
-      //       // console.log("removed from manager!");
-      //       this.spawnBoxZone.destroy();
-      //       // console.log("destroyed spawn poly");
-      //       this.spawnBoxZone = undefined;
-      //       // console.log("set spawn poly to undefined!");
-      //       // Enable PVP in case it didn't enable it after clearing from the manager.
-      //
-      //       SetCanAttackFriendly(Game.PlayerPed.Handle, true, true);
-      //       SetPedSuffersCriticalHits(Game.PlayerPed.Handle, true);
-      //       NetworkSetFriendlyFireOption(true);
-      //     }
-      //   }
-      // });
       cb("ok");
     });
   }

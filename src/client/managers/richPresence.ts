@@ -60,10 +60,8 @@ export class RichPresence {
     return this.text;
   }
 
-  public set Text(newMessage: string) {
-    this.text = newMessage;
-    this.cycleState
-    SetRichPresence(this.text);
+  public set Text(newText: string) {
+    this.text = newText;
   }
 
   public get Status(): string {
@@ -72,6 +70,7 @@ export class RichPresence {
 
   public set Status(newStatus: string) {
     this.statusText = newStatus;
+    this.cycleState = CycleStates.Status;
   }
 
   // Methods
@@ -108,7 +107,6 @@ export class RichPresence {
   public start(): void {
     if (this.cycleInterval === undefined) this.cycleInterval = setInterval(async() => {
       // Large Image Text
-      const playerCount: number[] = GetActivePlayers();
       SetDiscordRichPresenceAssetText(`Players Online (${this.client.Players.length}/${this.client.MaxPlayers})`);
 
       if (this.cycleState !== undefined) {

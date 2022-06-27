@@ -77,7 +77,7 @@ export class Server {
   private readonly debugMode: boolean;
   private readonly serverWhitelisted: boolean;
   private developmentMode: boolean;
-  private readonly maxPlayers: number;
+  private maxPlayers: number;
 
   // [Managers] Server Data
   public staffManager: StaffManager;
@@ -134,8 +134,6 @@ export class Server {
   constructor() {
     this.debugMode = serverConfig.debug;
     this.serverWhitelisted = serverConfig.whitelist;
-    this.developmentMode = (GetConvar('development_server', 'false') === "true");
-    this.maxPlayers = GetConvarInt("sv_maxclients", 32);
 
     // Events
     onNet(Events.resourceStart, this.EVENT_resourceStarted.bind(this));
@@ -163,7 +161,14 @@ export class Server {
   }
 
   // Methods
+  private getConvars(): void {
+    this.developmentMode = (GetConvar('development_server', 'false') === "true");
+    this.maxPlayers = GetConvarInt("sv_maxclients", 32);
+  }
   private async initialize(): Promise<void> {
+    // Get server convars, as we are now ready
+    this.getConvars();
+
     // [Managers] Server Data
     this.staffManager = new StaffManager(server);
 
@@ -573,7 +578,7 @@ export class Server {
 
       // Sync spawner data
       if (!this.developmentMode) {
-        await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.GetMaxPlayers, await this.playerManager.getBestPlayer())
+        await player.TriggerEvent(Events.setupSpawner, this.connectedPlayerManager.GetPlayers.length, this.maxPlayers, await this.playerManager.getBestPlayer())
       }
 
       // Disables Population Density & Variety
@@ -581,7 +586,7 @@ export class Server {
       SetConvarReplicated("profile_gfxDistScale", "0");
 
       // Sync Player data
-      await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player));
+      await player.TriggerEvent(Events.playerLoaded,  Object.assign({}, player), this.developmentMode, this.maxPlayers);
     } else {
       console.log("error loading player!");
     }
