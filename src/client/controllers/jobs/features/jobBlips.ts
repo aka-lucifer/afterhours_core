@@ -262,6 +262,25 @@ export class JobBlips {
                             foundBlip.Color = BlipColor.Green;
                             break;
                         }
+                      } else if (units[i].vehType == "plane") {
+                        switch (units[i].job) {
+                          case Jobs.Police:
+                            foundBlip.Sprite = BlipSprite.Plane;
+                            foundBlip.Color = BlipColor.Blue;
+                            break;
+                          case Jobs.County:
+                            foundBlip.Sprite = BlipSprite.Plane;
+                            foundBlip.Color = BlipColor.Blue;
+                            break;
+                          case Jobs.State:
+                            foundBlip.Sprite = BlipSprite.Plane;
+                            foundBlip.Color = BlipColor.Blue;
+                            break;
+                          case Jobs.Community:
+                            foundBlip.Sprite = BlipSprite.Plane;
+                            foundBlip.Color = BlipColor.Green;
+                            break;
+                        }
                       } else if (units[i].vehType == "boat") {
                         switch (units[i].job) {
                           case Jobs.Police:
