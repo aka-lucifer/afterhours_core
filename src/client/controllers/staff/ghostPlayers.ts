@@ -51,7 +51,7 @@ export class GhostPlayers {
     SetBlockingOfNonTemporaryEvents(ped.Handle, true);
 
     // Set them transparent
-    SetEntityAlpha(ped.Handle, 200, 0);
+    SetEntityAlpha(ped.Handle, 200, false);
 
     // Remove their collision
     SetEntityCollision(ped.Handle, false, true);

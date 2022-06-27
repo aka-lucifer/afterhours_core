@@ -75,7 +75,7 @@ export class GravityGun {
 
                 const hasControl = this.requestControlOfEntity(this.heldEntity);
                 if (hasControl) {
-                  SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+                  SetEntityAlpha(this.heldEntity.Handle, 200, false);
                   AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
                 }
               } else {
@@ -100,7 +100,7 @@ export class GravityGun {
             if (!isPlayer) {
               this.heldEntity.detach();
               new Prop(this.heldEntity.Handle).placeOnGround();
-              SetEntityAlpha(this.heldEntity.Handle, 255, 0);
+              SetEntityAlpha(this.heldEntity.Handle, 255, false);
               this.heldEntity = undefined;
               this.holding = false;
             } else {
@@ -132,7 +132,7 @@ export class GravityGun {
 
         if (!isPlayer) {
           this.heldEntity.detach();
-          SetEntityAlpha(this.heldEntity.Handle, 255, 0);
+          SetEntityAlpha(this.heldEntity.Handle, 255, false);
           const temp = this.heldEntity;
           this.stop();
           ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
@@ -150,7 +150,7 @@ export class GravityGun {
         const myPos = myPed.Position;
         const dist = myPos.distance(this.heldEntity.Position);
 
-        SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+        SetEntityAlpha(this.heldEntity.Handle, 200, false);
         AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist + 0.5, 0.0, 0.0, -78.5, 0.0, 0.0, true, true, false, true, 0, true);
       }
     }
@@ -163,7 +163,7 @@ export class GravityGun {
         const myPos = myPed.Position;
         const dist = myPos.distance(this.heldEntity.Position);
 
-        SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+        SetEntityAlpha(this.heldEntity.Handle, 200, false);
         AttachEntityToEntity(this.heldEntity.Handle, myPed.Handle, GetPedBoneIndex(myPed.Handle, Bone.PH_R_Hand), dist - 0.5, 0.0, 0.0, -70.5, 0.0, 0.0, true, true, false, true, 0, true);
       }
     }
@@ -267,7 +267,7 @@ export class GravityGun {
     const holderPos = holderPed.Position;
     const dist = holderPos.distance(this.heldEntity.Position);
     
-    SetEntityAlpha(this.heldEntity.Handle, 200, 0);
+    SetEntityAlpha(this.heldEntity.Handle, 200, false);
     AttachEntityToEntity(this.heldEntity.Handle, holderPed.Handle, GetPedBoneIndex(holderPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
   }
 
@@ -279,13 +279,13 @@ export class GravityGun {
     }
 
     this.heldEntity.detach();
-    SetEntityAlpha(this.heldEntity.Handle, 255, 0);
+    SetEntityAlpha(this.heldEntity.Handle, 255, false);
     this.stop();
   }
 
   private EVENT_getGravitied(): void {
     this.heldEntity.detach();
-    SetEntityAlpha(this.heldEntity.Handle, 255, 0);
+    SetEntityAlpha(this.heldEntity.Handle, 255, false);
     
     if (GetEntityType(this.heldEntity.Handle) == 2) { // If a vehicle
       clearTick(this.controlTick);
