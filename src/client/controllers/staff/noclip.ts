@@ -14,7 +14,7 @@ export class NoClip {
   constructor(client: Client) {
     this.client = client;
 
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
 
       // Events
       on("freecam:onFreecamUpdate", this.EVENT_freecamUpdate.bind(this));
@@ -33,7 +33,7 @@ export class NoClip {
 
   // Methods
   private enable(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       this.noClipTarget = Game.PlayerPed;
 
       if (IsPedInAnyVehicle(this.noClipTarget.Handle, false)) {
@@ -62,7 +62,7 @@ export class NoClip {
   }
 
   private disable(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       this.noClipTarget.IsInvincible = false;
       this.noClipTarget.IsPositionFrozen = false;
       this.noClipTarget.IsCollisionEnabled = true;
@@ -78,7 +78,7 @@ export class NoClip {
   }
 
   public toggleNoclip(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
 
       if (freecam.IsEnabled()) {
         this.disable();
@@ -92,7 +92,7 @@ export class NoClip {
 
   // Events
   private EVENT_freecamUpdate(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       const position = freecam.GetPosition();
       const rotation = freecam.GetRotation();
 

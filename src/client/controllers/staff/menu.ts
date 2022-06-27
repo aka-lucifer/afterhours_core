@@ -1,4 +1,4 @@
-import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, World } from "fivem-js";
+import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, WeaponHash, World } from "fivem-js";
 
 import { Client } from "../../client";
 import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone } from "../../utils";
@@ -127,18 +127,22 @@ export class StaffMenu {
   constructor(client: Client) {
     this.client = client;
 
-    if (this.client.player.Rank >= Ranks.Admin) {
+    // Events
+    onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
+
+    // Callbacks
+    onNet(Callbacks.getVehicleFreeSeat, this.CALLBACK_getVehicleFreeSeat.bind(this));
+
+    if (this.client.player.Rank >= Ranks.Moderator) {
 
       // Events
       onNet(Events.teleportToMarker, this.EVENT_tpm.bind(this));
       onNet(Events.teleportBack, this.EVENT_teleportBack.bind(this));
       onNet(Events.updatePlayerBlips, this.EVENT_updatePlayerBlips.bind(this));
       onNet(Events.deleteLeftPlayer, this.EVENT_deleteLeftPlayer.bind(this));
-      onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
-      
+
       // Callbacks
-      onNet(Callbacks.getVehicleFreeSeat, this.CALLBACK_getVehicleFreeSeat.bind(this));
       onNet(Callbacks.spectatePlayer, this.CALLBACK_spectatePlayer.bind(this));
       onNet(Callbacks.getSummoned, this.CALLBACK_getSummoned.bind(this));
       onNet(Callbacks.getSummonReturned, this.CALLBACK_getSummonReturned.bind(this));
@@ -192,7 +196,7 @@ export class StaffMenu {
   }
 
   private havePermission(): boolean {
-    let havePermission = this.client.player.Rank >= Ranks.Admin;
+    let havePermission = this.client.player.Rank >= Ranks.Moderator;
 
     if (!this.client.Developing) { // If this server is the development server
       if (this.client.player.Rank == Ranks.Developer) havePermission = false; // Check if we're a dev, if we are, disable banning on public server
@@ -212,39 +216,41 @@ export class StaffMenu {
     this.playersMenu = this.menu.BindSubmenu("Connected Players");
 
     // Server Management
-    this.serverMenu = this.menu.BindSubmenu("Server Management");
-    
-    this.weatherMenu = this.serverMenu.BindSubmenu("Weather");
-    this.weatherMenu.BindList("Weather", this.weatherTypes, (newWeather: string) => {
-      this.weather = newWeather;
-    });
+    if (this.client.Player.Rank >= Ranks.Admin) {
+      this.serverMenu = this.menu.BindSubmenu("Server Management");
 
-    this.weatherMenu.BindButton("Set Weather", () => {
-      if (this.weather !== undefined) {
-        emitNet(Events.changeWeather, this.weather);
-      }
-    });
-    
-    this.timeMenu = this.serverMenu.BindSubmenu("Time");
-    this.timeMenu.BindList("Hour", this.timeHours, (newHour: number) => {
-      this.hour = newHour;
-    });
+      this.weatherMenu = this.serverMenu.BindSubmenu("Weather");
+      this.weatherMenu.BindList("Weather", this.weatherTypes, (newWeather: string) => {
+        this.weather = newWeather;
+      });
 
-    this.timeMenu.BindList("Minute", this.timeMinutes, (newMinute: number) => {
-      this.minute = newMinute;
-    });
+      this.weatherMenu.BindButton("Set Weather", () => {
+        if (this.weather !== undefined) {
+          emitNet(Events.changeWeather, this.weather);
+        }
+      });
 
-    this.timeMenu.BindButton("Set Time", () => {
-      emitNet(Events.changeTime, this.hour, this.minute);
-    });
+      this.timeMenu = this.serverMenu.BindSubmenu("Time");
+      this.timeMenu.BindList("Hour", this.timeHours, (newHour: number) => {
+        this.hour = newHour;
+      });
 
-    this.serverMenu.BindButton("Bring All", () => {
-      emitNet(Events.bringAll);
-    });
+      this.timeMenu.BindList("Minute", this.timeMinutes, (newMinute: number) => {
+        this.minute = newMinute;
+      });
 
-    this.serverMenu.BindButton("Freeze All", () => {
-      emitNet(Events.freezeAll);
-    });
+      this.timeMenu.BindButton("Set Time", () => {
+        emitNet(Events.changeTime, this.hour, this.minute);
+      });
+
+      this.serverMenu.BindButton("Bring All", () => {
+        emitNet(Events.bringAll);
+      });
+
+      this.serverMenu.BindButton("Freeze All", () => {
+        emitNet(Events.freezeAll);
+      });
+    }
 
     // Player Actions Menu
     this.playerActionsMenu = this.menu.BindSubmenu("Player Actions");
@@ -254,12 +260,14 @@ export class StaffMenu {
         this.godmode = newState;
         this.toggleGodmode(this.godmode);
       });
+    }
 
+    if (this.client.player.Rank >= Ranks.Moderator) {
       this.playerActionsMenu.BindCheckbox("NoClip", this.client.staffManager.noclip.Active, () => {
         this.client.staffManager.noclip.toggleNoclip();
       });
 
-      this.playerActionsMenu.BindCheckbox("Player Blips", this.playersBlips, async(newState: boolean) => {
+      this.playerActionsMenu.BindCheckbox("Player Blips", this.playersBlips, async (newState: boolean) => {
         this.playersBlips = newState;
 
         if (this.playersBlips) {
@@ -274,7 +282,9 @@ export class StaffMenu {
           toggled: this.playersBlips
         });
       });
+    }
 
+    if (this.client.player.Rank >= Ranks.Admin) {
       this.playerActionsMenu.BindCheckbox("Invisible", !this.visible, (newState: boolean) => {
         this.visible = !newState;
 
@@ -287,13 +297,15 @@ export class StaffMenu {
       });
 
       this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async(cbData, passedData) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, { state: newState }, async (cbData, passedData) => {
           if (cbData) {
             this.client.Character.Job.status = newState;
           }
         }));
       });
+    }
 
+    if (this.client.player.Rank >= Ranks.Moderator) {
       this.playerActionsMenu.BindButton("Teleport To Marker", async() => {
         await this.EVENT_tpm();
       });
@@ -303,136 +315,142 @@ export class StaffMenu {
       });
     }
 
-    this.weaponActionsMenu = this.menu.BindSubmenu("Weapon Actions");
-      
-    this.weaponActionsMenu.BindButton("Give Weapon", async() => {
-      const weaponName = await keyboardInput("Weapon Name", 25);
-      if (weaponName !== undefined && weaponName !== null) {
-        if (weaponName.length > 0) {
-          const weapons = await sortWeapons(sharedConfig.weapons); // Sort the weapons array, so it's just weapon data and no hash
-          const weaponIndex = weapons.findIndex(weapon => weapon.name == weaponName);
+    if (this.client.player.Rank >= Ranks.Admin) {
+      this.weaponActionsMenu = this.menu.BindSubmenu("Weapon Actions");
 
-          if (weaponIndex !== -1) {
-            const hash = GetHashKey(weaponName);
-            const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
-            Game.PlayerPed.giveWeapon(hash, maxAmmo, false, true);
+      this.weaponActionsMenu.BindButton("Give Weapon", async () => {
+        const weaponName = await keyboardInput("Weapon Name", 25);
+        if (weaponName !== undefined && weaponName !== null) {
+          if (weaponName.length > 0) {
+            const weapons = await sortWeapons(sharedConfig.weapons); // Sort the weapons array, so it's just weapon data and no hash
+            const weaponIndex = weapons.findIndex(weapon => weapon.name == weaponName);
 
-            emitNet(Events.logAdminAction, AdminActions.GiveWeapon, {
-              weapon: weapons[weaponIndex].label
-            });
+            if (weaponIndex !== -1) {
+              const hash = GetHashKey(weaponName);
+              const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
+              Game.PlayerPed.giveWeapon(hash, maxAmmo, false, true);
 
-            const notify = new Notification("Staff Menu", `You've gave yourself an ${weapons[weaponIndex].label}.`, NotificationTypes.Info);
-            await notify.send();
+              emitNet(Events.logAdminAction, AdminActions.GiveWeapon, {
+                weapon: weapons[weaponIndex].label
+              });
+
+              const notify = new Notification("Staff Menu", `You've gave yourself an ${weapons[weaponIndex].label}.`, NotificationTypes.Info);
+              await notify.send();
+            } else {
+              const notify = new Notification("Staff Menu", `Weapon name not found or is incorrect!`, NotificationTypes.Error);
+              await notify.send();
+            }
           } else {
-            const notify = new Notification("Staff Menu", `Weapon name not found or is incorrect!`, NotificationTypes.Error);
+            const notify = new Notification("Staff Menu", `You haven't entered a weapon!`, NotificationTypes.Error);
             await notify.send();
           }
         } else {
-          const notify = new Notification("Staff Menu", `You haven't entered a weapon!`, NotificationTypes.Error);
+          const notify = new Notification("Job", `You haven't entered a weapon!`, NotificationTypes.Error);
           await notify.send();
         }
-      } else {
-        const notify = new Notification("Job", `You haven't entered a weapon!`, NotificationTypes.Error);
+      });
+
+      this.weaponActionsMenu.BindButton("Give All Weapons", async () => {
+        const weapons = await sortWeapons(sharedConfig.weapons); // Sort the weapons array, so it's just weapon data and no hash
+        for (let i = 0; i < weapons.length; i++) {
+          if (weapons[i].type == "weapon") {
+            const hash = GetHashKey(weapons[i].name);
+            const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
+            Game.PlayerPed.giveWeapon(hash, maxAmmo, false, false);
+          }
+
+          if (i == (weapons.length - 1)) {
+            emitNet(Events.logAdminAction, AdminActions.GiveAllWeapons);
+
+            const notify = new Notification("Staff Menu", "All weapons added.", NotificationTypes.Info);
+            await notify.send();
+          }
+        }
+      });
+
+      this.weaponActionsMenu.BindButton("Remove All Weapons", async () => {
+        Game.PlayerPed.removeAllWeapons();
+        emitNet(Events.logAdminAction, AdminActions.RemoveAllWeapons);
+
+        const notify = new Notification("Staff Menu", "All weapons removed!", NotificationTypes.Error);
         await notify.send();
-      }
-    });
-
-    this.weaponActionsMenu.BindButton("Give All Weapons", async() => {
-      const weapons = await sortWeapons(sharedConfig.weapons); // Sort the weapons array, so it's just weapon data and no hash
-      for (let i = 0; i < weapons.length; i++) {
-        if (weapons[i].type == "weapon") {
-          const hash = GetHashKey(weapons[i].name);
-          const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
-          Game.PlayerPed.giveWeapon(hash, maxAmmo, false, false);
-        }
-
-        if (i == (weapons.length - 1)) {
-          emitNet(Events.logAdminAction, AdminActions.GiveAllWeapons);
-
-          const notify = new Notification("Staff Menu", "All weapons added.", NotificationTypes.Info);
-          await notify.send();
-        }
-      }
-    });
-
-    this.weaponActionsMenu.BindButton("Remove All Weapons", async() => {
-      Game.PlayerPed.removeAllWeapons();
-      emitNet(Events.logAdminAction, AdminActions.RemoveAllWeapons);
-
-      const notify = new Notification("Staff Menu", "All weapons removed!", NotificationTypes.Error);
-      await notify.send();
-    });
-
-    this.weaponActionsMenu.BindCheckbox("Infinite Ammo", this.infiniteAmmo, (newState: boolean) => {
-      this.infiniteAmmo = newState;
-      SetPedInfiniteAmmoClip(Game.PlayerPed.Handle, this.infiniteAmmo);
-
-      emitNet(Events.logAdminAction, AdminActions.InfiniteAmmo, {
-        toggled: this.infiniteAmmo
       });
-    });
 
-    this.weaponActionsMenu.BindCheckbox("No Reload", this.noReload, (newState: boolean) => {
-      this.noReload = newState;
+      this.weaponActionsMenu.BindCheckbox("Infinite Ammo", this.infiniteAmmo, (newState: boolean) => {
+        this.infiniteAmmo = newState;
+        SetPedInfiniteAmmoClip(Game.PlayerPed.Handle, this.infiniteAmmo);
 
-      emitNet(Events.logAdminAction, AdminActions.NoReload, {
-        toggled: this.noReload
+        emitNet(Events.logAdminAction, AdminActions.InfiniteAmmo, {
+          toggled: this.infiniteAmmo
+        });
       });
-    });
 
-    this.weaponActionsMenu.BindCheckbox("No Recoil", this.noRecoil, (newState: boolean) => {
-      this.noRecoil = newState;
+      this.weaponActionsMenu.BindCheckbox("No Reload", this.noReload, (newState: boolean) => {
+        this.noReload = newState;
 
-      emitNet(Events.logAdminAction, AdminActions.NoRecoil, {
-        toggled: this.noRecoil
+        emitNet(Events.logAdminAction, AdminActions.NoReload, {
+          toggled: this.noReload
+        });
       });
-    });
 
-    this.weaponActionsMenu.BindCheckbox("Gravity Gun", this.usingGravityGun, (newState: boolean) => {
-      this.usingGravityGun = newState;
+      this.weaponActionsMenu.BindCheckbox("No Recoil", this.noRecoil, (newState: boolean) => {
+        this.noRecoil = newState;
 
-      if (this.usingGravityGun) {
-        if (!HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-          Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
+        emitNet(Events.logAdminAction, AdminActions.NoRecoil, {
+          toggled: this.noRecoil
+        });
+      });
+
+      this.weaponActionsMenu.BindCheckbox("Gravity Gun", this.usingGravityGun, (newState: boolean) => {
+        this.usingGravityGun = newState;
+
+        if (this.usingGravityGun) {
+          if (!HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
+            // Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
+            Game.PlayerPed.giveWeapon(WeaponHash.Pistol50, 9999, false, true);
+          } else {
+            SetCurrentPedWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, true);
+          }
         } else {
-          SetCurrentPedWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, true);
-        }
-      } else {
-        if (HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-          Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
+          if (HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
+            // Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
+            Game.PlayerPed.removeWeapon(WeaponHash.Pistol50);
+          }
+
+          SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
         }
 
-        SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
-      }
-
-      emitNet(Events.logAdminAction, AdminActions.GravityGun, {
-        toggled: this.usingGravityGun
+        emitNet(Events.logAdminAction, AdminActions.GravityGun, {
+          toggled: this.usingGravityGun
+        });
       });
-    });
+    }
 
     // Vehicle Actions Menu
-    this.vehicleActionsMenu = this.menu.BindSubmenu("Vehicle Actions");
+    if (this.client.player.Rank >= Ranks.Moderator) {
+      this.vehicleActionsMenu = this.menu.BindSubmenu("Vehicle Actions");
 
-    this.vehicleActionsMenu.BindButton("Repair Vehicle", async() => {
-      const myPed = Game.PlayerPed;
-      if (IsPedInAnyVehicle(myPed.Handle, false)) {
-        const currVeh = myPed.CurrentVehicle;
-        if (currVeh.Health < currVeh.MaxHealth) {
-          currVeh.repair();
-          global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
-          currVeh.DirtLevel = 0.0;
-          currVeh.IsEngineRunning = true;
+      this.vehicleActionsMenu.BindButton("Repair Vehicle", async () => {
+        const myPed = Game.PlayerPed;
+        if (IsPedInAnyVehicle(myPed.Handle, false)) {
+          const currVeh = myPed.CurrentVehicle;
+          if (currVeh.Health < currVeh.MaxHealth) {
+            currVeh.repair();
+            global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
+            currVeh.DirtLevel = 0.0;
+            currVeh.IsEngineRunning = true;
 
-          emitNet(Events.logAdminAction, AdminActions.RepairedVehicle);
+            emitNet(Events.logAdminAction, AdminActions.RepairedVehicle);
 
-          const notify = new Notification("Staff Menu", "Vehicle fixed!", NotificationTypes.Success);
-          await notify.send();
-        } else {
-          const notify = new Notification("Staff Menu", "Your vehicle isn't damaged!", NotificationTypes.Error);
-          await notify.send();
+            const notify = new Notification("Staff Menu", "Vehicle fixed!", NotificationTypes.Success);
+            await notify.send();
+          } else {
+            const notify = new Notification("Staff Menu", "Your vehicle isn't damaged!", NotificationTypes.Error);
+            await notify.send();
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   public refreshPlayers(): void {
@@ -452,142 +470,146 @@ export class StaffMenu {
       }
 
       // [Player Banning]
-      const banMenu = menu.BindSubmenu("Ban");
-      banMenu.BindButton("Reason", async() => {
-        const banReason = await keyboardInput("Ban Reason", 250);
-        if (banReason != null) {
-          if (banReason.length > 0) {
-            this.banReason = banReason;
-          } else {
-            const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
-            await notify.send();
-          }
-        } else {
-          const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
-          await notify.send();
-        }
-      });
-
-      banMenu.BindList("Type", banTypes, (newType: string) => {
-        this.banLengthType = newType;
-      });
-
-      banMenu.BindButton("Length", async() => {
-        const banLength = await keyboardInput("Ban Length", 10);
-        if (banLength != null) {
-          if (banLength.length > 0) {
-            this.banLength = parseInt(banLength);
-          } else {
-            const notify = new Notification("Staff", `You haven't entered a ban length!`, NotificationTypes.Error);
-            await notify.send();
-          }
-        } else {
-          const notify = new Notification("Staff", `You haven't entered a ban length!`, NotificationTypes.Error);
-          await notify.send();
-        }
-      });
-
-      banMenu.BindCheckbox("Permanent", this.banPermanent, (newState: boolean) => {
-        this.banPermanent = newState;
-      });
-
-      banMenu.BindButton("Ban", async() => {
-        if (this.banReason != null) {
-          if (this.banReason.length > 0) {
-            if (!this.banPermanent) {
-              if (!this.banLengthType !== undefined) {
-                if (this.banLength !== undefined && this.banLength > 0) {
-                  emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent, this.banLengthType.toUpperCase(), this.banLength);
-
-                  this.banReason = undefined;
-                  this.banLengthType = undefined;
-                  this.banLength = undefined;
-                  this.banPermanent = false;
-                } else {
-                  const notify = new Notification("Staff", `You haven't entered a ban length!`, NotificationTypes.Error);
-                  await notify.send();
-                }
-              } else {
-                const notify = new Notification("Staff", `You haven't entered a ban length type!`, NotificationTypes.Error);
-                await notify.send();
-              }
+      if (this.client.Player.Rank >= Ranks.Admin) {
+        const banMenu = menu.BindSubmenu("Ban");
+        banMenu.BindButton("Reason", async () => {
+          const banReason = await keyboardInput("Ban Reason", 250);
+          if (banReason != null) {
+            if (banReason.length > 0) {
+              this.banReason = banReason;
             } else {
-              emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent);
-
-              this.banReason = undefined;
-              this.banLengthType = undefined;
-              this.banLength = undefined;
-              this.banPermanent = false;
+              const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
+              await notify.send();
             }
           } else {
             const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
             await notify.send();
           }
-        } else {
-          const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
-          await notify.send();
-        }
-      });
+        });
 
-      menu.BindButton("Kick", async() => {
-        const kickReason = await keyboardInput("Kick Reason", 250);
-        if (kickReason != null) {
-          if (kickReason.length > 0) {
-            this.kickReason = kickReason;
-            emitNet(Events.kickPlayer, playerData.Id, this.kickReason);
+        banMenu.BindList("Type", banTypes, (newType: string) => {
+          this.banLengthType = newType;
+        });
+
+        banMenu.BindButton("Length", async () => {
+          const banLength = await keyboardInput("Ban Length", 10);
+          if (banLength != null) {
+            if (banLength.length > 0) {
+              this.banLength = parseInt(banLength);
+            } else {
+              const notify = new Notification("Staff", `You haven't entered a ban length!`, NotificationTypes.Error);
+              await notify.send();
+            }
+          } else {
+            const notify = new Notification("Staff", `You haven't entered a ban length!`, NotificationTypes.Error);
+            await notify.send();
+          }
+        });
+
+        banMenu.BindCheckbox("Permanent", this.banPermanent, (newState: boolean) => {
+          this.banPermanent = newState;
+        });
+
+        banMenu.BindButton("Ban", async () => {
+          if (this.banReason != null) {
+            if (this.banReason.length > 0) {
+              if (!this.banPermanent) {
+                if (!this.banLengthType !== undefined) {
+                  if (this.banLength !== undefined && this.banLength > 0) {
+                    emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent, this.banLengthType.toUpperCase(), this.banLength);
+
+                    this.banReason = undefined;
+                    this.banLengthType = undefined;
+                    this.banLength = undefined;
+                    this.banPermanent = false;
+                  } else {
+                    const notify = new Notification("Staff", `You haven't entered a ban length!`, NotificationTypes.Error);
+                    await notify.send();
+                  }
+                } else {
+                  const notify = new Notification("Staff", `You haven't entered a ban length type!`, NotificationTypes.Error);
+                  await notify.send();
+                }
+              } else {
+                emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent);
+
+                this.banReason = undefined;
+                this.banLengthType = undefined;
+                this.banLength = undefined;
+                this.banPermanent = false;
+              }
+            } else {
+              const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
+              await notify.send();
+            }
+          } else {
+            const notify = new Notification("Staff", `You haven't entered a ban reason!`, NotificationTypes.Error);
+            await notify.send();
+          }
+        });
+      }
+
+      if (this.client.Player.Rank >= Ranks.Moderator) {
+        menu.BindButton("Kick", async () => {
+          const kickReason = await keyboardInput("Kick Reason", 250);
+          if (kickReason != null) {
+            if (kickReason.length > 0) {
+              this.kickReason = kickReason;
+              emitNet(Events.kickPlayer, playerData.Id, this.kickReason);
+            } else {
+              const notify = new Notification("Staff", `You haven't entered a kick reason!`, NotificationTypes.Error);
+              await notify.send();
+            }
           } else {
             const notify = new Notification("Staff", `You haven't entered a kick reason!`, NotificationTypes.Error);
             await notify.send();
           }
-        } else {
-          const notify = new Notification("Staff", `You haven't entered a kick reason!`, NotificationTypes.Error);
-          await notify.send();
-        }
-      });
+        });
 
-      menu.BindButton("Warn", async() => {
-        const warnReason = await keyboardInput("Warn Reason", 250);
-        if (warnReason != null) {
-          if (warnReason.length > 0) {
-            emitNet(Events.warnPlayer, playerData.Id, warnReason);
+        menu.BindButton("Warn", async () => {
+          const warnReason = await keyboardInput("Warn Reason", 250);
+          if (warnReason != null) {
+            if (warnReason.length > 0) {
+              emitNet(Events.warnPlayer, playerData.Id, warnReason);
+            } else {
+              const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
+              await notify.send();
+            }
           } else {
-            const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
+            const notify = new Notification("Staff", `You haven't entered a command reason!`, NotificationTypes.Error);
             await notify.send();
           }
-        } else {
-          const notify = new Notification("Staff", `You haven't entered a command reason!`, NotificationTypes.Error);
-          await notify.send();
-        }
-      });
+        });
 
-      menu.BindButton("Commend", async() => {
-        const commendReason = await keyboardInput("Commend Reason", 250);
-        if (commendReason != null) {
-          if (commendReason.length > 0) {
-            emitNet(Events.commendPlayer, playerData.Id, commendReason);
+        menu.BindButton("Commend", async () => {
+          const commendReason = await keyboardInput("Commend Reason", 250);
+          if (commendReason != null) {
+            if (commendReason.length > 0) {
+              emitNet(Events.commendPlayer, playerData.Id, commendReason);
+            } else {
+              const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
+              await notify.send();
+            }
           } else {
-            const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
+            const notify = new Notification("Staff", `You haven't entered a command reason!`, NotificationTypes.Error);
             await notify.send();
           }
-        } else {
-          const notify = new Notification("Staff", `You haven't entered a command reason!`, NotificationTypes.Error);
-          await notify.send();
-        }
-      });
-
-      const rankMenu = menu.BindSubmenu("Update Rank");
-      for (let b = 0; b < Object.keys(Ranks).length / 2; b++) {
-        if (b < this.client.Player.Rank) { // If this rank is less than yours (you can't give someone a higher rank than you)
-          const rankLabelSplit = splitCapitalsString(Ranks[b]);
-          const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
-
-          rankMenu.BindButton(formattedRankLabel, () => {
-            emitNet(Events.updatePlayerRank, playerData.Id, b);
-          })
-        }
+        });
       }
 
       if (this.client.Player.Rank >= Ranks.SeniorAdmin) {
+        const rankMenu = menu.BindSubmenu("Update Rank");
+        for (let b = 0; b < Object.keys(Ranks).length / 2; b++) {
+          if (b < this.client.Player.Rank) { // If this rank is less than yours (you can't give someone a higher rank than you)
+            const rankLabelSplit = splitCapitalsString(Ranks[b]);
+            const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+            rankMenu.BindButton(formattedRankLabel, () => {
+              emitNet(Events.updatePlayerRank, playerData.Id, b);
+            })
+          }
+        }
+
         const jobMenu = menu.BindSubmenu("Update Job");
 
         const jobs = Object.keys(Jobs);
@@ -715,33 +737,35 @@ export class StaffMenu {
         }
       }
 
-      menu.BindButton("Freeze", () => {
-        emitNet(Events.freezePlayer, playerData.Id);
-      });
+      if (this.client.player.Rank >= Ranks.Moderator) {
+        menu.BindButton("Freeze", () => {
+          emitNet(Events.freezePlayer, playerData.Id);
+        });
 
-      menu.BindButton("Revive", () => {
-        emitNet(Events.revivePlayer, playerData.Id);
-      });
+        menu.BindButton("Revive", () => {
+          emitNet(Events.revivePlayer, playerData.Id);
+        });
 
-      menu.BindButton("Teleport To", () => {
-        emitNet(Events.tpToPlayer, playerData.Id);
-      });
+        menu.BindButton("Teleport To", () => {
+          emitNet(Events.tpToPlayer, playerData.Id);
+        });
 
-      menu.BindButton("Teleport Inside Vehicle", () => {
-        emitNet(Events.tpToVehicle, playerData.Id);
-      });
+        menu.BindButton("Teleport Inside Vehicle", () => {
+          emitNet(Events.tpToVehicle, playerData.Id);
+        });
 
-      menu.BindButton("Summon", () => {
-        emitNet(Events.summonPlayer, playerData.Id);
-      });
+        menu.BindButton("Summon", () => {
+          emitNet(Events.summonPlayer, playerData.Id);
+        });
 
-      menu.BindButton("Return Player", () => {
-        emitNet(Events.returnSummonedPlayer, playerData.Id);
-      });
+        menu.BindButton("Return Player", () => {
+          emitNet(Events.returnSummonedPlayer, playerData.Id);
+        });
 
-      menu.BindButton("Spectate", () => {
-        emitNet(Events.spectatePlayer, playerData.Id);
-      });
+        menu.BindButton("Spectate", () => {
+          emitNet(Events.spectatePlayer, playerData.Id);
+        });
+      }
 
       this.playerMenus.push({
         netId: playerData.NetworkId,
@@ -800,8 +824,6 @@ export class StaffMenu {
   }
 
   public toggleGodmode(newState: boolean): void {
-    console.log("set godmode to", newState);
-
     if (this.godmode) {
       if (this.godmodeTick === undefined) this.godmodeTick = setTick(() => {
         const myPed = Game.PlayerPed;
@@ -914,7 +936,6 @@ export class StaffMenu {
               const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
 
               if (blipIndex === -1) { // If the blip doesn't exist make it
-                console.log("create blip on", units[i].netId);
                 const blip = World.createBlip(new Vector3(units[i].coords.x, units[i].coords.y, units[i].coords.z));
                 blip.IsShortRange = false;
                 blip.Display = 2;
@@ -928,6 +949,8 @@ export class StaffMenu {
                     blip.Sprite = BlipSprite.Helicopter;
                   } else if (units[i].vehType == "boat") {
                     blip.Sprite = BlipSprite.Boat;
+                  } else if (units[i].vehType == "plane") {
+                    blip.Sprite = BlipSprite.Plane;
                   }
 
                   blip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
@@ -949,7 +972,6 @@ export class StaffMenu {
                 const blipData = this.createdBlips[blipIndex];
                 const foundBlip = new Blip(blipData.blip.Handle); // see if this fixes stupid bug
 
-                console.log("blip 2");
                 foundBlip.Position = units[i].coords;
 
                 if (units[i].inVeh) {

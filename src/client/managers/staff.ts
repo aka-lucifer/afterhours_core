@@ -31,14 +31,15 @@ export class StaffManager {
 
   // Methods
   public init(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    this.staffMenu = new StaffMenu(this.client); // Have to do outside of rank check, as has normal player checks and callbacks
+
+    if (this.client.player.Rank >= Ranks.Moderator) {
       this.gravityGun = new GravityGun(this.client);
-      this.staffMenu = new StaffMenu(this.client);
       this.noclip = new NoClip(this.client);
       this.ghostPlayers = new GhostPlayers();
-
-      this.staffMenu.init();
     }
+
+    this.staffMenu.init(); // do perm checks and make menus
   }
 
   // Events
