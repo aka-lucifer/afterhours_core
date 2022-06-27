@@ -210,43 +210,41 @@ export class Taser {
   }
 
   // Events
-  private async gunshot(shootersNet: number): Promise<void> {
-    if (shootersNet === this.client.Player.NetworkId) {
-      const weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
+  private async gunshot(): Promise<void> {
+    const weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
 
-      // if we aren't unarmed
-      if (weapon === Weapons.X26Tazer) {
-        if (this.cartridges - 1 < 0) {
-          this.cartridges = 0;
-        } else {
-          this.cartridges--;
-        }
+    // if we aren't unarmed
+    if (weapon === Weapons.X26Tazer) {
+      if (this.cartridges - 1 < 0) {
+        this.cartridges = 0;
+      } else {
+        this.cartridges--;
+      }
 
-        if (this.cartridges <= 0) {
-          if (this.cartridgeTick === undefined) this.cartridgeTick = setTick(() => {
-            const weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
+      if (this.cartridges <= 0) {
+        if (this.cartridgeTick === undefined) this.cartridgeTick = setTick(() => {
+          const weapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
 
-            // if we aren't unarmed
-            if (weapon === Weapons.X26Tazer) {
-              if (this.cartridges <= 0) {
-                DisableControlAction(0, Control.Reload, true);
-                DisableControlAction(0, Control.MeleeAttackLight, true);
-                DisableControlAction(0, Control.MeleeAttackHeavy, true);
-                DisableControlAction(0, Control.MeleeAttackAlternate, true);
-                DisablePlayerFiring(Game.Player.Handle, true);
+          // if we aren't unarmed
+          if (weapon === Weapons.X26Tazer) {
+            if (this.cartridges <= 0) {
+              DisableControlAction(0, Control.Reload, true);
+              DisableControlAction(0, Control.MeleeAttackLight, true);
+              DisableControlAction(0, Control.MeleeAttackHeavy, true);
+              DisableControlAction(0, Control.MeleeAttackAlternate, true);
+              DisablePlayerFiring(Game.Player.Handle, true);
 
-                if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
-                  PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
-                  Screen.showSubtitle("~r~Reload tazer catridges!");
-                }
+              if (Game.isControlJustPressed(0, Control.Attack) || Game.isDisabledControlJustPressed(0, Control.Attack)) {
+                PlaySoundFrontend(-1, "Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds", false);
+                Screen.showSubtitle("~r~Reload tazer catridges!");
+              }
 
-                if (!this.reloadingCartridges) {
-                  Screen.displayHelpTextThisFrame("~y~Reload Tazer Cartridges");
-                }
+              if (!this.reloadingCartridges) {
+                Screen.displayHelpTextThisFrame("~y~Reload Tazer Cartridges");
               }
             }
-          });
-        }
+          }
+        });
       }
     }
   }

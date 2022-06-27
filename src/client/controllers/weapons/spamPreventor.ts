@@ -25,32 +25,30 @@ export class SpamPreventor {
   }
   
   // Events
-  private async gunshot(shootersNet: number): Promise<void> {
-    if (shootersNet === this.client.Player.NetworkId) {
-      this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
+  private async gunshot(): Promise<void> {
+    this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
 
-      // if we aren't unarmed
-      if (this.currentWeapon != Weapons.Unarmed) {
-        // If our gun shoots bullets
-        if (GetWeaponDamageType(this.currentWeapon) == 3) {
-          const weaponData = sharedConfig.weapons[this.currentWeapon];
-          if (weaponData !== undefined) {
-            if (weaponData.ammoType == "AMMO_PISTOL" || weaponData.ammoType == "AMMO_SHOTGUN" || weaponData.ammoType == "AMMO_SNIPER") {
-              while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
-                await Delay(10);
-                if (this.holdCount < this.holdMaxCount) {
-                  this.holdCount++;
-                } else {
-                  Screen.displayHelpTextThisFrame("~r~Release the trigger to fire again!");
-                }
-
-                DisablePlayerFiring(Game.Player.Handle, true);
-                // console.log("still holding fire button!");
+    // if we aren't unarmed
+    if (this.currentWeapon != Weapons.Unarmed) {
+      // If our gun shoots bullets
+      if (GetWeaponDamageType(this.currentWeapon) == 3) {
+        const weaponData = sharedConfig.weapons[this.currentWeapon];
+        if (weaponData !== undefined) {
+          if (weaponData.ammoType == "AMMO_PISTOL" || weaponData.ammoType == "AMMO_SHOTGUN" || weaponData.ammoType == "AMMO_SNIPER") {
+            while (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Attack) || Game.isDisabledControlPressed(InputMode.MouseAndKeyboard, Control.Attack)) {
+              await Delay(10);
+              if (this.holdCount < this.holdMaxCount) {
+                this.holdCount++;
+              } else {
+                Screen.displayHelpTextThisFrame("~r~Release the trigger to fire again!");
               }
 
-              this.holdCount = 0;
-              // console.log("released trigger")
+              DisablePlayerFiring(Game.Player.Handle, true);
+              // console.log("still holding fire button!");
             }
+
+            this.holdCount = 0;
+            // console.log("released trigger")
           }
         }
       }
