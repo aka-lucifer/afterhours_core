@@ -152,7 +152,7 @@ export class CharVehicleManager {
 
   // Callbacks
   private async CALLBACK_createVehicle(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -184,7 +184,7 @@ export class CharVehicleManager {
   }
 
   private async CALLBACK_editVehicle(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -228,7 +228,7 @@ export class CharVehicleManager {
   }
 
   private async CALLBACK_deleteVehicle(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);

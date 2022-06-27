@@ -275,7 +275,7 @@ export class AOPManager {
 
   // Events
   public async CALLBACK_setAOP(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         if (player.Rank >= Ranks.Admin) {
@@ -306,7 +306,7 @@ export class AOPManager {
   }
 
   public async EVENT_setCycling(newState: boolean): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         if (player.Rank >= Ranks.Admin) {

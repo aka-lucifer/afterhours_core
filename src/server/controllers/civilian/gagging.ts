@@ -17,7 +17,7 @@ export class Gagging {
 
   // Events
   private async EVENT_tryGagging(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const [closest, dist] = await getClosestPlayer(player);

@@ -28,7 +28,7 @@ export class Cuffing {
 
   // Events
   private async EVENT_cuffPlayer(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       if (player.Spawned) {
@@ -68,7 +68,7 @@ export class Cuffing {
   }
 
   private async EVENT_uncuffPlayer(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       if (player.Spawned) {
@@ -133,7 +133,7 @@ export class Cuffing {
   }
 
   private async EVENT_doPerpBackAnim(netToArrest: number, perpPos: Vector3, perpRot: Vector3): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) { // If you have spawned in as a character
         const character = await this.server.characterManager.Get(player);
@@ -152,7 +152,7 @@ export class Cuffing {
   }
   
   private async EVENT_doPerpFrontAnim(netToArrest: number, perpPos: Vector3, perpRot: Vector3): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) { // If you have spawned in as a character
         const character = await this.server.characterManager.Get(player);
@@ -171,7 +171,7 @@ export class Cuffing {
   }
   
   private async EVENT_setFinished(netToArrest: string): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) { // If you have spawned in as a character
         const character = await this.server.characterManager.Get(player);

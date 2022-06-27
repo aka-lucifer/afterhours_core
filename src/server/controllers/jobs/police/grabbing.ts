@@ -18,7 +18,7 @@ export class Grabbing {
 
   // Events
   private async EVENT_tryGrabbing(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const [closest, dist] = await getClosestPlayer(player);
@@ -59,7 +59,7 @@ export class Grabbing {
   }
 
   private async EVENT_grabPlayer(grabbeeId: number): Promise<void> {
-    const grabbingPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
+    const grabbingPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (grabbingPlayer) {
       if (grabbeeId) {
         // console.log("setting player as grabbed", grabbingPlayer.Handle, grabbeeId);

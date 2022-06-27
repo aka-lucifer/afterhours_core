@@ -27,7 +27,7 @@ export class Death {
 
   // Events
   private async EVENT_playerDied(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       if (player.Spawned) {
@@ -44,7 +44,7 @@ export class Death {
   }
 
   private async EVENT_revivePlayer(playerId: number): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       if (player.Spawned) {

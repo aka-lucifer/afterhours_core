@@ -133,7 +133,7 @@ export class ConnectionsManager {
     });
 
     on(Events.playerDisconnected, async(reason: string) => {
-      await server.connectedPlayerManager.Disconnect(source, reason);
+      await server.connectedPlayerManager.Disconnect(source.toString(), reason);
     });
   }
 

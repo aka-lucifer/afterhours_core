@@ -17,7 +17,7 @@ export class Gravity {
 
   // Events
   private async EVENT_gravityPlayer(playersNet: number): Promise<void> {
-    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
+    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (myPlayer) {
       if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
@@ -30,7 +30,7 @@ export class Gravity {
   }
   
   private async EVENT_ungravityPlayer(playersNet: number): Promise<void> {
-    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
+    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (myPlayer) {
       if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
@@ -43,7 +43,7 @@ export class Gravity {
   }
 
   private async EVENT_shootEntity(playersNet: number): Promise<void> {
-    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
+    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (myPlayer) {
       if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());

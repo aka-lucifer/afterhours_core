@@ -277,7 +277,7 @@ export class PoliceJob {
 
   // Events
   private async EVENT_send911Call(street: string, crossing: string, postal: string, zone: string, description: string): Promise<void> {
-    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
+    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (myPlayer && myPlayer.Spawned) {
       const myCharacter = await this.server.characterManager.Get(myPlayer);
 
@@ -333,7 +333,7 @@ export class PoliceJob {
   }
 
   private async EVENT_send311Call(street: string, crossing: string, postal: string, zone: string, description: string): Promise<void> {
-    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source);
+    const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (myPlayer && myPlayer.Spawned) {
       const myCharacter = await this.server.characterManager.Get(myPlayer);
 
@@ -385,7 +385,7 @@ export class PoliceJob {
   }
 
   private async EVENT_removeMask(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       if (player.Spawned) {

@@ -69,7 +69,7 @@ export class JobManager {
 
   // Callbacks
   private async CALLBACK_setDuty(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -142,7 +142,7 @@ export class JobManager {
   }
 
   private async CALLBACK_updateCallsign(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -168,7 +168,7 @@ export class JobManager {
   }
 
   private async CALLBACK_getUnits(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -209,7 +209,7 @@ export class JobManager {
   }
 
   private async CALLBACK_fireUnit(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -273,7 +273,7 @@ export class JobManager {
   }
 
   private async CALLBACK_promoteUnit(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -339,7 +339,7 @@ export class JobManager {
   }
 
   private async CALLBACK_recruitPlayer(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);

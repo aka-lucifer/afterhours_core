@@ -65,7 +65,7 @@ export class WeaponsManager {
 
   // Events
   private async EVENT_checkWeapon(currentWeapon: number): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       // console.log("curr weapon!", currentWeapon);
       const weaponData = sharedConfig.weapons[currentWeapon];

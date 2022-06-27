@@ -154,7 +154,7 @@ export class StaffMenu {
     if (playerId > 0) {
       if (banReason != null) {
         if (banReason.length > 0) {
-          const player = await this.server.connectedPlayerManager.GetPlayer(source);
+          const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
             const havePerm = this.havePermission(player.Rank);
 
@@ -225,7 +225,7 @@ export class StaffMenu {
     if (playerId > 0) {
       if (kickReason != null) {
         if (kickReason.length > 0) {
-          const player = await this.server.connectedPlayerManager.GetPlayer(source);
+          const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
             const havePerm = this.havePermission(player.Rank);
 
@@ -263,7 +263,7 @@ export class StaffMenu {
     if (playerId > 0) {
       if (warnReason != null) {
         if (warnReason.length > 0) {
-          const player = await this.server.connectedPlayerManager.GetPlayer(source);
+          const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
             const havePerm = this.havePermission(player.Rank);
 
@@ -301,7 +301,7 @@ export class StaffMenu {
     if (playerId > 0) {
       if (commendReason != null) {
         if (commendReason.length > 0) {
-          const player = await this.server.connectedPlayerManager.GetPlayer(source);
+          const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
             const havePerm = this.havePermission(player.Rank);
 
@@ -331,7 +331,7 @@ export class StaffMenu {
 
   private async EVENT_updatePlayerRank(playerId: number, newRank: Ranks): Promise<void> {
     if (playerId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank);
 
@@ -389,7 +389,7 @@ export class StaffMenu {
 
   private async EVENT_freezePlayer(playerId: number): Promise<void> {
     if (playerId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank);
 
@@ -459,7 +459,7 @@ export class StaffMenu {
 
   private async EVENT_tpToPlayer(playerId: number): Promise<void> {
     if (playerId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank);
 
@@ -497,7 +497,7 @@ export class StaffMenu {
 
   private async EVENT_tpToVehicle(playerId: number): Promise<void> {
     if (playerId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank);
         if (havePerm) {
@@ -561,7 +561,7 @@ export class StaffMenu {
   
   private async EVENT_summonPlayer(playerId: number): Promise<void> {
     if (playerId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank);
 
@@ -603,7 +603,7 @@ export class StaffMenu {
   
   private async EVENT_returnSummonedPlayer(playerId: number): Promise<void> {
     if (playerId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank);
 
@@ -647,7 +647,7 @@ export class StaffMenu {
 
   private async EVENT_spectatePlayer(playerId: number): Promise<void> {
     if (playerId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank);
 
@@ -709,7 +709,7 @@ export class StaffMenu {
 
   // Events [Server Management]
   private async EVENT_changeWeather(newWeather: string): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Rank >= Ranks.Admin) {
         emitNet(Events.sendSystemMessage, -1, new Message(`A server administrator has changed the weather to ${newWeather}.`, SystemTypes.Announcement));
@@ -719,7 +719,7 @@ export class StaffMenu {
   }
 
   private async EVENT_changeTime(newHour: number, newMinute: number): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       const havePerm = this.havePermission(player.Rank);
 
@@ -732,7 +732,7 @@ export class StaffMenu {
 
   // Events [Player Actions]
   private async EVENT_bringAll(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       const havePerm = this.havePermission(player.Rank);
 
@@ -772,7 +772,7 @@ export class StaffMenu {
   }
 
   private async EVENT_freezeAll(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       const havePerm = this.havePermission(player.Rank);
 
@@ -822,7 +822,7 @@ export class StaffMenu {
 
   // Callbacks
   private async CALLBACK_updatePlayerJob(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
@@ -951,7 +951,7 @@ export class StaffMenu {
   }
 
   public async EVENT_logAdminAction(logType: AdminActions, data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         if (player.Rank >= Ranks.Admin) {

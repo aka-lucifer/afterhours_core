@@ -259,7 +259,7 @@ export class CharacterManager {
 
   // Callbacks
   private async CALLBACK_createCharacter(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       const character = new Character(player.Id);
@@ -285,7 +285,7 @@ export class CharacterManager {
   }
 
   private async CALLBACK_editCharacter(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       const charData = data.data;
 
@@ -341,7 +341,7 @@ export class CharacterManager {
   }
 
   private async CALLBACK_selectCharacter(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (data.characterId !== undefined && data.characterId > 0) {
       const character = new Character(player.Id);
@@ -420,7 +420,7 @@ export class CharacterManager {
 
   // Events
   private async CALLBACK_deleteCharacter(data: Record<string, any>): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (data.characterId !== undefined && data.characterId > 0) {
         const yourCharacter = await this.Yours(data.characterId, player);

@@ -23,7 +23,7 @@ export class Seating {
 
   // Events
   private async EVENT_seatPlayer(vehNet: number, freeSeat: VehicleSeat): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const vehicle = NetworkGetEntityFromNetworkId(vehNet);
@@ -73,7 +73,7 @@ export class Seating {
     }
   }
   private async EVENT_unseatPlayer(): Promise<void> {
-    const player = await this.server.connectedPlayerManager.GetPlayer(source);
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const [closestPlayer, dist] = await getClosestPlayer(player);
