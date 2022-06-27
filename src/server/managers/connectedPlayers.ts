@@ -258,31 +258,31 @@ export class ConnectedPlayerManager {
 
   // Methods
   private processRanks(): void {
-    console.log("process ranks")
-    // setInterval(async() => {
-    //   for (let i = 0; i < this.connectedPlayers.length; i++) {
-    //     if (this.connectedPlayers[i].GetPlaytime.days >= 2) {
-    //       if (this.connectedPlayers[i].Rank < Ranks.Honorable && this.connectedPlayers[i].Trustscore >= 90) {
-    //         const oldRank = this.connectedPlayers[i].Rank;
-    //         const updatedRank = this.connectedPlayers[i].UpdateRank(Ranks.Honorable);
-    //         if (updatedRank) {
-    //           await this.connectedPlayers[i].Notify("Rank", "Your rank has been updated to Honorable, due to 2 days playtime & an outstanding trustscore.", NotificationTypes.Success);
-    //           Inform("Player Manager", `Successfully updated player ([${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}) rank to Honorable`);
-    //
-    //           const playersDisc = await this.connectedPlayers[i].GetIdentifier("discord");
-    //           await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Rank Logs", embeds: [{
-    //             color: EmbedColours.Green,
-    //             title: "__Rank Change__",
-    //             description: `A players rank has automatically been updated due to great playtime & an outstanding trustscore.\n\n**Old Rank**: ${Ranks[oldRank]}\n**New Rank**: ${Ranks[this.connectedPlayers[i].Rank]}\n**Discord**: ${playersDisc != "Unknown" ? `<@${playersDisc}>` : playersDisc}`,
-    //             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-    //           }]}));
-    //         } else {
-    //           Error("Player Manager", `There was an issue updating [${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}'s rank to Honorable!`);
-    //         }
-    //       }
-    //     }
-    //   }
-    // }, serverConfig.rankCycling.interval * 1000);
+    // console.log("process ranks")
+    setInterval(async() => {
+      for (let i = 0; i < this.connectedPlayers.length; i++) {
+        if (this.connectedPlayers[i].GetPlaytime.days >= 2) {
+          if (this.connectedPlayers[i].Rank < Ranks.Honorable && this.connectedPlayers[i].Trustscore >= 90) {
+            const oldRank = this.connectedPlayers[i].Rank;
+            const updatedRank = this.connectedPlayers[i].UpdateRank(Ranks.Honorable);
+            if (updatedRank) {
+              await this.connectedPlayers[i].Notify("Rank", "Your rank has been updated to Honorable, due to 2 days playtime & an outstanding trustscore.", NotificationTypes.Success);
+              Inform("Player Manager", `Successfully updated player ([${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}) rank to Honorable`);
+
+              const playersDisc = await this.connectedPlayers[i].GetIdentifier("discord");
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Rank Logs", embeds: [{
+                color: EmbedColours.Green,
+                title: "__Rank Change__",
+                description: `A players rank has automatically been updated due to great playtime & an outstanding trustscore.\n\n**Old Rank**: ${Ranks[oldRank]}\n**New Rank**: ${Ranks[this.connectedPlayers[i].Rank]}\n**Discord**: ${playersDisc != "Unknown" ? `<@${playersDisc}>` : playersDisc}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]}));
+            } else {
+              Error("Player Manager", `There was an issue updating [${this.connectedPlayers[i].Id}]: ${this.connectedPlayers[i].GetName}'s rank to Honorable!`);
+            }
+          }
+        }
+      }
+    }, serverConfig.rankCycling.interval * 1000);
   }
 
   private processPing(): void {
