@@ -72,7 +72,6 @@ import { ErrorCodes } from '../shared/enums/logging/errors';
 import { Weapon } from '../shared/interfaces/weapon';
 import { concatArgs } from '../shared/utils';
 
-
 export class Server {
   // Debug Data
   private readonly debugMode: boolean;
@@ -124,6 +123,7 @@ export class Server {
   public priority: Priority;
 
   // [Controllers] Civilian
+
   private kidnapping: Kidnapping;
   private carrying: Carrying;
   private gagging: Gagging;
@@ -482,7 +482,7 @@ export class Server {
   }
 
   private async EVENT_playerJoined() {
-    const player = new Player(source);
+    const player = new Player(source.toString());
     const loadedPlayer = await player.Load();
 
     if (loadedPlayer) {
@@ -535,7 +535,7 @@ export class Server {
   }
 
   private async EVENT_playerConnected(): Promise<void> {
-    const src = source;
+    const src = source.toString();
     let player: Player;
     let entryExists = false;
 
@@ -588,7 +588,7 @@ export class Server {
   }
 
   private async EVENT_playerKilled(data: Record<string, any>): Promise<void> {
-    const player = await this.connectedPlayerManager.GetPlayer(source);
+    const player = await this.connectedPlayerManager.GetPlayer(source.toString());
 
     if (data.attacker != -1) {
       if (data.attacker !== player.Handle) {
@@ -643,7 +643,7 @@ export class Server {
   }
 
   private async EVENT_refreshPlayers(): Promise<void> {
-    const player = await this.connectedPlayerManager.GetPlayer(source);
+    const player = await this.connectedPlayerManager.GetPlayer(source.toString());
     const svPlayers = this.connectedPlayerManager.GetPlayers;
 
     for (let a = 0; a < svPlayers.length; a++) {
