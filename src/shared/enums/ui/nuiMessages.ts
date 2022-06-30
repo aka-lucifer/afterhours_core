@@ -22,8 +22,7 @@ export enum NuiMessages {
 
   // Chat
   SetupChat = "SETUP_CHAT",
-  AddSuggestions = "ADD_SUGGESTIONS",
-  AddSuggestion = "ADD_SUGGESTION",
+  UpdateSuggestions = "UPDATE_SUGGESTIONS",
   OpenChat = "OPEN_CHAT",
   SendMessage = "SEND_MESSAGE",
   ToggleChat = "TOGGLE_CHAT",

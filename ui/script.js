@@ -673,7 +673,7 @@ const HUD = new Vue({
       }
     },
 
-    AddSuggestions(data) {
+    UpdateSuggestions(data) {
       // console.log("Push suggestion data", JSON.stringify(data.suggestions));
       this.suggestions = data.suggestions;
     },
@@ -1390,7 +1390,7 @@ const HUD = new Vue({
 
     // CHAT EVENTS
     RegisterEvent("SETUP_CHAT", this.SetupChat);
-    RegisterEvent("ADD_SUGGESTIONS", this.AddSuggestions);
+    RegisterEvent("UPDATE_SUGGESTIONS", this.UpdateSuggestions);
     RegisterEvent("OPEN_CHAT", this.OpenChat);
     RegisterEvent("SEND_MESSAGE", this.NewMsg);
     RegisterEvent("TOGGLE_CHAT", this.Toggle);

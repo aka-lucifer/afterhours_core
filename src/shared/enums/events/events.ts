@@ -219,8 +219,8 @@ export enum Events {
   sendSystemMessage = "astrid:client:sendSystemMessage",
   setTypes = "astrid:setTypes:setTypes",
   addSuggestion = "astrid:client:addSuggestion",
-  removeSuggestion = "astrid:client:removeSuggestion",
   updateSuggestions = "astrid:client:updateSuggestions",
+  removeSuggestions = "astrid:client:removeSuggestions",
   clearChat = "astrid:client:clearChat",
   freezeChat = "astrid:client:freezeChat",
 

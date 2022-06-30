@@ -23,7 +23,6 @@ import {FormattedCommend} from "../../../client/models/ui/commend";
 
 import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
-import { Jobs } from "../../../shared/enums/jobs/jobs";
 
 export class ChatManager {
   private server: Server;
@@ -37,7 +36,7 @@ export class ChatManager {
 
     // Callbacks
     onNet(Callbacks.sendMessage, async(data: Record<string, any>) => {
-      const src = source;
+      const src = source.toString();
       const player = await this.server.connectedPlayerManager.GetPlayer(src);
       if (player.Spawned) {
         const message = new Message(data.message, data.type);

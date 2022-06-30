@@ -5,9 +5,11 @@ import {Player} from "../../models/database/player";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
+import { Jobs } from '../../../shared/enums/jobs/jobs';
 
 export class CommandManager {
   private server: Server;
+
 
   private registeredCommands: Command[] = [];
   private registeredJobCommands: JobCommand[] = [];
@@ -40,7 +42,7 @@ export class CommandManager {
         command.argsRequired ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
       }
     });
-    
+
     this.registeredJobCommands.forEach(async(command, index) => {
       let hasPermission = false;
 
@@ -55,5 +57,9 @@ export class CommandManager {
         command.argsRequired ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
       }
     });
+  }
+
+  public async deleteChatSuggestions(player: Player): Promise<void> {
+    await player.TriggerEvent(Events.removeSuggestions)
   }
 }
