@@ -1,4 +1,4 @@
-import { Game } from 'fivem-js';
+import { AmmoType, Game } from 'fivem-js';
 
 import { Capitalize, keyboardInput } from '../utils';
 import { Client } from '../client';
@@ -20,6 +20,7 @@ import { Jobs } from '../../shared/enums/jobs/jobs';
 import { Events } from '../../shared/enums/events/events';
 import { Message } from '../../shared/models/ui/chat/message';
 import { SystemTypes } from '../../shared/enums/ui/chat/types';
+import { Weapons } from '../../shared/enums/weapons';
 
 export class JobManager {
   private readonly client: Client;
@@ -83,21 +84,21 @@ export class JobManager {
                 global.exports["pma-voice"].setRadioChannel(245.1, "LEO (Main RTO)");
 
                 // // Apply Weapons & Armour
-                // if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
-                //   const [_1, arAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
-                //   myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
-                // }
+                if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                  const [_1, arAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
+                  myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
+                }
 
-                // if (!HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
-                //   const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
-                //   myPed.giveWeapon(Weapons.BerettaM9, pistolAmmo, false, false);
-                // }
+                if (!HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
+                  const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
+                  myPed.giveWeapon(Weapons.BerettaM9, pistolAmmo, false, false);
+                }
 
-                // if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
-                //   myPed.giveWeapon(Weapons.Nightstick, 0, false, false);
-                // }
+                if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                  myPed.giveWeapon(Weapons.Nightstick, 0, false, false);
+                }
 
-                // SetPedArmour(myPed.Handle, 100);
+                SetPedArmour(myPed.Handle, 100);
               }
             } else {
               if (this.client.Character.isLeoJob()) {
@@ -106,21 +107,21 @@ export class JobManager {
                 global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
                 global.exports["pma-voice"].setRadioChannel(0);
 
-                // if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
-                //   myPed.removeWeapon(Weapons.AR15);
-                // }
+                if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                  myPed.removeWeapon(Weapons.AR15);
+                }
 
-                // if (HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
-                //   myPed.removeWeapon(Weapons.BerettaM9);
-                // }
+                if (HasPedGotWeapon(myPed.Handle, Weapons.BerettaM9, false)) {
+                  myPed.removeWeapon(Weapons.BerettaM9);
+                }
 
-                // if (HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
-                //   myPed.removeWeapon(Weapons.Nightstick);
-                // }
+                if (HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                  myPed.removeWeapon(Weapons.Nightstick);
+                }
 
-                // if (GetPedArmour(myPed.Handle) > 0) {
-                //   SetPedArmour(myPed.Handle, 100);
-                // }
+                if (GetPedArmour(myPed.Handle) > 0) {
+                  SetPedArmour(myPed.Handle, 100);
+                }
               }
             }
           }
