@@ -323,7 +323,7 @@ export class StaffMenu {
         if (weaponName !== undefined && weaponName !== null) {
           if (weaponName.length > 0) {
             const weapons = await sortWeapons(sharedConfig.weapons); // Sort the weapons array, so it's just weapon data and no hash
-            const weaponIndex = weapons.findIndex(weapon => weapon.name == weaponName);
+            const weaponIndex = weapons.findIndex(weapon => weapon.name.toLowerCase() == weaponName.toLowerCase());
 
             if (weaponIndex !== -1) {
               const hash = GetHashKey(weaponName);
