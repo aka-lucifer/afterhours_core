@@ -77,7 +77,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  /*background-color: var(--notificationBG) !important;*/
+  /* background-color: var(--notificationBG) !important; */
    background-color: transparent !important;
 }
 
@@ -2122,7 +2122,7 @@ body {
   width: 35vw;
   height: 30vh;
 
-  /*background-color: #15b122;*/
+  /* background-color: #15b122; */
 }
 
 /* Speedometer */
@@ -2133,7 +2133,7 @@ body {
 #Speedometer_Dial_Container {
   position: fixed;
   left: 13vw;
-  bottom: -80px;
+  bottom: -5.5vh;
   width: 20.8vw;
   height: 20.8vw;
   z-index: 2;
@@ -2148,7 +2148,7 @@ body {
 #Speedometer_Fill_Container {
   position: fixed;
   left: 13vw;
-  bottom: -80px;
+  bottom: -5.5vh;
   width: 20.8vw;
   height: 20.8vw;
   z-index: 1;
@@ -2187,32 +2187,91 @@ body {
 
   color: white;
   font-weight: 600;
+  
+}
+
+.mph {
+  position: absolute;
+  bottom: 4.5vh;
+  right: -0.7vw;
 }
 
 .mphText {
   position: absolute;
   font-size: 1vw;
-  bottom: 20px;
-  left: 2.5vw;
+  bottom: 3vh;
+  left: 2.2vw;
 }
 
 .rpm {
   position: absolute;
   font-size: 0.75vw;
-  bottom: 85px;
-  right: 0.6vw;
+  bottom: 10vh;
+  right: -0.5vw;
 }
 
 .iconContainer {
   position: fixed;
   left: 18vw;
-  bottom: 25px;
+  bottom: 6vh;
   font-family: roboto-regular;
   padding: 8px;
   background-color: rgba(0, 0, 0, 0.864);
   border-radius: 4px;
   color: white;
   font-size: 16px;
+}
+
+@media only screen and (max-width: 1920px) {
+  #Speedometer_Dial_Container {
+    position: fixed;
+    left: 13vw;
+    bottom: -80px;
+    width: 20.8vw;
+    height: 20.8vw;
+    z-index: 2;
+  }
+
+  #Speedometer_Fill_Container {
+    position: fixed;
+    left: 13vw;
+    bottom: -80px;
+    width: 20.8vw;
+    height: 20.8vw;
+    z-index: 1;
+  }
+
+  .mph {
+    position: absolute;
+    bottom: 2.7vh;
+    left: 0.2vw;
+  }
+
+  .mphText {
+    position: absolute;
+    font-size: 1vw;
+    bottom: 20px;
+    left: 2.5vw;
+  }
+  
+  .rpm {
+    position: absolute;
+    font-size: 0.75vw;
+    bottom: 85px;
+    right: 0.6vw;
+  }
+
+  .iconContainer {
+    position: fixed;
+    left: 18vw;
+    bottom: 25px;
+    font-family: roboto-regular;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.864);
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+  }
 }
 
 /* Priority */

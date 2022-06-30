@@ -886,7 +886,6 @@
             <!-- Speedometer -->
             <div class="speedoContainer">
               <div class="rpm" id="rpmText">{{ vehicleData.rpm }} mi</div>
-
               <div v-if='vehicleData.mph >= 100' id="mph">{{ vehicleData.mph }}</div>
               <div v-else-if='vehicleData.mph < 10' id="mph">00{{ vehicleData.mph }}</div>
               <div v-else id="mph">0{{ vehicleData.mph }}</div>
