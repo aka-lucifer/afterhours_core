@@ -2,8 +2,6 @@ import { Game } from "fivem-js";
 
 import { Client } from "../client";
 
-import { LXEvents } from "../../shared/enums/events/lxEvents";
-
 // Controllers
 import { WeaponRemovers } from "../controllers/weapons/removers";
 import { Disarmer } from "../controllers/weapons/disarmer";
