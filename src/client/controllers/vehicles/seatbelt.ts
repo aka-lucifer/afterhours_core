@@ -103,14 +103,13 @@ export class Seatbelt {
 
       // If we're inside a vehicle
       if (IsPedInAnyVehicle(myPed.Handle, false)) {
-        // console.log("in veh!");
         const currVeh = myPed.CurrentVehicle;
 
         // If we aren't driving any kind of bike (something that doesn't have a belt)
         if (!currVeh.Model.IsBike && !currVeh.Model.IsQuadbike && !currVeh.Model.IsBicycle) {
-          const driver = currVeh.Driver;
-          if (driver.Handle > 0) {
-            if (driver.Handle == myPed.Handle) {
+          const driver = GetPedInVehicleSeat(currVeh.Handle, VehicleSeat.Driver);
+          if (driver > 0) {
+            if (driver == myPed.Handle) {
               // console.log("is car!");
               // If our last vehicle is different, re-define it
               if (this.lastVehicle === undefined || this.lastVehicle !== currVeh) {
@@ -207,18 +206,20 @@ export class Seatbelt {
 
               this.vehVelocity = currVeh.Velocity;
             } else {
-              if (this.lastVehicle.Handle > 0) {
-                await Delay(200);
-                this.newBodyHealth = this.lastVehicle.BodyHealth;
-                if (!this.damaged && this.newBodyHealth < this.currBodyHealth) {
-                  console.log("DAMAGE VEH 3");
-                  this.damaged = true;
-                  this.lastVehicle.EngineHealth = 0.0;
-                  this.lastVehicle.IsEngineRunning = false;
-                  await Delay(1000);
-                }
+              if (this.lastVehicle !== undefined) {
+                if (this.lastVehicle.Handle > 0) {
+                  await Delay(200);
+                  this.newBodyHealth = this.lastVehicle.BodyHealth;
+                  if (!this.damaged && this.newBodyHealth < this.currBodyHealth) {
+                    console.log("DAMAGE VEH 3");
+                    this.damaged = true;
+                    this.lastVehicle.EngineHealth = 0.0;
+                    this.lastVehicle.IsEngineRunning = false;
+                    await Delay(1000);
+                  }
 
-                this.lastVehicle = undefined;
+                  this.lastVehicle = undefined;
+                }
               }
 
               this.oldFrameSpeed = 0;
