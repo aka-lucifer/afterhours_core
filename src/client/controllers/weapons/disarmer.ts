@@ -16,25 +16,27 @@ export class Disarmer {
     this.client = client;
 
     // Events
-    onNet(Events.gameEventTriggered, this.gameEvent.bind(this));
+    onNet(Events.gameEventTriggered, Disarmer.gameEvent.bind(this));
     
     Inform("Weapon | Disarmer Controller", "Started!");
   }
 
   // Events
-  private async gameEvent(eventName: string, eventArgs: any[]): Promise<void> {
+  private static async gameEvent(eventName: string, eventArgs: any[]): Promise<void> {
     if (eventName == "CEventNetworkEntityDamage") {
       const myPed = Game.PlayerPed;
       const damagedEntity = new Ped(eventArgs[0]);
       if (damagedEntity.Handle == myPed.Handle) {
-        const currWeapon = GetSelectedPedWeapon(damagedEntity.Handle);
-        if (currWeapon != Weapons.Unarmed) {
-          const [boneHit, damagedBone] = GetPedLastDamageBone(damagedEntity.Handle);
-          if (boneHit) {
-            if (damagedBone == Bone.SKEL_R_Hand || damagedBone == Bone.SKEL_R_Forearm || damagedBone == Bone.SKEL_R_UpperArm) {
-              SetPedDropsInventoryWeapon(damagedEntity.Handle, currWeapon, 0, 2.0, 0, -1);
-              const notify = new Notification("Weapon", "You've dropped your weapon as you were shot in the hand.", NotificationTypes.Warning);
-              await notify.send();
+        if (HasEntityBeenDamagedByWeapon(damagedEntity.Handle, 0, 2)) {
+          const currWeapon = GetSelectedPedWeapon(damagedEntity.Handle);
+          if (currWeapon != Weapons.Unarmed) {
+            const [boneHit, damagedBone] = GetPedLastDamageBone(damagedEntity.Handle);
+            if (boneHit) {
+              if (damagedBone == Bone.SKEL_R_Hand || damagedBone == Bone.SKEL_R_Forearm || damagedBone == Bone.SKEL_R_UpperArm) {
+                SetPedDropsInventoryWeapon(damagedEntity.Handle, currWeapon, 0, 2.0, 0, -1);
+                const notify = new Notification("Weapon", "You've dropped your weapon as you were shot in the hand.", NotificationTypes.Warning);
+                await notify.send();
+              }
             }
           }
         }
