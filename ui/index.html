@@ -771,9 +771,9 @@
       </div>
 
       <!-- Bug Reporting -->
-      <v-dialog id="Bug-Reporting" transition="dialog-top-transition" max-width="600" v-model="reportingBug">
+      <v-dialog id="Bug-Reporting" persistent transition="dialog-top-transition" max-width="600" v-model="reportingBug">
         <template v-slot:default="dialog">
-          <v-card dark>
+          <v-card id="Bug_Report_Container" dark>
             <v-toolbar color="success" dark><h2>Bug Report</h2></v-toolbar>
 
             <v-card-text>

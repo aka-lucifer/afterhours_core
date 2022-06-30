@@ -1077,7 +1077,7 @@ const HUD = new Vue({
     
     CloseBugReport() {
       this.reportingBug = false;
-      this.$refs.bugReportForm.reset();
+      this.resetBugData();
       this.Post("CLOSE_BUG_REPORT", {});
     },
 
@@ -1091,6 +1091,7 @@ const HUD = new Vue({
           evidence: this.bugData.evidence
         }, (charData) => {
           if (this.reportingBug !== !charData) this.reportingBug = !charData; // If it's posted (true), then set the display to (false).
+          this.resetBugData();
         });
       }
     },
@@ -1462,7 +1463,7 @@ const HUD = new Vue({
             HUD.CloseWarnings();
           } else if ($("#commends_container").is(":visible")) {
             HUD.CloseCommends();
-          } else if ($("#Bug-Reporting").is(":visible")) {
+          } else if ($("#Bug_Report_Container").is(":visible")) {
             HUD.CloseBugReport();
           }
           break;
