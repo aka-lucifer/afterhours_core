@@ -340,8 +340,13 @@ export class ConnectedPlayerManager {
   }
 
   public async Exists(license: string): Promise<boolean> {
-    const playerIndex = this.connectedPlayers.findIndex(async player => await player.GetIdentifier("license") === license);
-    return playerIndex !== -1;
+    for (let i = 0; i < this.connectedPlayers.length; i++) {
+      if (await this.connectedPlayers[i].GetIdentifier === license) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public async playerConnected(playerHandle: string): Promise<boolean> {
