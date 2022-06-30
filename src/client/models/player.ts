@@ -7,7 +7,6 @@ export class svPlayer {
   private name: string;
   private rank: number;
   private joinedAt: string;
-  private ped: Ped;
   public spawned: boolean;
   public character: Character;
 
@@ -18,7 +17,6 @@ export class svPlayer {
     this.name = playerData.name;
     this.rank = playerData.rank;
     this.joinedAt = playerData.joinTime;
-    this.ped = new Ped(GetPlayerFromServerId(this.netId));
     this.spawned = playerData.spawned;
     
     if (playerData.selectedCharacter !== undefined) {
@@ -41,10 +39,6 @@ export class svPlayer {
   
   public get Rank(): number {
     return this.rank;
-  }
-
-  public get Ped(): Ped {
-    return this.ped;
   }
 
   public get Spawned(): boolean {

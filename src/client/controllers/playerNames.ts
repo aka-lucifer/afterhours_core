@@ -1,7 +1,7 @@
 import { Game, Ped, VehicleSeat } from "fivem-js";
 
 import { Client } from "../client";
-import { Inform, insideVeh } from "../utils";
+import { Delay, Inform, insideVeh } from '../utils';
 
 import { Notification } from "../models/ui/notification";
 
@@ -34,6 +34,10 @@ export class PlayerNames {
     this.client = client;
     
     RegisterCommand("+toggle_names", this.toggleNames.bind(this), false);
+    RegisterCommand("get_player_id", () => {
+      console.log("1 - ", PlayerId(), GetPlayerFromServerId(this.client.player.NetworkId));
+      console.log("2 - ", GetPlayerFromServerId(1))
+    }, false);
     // RegisterCommand("-toggle_names", this.hideNames.bind(this), false);
     
     Inform("Player Names | Disablers Controller", "Started!");
@@ -61,16 +65,17 @@ export class PlayerNames {
 
         // Loop through all players
         for(let i = 0; i < svPlayers.length; i++) {
-          const netId = svPlayers[i].NetworkId;
+          const netId = Number(svPlayers[i].NetworkId); // Force it to be a number, for some reason showing as string
 
           // If the other connected players aren't you
-          // if (this.client.player.NetworkId != netId) {
+
+          if (this.client.player.NetworkId != netId) {
             if (svPlayers[i].spawned) {
-              const playerStates = Player(netId);
               const playerId = GetPlayerFromServerId(netId);
-              
+
               // If they're inside your scope or not (THIS IS HOW U BEAT ONESYNC INFINITY PLAYER ID NOT FOUND BS)
               if (playerId != -1) {
+                const playerStates = Player(netId);
                 const ped = new Ped(GetPlayerPed(playerId));
 
                 // Name formatting
@@ -168,7 +173,7 @@ export class PlayerNames {
                   // Gamertag Icons
 
                   // Name
-                  SetMpGamerTagVisibility(tag, tagIcons.Name, true); 
+                  SetMpGamerTagVisibility(tag, tagIcons.Name, true);
                   SetMpGamerTagAlpha(tag, tagIcons.Name, 255);
 
                   SetMpGamerTagVisibility(tag, tagIcons.Health, true); // Health
@@ -185,7 +190,7 @@ export class PlayerNames {
 
                   SetMpGamerTagVisibility(tag, tagIcons.Typing, playerStates.state.chatOpen); // Typing
                   SetMpGamerTagAlpha(tag, tagIcons.Typing, 255);
-                  
+
 
                   if (IsPedInAnyVehicle(ped.Handle, false)) {
                     const currVeh = ped.CurrentVehicle;
@@ -204,7 +209,7 @@ export class PlayerNames {
                           SetMpGamerTagAlpha(tag, tagIcons.Driver, 255);
                         }
                       }
-                      
+
                       // Disable passenger icons
                       if (this.createdTags[netId].passengerIcon) { // If the passenger icon is showing, hide it
                         this.createdTags[netId].passengerIcon = false;
@@ -238,7 +243,7 @@ export class PlayerNames {
                       SetMpGamerTagVisibility(tag, tagIcons.Driver, false); // Driver (Bike)
                       SetMpGamerTagAlpha(tag, tagIcons.Driver, 0);
                     }
-                    
+
                     if (this.createdTags[netId].bikeIcon) { // If the bike icon is showing, hide it
                       this.createdTags[netId].bikeIcon = false;
                       SetMpGamerTagVisibility(tag, tagIcons.BikerArrow, false); // Driver (Bike)
@@ -278,8 +283,10 @@ export class PlayerNames {
                 }
               }
             }
-          // }
+          }
         }
+
+        await Delay(500);
       });
     }
   }

@@ -1093,6 +1093,7 @@ export class StaffMenu {
     if (this.client.player.Rank >= Ranks.Admin) {
       const myPed = Game.PlayerPed;
       const player = new svPlayer(data.player);
+      const spectatePed = new Ped(GetPlayerPed(player.NetworkId))
 
       this.spectatingPlayer = !this.spectatingPlayer;
 
@@ -1102,7 +1103,7 @@ export class StaffMenu {
         
         const teleported = await teleportToCoords(data.playerPos);
         if (teleported) {
-          NetworkSetInSpectatorMode(true, player.Ped.Handle);
+          NetworkSetInSpectatorMode(true, spectatePed.Handle);
           emitNet(Events.receiveClientCB, "STARTED", data);
         } else {
           emitNet(Events.receiveClientCB, "ERROR_TPING", data);
@@ -1111,7 +1112,7 @@ export class StaffMenu {
         const teleported = await teleportToCoords(this.spectateLastPos);
         if (teleported) {
           myPed.IsVisible = true;
-          NetworkSetInSpectatorMode(false, player.Ped.Handle);
+          NetworkSetInSpectatorMode(false, spectatePed.Handle);
           emitNet(Events.receiveClientCB, "STOPPED", data);
         } else {
           emitNet(Events.receiveClientCB, "ERROR_TPING", data);
