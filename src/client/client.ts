@@ -207,10 +207,6 @@ export class Client {
         }
       }
     }, false);
-
-    RegisterCommand("suicide", () => {
-      Game.PlayerPed.kill();
-    }, false);
   }
 
   // Getters & Setters 

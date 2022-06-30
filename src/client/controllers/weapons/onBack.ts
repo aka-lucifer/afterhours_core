@@ -175,23 +175,29 @@ export class OnBack {
     });
   }
 
-  public clearWeapons(): void {
+  public async clearWeapons(): Promise<boolean> {
     if (this.attachedWeapons.length > 0) {
       // console.log("WEAPONS ARE ATTACHED!");
 
-      this.attachedWeapons.forEach((weapon, index) => {
-        // console.log(`DELETING OBJECT (${this.attachedWeapons[index].entity.Handle})`);
-        this.attachedWeapons[index].entity.delete();
-        // this.attachedWeapons.splice(index, 1);
-        // console.log("DELETED");
-      });
+      for (let i = 0; i < this.attachedWeapons.length; i++) {
+        this.attachedWeapons[i].entity.delete();
+        this.attachedWeapons.splice(i, 1);
+
+        if (i == (this.attachedWeapons.length - 1)) {
+          return true;
+        }
+      }
+
+      return true;
+    } else {
+      return true;
     }
   }
 
   // Events
-  private EVENT_resourceStop(resourceName: string): void {
+  private async EVENT_resourceStop(resourceName: string): Promise<void> {
     if (resourceName == GetCurrentResourceName()) {
-      this.clearWeapons();
+      await this.clearWeapons();
     }
   }
 }

@@ -92,12 +92,17 @@ export class Death {
     }
   }
 
-  private EVENT_revive(): void {
+  private async EVENT_revive(): Promise<void> {
     const myPed = Game.PlayerPed;
     const myPos = myPed.Position;
 
     NetworkResurrectLocalPlayer(myPos.x, myPos.y, myPos.z, myPed.Heading, true, false);
     myPed.clearBloodDamage();
+
+    const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
+    if (detachedWeapons) {
+      Game.PlayerPed.removeAllWeapons();
+    }
 
     // Hide the UI
     SendNuiMessage(JSON.stringify({
@@ -150,6 +155,7 @@ export class Death {
 
           this.myState = DeathStates.Alive;
           this.client.staffManager.staffMenu.toggleGodmode(false);
+          this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
 
           // Disable Ticks
           if (this.deathTick !== undefined) {
