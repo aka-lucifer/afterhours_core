@@ -385,12 +385,13 @@ export class CharacterManager {
         
         if (await this.Exists(player)) { // If one of your characters exists in the manager, remove it
           await this.Remove(player);
+          await this.server.commandManager.deleteChatSuggestions(player);
         }
 
         await this.Add(character); // Add your character to the manager
         
         // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
-        this.server.commandManager.createChatSuggestions(player);
+        await this.server.commandManager.createChatSuggestions(player);
         await player.TriggerEvent(Events.updateSuggestions);
 
         const charVehicles = await this.server.charVehicleManager.GetCharVehicles(character);
