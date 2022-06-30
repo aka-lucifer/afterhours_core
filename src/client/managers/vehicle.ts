@@ -64,7 +64,7 @@ export class VehicleManager {
     this.seatbelt = new Seatbelt(this.client); // done - (0.10ms)
     this.reverseBraking = new ReverseBraking(); // done - (0.10ms)
     this.seating = new Seating(this.client);
-    this.shuffling = new Shuffling();
+    // this.shuffling = new Shuffling();
     this.driveBy = new DriveBy(this.client);
 
     // Inits
@@ -87,7 +87,7 @@ export class VehicleManager {
     if (!this.seatbelt.Started) this.seatbelt.start(); // done - (0.10ms)
     if (!this.reverseBraking.Started) this.reverseBraking.start(); // done - (0.10ms)
     if (!this.repairShops.Started) this.repairShops.start(); // done
-    if (!this.shuffling.Started) this.shuffling.start();
+    // if (!this.shuffling.Started) this.shuffling.start();
     if (!this.driveBy.Started) this.driveBy.start();
     if (!this.client.hud.VehStarted) this.client.hud.startVeh();
 
@@ -112,7 +112,7 @@ export class VehicleManager {
     if (this.seatbelt.Started) this.seatbelt.stop(); // done - (0.10ms)
     if (this.reverseBraking.Started) this.reverseBraking.stop(); // done - (0.10ms)
     if (this.repairShops.Started) this.repairShops.stop(); // done
-    if (this.shuffling.Started) this.shuffling.stop();
+    // if (this.shuffling.Started) this.shuffling.stop();
     if (this.driveBy.Started) this.driveBy.stop();
     if (this.client.hud.VehStarted) this.client.hud.stopVeh();
   }
