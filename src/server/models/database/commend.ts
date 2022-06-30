@@ -97,7 +97,7 @@ export class Commend {
       receiver = `[${Ranks[myPlayer.Rank]}] - ${myPlayer.GetName}`;
     }
 
-    let commendersDiscord = await issuersPlayer.GetIdentifier("discord");
+    let commendersDiscord = await myPlayer.GetIdentifier("discord");
     commendersDiscord = commendersDiscord != "Unknown" ? `<@${commendersDiscord}>` : commendersDiscord
 
     await server.logManager.Send(LogTypes.Commend, new WebhookMessage({
