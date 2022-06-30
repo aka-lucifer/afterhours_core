@@ -39,7 +39,7 @@ export class CommandManager {
   public createChatSuggestions(player: Player): void {
     this.registeredCommands.forEach(async(command, index) => {
       if (player.Rank >= command.permission) {
-        command.argsRequired ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
+        command.argsRequired || Object.keys(command.args).length > 0 ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
       }
     });
 
@@ -54,7 +54,7 @@ export class CommandManager {
       }
 
       if (hasPermission) {
-        command.argsRequired ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
+        command.argsRequired || Object.keys(command.args).length > 0 ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
       }
     });
   }

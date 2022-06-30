@@ -48,7 +48,7 @@ export class Death {
 
     if (player) {
       if (player.Spawned) {
-        if (player.Rank >= Ranks.Admin) {
+        if (player.Rank >= Ranks.Moderator) {
           const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
           if (foundPlayer) {
             if (foundPlayer.Spawned) {
@@ -93,16 +93,16 @@ export class Death {
 
   // Methods
   private registerCommands(): void {
-    new Command("revive", "Revive a player.", [{name: "server_id", help: "The server ID of the player you're reviving."}], true, async(source: string, args: any[]) => {
+    new Command("revive", "Revive a player.", [{name: "server_id", help: "The server ID of the player you're reviving."}], false, async(source: string, args: any[]) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         if (player.Spawned) {
           const character = await this.server.characterManager.Get(player);
           if (character) {
-            const hasPermission = player.Rank >= Ranks.Admin || character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status;
+            const hasPermission = player.Rank >= Ranks.Moderator || character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status;
 
             if (hasPermission) {
-              const reviving = await this.server.connectedPlayerManager.GetPlayer(args[0]);
+              const reviving = args[0] !== undefined ? await this.server.connectedPlayerManager.GetPlayer(args[0]) : player; // If your entered server ID is null, revive yourself
               if (reviving) {
                 if (reviving.Spawned) {
                   const playerStates = Player(reviving.Handle);
@@ -110,7 +110,7 @@ export class Death {
                   if (playerStates.state.deathState == DeathStates.Dead) {
                     playerStates.state.deathState = DeathStates.Alive;
                     await reviving.TriggerEvent(Events.revive); // Revive player
-                    
+
                     // Send revived chat messages
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have revived ^3${reviving.GetName}^0.`, SystemTypes.Admin));
                     await reviving.TriggerEvent(Events.sendSystemMessage, new Message(`You have been revived by ^3${player.GetName}^0.`, SystemTypes.Admin));

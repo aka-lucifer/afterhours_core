@@ -155,7 +155,10 @@ export class Death {
 
           this.myState = DeathStates.Alive;
           this.client.staffManager.staffMenu.toggleGodmode(false);
-          this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
+          const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
+          if (detachedWeapons) {
+            Game.PlayerPed.removeAllWeapons();
+          }
 
           // Disable Ticks
           if (this.deathTick !== undefined) {
