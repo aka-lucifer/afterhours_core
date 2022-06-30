@@ -246,7 +246,11 @@ export class ChatManager {
               // console.log(`[${otherPlayer.Handle}: ${JSON.stringify(otherPlayer)}`);
 
               if (otherPlayer.Rank >= Ranks.Admin) {
-                await connectedPlayers[i].TriggerEvent(Events.sendClientMessage, message, player.GetName);
+                await otherPlayer.TriggerEvent(Events.sendClientMessage, message, player.GetName);
+
+                if (player.Handle !== otherPlayer.Handle) {
+                  await otherPlayer.TriggerEvent(Events.soundFrontEnd, "Menu_Accept", "Phone_SoundSet_Default");
+                }
               }
             }
             emitNet(Events.receiveServerCB, src, true, data);
