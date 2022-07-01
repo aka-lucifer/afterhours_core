@@ -1,36 +1,36 @@
 export enum PoliceRanks {
-  Probationary_Officer,
+  ProbationaryOfficer,
   Officer,
   Corporal,
   Sergeant,
-  Staff_Sergeant,
+  StaffSergeant,
   Lieutenant,
-  Patrol_Lieutenant,
+  PatrolLieutenant,
   Captain,
-  Deputy_Chief,
+  DeputyChief,
   Chief
 }
 
 export enum CountyRanks {
   Deputy,
-  Senior_Deputy,
+  SeniorDeputy,
   Corporal,
   Sergeant,
   Lieutenant,
   Captain,
   Commander,
-  Chief_Deputy,
+  ChiefDeputy,
   Sheriff
 }
 
 export enum StateRanks {
   Cadet,
   Trooper,
-  Senior_Trooper,
+  SeniorTrooper,
   Corporal,
   Sergeant,
   Lieutenant,
   Captain,
-  Asst_Commander,
+  AsstCommander,
   Commander
 }
