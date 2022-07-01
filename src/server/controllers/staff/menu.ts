@@ -1265,9 +1265,9 @@ export class StaffMenu {
     if (player) {
       if (player.Spawned) {
         const states = Player(player.Handle);
+        states.state.playerBlips = data.newState;
 
         if (data.newState) {
-          states.state.playerBlips = true;
           await player.TriggerEvent(Events.updatePlayerBlips, this.playerBlips); // Send over the blips here first, as the server sends them over in a 3 second interval.
           await player.TriggerEvent(Events.receiveServerCB, true, data);
 
