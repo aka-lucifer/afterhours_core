@@ -1,6 +1,5 @@
 export enum AdminActions {
   Godmode,
-  PlayerBlips,
   Invisible,
   TPM,
   GoBack,

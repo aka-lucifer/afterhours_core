@@ -112,6 +112,7 @@ export class StaffMenu {
   private lastLocation: Vector3;
   private summonLastLocation: Vector3;
 
+  private playerBlipCheckbox: string;
   private playersBlips: boolean = false;
   private createdBlips: PlayerBlip[] = [];
 
@@ -267,20 +268,20 @@ export class StaffMenu {
         this.client.staffManager.noclip.toggleNoclip();
       });
 
-      this.playerActionsMenu.BindCheckbox("Player Blips", this.playersBlips, async (newState: boolean) => {
+      this.playerBlipCheckbox = this.playerActionsMenu.BindCheckbox("Player Blips", this.playersBlips, async (newState: boolean) => {
         this.playersBlips = newState;
-
-        if (this.playersBlips) {
-          const notify = new Notification("Staff Menu", "Player blips enabled", NotificationTypes.Info);
-          await notify.send();
-        } else {
-          const notify = new Notification("Staff Menu", "Player blips disabled!", NotificationTypes.Error);
-          await notify.send();
-        }
-
-        emitNet(Events.logAdminAction, AdminActions.PlayerBlips, {
-          toggled: this.playersBlips
-        });
+        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.togglePlayerBlips, {newState: this.playersBlips}, async(cbData, passedData) => {
+          if (cbData) {
+            this.client.menuManager.UpdateState(this.playerBlipCheckbox, this.playersBlips);
+            if (this.playersBlips) {
+              const notify = new Notification("Staff Menu", "Player blips enabled", NotificationTypes.Info);
+              await notify.send();
+            } else {
+              const notify = new Notification("Staff Menu", "Player blips disabled!", NotificationTypes.Error);
+              await notify.send();
+            }
+          }
+        }));
       });
     }
 
@@ -931,7 +932,7 @@ export class StaffMenu {
         for (let i = 0; i < units.length; i++) {
           const netId = parseInt(units[i].netId);
 
-          if (netId !== this.client.Player.NetworkId) {
+          // if (netId !== this.client.Player.NetworkId) {
             if (units[i].coords !== undefined) {
               const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
 
@@ -997,7 +998,7 @@ export class StaffMenu {
                 }
               }
             }
-          }
+          // }
         }
       } else {
         if (this.createdBlips.length > 0) {

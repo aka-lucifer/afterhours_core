@@ -420,6 +420,7 @@ export class Client {
     // Staff
     this.playerStates.state.set("rankVisible", true, true);
     this.playerStates.state.set("frozen", false, true);
+    this.playerStates.state.set("playerBlips", false, true);
     
     // UI
     this.playerStates.state.set("chatOpen", false, true);

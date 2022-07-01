@@ -31,5 +31,6 @@ export enum Callbacks {
   submitBug = "astrid:server:controllers:ui:submitBug",
   
   // Astrid Server -> Client Callbacks ([Controllers] | Staff] - Menu)
-  updatePlayerJob = "astrid:server:controllers:staff:menu:updatePlayerJob",
+  togglePlayerBlips = "astrid:server:controllers:staff:menu:togglePlayerBlips",
+  updatePlayerJob = "astrid:server:controllers:staff:menu:updatePlayerJob"
 }
