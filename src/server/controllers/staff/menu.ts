@@ -1,30 +1,30 @@
-import { Vector3 } from "fivem-js";
+import { Vector3 } from 'fivem-js';
 
-import { Server } from "../../server";
-import { addZero, Delay } from "../../utils";
+import { Server } from '../../server';
+import { addZero, Delay } from '../../utils';
 
-import { LogTypes } from "../../enums/logging";
+import { LogTypes } from '../../enums/logging';
 
-import { Kick } from "../../models/database/kick";
-import { Warning } from "../../models/database/warning";
-import { Commend } from "../../models/database/commend";
-import { Ban } from "../../models/database/ban";
-import { ClientCallback } from "../../models/clientCallback";
-import WebhookMessage from "../../models/webhook/discord/webhookMessage";
+import { Kick } from '../../models/database/kick';
+import { Warning } from '../../models/database/warning';
+import { Commend } from '../../models/database/commend';
+import { Ban } from '../../models/database/ban';
+import { ClientCallback } from '../../models/clientCallback';
+import WebhookMessage from '../../models/webhook/discord/webhookMessage';
 
-import { Events } from "../../../shared/enums/events/events";
-import { Ranks } from "../../../shared/enums/ranks";
-import { Message } from "../../../shared/models/ui/chat/message";
-import { SystemTypes } from "../../../shared/enums/ui/chat/types";
-import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
-import { Callbacks } from "../../../shared/enums/events/callbacks";
-import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
-import { Jobs } from "../../../shared/enums/jobs/jobs";
-import { EmbedColours } from "../../../shared/enums/logging/embedColours";
-import { AdminActions } from "../../../shared/enums/adminActions";
+import { Events } from '../../../shared/enums/events/events';
+import { Ranks } from '../../../shared/enums/ranks';
+import { Message } from '../../../shared/models/ui/chat/message';
+import { SystemTypes } from '../../../shared/enums/ui/chat/types';
+import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
+import { Callbacks } from '../../../shared/enums/events/callbacks';
+import { formatSplitCapitalString, splitCapitalsString } from '../../../shared/utils';
+import { Jobs } from '../../../shared/enums/jobs/jobs';
+import { EmbedColours } from '../../../shared/enums/logging/embedColours';
+import { AdminActions } from '../../../shared/enums/adminActions';
 
-import serverConfig from "../../../configs/server.json";
-import sharedConfig from "../../../configs/shared.json";
+import serverConfig from '../../../configs/server.json';
+import sharedConfig from '../../../configs/shared.json';
 
 interface ConnectedPlayer {
   netId: string;
@@ -99,7 +99,7 @@ export class StaffMenu {
 
         if (a == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
           for (let b = 0; b < svPlayers.length; b++) {
-            if (svPlayers[b].Rank >= Ranks.Admin) {
+            if (svPlayers[b].Rank >= Ranks.Moderator) {
               const playerStates = Player(svPlayers[a].Handle);
               if (playerStates.state.playerBlips) await svPlayers[b].TriggerEvent(Events.updatePlayerBlips, this.playerBlips);
             }
@@ -143,11 +143,11 @@ export class StaffMenu {
     this.startPlayerBlips();
   }
 
-  private havePermission(rank: Ranks): boolean {
-    let havePermission = rank >= Ranks.Admin;
+  private havePermission(myRank: Ranks, rank: Ranks): boolean {
+    let havePermission = myRank >= rank;
 
     if (!this.server.Developing) { // If this server is the development server
-      if (rank == Ranks.Developer) havePermission = false; // Check if we're a dev, if we are, disable banning on public server
+      if (myRank == Ranks.Developer) havePermission = false; // Check if we're a dev, if we are, disable banning on public server
     }
 
     return havePermission;
@@ -160,7 +160,7 @@ export class StaffMenu {
         if (banReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
-            const havePerm = this.havePermission(player.Rank);
+            const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
             if (havePerm) {
               if (player.Id !== playerId) {
@@ -231,7 +231,7 @@ export class StaffMenu {
         if (kickReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
-            const havePerm = this.havePermission(player.Rank);
+            const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
             if (havePerm) {
               if (player.Id !== playerId) {
@@ -269,7 +269,7 @@ export class StaffMenu {
         if (warnReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
-            const havePerm = this.havePermission(player.Rank);
+            const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
             if (havePerm) {
               if (player.Id !== playerId) {
@@ -307,7 +307,7 @@ export class StaffMenu {
         if (commendReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
           if (player) {
-            const havePerm = this.havePermission(player.Rank);
+            const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
             if (havePerm) {
               if (player.Id !== playerId) {
@@ -337,7 +337,7 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
-        const havePerm = this.havePermission(player.Rank);
+        const havePerm = this.havePermission(player.Rank, Ranks.SeniorAdmin);
 
         if (havePerm) {
           if (player.Id !== playerId) {
@@ -395,7 +395,7 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
-        const havePerm = this.havePermission(player.Rank);
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
           if (player.Id !== playerId) {
@@ -465,7 +465,7 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
-        const havePerm = this.havePermission(player.Rank);
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
           if (player.Id !== playerId) {
@@ -503,7 +503,7 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
-        const havePerm = this.havePermission(player.Rank);
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
         if (havePerm) {
           if (player.Id !== playerId) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
@@ -567,7 +567,7 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
-        const havePerm = this.havePermission(player.Rank);
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
           if (player.Id !== playerId) {
@@ -609,7 +609,7 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
-        const havePerm = this.havePermission(player.Rank);
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
           if (player.Id !== playerId) {
@@ -653,7 +653,7 @@ export class StaffMenu {
     if (playerId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
-        const havePerm = this.havePermission(player.Rank);
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
           if (player.Id !== playerId) {
@@ -715,7 +715,9 @@ export class StaffMenu {
   private async EVENT_changeWeather(newWeather: string): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
-      if (player.Rank >= Ranks.Admin) {
+      const havePerm = this.havePermission(player.Rank, Ranks.Admin);
+
+      if (havePerm) {
         emitNet(Events.sendSystemMessage, -1, new Message(`A server administrator has changed the weather to ${newWeather}.`, SystemTypes.Announcement));
         await this.server.weatherManager.setWeather(newWeather.toUpperCase(), true, player);
       }
@@ -725,7 +727,7 @@ export class StaffMenu {
   private async EVENT_changeTime(newHour: number, newMinute: number): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
-      const havePerm = this.havePermission(player.Rank);
+      const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
       if (havePerm) {
         emitNet(Events.sendSystemMessage, -1, new Message(`A server administrator has changed the time to ${addZero(newHour)}:${addZero(newMinute)}.`, SystemTypes.Announcement));
@@ -738,7 +740,7 @@ export class StaffMenu {
   private async EVENT_bringAll(): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
-      const havePerm = this.havePermission(player.Rank);
+      const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
       if (havePerm) {
         const myPos = player.Position;
@@ -778,7 +780,7 @@ export class StaffMenu {
   private async EVENT_freezeAll(): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
-      const havePerm = this.havePermission(player.Rank);
+      const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
       if (havePerm) {
         const svPlayers = this.server.connectedPlayerManager.GetPlayers;
@@ -828,7 +830,9 @@ export class StaffMenu {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
-        if (player.Rank >= Ranks.Admin) {
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
+
+        if (havePerm) {
           const updatersDiscord = await player.GetIdentifier("discord");
 
           switch (logType) {
@@ -1135,116 +1139,122 @@ export class StaffMenu {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
-        const character = await this.server.characterManager.Get(player);
-        if (character) {
+        const havePerm = this.havePermission(player.Rank, Ranks.SeniorAdmin);
 
-          const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsNet);
-          if (foundPlayer) {
-            if (foundPlayer.Spawned) {
-              const foundCharacter = await this.server.characterManager.Get(foundPlayer);
-              if (foundCharacter) {
-                // Sets their job (Controls what dept rank is FTO/High Command)
+        if (havePerm) {
+          const character = await this.server.characterManager.Get(player);
+          if (character) {
 
-                if (data.jobName !== Jobs.Community && data.jobName !== Jobs.Civilian) {
-                  const highCommand = this.server.jobManager.highCommand(data.jobName, data.jobRank);
-                  const callsign = foundCharacter.Job.Callsign !== undefined ? foundCharacter.Job.Callsign : sharedConfig.jobs.defaultCallsign;
-                  const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel, data.jobRank, highCommand, callsign, false);
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsNet);
+            if (foundPlayer) {
+              if (foundPlayer.Spawned) {
+                const foundCharacter = await this.server.characterManager.Get(foundPlayer);
+                if (foundCharacter) {
+                  // Sets their job (Controls what dept rank is FTO/High Command)
 
-                  if (updatedJob !== undefined) {
-                    // Set your selected character fuck thing
-                    foundPlayer.selectedCharacter = { // Update selected character to have new job
-                      id: foundCharacter.Id,
-                      firstName: foundCharacter.firstName,
-                      lastName: foundCharacter.lastName,
-                      nationality: foundCharacter.nationality,
-                      backstory: foundCharacter.backstory,
-                      dob: foundCharacter.DOB,
-                      age: foundCharacter.Age,
-                      isFemale: foundCharacter.Female,
-                      phone: foundCharacter.Phone,
-                      job: foundCharacter.Job,
-                      metadata: foundCharacter.Metadata,
-                      createdAt: foundCharacter.CreatedAt,
-                      lastUpdated: foundCharacter.LastEdited,
-                    };
+                  if (data.jobName !== Jobs.Community && data.jobName !== Jobs.Civilian) {
+                    const highCommand = this.server.jobManager.highCommand(data.jobName, data.jobRank);
+                    const callsign = foundCharacter.Job.Callsign !== undefined ? foundCharacter.Job.Callsign : sharedConfig.jobs.defaultCallsign;
+                    const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel, data.jobRank, highCommand, callsign, false);
 
-                    // Empty owned characters table
-                    foundPlayer.characters = [];
+                    if (updatedJob !== undefined) {
+                      // Set your selected character fuck thing
+                      foundPlayer.selectedCharacter = { // Update selected character to have new job
+                        id: foundCharacter.Id,
+                        firstName: foundCharacter.firstName,
+                        lastName: foundCharacter.lastName,
+                        nationality: foundCharacter.nationality,
+                        backstory: foundCharacter.backstory,
+                        dob: foundCharacter.DOB,
+                        age: foundCharacter.Age,
+                        isFemale: foundCharacter.Female,
+                        phone: foundCharacter.Phone,
+                        job: foundCharacter.Job,
+                        metadata: foundCharacter.Metadata,
+                        createdAt: foundCharacter.CreatedAt,
+                        lastUpdated: foundCharacter.LastEdited,
+                      };
 
-                    // Sync all players & selected characters to all clients
-                    emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
+                      // Empty owned characters table
+                      foundPlayer.characters = [];
 
-                    // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
-                    this.server.commandManager.createChatSuggestions(foundPlayer);
-                    await foundPlayer.TriggerEvent(Events.updateSuggestions);
+                      // Sync all players & selected characters to all clients
+                      emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
 
-                    await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
-                    await foundPlayer.Notify("Character", `${player.GetName} has set your job to [${data.jobLabel}] - ${data.jobRankLabel}.`, NotificationTypes.Info);
+                      // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      this.server.commandManager.createChatSuggestions(foundPlayer);
+                      await foundPlayer.TriggerEvent(Events.updateSuggestions);
+
+                      await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
+                      await foundPlayer.Notify("Character", `${player.GetName} has set your job to [${data.jobLabel}] - ${data.jobRankLabel}.`, NotificationTypes.Info);
+                    }
+
+                    await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+
+                    const updatersDiscord = await player.GetIdentifier("discord");
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Staff Logs", embeds: [{
+                        color: EmbedColours.Green,
+                        title: "__Player Job Updated__",
+                        description: `A player has had his job updated.\n\n**Username**: ${foundPlayer.GetName}\n**Character Name**: ${foundCharacter.Name}\n**New Job**: ${JSON.stringify(foundCharacter.Job, null, 4)}\n**Updated By**: ${player.GetName}\n**Updaters Rank**: ${Ranks[player.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
+                  } else {
+                    const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel);
+
+                    if (updatedJob !== undefined) {
+                      // Set your selected character fuck thing
+                      foundPlayer.selectedCharacter = { // Update selected character to have new job
+                        id: foundCharacter.Id,
+                        firstName: foundCharacter.firstName,
+                        lastName: foundCharacter.lastName,
+                        nationality: foundCharacter.nationality,
+                        backstory: foundCharacter.backstory,
+                        dob: foundCharacter.DOB,
+                        age: foundCharacter.Age,
+                        isFemale: foundCharacter.Female,
+                        phone: foundCharacter.Phone,
+                        job: foundCharacter.Job,
+                        metadata: foundCharacter.Metadata,
+                        createdAt: foundCharacter.CreatedAt,
+                        lastUpdated: foundCharacter.LastEdited,
+                      };
+
+                      // Empty owned characters table
+                      foundPlayer.characters = [];
+
+                      // Sync all players & selected characters to all clients
+                      emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
+
+                      // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      this.server.commandManager.createChatSuggestions(foundPlayer);
+                      await foundPlayer.TriggerEvent(Events.updateSuggestions);
+
+                      await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
+                      await foundPlayer.Notify("Character", `${player.GetName} has set your job to ${data.jobLabel}.`, NotificationTypes.Info);
+                    }
+
+                    await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+
+                    const updatersDiscord = await player.GetIdentifier("discord");
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Staff Logs", embeds: [{
+                        color: EmbedColours.Green,
+                        title: "__Player Job Updated__",
+                        description: `A player has had his job updated.\n\n**Username**: ${foundPlayer.GetName}\n**Character Name**: ${foundCharacter.Name}\n**New Job**: ${JSON.stringify(foundCharacter.Job, null, 4)}\n**Updated By**: ${player.GetName}\n**Updaters Rank**: ${Ranks[player.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
                   }
-
-                  await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
-
-                  const updatersDiscord = await player.GetIdentifier("discord");
-                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                    username: "Staff Logs", embeds: [{
-                      color: EmbedColours.Green,
-                      title: "__Player Job Updated__",
-                      description: `A player has had his job updated.\n\n**Username**: ${foundPlayer.GetName}\n**Character Name**: ${foundCharacter.Name}\n**New Job**: ${JSON.stringify(foundCharacter.Job, null, 4)}\n**Updated By**: ${player.GetName}\n**Updaters Rank**: ${Ranks[player.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
-                      footer: {
-                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                        icon_url: sharedConfig.serverLogo
-                      }
-                    }]
-                  }));
                 } else {
-                  const updatedJob = await foundCharacter.updateJob(data.jobName, data.jobLabel);
-
-                  if (updatedJob !== undefined) {
-                    // Set your selected character fuck thing
-                    foundPlayer.selectedCharacter = { // Update selected character to have new job
-                      id: foundCharacter.Id,
-                      firstName: foundCharacter.firstName,
-                      lastName: foundCharacter.lastName,
-                      nationality: foundCharacter.nationality,
-                      backstory: foundCharacter.backstory,
-                      dob: foundCharacter.DOB,
-                      age: foundCharacter.Age,
-                      isFemale: foundCharacter.Female,
-                      phone: foundCharacter.Phone,
-                      job: foundCharacter.Job,
-                      metadata: foundCharacter.Metadata,
-                      createdAt: foundCharacter.CreatedAt,
-                      lastUpdated: foundCharacter.LastEdited,
-                    };
-
-                    // Empty owned characters table
-                    foundPlayer.characters = [];
-
-                    // Sync all players & selected characters to all clients
-                    emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
-
-                    // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
-                    this.server.commandManager.createChatSuggestions(foundPlayer);
-                    await foundPlayer.TriggerEvent(Events.updateSuggestions);
-
-                    await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
-                    await foundPlayer.Notify("Character", `${player.GetName} has set your job to ${data.jobLabel}.`, NotificationTypes.Info);
-                  }
-
-                  await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
-
-                  const updatersDiscord = await player.GetIdentifier("discord");
-                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                    username: "Staff Logs", embeds: [{
-                      color: EmbedColours.Green,
-                      title: "__Player Job Updated__",
-                      description: `A player has had his job updated.\n\n**Username**: ${foundPlayer.GetName}\n**Character Name**: ${foundCharacter.Name}\n**New Job**: ${JSON.stringify(foundCharacter.Job, null, 4)}\n**Updated By**: ${player.GetName}\n**Updaters Rank**: ${Ranks[player.Rank]}\n**Updaters Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
-                      footer: {
-                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                        icon_url: sharedConfig.serverLogo
-                      }
-                    }]
-                  }));
+                  await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
                 }
               } else {
                 await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
@@ -1252,8 +1262,6 @@ export class StaffMenu {
             } else {
               await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
             }
-          } else {
-            await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
           }
         }
       }
@@ -1264,41 +1272,45 @@ export class StaffMenu {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
-        const states = Player(player.Handle);
-        states.state.playerBlips = data.newState;
+        const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
-        if (data.newState) {
-          await player.TriggerEvent(Events.updatePlayerBlips, this.playerBlips); // Send over the blips here first, as the server sends them over in a 3 second interval.
-          await player.TriggerEvent(Events.receiveServerCB, true, data);
+        if (havePerm) {
+          const states = Player(player.Handle);
+          states.state.playerBlips = data.newState;
 
-          const updatersDiscord = await player.GetIdentifier("discord");
-          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-            username: "Staff Logs", embeds: [{
-              color: EmbedColours.Green,
-              title: "__Player Blips Enabled__",
-              description: `A player has enabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
-              footer: {
-                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                icon_url: sharedConfig.serverLogo
-              }
-            }]
-          }));
-        } else {
-          await player.TriggerEvent(Events.updatePlayerBlips, []); // Send over nothing here (deletes the blip), as the server sends them over in a 3 second interval.
-          await player.TriggerEvent(Events.receiveServerCB, true, data);
+          if (data.newState) {
+            await player.TriggerEvent(Events.updatePlayerBlips, this.playerBlips); // Send over the blips here first, as the server sends them over in a 3 second interval.
+            await player.TriggerEvent(Events.receiveServerCB, true, data);
 
-          const updatersDiscord = await player.GetIdentifier("discord");
-          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-            username: "Staff Logs", embeds: [{
-              color: EmbedColours.Red,
-              title: "__Player Blips Disabled__",
-              description: `A player has disabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
-              footer: {
-                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                icon_url: sharedConfig.serverLogo
-              }
-            }]
-          }));
+            const updatersDiscord = await player.GetIdentifier("discord");
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Staff Logs", embeds: [{
+                color: EmbedColours.Green,
+                title: "__Player Blips Enabled__",
+                description: `A player has enabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+          } else {
+            await player.TriggerEvent(Events.updatePlayerBlips, []); // Send over nothing here (deletes the blip), as the server sends them over in a 3 second interval.
+            await player.TriggerEvent(Events.receiveServerCB, true, data);
+
+            const updatersDiscord = await player.GetIdentifier("discord");
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Staff Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Blips Disabled__",
+                description: `A player has disabled player blips.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${updatersDiscord != "Unknown" ? `<@${updatersDiscord}>` : updatersDiscord}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+          }
         }
       }
     }
