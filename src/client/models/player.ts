@@ -1,11 +1,12 @@
 import { Game, Ped } from "fivem-js";
 import { Character } from "./character";
+import { Ranks } from '../../shared/enums/ranks';
 
 export class svPlayer {
   private id: number;
   private netId: number;
   private name: string;
-  private rank: number;
+  private rank: Ranks;
   private joinedAt: string;
   public spawned: boolean;
   public character: Character;
@@ -37,8 +38,12 @@ export class svPlayer {
     return this.name;
   }
   
-  public get Rank(): number {
+  public get Rank(): Ranks {
     return this.rank;
+  }
+
+  public set Rank(newRank: Ranks) {
+    this.rank = newRank;
   }
 
   public get Spawned(): boolean {

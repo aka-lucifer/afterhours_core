@@ -25,6 +25,7 @@ export class StaffManager {
     this.client = client;
 
     // Events
+    onNet(Events.rankUpdated, this.EVENT_rankUpdated.bind(this));
     onNet(Events.showRank, this.EVENT_showRank.bind(this));
     onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
   }
@@ -37,12 +38,25 @@ export class StaffManager {
       this.gravityGun = new GravityGun(this.client);
       this.noclip = new NoClip(this.client);
       this.ghostPlayers = new GhostPlayers();
+      this.staffMenu.init(); // do perm checks and make menus
     }
-
-    this.staffMenu.init(); // do perm checks and make menus
   }
 
   // Events
+  private EVENT_rankUpdated(newRank: Ranks): void {
+    this.client.player.Rank = newRank;
+    console.log("rank updated to", newRank, Ranks[newRank]);
+
+    if (this.client.player.Rank >= Ranks.Moderator) {
+      this.staffMenu = new StaffMenu(this.client); // Have to do outside of rank check, as has normal player checks and callbacks
+      this.gravityGun = new GravityGun(this.client);
+      this.noclip = new NoClip(this.client);
+      this.ghostPlayers = new GhostPlayers();
+
+      this.staffMenu.init(); // do perm checks and make menus
+    }
+  }
+
   public EVENT_showRank(): void {
     this.client.playerStates.state.set("rankVisible", !this.client.playerStates.state.rankVisible, true);
     if (this.client.playerStates.state.rankVisible) {

@@ -115,6 +115,9 @@ export enum Events {
   // Astrid Client (Utils)
   soundFrontEnd = "astrid:client:soundFrontEnd",
 
+  // Astrid Client ([Staff])
+  rankUpdated = "astrid:client:staffManager:rankUpdated",
+
   // Astrid Client ([Staff] - AFK)
   setAFK = "astrid:client:setAFK",
 

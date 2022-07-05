@@ -72,6 +72,15 @@ export class StaffMenu {
     // Callbacks
     onNet(Callbacks.updatePlayerJob, this.CALLBACK_updatePlayerJob.bind(this));
     onNet(Callbacks.togglePlayerBlips, this.CALLBACK_togglePlayerBlips.bind(this));
+
+    RegisterCommand("set_to_staff", async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          await this.updateRank(player, player, Ranks.Admin);
+        }
+      }
+    }, false);
   }
 
   // Methods
@@ -123,6 +132,11 @@ export class StaffMenu {
 
       await myPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've gave ^3${otherPlayer.GetName}^0 the rank ^3${formattedNewRankLabel}^0.`, SystemTypes.Admin));
       await otherPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${myPlayer.GetName}^0 has updated your rank to ^3${formattedNewRankLabel}^0.`, SystemTypes.Admin));
+
+      // Update perms on client and refresh chat suggestions
+      await this.server.commandManager.deleteChatSuggestions(otherPlayer);
+      this.server.commandManager.createChatSuggestions(otherPlayer);
+      await otherPlayer.TriggerEvent(Events.rankUpdated, newRank);
 
       const updatersDiscord = await myPlayer.GetIdentifier("discord");
       await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
