@@ -1,12 +1,11 @@
-import {server, Server} from "../../server";
-import { Dist, Log, Inform, Error, NumToVector3 } from "../../utils";
+import { Server} from "../../server";
+import { Inform, Error } from "../../utils";
 import {LogTypes} from "../../enums/logging";
 
 import { ChatLog } from "../../models/database/chatLog";
 import WebhookMessage from "../../models/webhook/discord/webhookMessage";
 import {Command} from "../../models/ui/chat/command";
 import { Player } from "../../models/database/player";
-import {Ban} from "../../models/database/ban";
 import {Kick} from "../../models/database/kick";
 
 import { ProximityTypes } from "../characters"; 
@@ -23,6 +22,7 @@ import {FormattedCommend} from "../../../client/models/ui/commend";
 
 import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
+import { Jobs } from '../../../shared/enums/jobs/jobs';
 
 export class ChatManager {
   private server: Server;
@@ -357,6 +357,59 @@ export class ChatManager {
           }
 
           await player.TriggerEvent(Events.receiveCommends, receivedCommends);
+        }
+      }
+    }, Ranks.User);
+
+    new Command("cmds", "See all the server commands", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          let commandString = "";
+
+          const commands = this.server.commandManager.Commands;
+          const jobCommands = this.server.commandManager.JobCommands;
+
+          for (let a = 0; a < commands.length; a++) { // Loop through all the commands
+            if (player.Rank >= commands[a].permission) { // If you've permission to use the command
+              if (a < (commands.length - 1)) { // If not the last entry from the registered command
+                if (commandString.length > 0) { // If the command string isn't empty, add to it
+                  commandString = `${commandString}^0, ^3/${commands[a].name}`;
+                } else { // If the command string is empty
+                  commandString = `^3/${commands[a].name}`;
+                }
+              } else { // Last entry
+                commandString = `${commandString}^0, ^3/${commands[a].name}^0.`;
+              }
+            }
+          }
+
+          for (let b = 0; b < jobCommands.length; b++) { // Loop through all the commands
+            const permission: Jobs[] | Jobs = jobCommands[b].permission;
+            let hasPermission = false;
+
+            if (typeof permission === "object") {
+              const permissionIndex = permission.findIndex(permission => permission == player.selectedCharacter.job.name);
+              hasPermission = permissionIndex !== -1;
+            } else {
+              hasPermission = player.selectedCharacter.job.name == permission;
+            }
+
+            if (hasPermission) { // If you've permission to use the command
+              if (b < (jobCommands.length - 1)) { // If not the last entry from the registered command
+                if (commandString.length > 0) { // If the command string isn't empty, add to it
+                  commandString = `${commandString}^0, ^3/${jobCommands[b].name}`;
+                } else { // If the command string is empty
+                  commandString = `^3/${jobCommands[b].name}`;
+                }
+              } else { // Last entry
+                commandString = `${commandString}^0, ^3/${jobCommands[b].name}^0.`;
+              }
+            }
+          }
+
+          await player.TriggerEvent(Events.sendSystemMessage, new Message(`Commands - ${commandString}`, SystemTypes.Announcement));
+          console.log("commands", commandString);
         }
       }
     }, Ranks.User);
