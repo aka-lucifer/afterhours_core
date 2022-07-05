@@ -51,6 +51,7 @@ import { Priority } from './controllers/ui/priority';
 import { Kidnapping } from './controllers/civilian/kidnapping';
 import { Carrying } from './controllers/civilian/carrying';
 import { Gagging } from './controllers/civilian/gagging';
+import { ModelBlacklist } from './controllers/civilian/modelBlacklist';
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
@@ -128,6 +129,7 @@ export class Server {
   private kidnapping: Kidnapping;
   private carrying: Carrying;
   private gagging: Gagging;
+  private modelBlacklist: ModelBlacklist;
 
   // [Controllers] Normal
   private death: Death;
@@ -142,6 +144,121 @@ export class Server {
     onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
     onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
     onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
+
+    // RegisterCommand("create_peds", () => {
+    //   const snrAdminPeds = [
+    //     "a_m_m_acult_01",
+    //     "s_m_y_armymech_01",
+    //     "s_m_y_blackops_01",
+    //     "s_m_y_blackops_02",
+    //     "s_m_y_blackops_03",
+    //     "s_m_y_hwaycop_01",
+    //     "s_f_y_sheriff_01",
+    //     "s_m_y_sheriff_01",
+    //     "s_m_y_swat_01",
+    //     "s_f_y_cop_01",
+    //     "s_m_y_cop_01",
+    //     "csb_cop"
+    //   ]
+    //
+    //   const trustedAnimals = [
+    //     "a_c_boar",
+    //     "a_c_cat_01",
+    //     "a_c_chickenhawk",
+    //     "a_c_chimp",
+    //     "a_c_chop",
+    //     "a_c_cormorant",
+    //     "a_c_cow",
+    //     "a_c_coyote",
+    //     "a_c_crow",
+    //     "a_c_deer",
+    //     "a_c_dolphin",
+    //     "a_c_fish",
+    //     "a_c_sharkhammer",
+    //     "a_c_hen",
+    //     "a_c_humpback",
+    //     "a_c_husky",
+    //     "a_c_killerwhale",
+    //     "a_c_mtlion",
+    //     "a_c_pig",
+    //     "a_c_pigeon",
+    //     "a_c_poodle",
+    //     "a_c_pug",
+    //     "a_c_rabbit_01",
+    //     "a_c_rat",
+    //     "a_c_retriever",
+    //     "a_c_rhesus",
+    //     "a_c_rottweiler",
+    //     "a_c_seagull",
+    //     "a_c_shepherd",
+    //     "a_c_stingray",
+    //     "a_c_sharktiger",
+    //     "a_c_westy",
+    //     "a_c_panther"
+    //   ]
+    //
+    //   const trustedPeds = [
+    //     "s_m_m_movalien_01",
+    //     "s_m_m_movspace_01",
+    //     "ig_orleans",
+    //     "cs_orleans",
+    //     "u_m_y_pogo_01",
+    //     "u_m_y_imporage",
+    //     "billy",
+    //     "obama",
+    //     "sam",
+    //     "skeleton",
+    //     "t800skel",
+    //     "therock(jeans)",
+    //     "therock(nojeans)",
+    //     "tromp",
+    //     "u_m_y_zombie_01"
+    //   ]
+    //
+    //   const jsonObject: Record<string, pedTemplate> = {};
+    //
+    //   for (let i = 0; i < snrAdminPeds.length; i++) {
+    //     const hash = GetHashKey(snrAdminPeds[i]);
+    //
+    //     jsonObject[hash] = {
+    //       model: snrAdminPeds[i],
+    //       name: snrAdminPeds[i],
+    //       type: "ped",
+    //       rank: 10
+    //     }
+    //   }
+    //
+    //   for (let i = 0; i < trustedAnimals.length; i++) {
+    //     const hash = GetHashKey(trustedAnimals[i]);
+    //
+    //     jsonObject[hash] = {
+    //       model: trustedAnimals[i],
+    //       name: trustedAnimals[i],
+    //       type: "animal",
+    //       rank: 7
+    //     }
+    //   }
+    //
+    //   for (let i = 0; i < trustedPeds.length; i++) {
+    //     const hash = GetHashKey(trustedPeds[i]);
+    //
+    //     jsonObject[hash] = {
+    //       model: trustedPeds[i],
+    //       name: trustedPeds[i],
+    //       type: "ped",
+    //       rank: 7
+    //     }
+    //   }
+    //
+    //
+    //   fs.writeFile("D:/Games/peds.json", JSON.stringify(jsonObject, null, 4), err => {
+    //     if (err) {
+    //       console.error(err);
+    //     }
+    //   });
+    //
+    //   console.log("json peds", JSON.stringify(jsonObject, null, 4));
+    // }, false);
   }
 
   // Get Requests
@@ -217,6 +334,7 @@ export class Server {
     this.kidnapping = new Kidnapping(server);
     this.carrying = new Carrying(server);
     this.gagging = new Gagging(server);
+    this.modelBlacklist = new ModelBlacklist(server);
 
     // [Controllers] Death
     this.death = new Death(server);

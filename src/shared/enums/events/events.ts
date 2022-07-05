@@ -85,6 +85,9 @@ export enum Events {
   // Astrid Server ([Controllers] | Civilian] - Gagging)
   tryGagging = "astrid:server:controllers:civilian:tryGagging",
 
+  // Astrid Server ([Controllers] | Civilian] - Model Blacklist)
+  changedPed = "astrid:server:controllers:civilian:changedPed",
+
   // Astrid Server (Weapons)
   checkWeapon = "astrid:server:checkWeapon",
 

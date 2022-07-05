@@ -40,6 +40,8 @@ export class StaffManager {
       this.ghostPlayers = new GhostPlayers();
       this.staffMenu.init(); // do perm checks and make menus
     }
+
+
   }
 
   // Events

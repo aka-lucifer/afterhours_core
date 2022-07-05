@@ -5971,6 +5971,363 @@
       }
     }
   },
+  "peds": {
+    "111281960": {
+      "model": "a_c_pigeon",
+      "name": "a_c_pigeon",
+      "type": "animal",
+      "rank": 7
+    },
+    "113504370": {
+      "model": "a_c_sharktiger",
+      "name": "a_c_sharktiger",
+      "type": "animal",
+      "rank": 7
+    },
+    "307287994": {
+      "model": "a_c_mtlion",
+      "name": "a_c_mtlion",
+      "type": "animal",
+      "rank": 7
+    },
+    "351016938": {
+      "model": "a_c_chop",
+      "name": "a_c_chop",
+      "type": "animal",
+      "rank": 7
+    },
+    "368603149": {
+      "model": "s_f_y_cop_01",
+      "name": "s_f_y_cop_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "402729631": {
+      "model": "a_c_crow",
+      "name": "a_c_crow",
+      "type": "animal",
+      "rank": 7
+    },
+    "802685111": {
+      "model": "a_c_fish",
+      "name": "a_c_fish",
+      "type": "animal",
+      "rank": 7
+    },
+    "880829941": {
+      "model": "u_m_y_imporage",
+      "name": "u_m_y_imporage",
+      "type": "ped",
+      "rank": 7
+    },
+    "882848737": {
+      "model": "a_c_retriever",
+      "name": "a_c_retriever",
+      "type": "animal",
+      "rank": 7
+    },
+    "1015224100": {
+      "model": "a_c_sharkhammer",
+      "name": "a_c_sharkhammer",
+      "type": "animal",
+      "rank": 7
+    },
+    "1096929346": {
+      "model": "s_f_y_sheriff_01",
+      "name": "s_f_y_sheriff_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "1125994524": {
+      "model": "a_c_poodle",
+      "name": "a_c_poodle",
+      "type": "animal",
+      "rank": 7
+    },
+    "1126154828": {
+      "model": "a_c_shepherd",
+      "name": "a_c_shepherd",
+      "type": "animal",
+      "rank": 7
+    },
+    "1193010354": {
+      "model": "a_c_humpback",
+      "name": "a_c_humpback",
+      "type": "animal",
+      "rank": 7
+    },
+    "1318032802": {
+      "model": "a_c_husky",
+      "name": "a_c_husky",
+      "type": "animal",
+      "rank": 7
+    },
+    "1349953339": {
+      "model": "s_m_y_blackops_03",
+      "name": "s_m_y_blackops_03",
+      "type": "ped",
+      "rank": 10
+    },
+    "1413662315": {
+      "model": "a_m_m_acult_01",
+      "name": "a_m_m_acult_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "1457690978": {
+      "model": "a_c_cormorant",
+      "name": "a_c_cormorant",
+      "type": "animal",
+      "rank": 7
+    },
+    "1462895032": {
+      "model": "a_c_cat_01",
+      "name": "a_c_cat_01",
+      "type": "animal",
+      "rank": 7
+    },
+    "1581098148": {
+      "model": "s_m_y_cop_01",
+      "name": "s_m_y_cop_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "1641334641": {
+      "model": "ig_orleans",
+      "name": "ig_orleans",
+      "type": "ped",
+      "rank": 7
+    },
+    "1657546978": {
+      "model": "s_m_y_armymech_01",
+      "name": "s_m_y_armymech_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "1682622302": {
+      "model": "a_c_coyote",
+      "name": "a_c_coyote",
+      "type": "animal",
+      "rank": 7
+    },
+    "1684083350": {
+      "model": "s_m_m_movalien_01",
+      "name": "s_m_m_movalien_01",
+      "type": "ped",
+      "rank": 7
+    },
+    "1794449327": {
+      "model": "a_c_hen",
+      "name": "a_c_hen",
+      "type": "animal",
+      "rank": 7
+    },
+    "1816727634": {
+      "model": "skeleton",
+      "name": "skeleton",
+      "type": "ped",
+      "rank": 7
+    },
+    "1832265812": {
+      "model": "a_c_pug",
+      "name": "a_c_pug",
+      "type": "animal",
+      "rank": 7
+    },
+    "1939545845": {
+      "model": "s_m_y_hwaycop_01",
+      "name": "s_m_y_hwaycop_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "2047212121": {
+      "model": "s_m_y_blackops_02",
+      "name": "s_m_y_blackops_02",
+      "type": "ped",
+      "rank": 10
+    },
+    "-1275859404": {
+      "model": "s_m_y_blackops_01",
+      "name": "s_m_y_blackops_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "-1320879687": {
+      "model": "s_m_y_sheriff_01",
+      "name": "s_m_y_sheriff_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "-1920001264": {
+      "model": "s_m_y_swat_01",
+      "name": "s_m_y_swat_01",
+      "type": "ped",
+      "rank": 10
+    },
+    "-1699520669": {
+      "model": "csb_cop",
+      "name": "csb_cop",
+      "type": "ped",
+      "rank": 10
+    },
+    "-832573324": {
+      "model": "a_c_boar",
+      "name": "a_c_boar",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1430839454": {
+      "model": "a_c_chickenhawk",
+      "name": "a_c_chickenhawk",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1469565163": {
+      "model": "a_c_chimp",
+      "name": "a_c_chimp",
+      "type": "animal",
+      "rank": 7
+    },
+    "-50684386": {
+      "model": "a_c_cow",
+      "name": "a_c_cow",
+      "type": "animal",
+      "rank": 7
+    },
+    "-664053099": {
+      "model": "a_c_deer",
+      "name": "a_c_deer",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1950698411": {
+      "model": "a_c_dolphin",
+      "name": "a_c_dolphin",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1920284487": {
+      "model": "a_c_killerwhale",
+      "name": "a_c_killerwhale",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1323586730": {
+      "model": "a_c_pig",
+      "name": "a_c_pig",
+      "type": "animal",
+      "rank": 7
+    },
+    "-541762431": {
+      "model": "a_c_rabbit_01",
+      "name": "a_c_rabbit_01",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1011537562": {
+      "model": "a_c_rat",
+      "name": "a_c_rat",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1026527405": {
+      "model": "a_c_rhesus",
+      "name": "a_c_rhesus",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1788665315": {
+      "model": "a_c_rottweiler",
+      "name": "a_c_rottweiler",
+      "type": "animal",
+      "rank": 7
+    },
+    "-745300483": {
+      "model": "a_c_seagull",
+      "name": "a_c_seagull",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1589092019": {
+      "model": "a_c_stingray",
+      "name": "a_c_stingray",
+      "type": "animal",
+      "rank": 7
+    },
+    "-1384627013": {
+      "model": "a_c_westy",
+      "name": "a_c_westy",
+      "type": "animal",
+      "rank": 7
+    },
+    "-417505688": {
+      "model": "a_c_panther",
+      "name": "a_c_panther",
+      "type": "animal",
+      "rank": 7
+    },
+    "-407694286": {
+      "model": "s_m_m_movspace_01",
+      "name": "s_m_m_movspace_01",
+      "type": "ped",
+      "rank": 7
+    },
+    "-1389097126": {
+      "model": "cs_orleans",
+      "name": "cs_orleans",
+      "type": "ped",
+      "rank": 7
+    },
+    "-598109171": {
+      "model": "u_m_y_pogo_01",
+      "name": "u_m_y_pogo_01",
+      "type": "ped",
+      "rank": 7
+    },
+    "-1404353274": {
+      "model": "u_m_y_zombie_01",
+      "name": "u_m_y_zombie_01",
+      "type": "ped",
+      "rank": 7
+    },
+
+    "-1311157878": {
+      "model": "obama",
+      "name": "obama",
+      "type": "addon_ped",
+      "rank": 7
+    },
+    "-1647800875": {
+      "model": "sam",
+      "name": "sam",
+      "type": "addon_ped",
+      "rank": 7
+    },
+    "-1461634306": {
+      "model": "t800skel",
+      "name": "t800skel",
+      "type": "addon_ped",
+      "rank": 7
+    },
+    "-1416562851": {
+      "model": "therock(jeans)",
+      "name": "therock(jeans)",
+      "type": "addon_ped",
+      "rank": 7
+    },
+    "919248959": {
+      "model": "tromp",
+      "name": "tromp",
+      "type": "addon_ped",
+      "rank": 7
+    },
+    "919567755": {
+      "model": "therock(nojeans)",
+      "name": "therock(nojeans)",
+      "type": "addon_ped",
+      "rank": 7
+    }
+  },
   "aop": {
     "locations": [
       {"name": "Harmony", "automaticCycling": false, "positions": []},

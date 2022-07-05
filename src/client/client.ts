@@ -56,6 +56,7 @@ import { Kidnapping } from "./controllers/civilian/kidnapping";
 import { Surrending } from "./controllers/civilian/surrending";
 import { Carrying } from "./controllers/civilian/carrying";
 import { Gagging } from "./controllers/civilian/gagging";
+import {ModelBlacklist} from './controllers/civilian/modelBlacklist';
 
 // [Controllers] Normal
 import { Death } from './controllers/death';
@@ -161,6 +162,7 @@ export class Client {
   private surrending: Surrending;
   public carrying: Carrying;
   private gagging: Gagging;
+  public modelBlacklist: ModelBlacklist;
 
   // [Controllers] Normal
   private death: Death;
@@ -342,6 +344,7 @@ export class Client {
     this.surrending = new Surrending(client);
     this.carrying = new Carrying(client);
     this.gagging = new Gagging(client);
+    this.modelBlacklist = new ModelBlacklist(client);
 
     // [Controllers] Normal
     this.death = new Death(client);
@@ -543,6 +546,9 @@ export class Client {
     // Manager Inits
     this.staffManager.init();
     await this.worldManager.init();
+
+    // Controllers
+    this.modelBlacklist.start();
 
     this.setupUI();
     
