@@ -656,10 +656,10 @@ export class Client {
     if (eventName == GameEvents.entityDamaged) {
       const damagedEntity = eventArgs[0];
       const attackingEntity = eventArgs[1];
+      const isFatal = eventArgs[5];
 
       if (IsPedAPlayer(damagedEntity) && damagedEntity == Game.PlayerPed.Handle) {
         if (IsPedAPlayer(attackingEntity)) {
-          const isFatal = eventArgs[5];
           if (isFatal) {
             emitNet(Events.logDeath, {
               type: GetEntityType(attackingEntity),
@@ -670,9 +670,11 @@ export class Client {
           }
         } else {
           if (attackingEntity == -1) {
-            emitNet(Events.logDeath, {
-              attacker: attackingEntity
-            });
+            if (isFatal) {
+              emitNet(Events.logDeath, {
+                attacker: attackingEntity
+              });
+            }
           }
         }
       }
