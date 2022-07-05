@@ -8284,7 +8284,7 @@
     "spawnInfo": {
         "changelog": [
           {
-            "version": "ALPHA",
+            "version": "Pre-Release",
             "additions": [
               "Player manager controlling ranks, playtime, metadata, etc.",
               "Character manager controlling all of your characters data (name, dob, phone, metadata, backstory, job)",
