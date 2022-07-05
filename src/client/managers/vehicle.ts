@@ -46,7 +46,13 @@ export class VehicleManager {
     this.client = client;
 
     // Events
+
+    // (Entering/Entered)
+    onNet(LXEvents.EnteringVeh_Cl, this.EVENT_enteringVeh.bind(this));
     onNet(LXEvents.EnteredVeh_Cl, this.EVENT_enteredVeh.bind(this));
+
+    // (Exiting/Cancelling)
+    onNet(LXEvents.EnteringVehAborted_Cl, this.EVENT_enteredVehAborted.bind(this));
     onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
   }
 
@@ -75,6 +81,10 @@ export class VehicleManager {
   }
 
   // Events
+  private EVENT_enteringVeh(): void {
+    if (!this.client.hud.VehStarted) this.client.hud.startVeh(); // Display vehicle HUD (If not showing)
+  }
+
   private EVENT_enteredVeh(): void {
     console.log("entered veh!");
 
@@ -89,7 +99,7 @@ export class VehicleManager {
     if (!this.repairShops.Started) this.repairShops.start(); // done
     // if (!this.shuffling.Started) this.shuffling.start();
     if (!this.driveBy.Started) this.driveBy.start();
-    if (!this.client.hud.VehStarted) this.client.hud.startVeh();
+    if (!this.client.hud.VehStarted) this.client.hud.startVeh(); // Display vehicle HUD (If not showing)
 
     if (!this.client.vehicles.HasVehicles) {
       emit(Events.sendSystemMessage,
@@ -100,7 +110,11 @@ export class VehicleManager {
       );
     }
   }
-  
+
+  private EVENT_enteredVehAborted(): void {
+    if (this.client.hud.VehStarted) this.client.hud.stopVeh(); // Hide the vehicle HUD (If showing)
+  }
+
   private EVENT_leftVeh(): void {
     console.log("left veh!");
     
@@ -114,6 +128,6 @@ export class VehicleManager {
     if (this.repairShops.Started) this.repairShops.stop(); // done
     // if (this.shuffling.Started) this.shuffling.stop();
     if (this.driveBy.Started) this.driveBy.stop();
-    if (this.client.hud.VehStarted) this.client.hud.stopVeh();
+    if (this.client.hud.VehStarted) this.client.hud.stopVeh(); // Hide the vehicle HUD (If showing)
   }
 }
