@@ -8264,6 +8264,21 @@
             {"label": "Pillbox", "x": 357.82, "y": -592.92, "z": 28.79, "heading": 259.0},
             {"label": "Central Los Santos", "x": 341.07, "y": -1397.31, "z": 32.51, "heading": 48.5}
           ]
+        },
+        "ui": {
+          "chatCycling": {
+            "messages": [
+              "Join our Discord for assistance, signing up for departments/civ orgs, and to communicate with other players - discord.gg/astrid",
+              "Make sure to use a snippet tool to create a mugshot of your character, and add it to your character by editing it, via (/characters).",
+              "To register a new vehicle, use the /vehicles command.",
+              "To become a community officer use the /community command.",
+              "Make sure to check (Settings -> Keybinds -> FiveM) to see all of the server keybinds, and to change them to your preference.",
+              "To view all of the available server commands, use the /cmds command.",
+              "To view your playtime use the /playtime command.",
+              "To file a bug report use the /bug command and fill out the form.",
+              "To report a player use the /report command."
+            ]
+          }
         }
     },
     "spawnInfo": {

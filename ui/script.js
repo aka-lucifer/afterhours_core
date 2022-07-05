@@ -754,21 +754,23 @@ const HUD = new Vue({
     },
 
     ColorizeMsg(str) {
-      let s = `<span class="message">` + (str.replace(/\^([0-9])/g, (str, color) => `</span><span class="color-${color}">`)) + "</span>";
+      if (str !== null) {
+        let s = `<span class='message'>` + (str.replace(/\^([0-9])/g, (str, color) => `</span><span class='color-${color}'>`)) + "</span>";
 
-      const styleDict = {
-        '*': 'font-weight: bold;',
-        '_': 'text-decoration: underline;',
-        '~': 'text-decoration: line-through;',
-        '=': 'text-decoration: underline line-through;',
-        'r': 'text-decoration: none;font-weight: normal;',
-      };
+        const styleDict = {
+          '*': 'font-weight: bold;',
+          '_': 'text-decoration: underline;',
+          '~': 'text-decoration: line-through;',
+          '=': 'text-decoration: underline line-through;',
+          'r': 'text-decoration: none;font-weight: normal;',
+        };
 
-      const styleRegex = /\^(\_|\*|\=|\~|\/|r)(.*?)(?=$|\^r|<\/em>)/;
-      while (s.match(styleRegex)) { //Any better solution would be appreciated :P
-        s = s.replace(styleRegex, (str, style, inner) => `<em style="${styleDict[style]}">${inner}</em>`)
+        const styleRegex = /\^(\_|\*|\=|\~|\/|r)(.*?)(?=$|\^r|<\/em>)/;
+        while (s.match(styleRegex)) { //Any better solution would be appreciated :P
+          s = s.replace(styleRegex, (str, style, inner) => `<em style='${styleDict[style]}'>${inner}</em>`)
+        }
+        return s.replace(/<span[^>]*><\/span[^>]*>/g, '');
       }
-      return s.replace(/<span[^>]*><\/span[^>]*>/g, '');
     },
 
     SendMessage() {

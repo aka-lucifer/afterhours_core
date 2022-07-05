@@ -49,6 +49,7 @@ import { WorldBlips } from './controllers/world/worldBlips';
 import { BugReporting } from './controllers/ui/bugReporting';
 import { HexMenu } from './controllers/ui/hexMenu';
 import { Hud } from './controllers/ui/hud';
+import { ChatCycling } from './controllers/ui/chatCycling';
 
 // [Controllers] Civilian
 import { Kidnapping } from "./controllers/civilian/kidnapping";
@@ -106,6 +107,7 @@ export class Client {
   
   public player: svPlayer;
   public character: Character;
+  private characterSpawned: boolean = false;
 
   // [Managers]
   public richPresence: RichPresence;
@@ -152,6 +154,7 @@ export class Client {
   private bugReporting: BugReporting;
   public hexMenu: HexMenu;
   public hud: Hud;
+  public chatCycling: ChatCycling;
 
   // [Controllers] Civilian
   private kidnapping: Kidnapping;
@@ -183,6 +186,7 @@ export class Client {
     onNet(Events.playerLoaded, this.EVENT_playerLoaded.bind(this));
     onNet(Events.setCharacter, this.EVENT_setCharacter.bind(this));
     onNet(Events.updateCharacter, this.EVENT_updateCharacter.bind(this));
+    onNet(Events.characterSpawned, this.EVENT_characterSpawned.bind(this));
     onNet(Events.changeDevMode, this.EVENT_changeDevMode.bind(this));
     onNet(Events.syncPlayers, this.EVENT_syncPlayers.bind(this));
     
@@ -244,6 +248,10 @@ export class Client {
   
   public get Character(): Character {
     return this.character;
+  }
+
+  public get CharacterSpawned(): boolean {
+    return this.characterSpawned;
   }
 
   public get Teleporting(): boolean {
@@ -325,6 +333,9 @@ export class Client {
     this.hexMenu.init();
 
     this.hud = new Hud(client);
+
+    this.chatCycling = new ChatCycling(client);
+    this.chatCycling.init();
 
     // [Controllers] Civilian
     this.kidnapping = new Kidnapping(client);
@@ -575,6 +586,9 @@ export class Client {
     // Display location UI
     this.hud.init();
 
+    // Start chat messages
+    this.chatCycling.start();
+
     if (this.character.Job.name === Jobs.Civilian) {
       emit(Events.sendSystemMessage,
         new Message(
@@ -590,6 +604,8 @@ export class Client {
         )
       );
     }
+
+    this.characterSpawned = true;
 
     // console.log("Character Set To", this.Character);
   }
@@ -614,6 +630,11 @@ export class Client {
         }
       }
     }
+  }
+
+  private EVENT_characterSpawned(newState: boolean): void {
+    this.characterSpawned = newState;
+    console.log("set char spawned", this.characterSpawned);
   }
 
   private EVENT_changeDevMode(newState: boolean): void {

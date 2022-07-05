@@ -107,6 +107,7 @@ export enum Events {
   playerReady = "astrid:client:playerReady",
   setCharacter = "astrid:client:setCharacter",
   updateCharacter = "astrid:client:updateCharacter",
+  characterSpawned = "astrid:client:characterSpawned",
   receiveServerCB = "astrid:client:recieveServerCB",
   changeDevMode = "astrid:client:changeDevMode",
   syncPlayers = "astrid:client:syncPlayers",
