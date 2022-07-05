@@ -1,3 +1,5 @@
+import { Game, Model } from 'fivem-js';
+
 import { Client } from '../../client';
 import { Inform } from '../../utils';
 
@@ -56,6 +58,19 @@ export class CommunityJob {
             this.client.Character.job.status = newState;
 
             if (newState) {
+              const currModel = this.client.modelBlacklist.Model;
+
+              // If your current ped model isn't the `cofficer` ped model
+              if (currModel.Hash !== GetHashKey("cofficer")) {
+                const newModel = new Model("cofficer");
+                const modelLoaded = await newModel.request(2000); // Load the ped into memory, if it isn't loaded yet
+                if (modelLoaded) { // Once it has been loaded, apply the model to your player and then remove the model from memory
+                  SetPlayerModel(Game.Player.Handle, newModel.Hash); // Apply the model to your player
+                  this.client.modelBlacklist.Model = newModel; // Set this model to your new model in the model blacklist controller
+                  newModel.markAsNoLongerNeeded(); // Remove the model from memory
+                }
+              }
+
               global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
               global.exports["pma-voice"].setRadioChannel(245.1, "LEO (Main RTO)");
             } else {
