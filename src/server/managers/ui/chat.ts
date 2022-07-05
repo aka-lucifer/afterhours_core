@@ -23,6 +23,7 @@ import {FormattedCommend} from "../../../client/models/ui/commend";
 import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
 import { Jobs } from '../../../shared/enums/jobs/jobs';
+import { Playtime } from '../../models/database/playtime';
 
 export class ChatManager {
   private server: Server;
@@ -409,6 +410,16 @@ export class ChatManager {
           }
 
           await player.TriggerEvent(Events.sendSystemMessage, new Message(`Commands - ${commandString}`, SystemTypes.Announcement));
+        }
+      }
+    }, Ranks.User);
+
+    new Command("playtime", "See your server playtime", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const playtime = await player.CurrentPlaytime();
+          await player.TriggerEvent(Events.sendSystemMessage, new Message(`Your server playtime is ${await new Playtime(playtime).FormatTime()}.`, SystemTypes.Success));
         }
       }
     }, Ranks.User);
