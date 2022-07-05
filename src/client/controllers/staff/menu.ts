@@ -107,6 +107,8 @@ export class StaffMenu {
   private godmodeTick: number = undefined;
 
   private visible: boolean = true;
+
+  private onDutyCheckbox: string;
   private onDuty: boolean = false;
 
   private lastLocation: Vector3;
@@ -170,6 +172,7 @@ export class StaffMenu {
 
   public set Duty(newState: boolean) {
     this.onDuty = newState;
+    this.client.menuManager.UpdateState(this.onDutyCheckbox, this.onDuty);
   }
 
   // Methods
@@ -297,7 +300,7 @@ export class StaffMenu {
         });
       });
 
-      this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
+      this.onDutyCheckbox = this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, { state: newState }, async (cbData, passedData) => {
           if (cbData) {
             this.client.Character.Job.status = newState;

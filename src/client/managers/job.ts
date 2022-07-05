@@ -21,6 +21,7 @@ import { Events } from '../../shared/enums/events/events';
 import { Message } from '../../shared/models/ui/chat/message';
 import { SystemTypes } from '../../shared/enums/ui/chat/types';
 import { Weapons } from '../../shared/enums/weapons';
+import { Ranks } from '../../shared/enums/ranks';
 
 export class JobManager {
   private readonly client: Client;
@@ -73,7 +74,11 @@ export class JobManager {
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: data.state}, async(cbData, passedData) => {
           if (cbData) {
             this.client.Character.Job.status = data.state;
-            this.client.staffManager.staffMenu.Duty = data.state;
+
+            if (this.client.staffManager.staffMenu !== undefined) {
+              if (this.client.player.Rank >= Ranks.Admin) this.client.staffManager.staffMenu.Duty = data.state;
+            }
+
             console.log("Set Duty", Capitalize(this.client.Character.Job.status.toString()));
             
             if (data.state) {
