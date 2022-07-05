@@ -624,7 +624,7 @@ export class Server {
 
     if (loadedPlayer) {
       player.Connected = true;
-      this.connectedPlayerManager.Add(player);
+      await this.connectedPlayerManager.Add(player);
       const discord = await player.GetIdentifier("discord");
 
       const rejoined = this.connectionsManager.disconnectedPlayers.findIndex(tempPlayer => tempPlayer.license == player.GetIdentifier("license") || tempPlayer.ip == player.GetIdentifier("ip") || tempPlayer.hardwareId == player.HardwareId);
@@ -687,7 +687,7 @@ export class Server {
     }
 
     if (player) {
-      if (!entryExists) this.connectedPlayerManager.Add(player); // If no entry found (add player data into the connected player manager | if restarted resource)
+      if (!entryExists) await this.connectedPlayerManager.Add(player); // If no entry found (add player data into the connected player manager | if restarted resource)
       Log("Connection Manager", `Player data loaded for [${player.Handle}]: ${player.GetName}`);
 
       // Sync weather & time

@@ -268,11 +268,6 @@ export class AOPManager {
     }, 1000);
   }
 
-  private globalSync(): void {
-    emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Automatic);
-    emitNet(Events.syncAOPCycling, -1, this.aopCycling);
-  }
-
   // Events
   public async CALLBACK_setAOP(data: Record<string, any>): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
@@ -290,7 +285,11 @@ export class AOPManager {
 
             // Set the current AOP to the passed AOP, and sync it to every client.
             this.currentAOP = newAOP;
-            emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Automatic);
+
+            const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+            for (let i = 0; i < svPlayers.length; i++) {
+              if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncAOP, this.currentAOP, AOPStates.Automatic);
+            }
 
             await player.TriggerEvent(Events.receiveServerCB, true, data);
 
@@ -322,7 +321,11 @@ export class AOPManager {
             // Get correct cycling AOP & sync to all clients
             this.aopIndex = this.closestCycleAOP();
             this.currentAOP = this.aopLocations[this.aopIndex];
-            emitNet(Events.syncAOP, -1, this.currentAOP, AOPStates.Updated);
+
+            const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+            for (let i = 0; i < svPlayers.length; i++) {
+              if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncAOP, this.currentAOP, AOPStates.Automatic);
+            }
 
             if (this.cycleInterval === undefined) {
               // console.log("create aop cycle interval!");
@@ -331,7 +334,10 @@ export class AOPManager {
             }
           }
 
-          emitNet(Events.syncAOPCycling, -1, this.aopCycling);
+          const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+          for (let i = 0; i < svPlayers.length; i++) {
+            if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncAOPCycling, this.aopCycling);
+          }
         }
       }
     }

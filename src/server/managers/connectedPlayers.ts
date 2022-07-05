@@ -306,10 +306,13 @@ export class ConnectedPlayerManager {
     this.processPing();
   }
 
-  public Add(player: Player): number {
+  public async Add(player: Player): Promise<number> {
     const addedData = this.connectedPlayers.push(player);
     if (this.server.IsDebugging) Log("Player Manager (Add)", `[${player.Handle}]: ${player.GetName}`);
-    emitNet(Events.syncPlayers, -1, Object.assign({}, this.connectedPlayers));
+
+    for (let i = 0; i < this.connectedPlayers.length; i++) {
+      if (this.connectedPlayers[i].Spawned) await this.connectedPlayers[i].TriggerEvent(Events.syncPlayers, Object.assign({}, this.connectedPlayers));
+    }
     return addedData;
   }
 

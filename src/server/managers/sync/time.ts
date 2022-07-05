@@ -62,18 +62,28 @@ export class TimeManager {
 
   public async changeTime(hour: number, minute: number, overTime: boolean, changedBy?: Player): Promise<void> {
     if (overTime) {
-      setTimeout(() => {
+      setTimeout(async() => {
         this.hour = hour;
         this.minute = minute;
         this.setFormattedTime();
-        emitNet(Events.syncTime, -1, this.hour, this.minute);
+
+        const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+        for (let i = 0; i < svPlayers.length; i++) {
+          if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncTime, this.hour, this.minute);
+        }
+
         this.setChanging(false);
       }, serverConfig.syncing.time.secondInterval);
     } else {
       this.hour = hour;
       this.minute = minute;
       this.setFormattedTime();
-      emitNet(Events.syncTime, -1, this.hour, this.minute);
+
+      const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+      for (let i = 0; i < svPlayers.length; i++) {
+        if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncTime, this.hour, this.minute);
+      }
+
       this.setChanging(false);
     }
 
@@ -314,7 +324,7 @@ export class TimeManager {
 
   public startTime(): void {
     // console.log("start time!");
-    this.timeInterval = setInterval(() => { // 21,600 seconds (6 hours | 1,440 times) - Is a full day
+    this.timeInterval = setInterval(async() => { // 21,600 seconds (6 hours | 1,440 times) - Is a full day
       if (!this.timeFrozen) {
         const tempTime = GlobalState.time;
 
@@ -330,7 +340,10 @@ export class TimeManager {
         this.setFormattedTime();
 
         // console.log(`Old Time: ${tempTime} | New Time: ${this.time}`, this.hour, this.minute);
-        emitNet(Events.syncTime, -1, this.hour, this.minute);
+        const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+        for (let i = 0; i < svPlayers.length; i++) {
+          if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncTime, this.hour, this.minute);
+        }
       }
     }, serverConfig.syncing.time.secondInterval);
   }

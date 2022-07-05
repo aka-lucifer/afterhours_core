@@ -79,7 +79,10 @@ export class WeatherManager {
     }
 
     if (manually) {
-      emitNet(Events.syncWeather, -1, this.currentWeather); // Sync weather to all clients
+      const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+      for (let i = 0; i < svPlayers.length; i++) {
+        if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncWeather, this.currentWeather);
+      }
       this.setChanging(true);
 
       setTimeout(() => {
