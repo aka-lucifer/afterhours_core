@@ -71,6 +71,7 @@ import { PlayerManager } from './managers/database/players';
 import { ErrorCodes } from '../shared/enums/logging/errors';
 import { Weapon } from '../shared/interfaces/weapon';
 import { concatArgs } from '../shared/utils';
+import { NotificationTypes } from '../shared/enums/ui/notifications/types';
 
 export class Server {
   // Debug Data
@@ -316,10 +317,23 @@ export class Server {
     }, Ranks.User);
 
     new Command("dev", "Toggle development mode", [], false, async(source: string) => {
-      this.developmentMode = !this.developmentMode;
-      SetConvar("development_server", this.developmentMode.toString());
-      emitNet(Events.changeDevMode, -1, this.developmentMode);
-      Inform("Development Mode", `Set development mode to ${Capitalize(this.developmentMode.toString())}`);
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          this.developmentMode = !this.developmentMode;
+          SetConvar("development_server", this.developmentMode.toString());
+          emitNet(Events.changeDevMode, -1, this.developmentMode);
+
+          const devLabel = Capitalize(this.developmentMode.toString());
+          Inform("Development Mode", `Set development mode to ${devLabel}`);
+
+          if (this.developmentMode) {
+            await player.Notify("Development", `Server development mode enabled.`, NotificationTypes.Info);
+          } else {
+            await player.Notify("Development", `Server development mode disabled.`, NotificationTypes.Error);
+          }
+        }
+      }
     }, Ranks.Developer);
 
     new Command("afk", "Toggle AFK mode", [], false, async(source: string) => {
