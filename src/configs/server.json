@@ -6122,12 +6122,6 @@
       "type": "animal",
       "rank": 7
     },
-    "1816727634": {
-      "model": "skeleton",
-      "name": "skeleton",
-      "type": "ped",
-      "rank": 7
-    },
     "1832265812": {
       "model": "a_c_pug",
       "name": "a_c_pug",
@@ -6286,44 +6280,50 @@
     },
     "-1404353274": {
       "model": "u_m_y_zombie_01",
-      "name": "u_m_y_zombie_01",
+      "name": "Zombie",
       "type": "ped",
       "rank": 7
     },
 
     "-1311157878": {
       "model": "obama",
-      "name": "obama",
+      "name": "Barrack Obama",
       "type": "addon_ped",
       "rank": 7
     },
     "-1647800875": {
       "model": "sam",
-      "name": "sam",
+      "name": "Samuel L Jackson",
       "type": "addon_ped",
       "rank": 7
     },
     "-1461634306": {
       "model": "t800skel",
-      "name": "t800skel",
+      "name": "T800 Terminator (Skeleton)",
       "type": "addon_ped",
       "rank": 7
     },
     "-1416562851": {
       "model": "therock(jeans)",
-      "name": "therock(jeans)",
+      "name": "The Rock (Jeans)",
       "type": "addon_ped",
       "rank": 7
     },
     "919248959": {
       "model": "tromp",
-      "name": "tromp",
+      "name": "Donald Trump",
       "type": "addon_ped",
       "rank": 7
     },
     "919567755": {
       "model": "therock(nojeans)",
-      "name": "therock(nojeans)",
+      "name": "The Rock",
+      "type": "addon_ped",
+      "rank": 7
+    },
+    "1816727634": {
+      "model": "skeleton",
+      "name": "Skeleton",
       "type": "addon_ped",
       "rank": 7
     }
