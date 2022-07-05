@@ -4,6 +4,11 @@ import { getClosestPlayer } from "../../utils";
 import { Events } from "../../../shared/enums/events/events";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { KidnapStates } from "../../../shared/enums/kidnapStates";
+import { LogTypes } from '../../enums/logging';
+import WebhookMessage from '../../models/webhook/discord/webhookMessage';
+import { EmbedColours } from '../../../shared/enums/logging/embedColours';
+import { Ranks } from '../../../shared/enums/ranks';
+import sharedConfig from '../../../configs/shared.json';
 
 export class Kidnapping {
   private server: Server;
@@ -30,10 +35,34 @@ export class Kidnapping {
                 closestStates.state.kidnapState = KidnapStates.Kidnapped; // Set them to kidnapped
                 await closest.TriggerEvent(Events.kidnapPlayer, true);
                 await player.Notify("Kidnapping", "You have placed a bag over this players head.", NotificationTypes.Info);
+
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Action Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Player Kidnapped__",
+                    description: `A player has kidnapped another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Kidnapped**: ${closest.GetName}\n**Kidnapped Players Rank**: ${Ranks[closest.Rank]}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
               } else {
                 closestStates.state.kidnapState = KidnapStates.Free; // Set them to free
                 await closest.TriggerEvent(Events.kidnapPlayer, false);
                 await player.Notify("Kidnapping", "You have removed the bag off this players head.", NotificationTypes.Error);
+
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Action Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Player Released__",
+                    description: `A player has stopped kidnapping another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Kidnapped**: ${closest.GetName}\n**Kidnapped Players Rank**: ${Ranks[closest.Rank]}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
               }
             } else {
               await player.Notify("Kidnapping", "Player is too far away!", NotificationTypes.Error);

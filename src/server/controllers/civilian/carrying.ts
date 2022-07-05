@@ -5,6 +5,11 @@ import { Events } from "../../../shared/enums/events/events";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { CarryStates } from "../../../shared/enums/carryStates"
 import { CuffState } from "../../../shared/enums/jobs/cuffStates";
+import { LogTypes } from '../../enums/logging';
+import WebhookMessage from '../../models/webhook/discord/webhookMessage';
+import { EmbedColours } from '../../../shared/enums/logging/embedColours';
+import { Ranks } from '../../../shared/enums/ranks';
+import sharedConfig from '../../../configs/shared.json';
 
 export class Carrying {
   private server: Server;
@@ -39,15 +44,36 @@ export class Carrying {
                     closestStates.state.carryState = CarryStates.Carried; // Set them to carried
                     await closest.TriggerEvent(Events.carryPlayer, player.Handle);
                     await player.TriggerEvent(Events.startCarrying);
-                    // await player.Notify("Carrying", "You have placed a bag over this players head.", NotificationTypes.Info);
+
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Action Logs", embeds: [{
+                        color: EmbedColours.Green,
+                        title: "__Player Carried__",
+                        description: `A player has started carrying a player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Carried**: ${closest.GetName}\n**Carried Players Rank**: ${Ranks[closest.Rank]}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
                   } else {
                     console.log("stop carrying", player.Handle, closest.Handle);
                     myStates.state.carryState = CarryStates.Free; // Set you to free
                     closestStates.state.carryState = CarryStates.Free; // Set them to free
                     await closest.TriggerEvent(Events.stopCarrying);
                     await player.TriggerEvent(Events.stopCarrying);
-                    // await closest.TriggerEvent(Events.kidnapPlayer, false);
-                    // await player.Notify("Carrying", "You have removed the bag off this players head.", NotificationTypes.Error);
+
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Action Logs", embeds: [{
+                        color: EmbedColours.Red,
+                        title: "__Player Carried__",
+                        description: `A player has been dropped a player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Dropped**: ${closest.GetName}\n**Dropped Players Rank**: ${Ranks[closest.Rank]}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
                   }
                 } else {
                   await player.Notify("Carrying", "You can't carry someone, whilst you're being carried!", NotificationTypes.Error);

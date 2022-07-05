@@ -11,6 +11,11 @@ import { SystemTypes } from '../../../../shared/enums/ui/chat/types';
 import { formatFirstName } from '../../../../shared/utils';
 import { Events } from '../../../../shared/enums/events/events';
 import { Jobs } from '../../../../shared/enums/jobs/jobs';
+import { LogTypes } from '../../../enums/logging';
+import WebhookMessage from '../../../models/webhook/discord/webhookMessage';
+import { EmbedColours } from '../../../../shared/enums/logging/embedColours';
+import { Ranks } from '../../../../shared/enums/ranks';
+import sharedConfig from '../../../../configs/shared.json';
 
 export class Cuffing {
   private server: Server;
@@ -112,6 +117,18 @@ export class Cuffing {
 
                     // Display 3D /me above your head
                     await this.server.characterManager.meDrawing(parseInt(player.Handle), `Uncuffs ${closestCharacter.Name}`);
+
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Action Logs", embeds: [{
+                        color: EmbedColours.Red,
+                        title: "__Player Uncuffed__",
+                        description: `A player has uncuffed another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Uncuffed**: ${closest.GetName}\n**Uncuffed Players Rank**: ${Ranks[closest.Rank]}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
                   } else {
                     await player.Notify("Cuffing", "This person isn't cuffed!", NotificationTypes.Error);
                   }
@@ -202,6 +219,18 @@ export class Cuffing {
 
                 // Display 3D /me above your head
                 await this.server.characterManager.meDrawing(parseInt(player.Handle), `handcuffs ${perpsCharacter.Name}`);
+
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Action Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Player Cuffed__",
+                    description: `A player has cuffed another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Cuffed**: ${perpsPlayer.GetName}\n**Cuffed Players Rank**: ${Ranks[perpsPlayer.Rank]}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
               }
             }
           } else {

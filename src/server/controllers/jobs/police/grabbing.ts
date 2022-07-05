@@ -4,6 +4,11 @@ import { getClosestPlayer } from "../../../utils";
 import { JobEvents } from "../../../../shared/enums/events/jobs/jobEvents";
 import { NotificationTypes } from "../../../../shared/enums/ui/notifications/types";
 import { GrabState } from '../../../../shared/enums/jobs/grabStates';
+import { LogTypes } from '../../../enums/logging';
+import WebhookMessage from '../../../models/webhook/discord/webhookMessage';
+import { EmbedColours } from '../../../../shared/enums/logging/embedColours';
+import { Ranks } from '../../../../shared/enums/ranks';
+import sharedConfig from '../../../../configs/shared.json';
 
 export class Grabbing {
   private server: Server;
@@ -34,12 +39,36 @@ export class Grabbing {
 
                 myStates.state.grabState = GrabState.Holding;
                 await player.TriggerEvent(JobEvents.startGrabbing, closest.Handle, player.Handle);
+
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Action Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Player Grabbed__",
+                    description: `A player has grabbed another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Grabbed**: ${closest.GetName}\n**Grabbed Players Rank**: ${Ranks[closest.Rank]}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
               } else if (grabbeesStates.state.grabState == GrabState.Held) {
 
                 myStates.state.grabState = GrabState.None;
                 grabbeesStates.state.grabState = GrabState.None;
                 await player.TriggerEvent(JobEvents.stopGrabbing);
                 await closest.TriggerEvent(JobEvents.stopGrabbing);
+
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Action Logs", embeds: [{
+                    color: EmbedColours.Red,
+                    title: "__Player Released__",
+                    description: `A player has stopped grabbing another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Released**: ${closest.GetName}\n**Released Players Rank**: ${Ranks[closest.Rank]}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
               } else if (grabbeesStates.state.grabState == GrabState.Holding) {
                 await player.Notify("Grabbing", "You can't grab this person, as they're already grabbing someone!", NotificationTypes.Error);
               }
@@ -66,6 +95,23 @@ export class Grabbing {
         const grabbeeStates = Player(grabbeeId);
         grabbeeStates.state.grabState = GrabState.Held;
         emitNet(JobEvents.setGrabbed, grabbeeId, grabbingPlayer.Handle);
+
+        const grabbedPlayer = await this.server.connectedPlayerManager.GetPlayer(grabbeeId.toString());
+        if (grabbingPlayer) {
+          if (grabbingPlayer.Spawned) {
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Action Logs", embeds: [{
+                color: EmbedColours.Green,
+                title: "__Player Grabbed__",
+                description: `A player has grabbed another player.\n\n**Username**: ${grabbingPlayer.GetName}\n**Rank**: ${Ranks[grabbingPlayer.Rank]}\n**Grabbed**: ${grabbedPlayer.GetName}\n**Grabbed Players Rank**: ${Ranks[grabbedPlayer.Rank]}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+          }
+        }
       } else {
         console.log("closest ped isn't found!");
       }
