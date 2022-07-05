@@ -20,9 +20,11 @@ import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
 import { EmbedColours } from '../../shared/enums/logging/embedColours';
 import { formatFirstName, getRankFromValue } from '../../shared/utils';
 import { CountyRanks, PoliceRanks, StateRanks } from '../../shared/enums/jobs/ranks';
-import { Jobs } from '../../shared/enums/jobs/jobs';
+import { JobLabels, Jobs } from '../../shared/enums/jobs/jobs';
 
 import sharedConfig from '../../configs/shared.json';
+import { Command } from '../models/ui/chat/command';
+import { Ranks } from '../../shared/enums/ranks';
 
 interface Unit {
   id: number;
@@ -55,7 +57,54 @@ export class JobManager {
   }
 
   // Methods
+  private registerCommands(): void {
+    new Command("community", "Become a community officer", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const character = await this.server.characterManager.Get(player);
+          if (character) {
+            const updatedJob = await character.updateJob(Jobs.Community, JobLabels.Community, -1, false, character.Job.Callsign, character.Job.Status);
+            if (updatedJob) {
+              player.selectedCharacter = { // Update selected character to have new job
+                id: character.Id,
+                firstName: character.firstName,
+                lastName: character.lastName,
+                nationality: character.nationality,
+                backstory: character.backstory,
+                dob: character.DOB,
+                age: character.Age,
+                isFemale: character.Female,
+                phone: character.Phone,
+                job: character.Job,
+                metadata: character.Metadata,
+                createdAt: character.CreatedAt,
+                lastUpdated: character.LastEdited,
+              };
+
+              // Empty owned characters table
+              player.characters = [];
+
+              // Sync all players & selected characters to all clients
+              emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
+
+              // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+              await this.server.commandManager.deleteChatSuggestions(player);
+              this.server.commandManager.createChatSuggestions(player);
+              await player.TriggerEvent(Events.updateSuggestions);
+
+              await player.TriggerEvent(Events.updateCharacter, Object.assign({}, character)); // Update our character on our client (char info, job, etc)
+              await player.Notify("Jobs", `You've became a ${JobLabels.Community}.`, NotificationTypes.Info);
+            }
+          }
+        }
+      }
+    }, Ranks.User);
+  }
+
   public init(): void {
+    this.registerCommands();
+
     // Jobs
     this.policeJob = new PoliceJob(this.server);
     this.policeJob.init();
@@ -64,8 +113,6 @@ export class JobManager {
     this.jobBlips = new JobBlips(this.server);
     this.jobBlips.init();
   }
-
-  // Events
 
   // Callbacks
   private async CALLBACK_setDuty(data: Record<string, any>): Promise<void> {
@@ -255,6 +302,7 @@ export class JobManager {
                       emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
 
                       // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      await this.server.commandManager.deleteChatSuggestions(playerConnected);
                       this.server.commandManager.createChatSuggestions(playerConnected);
                       await playerConnected.TriggerEvent(Events.updateSuggestions);
                       await playerConnected.TriggerEvent(Events.updateCharacter, Object.assign({}, connectedCharacter)); // Update our character on our client (char info, job, etc)
@@ -321,6 +369,7 @@ export class JobManager {
                       emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
 
                       // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      await this.server.commandManager.deleteChatSuggestions(playerConnected);
                       this.server.commandManager.createChatSuggestions(playerConnected);
                       await playerConnected.TriggerEvent(Events.updateSuggestions);
                       await playerConnected.TriggerEvent(Events.updateCharacter, Object.assign({}, connectedCharacter)); // Update our character on our client (char info, job, etc)
@@ -381,6 +430,7 @@ export class JobManager {
                       emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
 
                       // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      await this.server.commandManager.deleteChatSuggestions(foundPlayer);
                       this.server.commandManager.createChatSuggestions(foundPlayer);
                       await foundPlayer.TriggerEvent(Events.updateSuggestions);
 

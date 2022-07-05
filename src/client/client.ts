@@ -560,6 +560,15 @@ export class Client {
     // Load New Character Data
     this.character = new Character(character);
 
+    // Destroy community officer shit if you aren't a community officer
+    if (this.character.Job.name !== Jobs.Community) {
+      if (this.jobManager.communityJob !== undefined) {
+        if (this.jobManager.communityJob.MenuBuilt) {
+          this.jobManager.communityJob.destroyMenu();
+        }
+      }
+    }
+
     await this.jobManager.init();
 
     if (this.character.isLeoJob()) {
@@ -569,14 +578,6 @@ export class Client {
     } else {
       if (this.jobManager.policeJob !== undefined) if (this.jobManager.policeJob.ClockZonesCreated) this.jobManager.policeJob.deleteClockZones(); // Delete clock on zones
       // if (!this.jobManager.policeJob.commandMenu.Created) this.jobManager.policeJob.commandMenu.stop(); // Delete command menu assets
-    }
-
-    if (this.character.Job.name !== Jobs.Community) {
-      if (this.jobManager.communityJob !== undefined) {
-        if (this.jobManager.communityJob.MenuBuilt) {
-          this.jobManager.communityJob.destroyMenu();
-        }
-      }
     }
 
     // Set Rich Presence
@@ -614,6 +615,17 @@ export class Client {
     // Load New Character Data
     this.character = new Character(character);
 
+    // Destroy community officer shit if you aren't a community officer
+    if (this.character.Job.name !== Jobs.Community) {
+      if (this.jobManager.communityJob !== undefined) {
+        if (this.jobManager.communityJob.MenuBuilt) {
+          this.jobManager.communityJob.destroyMenu();
+        }
+      }
+    }
+
+    await this.jobManager.init();
+
     if (this.character.isLeoJob()) {
       if (!this.jobManager.policeJob.ClockZonesCreated) this.jobManager.policeJob.createClockZones(); // Register clock on/off interactive zone
       // if (!this.jobManager.policeJob.commandMenu.Created) this.jobManager.policeJob.commandMenu.start(); // Start drawing markers and making menu interactive
@@ -621,14 +633,6 @@ export class Client {
     } else {
       if (this.jobManager.policeJob !== undefined) if (this.jobManager.policeJob.ClockZonesCreated) this.jobManager.policeJob.deleteClockZones(); // Delete clock on zones
       // if (!this.jobManager.policeJob.commandMenu.Created) this.jobManager.policeJob.commandMenu.stop(); // Delete command menu assets
-    }
-
-    if (this.character.Job.name !== Jobs.Community) {
-      if (this.jobManager.communityJob !== undefined) {
-        if (this.jobManager.communityJob.MenuBuilt) {
-          this.jobManager.communityJob.destroyMenu();
-        }
-      }
     }
   }
 

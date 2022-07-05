@@ -1182,6 +1182,7 @@ export class StaffMenu {
                       emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
 
                       // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      await this.server.commandManager.deleteChatSuggestions(foundPlayer);
                       this.server.commandManager.createChatSuggestions(foundPlayer);
                       await foundPlayer.TriggerEvent(Events.updateSuggestions);
 
@@ -1231,6 +1232,7 @@ export class StaffMenu {
                       emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.GetPlayers));
 
                       // Send all registered command suggestions to your client (Player, Staff, Jobs, General, etc)
+                      await this.server.commandManager.deleteChatSuggestions(foundPlayer);
                       this.server.commandManager.createChatSuggestions(foundPlayer);
                       await foundPlayer.TriggerEvent(Events.updateSuggestions);
 
