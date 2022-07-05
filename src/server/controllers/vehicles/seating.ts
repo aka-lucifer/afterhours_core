@@ -9,6 +9,11 @@ import { GrabState } from '../../../shared/enums/jobs/grabStates';
 import { JobEvents } from '../../../shared/enums/events/jobs/jobEvents';
 import { CuffState } from '../../../shared/enums/jobs/cuffStates';
 import { InteractionStates } from '../../../shared/enums/jobs/interactionStates';
+import { LogTypes } from '../../enums/logging';
+import WebhookMessage from '../../models/webhook/discord/webhookMessage';
+import { EmbedColours } from '../../../shared/enums/logging/embedColours';
+import { Ranks } from '../../../shared/enums/ranks';
+import sharedConfig from '../../../configs/shared.json';
 
 export class Seating {
   private server: Server;
@@ -61,6 +66,18 @@ export class Seating {
                 if (closestPlayersStates.state.cuffState == CuffState.Cuffed || closestPlayersStates.state.cuffState == CuffState.Shackled) {
                   await closestPlayer.TriggerEvent(Events.seatCuffAnim); // Have to do it this way as OneSync doesn't even let you use the server sided `TaskPlayAnim`
                 }
+
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Action Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Player Seated__",
+                    description: `A player has placed another player inside a vehicle.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Seated**: ${closestPlayer.GetName}\n**Seated Players Rank**: ${Ranks[closestPlayer.Rank]}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
               }
             } else {
               await player.Notify("Seating", "Player is too far away!", NotificationTypes.Error);
@@ -108,7 +125,31 @@ export class Seating {
                   if (closestPlayersStates.state.grabState == GrabState.Seated) {
                     // console.log("They were grabbed when they were seated!");
                     await player.TriggerEvent(JobEvents.startGrabbing, closestPlayer.Handle, player.Handle);
+
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Action Logs", embeds: [{
+                        color: EmbedColours.Green,
+                        title: "__Player Grabbed__",
+                        description: `A player has grabbed another player.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Grabbed**: ${closestPlayer.GetName}\n**Grabbed Players Rank**: ${Ranks[closestPlayer.Rank]}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
                   }
+
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Action Logs", embeds: [{
+                      color: EmbedColours.Red,
+                      title: "__Player Unseated__",
+                      description: `A player has removed another player from a vehicle.\n\n**Username**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Unseated**: ${closestPlayer.GetName}\n**Unseated Players Rank**: ${Ranks[closestPlayer.Rank]}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
                 } else {
                   await player.Notify("Unseating", "This person hasn't been seated inside this vehicle!", NotificationTypes.Error);
                 }
