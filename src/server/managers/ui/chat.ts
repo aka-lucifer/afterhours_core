@@ -409,7 +409,6 @@ export class ChatManager {
           }
 
           await player.TriggerEvent(Events.sendSystemMessage, new Message(`Commands - ${commandString}`, SystemTypes.Announcement));
-          console.log("commands", commandString);
         }
       }
     }, Ranks.User);
