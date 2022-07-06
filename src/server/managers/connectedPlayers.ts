@@ -242,13 +242,6 @@ export class ConnectedPlayerManager {
   
   constructor(server: Server) {
     this.server = server;
-
-    RegisterCommand("disc_player", async(source: string) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      emitNet(Events.deleteLeftPlayer, -1, player.Handle); // Remove this players blip to all staff members, showing players blips
-      this.server.characterManager.Disconnect(player);
-      await player.Disconnect("testing");
-    }, false);
   }
 
   // Get Requests
@@ -384,6 +377,7 @@ export class ConnectedPlayerManager {
         emitNet(Events.deleteLeftPlayer, -1, player.Handle); // Remove this players blip to all staff members, showing players blips
         await this.server.staffManager.ghostPlayers.playerLeft(player); // Create this ped as a ghost ped
         await this.server.priority.Remove(player); // Remove player from active unit if he exists and update priority
+        await this.server.staffManager.gravityGun.checkDetaching(player.Handle);
         this.server.characterManager.Disconnect(player);
         await player.Disconnect(disconnectReason);
       }

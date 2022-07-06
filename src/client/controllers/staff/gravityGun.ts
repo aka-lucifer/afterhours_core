@@ -107,8 +107,9 @@ export class GravityGun {
               
               this.holding = false;
             } else {
+              const myStates = Player(this.client.player.NetworkId);
               this.holding = false;
-              emitNet(Events.ungravityPlayer, GetPlayerServerId(NetworkGetPlayerIndexFromPed(this.heldEntity.Handle)));
+              emitNet(Events.ungravityPlayer, myStates.state.gravitiedPlayer);
             }
           }
         }
@@ -142,7 +143,9 @@ export class GravityGun {
             this.stop();
           }
         } else {
-          emitNet(Events.shootEntity, GetPlayerServerId(NetworkGetPlayerIndexFromPed(this.heldEntity.Handle)));
+          const myStates = Player(this.client.player.NetworkId);
+          this.holding = false;
+          emitNet(Events.shootEntity, myStates.state.gravitiedPlayer);
         }
       }
     }
@@ -200,7 +203,11 @@ export class GravityGun {
   }
 
   private stop(): void {
-    this.heldEntity = undefined;
+    if (this.heldEntity !== undefined) {
+      SetEntityAlpha(this.heldEntity.Handle, 255, false);
+      this.heldEntity = undefined;
+    }
+    
     this.holding = false;
   }
 
@@ -241,13 +248,19 @@ export class GravityGun {
 
   // Events
   private EVENT_setHeldEntity(heldEntity: any): void {
-    const heldPed = new Ped(GetPlayerPed(GetPlayerFromServerId(heldEntity.handle)));
-    if (heldPed.CurrentVehicle) {
-      this.heldEntity = heldPed.CurrentVehicle;
-    } else {
-      this.heldEntity = heldPed;
+    const holdersNet = Number(heldEntity.handle);
+    if (holdersNet > 0) {
+      const heldPed = new Ped(GetPlayerPed(GetPlayerFromServerId(holdersNet)));
+
+      if (heldPed.CurrentVehicle) {
+        this.heldEntity = heldPed.CurrentVehicle;
+      } else {
+        this.heldEntity = heldPed;
+      }
+      
+      SetEntityAlpha(this.heldEntity.Handle, 200, false);
+      this.holding = true;
     }
-    this.holding = true;
   }
 
   private EVENT_unHeldEntity(): void {
@@ -255,28 +268,32 @@ export class GravityGun {
   }
 
   private EVENT_holdPlayer(holderPlayer: any): void {
-    const myPed = Game.PlayerPed;
-    const holderPed = new Ped(GetPlayerPed(GetPlayerFromServerId(holderPlayer.handle)));
+    const holdersNet = Number(holderPlayer.handle);
+    if (holdersNet > 0) {
+      const myPed = Game.PlayerPed;
+      const holderPed = new Ped(GetPlayerPed(GetPlayerFromServerId(holdersNet)));
 
-    if (myPed.CurrentVehicle) {
-      this.heldEntity = myPed.CurrentVehicle;
+      if (myPed.CurrentVehicle) {
+        this.heldEntity = myPed.CurrentVehicle;
 
-      this.controlTick = setTick(() => {
-        DisableControlAction(0, 23, true);
-        DisableControlAction(0, 75, true);
-      });
-    } else {
-      this.heldEntity = myPed;
+        this.controlTick = setTick(() => {
+          DisableControlAction(0, 23, true);
+          DisableControlAction(0, 75, true);
+        });
+      } else {
+        this.heldEntity = myPed;
+      }
+
+      const holderPos = holderPed.Position;
+      const dist = holderPos.distance(this.heldEntity.Position);
+      
+      AttachEntityToEntity(this.heldEntity.Handle, holderPed.Handle, GetPedBoneIndex(holderPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
     }
-
-    const holderPos = holderPed.Position;
-    const dist = holderPos.distance(this.heldEntity.Position);
-    
-    SetEntityAlpha(this.heldEntity.Handle, 200, false);
-    AttachEntityToEntity(this.heldEntity.Handle, holderPed.Handle, GetPedBoneIndex(holderPed.Handle, Bone.PH_R_Hand), dist, 0.0, 0.0, -90.0, -95.0, 0.0, true, true, false, true, 0, true);
   }
 
   private EVENT_releasePlayer(): void {
+
+    console.log("detach us", this.heldEntity.Handle, this.controlTick);
 
     if (GetEntityType(this.heldEntity.Handle) == 2) { // If a vehicle
       clearTick(this.controlTick);
@@ -285,7 +302,6 @@ export class GravityGun {
 
     if (this.heldEntity !== undefined) {
       this.heldEntity.detach();
-      SetEntityAlpha(this.heldEntity.Handle, 255, false);
       this.stop();
     }
   }

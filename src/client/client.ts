@@ -358,7 +358,7 @@ export class Client {
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
 
-  public async nuiLoaded(cb: CallableFunction): Promise<void> {
+  public async nuiLoaded(data: Record<string, any>, cb: CallableFunction): Promise<void> {
     // console.log("NUI READY!");
     this.nuiReady = true;
     await this.initialize();

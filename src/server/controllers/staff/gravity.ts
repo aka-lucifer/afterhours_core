@@ -1,7 +1,8 @@
+import {Server} from "../../server";
+
 import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
-import {Server} from "../../server";
 
 export class Gravity {
   private server: Server
@@ -15,6 +16,19 @@ export class Gravity {
     onNet(Events.shootEntity, this.EVENT_shootEntity.bind(this));
   }
 
+  public async checkDetaching(playersNet: string): Promise<void> {
+    const myStates = Player(playersNet)
+    if (myStates.state.usingGravityGun) {
+      const attachedPlayer = await this.server.connectedPlayerManager.GetPlayer(myStates.state.gravitiedPlayer);
+      if (attachedPlayer) {
+        await attachedPlayer.TriggerEvent(Events.releasePlayer);
+
+        myStates.state.usingGravityGun = false;
+        myStates.state.gravitiedPlayer = -1;
+      }
+    }
+  }
+
   // Events
   private async EVENT_gravityPlayer(playersNet: number): Promise<void> {
     const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
@@ -23,10 +37,14 @@ export class Gravity {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
         if (holdingPlayer) {
           const myStates = Player(myPlayer.Handle);
-          myStates.state.usingGravityGun = true;
 
-          myPlayer.TriggerEvent(Events.setHeldEntity, Object.assign({}, holdingPlayer));
-          holdingPlayer.TriggerEvent(Events.holdPlayer, Object.assign({}, myPlayer));
+          if (!myStates.state.usingGravityGun) {
+            myStates.state.usingGravityGun = true;
+            myStates.state.gravitiedPlayer = holdingPlayer.Handle;
+
+            myPlayer.TriggerEvent(Events.setHeldEntity, Object.assign({}, holdingPlayer));
+            holdingPlayer.TriggerEvent(Events.holdPlayer, Object.assign({}, myPlayer));
+          }
         }
       } else {
         myPlayer.Notify("Gravity Gun", "Fuck off you don't have permission you injecting little twat!", NotificationTypes.Error);
@@ -38,13 +56,16 @@ export class Gravity {
     const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (myPlayer) {
       if (myPlayer.Rank >= Ranks.Admin) {
+        console.log("player to detach", playersNet)
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
         if (holdingPlayer) {
           const myStates = Player(myPlayer.Handle);
-          myStates.state.usingGravityGun = false;
+          if (myStates.state.usingGravityGun) {
+            myStates.state.usingGravityGun = false;
 
-          holdingPlayer.TriggerEvent(Events.releasePlayer);
-          myPlayer.TriggerEvent(Events.unsetHeldEntity);
+            holdingPlayer.TriggerEvent(Events.releasePlayer);
+            myPlayer.TriggerEvent(Events.unsetHeldEntity);
+          }
         }
       } else {
         myPlayer.Notify("Gravity Gun", "Fuck off you don't have permission you injecting little twat!", NotificationTypes.Error);
@@ -59,10 +80,12 @@ export class Gravity {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
         if (holdingPlayer) {
           const myStates = Player(myPlayer.Handle);
-          myStates.state.usingGravityGun = false;
+          if (myStates.state.usingGravityGun) {
+            myStates.state.usingGravityGun = false;
 
-          holdingPlayer.TriggerEvent(Events.getGravitied);
-          myPlayer.TriggerEvent(Events.unsetHeldEntity);
+            holdingPlayer.TriggerEvent(Events.getGravitied);
+            myPlayer.TriggerEvent(Events.unsetHeldEntity);
+          }
         }
       } else {
         myPlayer.Notify("Gravity Gun", "Fuck off you don't have permission you injecting little twat!", NotificationTypes.Error);
