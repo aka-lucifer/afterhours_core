@@ -1104,7 +1104,6 @@ const HUD = new Vue({
 
     // Death UI
     DisplayDeath(data) {
-      console.log("display death init fam!", JSON.stringify(data));
       if (Object.keys(data).length > 0) {
 
         if (data.type === "counting_down") {

@@ -38,14 +38,12 @@ export class ModelBlacklist {
         } else { // If it is assigned check if it's different
           const currModel = myPed.Model;
           if (currModel.Hash !== this.currentModel.Hash) {
-            console.log("changed model!");
             this.currentModel = currModel; // Set new model
             this.changedModel = true; // Set changed our model to true
           }
         }
 
         if (this.changedModel) {
-          console.log("mandem changed his model init bruv!", this.currentModel);
           emitNet(Events.changedPed, this.currentModel.Hash);
           this.changedModel = false;
         } else {
