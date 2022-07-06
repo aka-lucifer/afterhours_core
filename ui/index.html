@@ -756,7 +756,7 @@
   
               <!-- Checkbox -->
               <div :id="compIndex" v-else-if="comp.type == 'checkbox'" class="astrid_menu_checkbox" v-bind:class="{ 'astrid_menu_checkbox_hovered': compIndex == menuOption, 'menu_checkbox_icon_hovered': compIndex == menuOption }">
-                <div style="margin-top: -5px;">{{ comp.name }}</div>
+                <div style="margin-top: 0.2vh;">{{ comp.name }}</div>
                 <v-icon color="black" class="astrid_menu_checkbox_icon" v-if="comp.state">mdi-check</v-icon>
                 <v-icon color="black" class="astrid_menu_checkbox_icon" v-else>mdi-close</v-icon>
               </div>
