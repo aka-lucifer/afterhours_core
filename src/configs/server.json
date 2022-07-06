@@ -6326,6 +6326,24 @@
       "name": "Skeleton",
       "type": "addon_ped",
       "rank": 7
+    },
+    "-262296232": {
+      "model": "spongebob",
+      "name": "Spongebob",
+      "type": "addon_ped",
+      "rank": 10
+    },
+    "-605943219": {
+      "model": "patrick",
+      "name": "Patrick",
+      "type": "addon_ped",
+      "rank": 10
+    },
+    "-1720502565": {
+      "model": "squidward",
+      "name": "Squidward",
+      "type": "addon_ped",
+      "rank": 10
     }
   },
   "aop": {
