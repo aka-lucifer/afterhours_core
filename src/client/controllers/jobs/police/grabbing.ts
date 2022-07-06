@@ -91,21 +91,24 @@ export class Grabbing {
   }
 
   private async EVENT_setGrabbed(grabbersId: number): Promise<void> {
-    const grabbersPed = GetPlayerPed(GetPlayerFromServerId(grabbersId));
-    if (grabbersPed > 0 && grabbersPed != Game.PlayerPed.Handle) {
-      const loadedAnim = LoadAnim(this.grabbedDict);
-      if (loadedAnim) {
-        const playerStates = Player(grabbersId);
-        this.grabbedBy = grabbersPed;
+    const grabbersNet = Number(grabbersId);
+    if (grabbersNet > 0) {
+      const grabbersPed = GetPlayerPed(GetPlayerFromServerId(grabbersNet));
+      if (grabbersPed > 0 && grabbersPed != Game.PlayerPed.Handle) {
+        const loadedAnim = LoadAnim(this.grabbedDict);
+        if (loadedAnim) {
+          const playerStates = Player(grabbersId);
+          this.grabbedBy = grabbersPed;
 
-        AttachEntityToEntity(Game.PlayerPed.Handle, grabbersPed, 0, 0.2, 0.5, 0.0, 0.5, 0.5, 0, false, false, true, false, 2, false);
+          AttachEntityToEntity(Game.PlayerPed.Handle, grabbersPed, 0, 0.2, 0.5, 0.0, 0.5, 0.5, 0, false, false, true, false, 2, false);
 
-        playerStates.state.grabState = GrabState.Held;
-        this.grabType = GrabState.Held;
-        this.grabbed = true;
-        this.startAnims();
-      } else {
-        console.log("COULDN'T LOAD GRABBED ANIM DICT 2!");
+          playerStates.state.grabState = GrabState.Held;
+          this.grabType = GrabState.Held;
+          this.grabbed = true;
+          this.startAnims();
+        } else {
+          console.log("COULDN'T LOAD GRABBED ANIM DICT 2!");
+        }
       }
     }
   }

@@ -33,15 +33,18 @@ export class Carrying {
 
   // Events
   private async EVENT_carryPlayer(carriersNetId: number): Promise<void> {
-    const carriersPedHandle = GetPlayerPed(GetPlayerFromServerId(carriersNetId));
-    if (carriersPedHandle > 0) {
-      const loadedDict = await LoadAnim("nm");
-      if (loadedDict) {
-        const myPed = Game.PlayerPed;
-        const playingAnim = await PlayAnim(myPed, "nm", "firemans_carry", 33, -1, 8.0, -8.0, 0, false, false, false);
-        if (playingAnim) {
-          AttachEntityToEntity(Game.PlayerPed.Handle, carriersPedHandle, 0, 0.27, 0.15, 0.63, 0.5, 0.5, 0, false, false, true, false, 2, false);
-          this.beingCarried = true;
+    const carriersNet = Number(carriersNetId);
+    if (carriersNet > 0) {
+      const carriersPedHandle = GetPlayerPed(GetPlayerFromServerId(carriersNet));
+      if (carriersPedHandle > 0) {
+        const loadedDict = await LoadAnim("nm");
+        if (loadedDict) {
+          const myPed = Game.PlayerPed;
+          const playingAnim = await PlayAnim(myPed, "nm", "firemans_carry", 33, -1, 8.0, -8.0, 0, false, false, false);
+          if (playingAnim) {
+            AttachEntityToEntity(Game.PlayerPed.Handle, carriersPedHandle, 0, 0.27, 0.15, 0.63, 0.5, 0.5, 0, false, false, true, false, 2, false);
+            this.beingCarried = true;
+          }
         }
       }
     }
