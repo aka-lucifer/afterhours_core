@@ -1,7 +1,7 @@
 import {Game, Entity, Bone, Prop, Ped, Vehicle, VehicleSeat} from "fivem-js";
 
 import {Client} from "../../client";
-import {Delay, Inform} from "../../utils";
+import {Delay, Inform, NumToVector3} from "../../utils";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
@@ -317,7 +317,15 @@ export class GravityGun {
       }
 
       const temp = this.heldEntity;
-      ApplyForceToEntity(temp.Handle, 1, 0, 2000, 2000, 0, 0, 0, 0, true, true, true, false, true);
+
+      if (IsPedInAnyVehicle(Game.PlayerPed.Handle, false)) {
+        ApplyForceToEntity(temp.Handle, 1, 0, 2000, 2000, 0, 0, 0, 0, true, true, true, false, true);
+      } else {
+        const [, rightVector, _2, _3] = GetEntityMatrix(temp.Handle)
+        const vectors = NumToVector3(rightVector);
+        ApplyForceToEntity(temp.Handle, 3, vectors.x * 2000, vectors.y * 2000, vectors.z + 50, 0.0, 0.0, 0.0, 0, true, true, true, false, true);
+      }
+
       this.stop();
     }
   }
