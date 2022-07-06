@@ -7,7 +7,7 @@ import * as Database from "../../managers/database/database";
 import {LogTypes} from "../../enums/logging";
 import {BanStates} from "../../enums/database/bans";
 
-import {addZero, Error} from "../../utils";
+import {Error} from "../../utils";
 
 import {Ranks} from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/logging/embedColours";
@@ -16,7 +16,7 @@ import * as sharedConfig from "../../../configs/shared.json"
 import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/chat/types";
-import { DBPlayer } from "./dbPlayer";
+import { addZero } from "../../../shared/utils";
 
 export class Ban {
   private id: number;

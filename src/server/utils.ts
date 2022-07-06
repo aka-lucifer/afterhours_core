@@ -1,5 +1,5 @@
-import axios, { AxiosError} from "axios";
-import {Entity, Vector3} from "fivem-js";
+import axios from "axios";
+import {Vector3} from "fivem-js";
 
 import {server} from "./server";
 import {LogTypes} from "./enums/logging";
@@ -134,7 +134,7 @@ export function NumToVector3(numberData: number[]): Vector3 {
  * @param hexadecimal The hexadecimal string to convert to decimal
  * @returns: Converted the provided hexadecimal to a decimal
  */
-export async function HexadecimalToDec(hexadecimal: any): Promise<string> {
+export async function HexadecimalToDec(hexadecimal: string): Promise<string> {
 
   function add(x, y) {
     let c = 0;
@@ -199,15 +199,6 @@ export async function logCommand(name: string, player: Player, args?: string): P
 
 /**
  *
- * @param i Integer to add zero to
- */
-export function addZero(i): string {
-  if (i < 10) {i = "0" + i}
-  return i;
-}
-
-/**
- *
  * @param player Player to check if they are in the servers discord or not
  */
 export async function inDiscord(player: Player): Promise<boolean> {
@@ -233,7 +224,7 @@ export async function inDiscord(player: Player): Promise<boolean> {
  *
  * @param passedEnums Enum to get a randomized entry from
  */
-export function randomEnum(passedEnums: any): Promise<string | number> {
+export function randomEnum(passedEnums: Record<string, any>): Promise<string | number> {
   const index = Math.floor(Math.random() * Object.keys(passedEnums).length);
   return passedEnums[Object.keys(passedEnums)[index]];
 }
@@ -242,7 +233,7 @@ export function randomEnum(passedEnums: any): Promise<string | number> {
  *
  * @param passedEnums Enum to get a randomized entry from
  */
-export async function enumMatches(passedEnums: any, enumValue: string | number): Promise<[undefined, boolean]> {
+export async function enumMatches(passedEnums: Record<string, any>, enumValue: string | number): Promise<[undefined, boolean]> {
   let value;
   let matches = false;
   const enumArray = Object.keys(passedEnums);
@@ -296,17 +287,14 @@ export function getOffsetFromEntityInWorldCoords(entity: number, offset: Vector3
   const M11 = (cosRz * cosRy) - (sinRz * sinRx * sinRy);
   const M12 = (cosRy * sinRz) + (cosRz * sinRx * sinRy);
   const M13 = -cosRx * sinRy;
-  const M14 = 1;
 
   const M21 = -cosRx * sinRz;
   const M22 = cosRz * cosRx;
   const M23 = sinRx;
-  const M24 = 1;
 
   const M31 = (cosRz * sinRy) + (cosRy * sinRz * sinRx);
   const M32 = (sinRz * sinRy) - (cosRz * cosRy * sinRx);
   const M33 = cosRx * cosRy;
-  const M34 = 1;
 
   const matrix4 = new Vector3(position.x, position.y, position.z - 1.0);
 

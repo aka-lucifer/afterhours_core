@@ -112,3 +112,14 @@ export function formatSplitCapitalString(toFormat: string[]): string {
 
   return newString;
 }
+
+/**
+ *
+ * @param i Integer to add zero to
+ */
+ export function addZero(i: number): string {
+  let newValue = i.toString();
+  if (i < 10) newValue = "0" + i;
+
+  return newValue;
+}

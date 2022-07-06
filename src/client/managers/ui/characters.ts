@@ -44,7 +44,7 @@ export class Characters {
     });
 
     RegisterNuiCallback(NuiCallbacks.EditCharacter, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editCharacter, {data}, (cbData, passedData) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editCharacter, {data}, (cbData) => {
         if (cbData.status) {
           cb(cbData.licenses)
         }
@@ -52,7 +52,7 @@ export class Characters {
     });
 
     RegisterNuiCallback(NuiCallbacks.SelectCharacter, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.selectCharacter, {characterId: data.characterId}, (cbData, passedData) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.selectCharacter, {characterId: data.characterId}, (cbData) => {
         if (cbData) {
           this.client.player.Spawned = true;
         }
@@ -63,7 +63,7 @@ export class Characters {
     });
     
     RegisterNuiCallback(NuiCallbacks.DeleteCharacter, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteCharacter, {characterId: data.characterId}, (cbData, passedData) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteCharacter, {characterId: data.characterId}, (cbData) => {
         cb(cbData)
       }));
     });

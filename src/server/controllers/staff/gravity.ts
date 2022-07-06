@@ -21,8 +21,13 @@ export class Gravity {
     if (myPlayer) {
       if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
-        myPlayer.TriggerEvent(Events.setHeldEntity, Object.assign({}, holdingPlayer));
-        holdingPlayer.TriggerEvent(Events.holdPlayer, Object.assign({}, myPlayer));
+        if (holdingPlayer) {
+          const myStates = Player(myPlayer.Handle);
+          myStates.state.usingGravityGun = true;
+
+          myPlayer.TriggerEvent(Events.setHeldEntity, Object.assign({}, holdingPlayer));
+          holdingPlayer.TriggerEvent(Events.holdPlayer, Object.assign({}, myPlayer));
+        }
       } else {
         myPlayer.Notify("Gravity Gun", "Fuck off you don't have permission you injecting little twat!", NotificationTypes.Error);
       }
@@ -34,8 +39,13 @@ export class Gravity {
     if (myPlayer) {
       if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
-        holdingPlayer.TriggerEvent(Events.releasePlayer);
-        myPlayer.TriggerEvent(Events.unsetHeldEntity);
+        if (holdingPlayer) {
+          const myStates = Player(myPlayer.Handle);
+          myStates.state.usingGravityGun = false;
+
+          holdingPlayer.TriggerEvent(Events.releasePlayer);
+          myPlayer.TriggerEvent(Events.unsetHeldEntity);
+        }
       } else {
         myPlayer.Notify("Gravity Gun", "Fuck off you don't have permission you injecting little twat!", NotificationTypes.Error);
       }
@@ -47,8 +57,13 @@ export class Gravity {
     if (myPlayer) {
       if (myPlayer.Rank >= Ranks.Admin) {
         const holdingPlayer = await this.server.connectedPlayerManager.GetPlayer(playersNet.toString());
-        holdingPlayer.TriggerEvent(Events.getGravitied);
-        myPlayer.TriggerEvent(Events.unsetHeldEntity);
+        if (holdingPlayer) {
+          const myStates = Player(myPlayer.Handle);
+          myStates.state.usingGravityGun = false;
+
+          holdingPlayer.TriggerEvent(Events.getGravitied);
+          myPlayer.TriggerEvent(Events.unsetHeldEntity);
+        }
       } else {
         myPlayer.Notify("Gravity Gun", "Fuck off you don't have permission you injecting little twat!", NotificationTypes.Error);
       }

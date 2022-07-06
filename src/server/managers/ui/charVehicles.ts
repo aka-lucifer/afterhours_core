@@ -1,5 +1,5 @@
 import { Server } from "../../server";
-import {Dist, GetTimestamp, Inform, Log, logCommand, NumToVector3} from "../../utils";
+import {GetTimestamp} from "../../utils";
 
 import { LogTypes } from "../../enums/logging";
 
@@ -12,13 +12,13 @@ import { Ban } from "../../models/database/ban";
 
 import * as Database from "../database/database";
 
-import sharedConfig from "../../../configs/shared.json";
-import serverConfig from "../../../configs/server.json";
 import { Ranks } from "../../../shared/enums/ranks";
 import { Events } from "../../../shared/enums/events/events";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 import { formatSQLDate } from "../../../shared/utils";
 import { EmbedColours } from "../../../shared/enums/logging/embedColours";
+
+import sharedConfig from "../../../configs/shared.json";
 
 export class CharVehicleManager {
   public server: Server;

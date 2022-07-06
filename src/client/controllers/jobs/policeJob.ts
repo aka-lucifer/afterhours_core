@@ -1,7 +1,7 @@
-import { Audio, Blip, BlipColor, Game, Model, Vector3, World } from "fivem-js";
+import { Audio, Blip, BlipColor, Game, Vector3, World } from "fivem-js";
 
 import { Client } from "../../client";
-import { GetClosestPed, getLocation, getZone, Inform } from '../../utils';
+import { getLocation, getZone, Inform } from '../../utils';
 
 // Controllers
 import { Cuffing } from "./police/cuffing";

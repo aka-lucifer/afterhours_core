@@ -148,10 +148,10 @@ export class RepairShops {
           debugPoly: false
         }
       }).create();
-  
+
       this.shops.push(zone);
 
-      zone.onPlayerInOut((isInside: boolean, pedPos: Vector3) => {
+      zone.onPlayerInOut((isInside: boolean) => {
         if (isInside) {
           if (this.tick === undefined) this.tick = setTick(this.interactTask);
         } else {

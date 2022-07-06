@@ -1,4 +1,4 @@
-import { Audio, Control, Game, InputMode, Screen } from "fivem-js";
+import { Control, Game, InputMode, Screen } from "fivem-js";
 
 import { Delay, Error, GetHash, Inform } from "../../utils";
 import { Client } from "../../client";
@@ -109,7 +109,7 @@ export class Reloading {
           // If current weapon shoots bullets
           if (GetWeaponDamageType(this.currentWeapon) == 3) {
             // Get the weapons magazine ammo
-            const [someBool, ammoCount] = GetAmmoInClip(myPed.Handle, this.currentWeapon);
+            const [_, ammoCount] = GetAmmoInClip(myPed.Handle, this.currentWeapon);
             this.currentAmmo = ammoCount;
             // if first bullet
 

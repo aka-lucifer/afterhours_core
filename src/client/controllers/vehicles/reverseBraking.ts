@@ -68,7 +68,6 @@ export class ReverseBraking {
       const myPed = Game.PlayerPed;
 
       if (IsPedInAnyVehicle(myPed.Handle, false)) {
-        let factor = 1.0;
         const currVeh = myPed.CurrentVehicle;
 
         if (currVeh.ClassType !== VehicleClass.Boats) {
@@ -78,25 +77,12 @@ export class ReverseBraking {
           let brakeForce = 1.0;
 
           if (vehSpeed.y >= 1.0) {
-            // Going Forward
-            if (accelerator > 127) {
-              // Forward & Accelerating
-              const acceleration = this.getRange(accelerator, 127.0, 254.0, 0.1, 1.0, 1.0-(5.0*2.0));
-              factor = factor * acceleration;
-            }
-
             if (brake > 127) {
               // Forward & Braking
               this.brakingForward = true;
               brakeForce = this.getRange(brake, 127.0, 254.0, 0.01, 1.0, 1.0-(5.0*2.0));
             }
           } else if (vehSpeed.y <= -1.0) {
-            // Reversing
-            if (brake > 127) {
-              const reverse = this.getRange(brake, 127.0, 254.0, 0.1, 1.0, 10.0-(5.0*2.0));
-              factor = factor * reverse;
-            }
-
             // Reversing & Braking
             if (accelerator > 127) {
               this.brakingReverse = true;

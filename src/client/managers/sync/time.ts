@@ -1,7 +1,8 @@
 import {Client} from "../../client";
-import { addZero, Delay } from '../../utils';
+import { Delay } from '../../utils';
 
 import {Events} from "../../../shared/enums/events/events";
+import { addZero } from "../../../shared/utils";
 
 export class TimeManager {
   private client: Client;
@@ -38,7 +39,7 @@ export class TimeManager {
   }
 
   // Events
-  public EVENT_syncTime(hour: number, minute: number) {
+  public EVENT_syncTime(hour: number, minute: number): void {
     if (!GlobalState.timeFrozen) {
       this.hour = hour;
       this.minute = minute;

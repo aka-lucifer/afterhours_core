@@ -1,4 +1,4 @@
-import { Bone, Control, Game, InputMode, Model, Ped, Prop, World } from "fivem-js";
+import { Game } from "fivem-js";
 import { CarryStates } from "../../../shared/enums/carryStates";
 import { Events } from "../../../shared/enums/events/events";
 

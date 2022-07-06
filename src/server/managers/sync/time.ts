@@ -1,6 +1,6 @@
 import {Server} from "../../server";
 
-import {addZero, Capitalize, Error, Inform, randomBetween} from "../../utils";
+import {Error, Inform, randomBetween} from "../../utils";
 
 import {Player} from "../../models/database/player";
 import {Command} from "../../models/ui/chat/command";
@@ -14,6 +14,7 @@ import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/chat/types";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import { EmbedColours } from "../../../shared/enums/logging/embedColours";
+import { addZero } from "../../../shared/utils";
 
 import serverConfig from "../../../configs/server.json";
 import sharedConfig from "../../../configs/shared.json";
@@ -326,8 +327,6 @@ export class TimeManager {
     // console.log("start time!");
     this.timeInterval = setInterval(async() => { // 21,600 seconds (6 hours | 1,440 times) - Is a full day
       if (!this.timeFrozen) {
-        const tempTime = GlobalState.time;
-
         this.minute++;
         if (this.minute > 60) {
           this.hour++;

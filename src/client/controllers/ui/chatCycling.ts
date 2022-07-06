@@ -1,4 +1,4 @@
-import { client, Client } from '../../client';
+import { Client } from '../../client';
 import { Inform } from '../../utils';
 
 import clientConfig from "../../../configs/client.json";

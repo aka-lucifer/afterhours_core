@@ -1,6 +1,6 @@
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 import { Client } from "../../client";
-import { CreateUUID, Delay } from "../../utils";
+import { CreateUUID } from "../../utils";
 
 // Important Data
 const menus: Record<number, any> = {};
@@ -63,7 +63,7 @@ export class MenuManager {
    * @param resourceName The resource the menu was created from.
    */
   public IsResourceStarted(resourceName: string): boolean {
-    resources.forEach(function(value, index) {
+    resources.forEach(function(value) {
       if (value == resourceName) {
         return true;
       }
@@ -323,7 +323,7 @@ export class MenuManager {
       }
     }
 
-    for (const [key, value] of Object.entries(menus)) {
+    for (const [_, value] of Object.entries(menus)) {
       const componentIndex = value.components.findIndex(foundMenu => foundMenu.index == checkboxHandle);
       if (componentIndex != -1) {
         value.components[componentIndex].state = newState;

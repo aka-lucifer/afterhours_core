@@ -1,7 +1,5 @@
 import {client} from "../../../client";
 
-import { MenuManager } from "../../../managers/ui/menu";
-
 export class Submenu {
   public name: string;
   public resource: string;

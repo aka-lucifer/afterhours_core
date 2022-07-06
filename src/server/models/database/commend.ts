@@ -1,20 +1,19 @@
 import { server } from "../../server";
-
-import {Player} from "./player";
+import {inDiscord} from "../../utils";
 
 import WebhookMessage from "../webhook/discord/webhookMessage";
+
 import * as Database from "../../managers/database/database";
+
+import {LogTypes} from "../../enums/logging";
 
 import {Ranks} from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/logging/embedColours";
-import {ErrorCodes} from "../../../shared/enums/logging/errors";
-import * as sharedConfig from "../../../configs/shared.json"
-import * as serverConfig from "../../../configs/server.json"
 import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/chat/types";
-import {Inform, inDiscord} from "../../utils";
-import {LogTypes} from "../../enums/logging";
+
+import * as sharedConfig from "../../../configs/shared.json"
 
 export class Commend {
   private id: number;
@@ -85,7 +84,6 @@ export class Commend {
 
   public async log(): Promise<void> {
     const myPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.receiver);
-    const issuersPlayer = await server.connectedPlayerManager.GetPlayerFromId(this.issuedBy);
 
     const inDisc = await inDiscord(myPlayer);
     let receiver: string;

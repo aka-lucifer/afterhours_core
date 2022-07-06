@@ -1,4 +1,4 @@
-import { Vector3, VehicleClass } from "fivem-js";
+import { Vector3 } from "fivem-js";
 
 import { Server } from "../../../server";
 import { Delay } from "../../../utils";

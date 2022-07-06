@@ -1,12 +1,12 @@
 import { Inform, RegisterNuiCallback } from '../../utils';
+import { Client } from '../../client';
+
+import { ServerCallback } from '../../models/serverCallback';
 
 import { Events } from '../../../shared/enums/events/events';
 import { NuiCallbacks } from '../../../shared/enums/ui/nuiCallbacks';
 import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
-import { ServerCallback } from '../../models/serverCallback';
 import { Callbacks } from '../../../shared/enums/events/callbacks';
-import { Client } from '../../client';
-import { Screen } from 'fivem-js';
 
 export class BugReporting {
   private client: Client;
@@ -33,7 +33,7 @@ export class BugReporting {
         description: data.description,
         reproduction: data.reproduction,
         evidence: data.evidence
-      }, (cbData, passedData) => {
+      }, (cbData) => {
         SetNuiFocus(!cbData, !cbData);
         cb(cbData)
       }));

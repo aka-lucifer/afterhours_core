@@ -1,4 +1,4 @@
-import axios, { AxiosError} from "axios";
+import axios from "axios";
 import { Vector3 } from "fivem-js";
 
 import { Playtime } from "./playtime";
@@ -123,19 +123,6 @@ export class Player {
 
   // Methods
   public async GetIdentifier(type : string): Promise<string> {
-    // const identifiers : string[] = []; OLD VERSION
-    // const identifierAmount = GetNumPlayerIdentifiers(this.handle);
-    // for (let a = 0; a < identifierAmount; a++) {
-    //   identifiers[a] = GetPlayerIdentifier(this.handle, a);
-    // }
-    //
-    // for (let b = 0; b < identifiers.length; b++) {
-    //   if (identifiers[b].includes(type)) {
-    //     const identifierIndex = identifiers[b].indexOf(":") + 1; // Add one as we have to get the next index
-    //     return identifiers[b].substring((identifierIndex));
-    //   }
-    // }
-
     if (this.identifiers[type]) {
       return this.identifiers[type];
     }
@@ -173,6 +160,8 @@ export class Player {
       const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `playtime`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
         identifier: this.license
       });
+
+      console.log("exists data", results);
 
       if (results.data.length > 0) {
         this.id = results.data[0].player_id;
@@ -370,21 +359,21 @@ export class Player {
     currTrustscore = currTrustscore + playtimeAddition;
     if (currTrustscore > 100) currTrustscore = 100;
 
-    svBans.forEach((ban: Ban, index) => {
+    svBans.forEach((ban: Ban) => {
       if (ban.PlayerId == this.id) {
         // console.log(`Ban (Id: ${ban.Id} | Reason: ${ban.Reason}) is yours!\nBan Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.banRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.banRemoval;
       }
     });
 
-    svKicks.forEach((kick: Kick, index) => {
+    svKicks.forEach((kick: Kick) => {
       if (kick.PlayerId == this.id) {
         // console.log(`Kick (Id: ${kick.Id} | Reason: ${kick.Reason}) is yours!\nKick Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.kickRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.kickRemoval;
       }
     });
 
-    svWarnings.forEach((warn: Warning, index) => {
+    svWarnings.forEach((warn: Warning) => {
       if (warn.PlayerId == this.id) {
         // console.log(`Warning (Id: ${warn.Id} | Reason: ${warn.Reason}) is yours!\nWarning Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.warningRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.warningRemoval;

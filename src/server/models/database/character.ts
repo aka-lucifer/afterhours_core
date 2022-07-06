@@ -290,7 +290,7 @@ export class Metadata {
   private jail: JailData;
   private criminalRecord: CriminalRecord;
 
-  constructor(licenses?: any, mugshot?: string, finger?: string, blood?: string, dead?: boolean, cuffed?: boolean, jail?: JailData, record?: CriminalRecord) { 
+  constructor(licenses?: string[] | any, mugshot?: string, finger?: string, blood?: string, dead?: boolean, cuffed?: boolean, jail?: JailData, record?: CriminalRecord) { 
     if (dead) {
       this.isDead = dead;
     } else {
@@ -304,7 +304,7 @@ export class Metadata {
     }
 
     if (licenses) {
-      if (finger == undefined) { // If creating a new character
+      if (finger === undefined) { // If creating a new character
         const driverLicense = licenses.findIndex(license => license.toLowerCase() == "driver");
         const weaponLicense = licenses.findIndex(license => license.toLowerCase() == "weapon");
 

@@ -1,5 +1,3 @@
-import { Model } from 'fivem-js';
-
 import { Server } from "../../server";
 
 import { LogTypes } from '../../enums/logging';

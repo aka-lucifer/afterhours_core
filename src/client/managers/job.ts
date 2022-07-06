@@ -71,7 +71,7 @@ export class JobManager {
     if (this.client.Character.Job.callsign !== "NOT_SET") {
       if (this.client.Character.Job.status != data.state) {
 
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: data.state}, async(cbData, passedData) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: data.state}, async(cbData) => {
           if (cbData) {
             this.client.Character.Job.status = data.state;
 
@@ -150,7 +150,7 @@ export class JobManager {
     const callsign = await keyboardInput("Callsign", 5);
     if (callsign !== undefined && callsign !== null) {
       if (callsign.length > 0) {
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.updateCallsign, {callsign: callsign}, async(cbData, passedData) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.updateCallsign, {callsign: callsign}, async(cbData) => {
 
           if (cbData) {
             this.client.Character.Job.callsign = callsign;

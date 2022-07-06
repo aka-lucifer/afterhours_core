@@ -49,86 +49,86 @@ class Embed {
         this.files = [];
     }
 
-    setTitle(title: string) {
+    setTitle(title: string): string {
         this.title = title;
-        return this;
+        return this.title;
     }
 
-    setDescription(description: string) {
+    setDescription(description: string): string {
         this.description = description;
-        return this;
+        return this.description;
     }
 
-    setUrl(url: string) {
+    setUrl(url: string): string {
         this.url = url;
-        return this;
+        return this.url;
     }
 
-    setTimestamp(date: Date = new Date()) {
+    setTimestamp(date: Date = new Date()): string {
         this.timestamp = date.toISOString();
-        return this;
+        return this.timestamp;
     }
 
-    setColor(color: Colour) {
+    setColor(color: Colour): number {
         this.color = color.rgbNumber();
-        return this;
+        return this.color;
     }
 
-    setFooter(text: string, iconUrl?: string) {
+    setFooter(text: string, iconUrl?: string): EmbedFooter {
         this.footer = {
             text,
             icon_url: iconUrl
         };
-        return this;
+        return this.footer;
     }
 
-    setImage(image: string | File, width?: number, height?: number) {
+    setImage(image: string | File, width?: number, height?: number): EmbedMedia {
         this.image = {
             url: this.resolveMedia(image),
             width,
             height
         };
-        return this;
+        return this.image;
     }
 
-    setThumbnail(thumbnail: string | File, width?: number, height?: number) {
+    setThumbnail(thumbnail: string | File, width?: number, height?: number): EmbedMedia {
         this.thumbnail = {
             url: this.resolveMedia(thumbnail),
             width,
             height
         };
-        return this;
+        return this.thumbnail;
     }
 
-    setVideo(video: string | File, width?: number, height?: number) {
+    setVideo(video: string | File, width?: number, height?: number): EmbedMedia {
         this.video = {
             url: this.resolveMedia(video),
             width,
             height
         };
-        return this;
+        return this.video;
     }
 
-    setAuthor(name?: string, url?: string, iconUrl?: string) {
+    setAuthor(name?: string, url?: string, iconUrl?: string): EmbedAuthor {
         this.author = {
             name,
             url,
             icon_url: iconUrl
         };
-        return this;
+        return this.author;
     }
 
-    addField(name: string, value: string) {
+    addField(name: string, value: string): EmbedField[] {
         this.fields.push({
             name,
             value
         });
-        return this;
+        return this.fields;
     }
 
-    attachFile(file: File) {
+    attachFile(file: File): File[] {
         this.files.push(file);
-        return this;
+        return this.files;
     }
 
     toJSON(): EmbedData {

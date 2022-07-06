@@ -23,7 +23,7 @@ export class ChatManager {
   private chatSuggestions: Suggestion[] = [];
   private chatState: ChatStates = ChatStates.Closed;
   
-  constructor (client) {
+  constructor (client: Client) {
     this.client = client;
     // console.log("STARTED CHAT MANAGER!");
 

@@ -19,7 +19,7 @@ export class ClientCallbackManager {
     });
   }
 
-  public Add(callbackData: ClientCallback) {
+  public Add(callbackData: ClientCallback): void {
     const id = Object.keys(this.registeredCallbacks).length++;
     this.registeredCallbacks[id] = callbackData.callbackFunction;
     callbackData.data["callbackID"] = id;

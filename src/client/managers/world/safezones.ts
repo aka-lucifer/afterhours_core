@@ -1,10 +1,9 @@
-import { Game, Vector3 } from "fivem-js";
+import { Game } from "fivem-js";
+
 import { Client } from "../../client";
 
-import { BoxZone } from "../../helpers/boxZone";
 import { PolyZone } from "../../helpers/PolyZone";
 
-import { Delay } from "../../utils";
 import clientConfig from "../../../configs/client.json";
 
 export class SafezoneManager {
@@ -29,7 +28,8 @@ export class SafezoneManager {
   // Methods
   public registerSafezones(): void {
     for (let i = 0; i < clientConfig.world.safezones.length; i++) {
-      const safezone = new PolyZone(clientConfig.world.safezones[i]).create();
+      const safezone = new PolyZone(clientConfig.world.safezones[i]);
+      safezone.create();
       this.registeredZones.push(safezone);
     }
   }
@@ -63,7 +63,7 @@ export class SafezoneManager {
 
   public start(): void {
     for (let i = 0; i < this.registeredZones.length; i++) {
-      this.registeredZones[i].onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
+      this.registeredZones[i].onPlayerInOut(async(isInside: boolean) => {
         if (this.enteredState != isInside) {
           this.enteredState = isInside;
 

@@ -58,7 +58,7 @@ export class PoliceJob {
 
   // Methods
   private registerCommands(): void {
-    new JobCommand("runname", "Run a suspects name in the CAD/MDT", [{name: "firstName", help: "Persons first name"}, {name: "lastName", help: "Persons last name"}], true, async(source: string, args: any[]) => {
+    new JobCommand("runname", "Run a suspects name in the CAD/MDT", [{name: "firstName", help: "Persons first name"}, {name: "lastName", help: "Persons last name"}], true, async(source: string, args: string[]) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
 
       if (args[0]) {
@@ -131,7 +131,7 @@ export class PoliceJob {
       }
     }, [Jobs.State, Jobs.Police, Jobs.County]);
     
-    new JobCommand("runplate", "Run a vehicles plate in the CAD/MDT", [{name: "plate", help: "Vehicle plate"}, {name: "firstName", help: "Persons first name"}, {name: "lastName", help: "Persons last name"}], true, async(source: string, args: any[]) => {
+    new JobCommand("runplate", "Run a vehicles plate in the CAD/MDT", [{name: "plate", help: "Vehicle plate"}, {name: "firstName", help: "Persons first name"}, {name: "lastName", help: "Persons last name"}], true, async(source: string, args: string[]) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
 
       if (args[0]) {
@@ -168,7 +168,7 @@ export class PoliceJob {
       }
     }, [Jobs.State, Jobs.Police, Jobs.County]);
 
-    new JobCommand("dispatch", "Reply to a emergency call", [{name: "callId", help: "The ID of the call, you're responding to."}, {name: "response", help: "The response to the callmaker."}], true, async(source: string, args: any[]) => {
+    new JobCommand("dispatch", "Reply to a emergency call", [{name: "callId", help: "The ID of the call, you're responding to."}, {name: "response", help: "The response to the callmaker."}], true, async(source: string, args: string[]) => {
       if (args[0] && args[1]) {
         const player = await this.server.connectedPlayerManager.GetPlayer(source);
         if (player) {
@@ -238,7 +238,7 @@ export class PoliceJob {
       }
     }, [Jobs.State, Jobs.Police, Jobs.County]);
 
-    new Command("911", "Call 911 with an emergency", [{name: "description", help: "The description of your 911 call."}], true, async(source: string, args: any[]) => {
+    new Command("911", "Call 911 with an emergency", [{name: "description", help: "The description of your 911 call."}], true, async(source: string, args: string[]) => {
       if (args[0]) {
         const player = await this.server.connectedPlayerManager.GetPlayer(source);
         if (player) {
@@ -254,7 +254,7 @@ export class PoliceJob {
       }
     }, Ranks.User);
 
-    new Command("311", "Call 311 with an emergency", [{name: "description", help: "The description of your 311 call."}], true, async(source: string, args: any[]) => {
+    new Command("311", "Call 311 with an emergency", [{name: "description", help: "The description of your 311 call."}], true, async(source: string, args: string[]) => {
       if (args[0]) {
         const player = await this.server.connectedPlayerManager.GetPlayer(source);
         if (player) {
@@ -269,6 +269,23 @@ export class PoliceJob {
         }
       }
     }, Ranks.User);
+
+    new JobCommand("clone_clothing", "Clone a players clothing", [{name: "server_id", help: "The server ID of the players clothing you're cloning."}], true, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const character = await this.server.characterManager.Get(player);
+
+          if (character) {
+            if (character.isLeoJob()) {
+              if (character.Job.Status) {
+                console.log("clone clothing!");
+              }
+            }
+          }
+        }
+      }
+    }, [Jobs.State, Jobs.Police, Jobs.County]);
   }
 
   public init(): void {

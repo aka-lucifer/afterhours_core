@@ -1,7 +1,6 @@
 import * as Cfx from "fivem-js";
 import { Delay } from "../utils";
 
-const eventPrefix = "_PolyZoneJS_:";
 const defaultColorWalls = [0, 255, 0];
 const defaultColorOutline = [255, 0, 0];
 const defaultColorGrid = [255, 255, 255];
@@ -14,13 +13,13 @@ function toVector2(x:number, y:number): Vector2 {
 }
 
 const { abs } = Math;
-function isLeft(p0: Vector2, p1: Vector2, p2: Vector2) {
+function isLeft(p0: Vector2, p1: Vector2, p2: Vector2): number {
   const p0x = p0.x;
   const p0y = p0.y;
   return ((p1.x - p0x) * (p2.y - p0y)) - ((p2.x - p0x) * (p1.y - p0y));
 }
 
-function addBlip(pos: Vector2) {
+function addBlip(pos: Vector2): number {
   const blip = AddBlipForCoord(pos.x, pos.y, 0.0);
   SetBlipColour(blip, 7);
   SetBlipDisplay(blip, 8);
@@ -29,7 +28,7 @@ function addBlip(pos: Vector2) {
   return blip;
 }
 
-function wnInnerLoop(p0: Vector2, p1: Vector2, p2: Vector2, wn: number) {
+function wnInnerLoop(p0: Vector2, p1: Vector2, p2: Vector2, wn: number): number {
   const p2y = p2.y;
 
   if (p0.y <= p2y) {
@@ -47,7 +46,7 @@ function wnInnerLoop(p0: Vector2, p1: Vector2, p2: Vector2, wn: number) {
   return wn;
 }
 
-function windingNumber(point: Vector2, poly: any) {
+function windingNumber(point: Vector2, poly: any): boolean {
   let wn = 0;
 
   for (let i = 0; i < poly.length - 1; i++) {
@@ -59,7 +58,7 @@ function windingNumber(point: Vector2, poly: any) {
   return wn !== 0;
 }
 
-function isIntersecting(a: Vector2, b: Vector2, c: Vector2, d: Vector2) {
+function isIntersecting(a: Vector2, b: Vector2, c: Vector2, d: Vector2): boolean {
   const ax_minus_cx = a.x - c.x;
   const bx_minus_ax = b.x - a.x;
   const dx_minus_cx = d.x - c.x;
@@ -81,7 +80,7 @@ function isIntersecting(a: Vector2, b: Vector2, c: Vector2, d: Vector2) {
   return (r >= 0 && r <= 1) && (s >= 0 && s <= 1);
 }
 
-function calculatePolygonArea(points: any[]) {
+function calculatePolygonArea(points: any[]): number {
   function det2(i: number, j: number, points2: any[]) {
     return points2[i].x * points2[j].y - points2[j].x * points2[i].y;
   }
@@ -93,14 +92,14 @@ function calculatePolygonArea(points: any[]) {
   return abs(0.5 * sum);
 }
 
-function drawWall(p1: Vector2, p2: Vector2, minZ: number, maxZ: number, r: number, g: number, b: number, a: number) {
+function drawWall(p1: Vector2, p2: Vector2, minZ: number, maxZ: number, r: number, g: number, b: number, a: number): void {
   DrawPoly(p1.x, p1.y, minZ, p1.x, p1.y, maxZ, p2.x, p2.y, minZ, r, g, b, a);
   DrawPoly(p1.x, p1.y, maxZ, p2.x, p2.y, maxZ, p2.x, p2.y, minZ, r, g, b, a);
   DrawPoly(p2.x, p2.y, minZ, p2.x, p2.y, maxZ, p1.x, p1.y, maxZ, r, g, b, a);
   DrawPoly(p2.x, p2.y, minZ, p1.x, p1.y, maxZ, p1.x, p1.y, minZ, r, g, b, a);
 }
 
-function drawGrid(poly: any) {
+function drawGrid(poly: any): void {
   let { minZ } = poly;
   let { maxZ } = poly;
   if (!minZ || !maxZ) {
@@ -120,7 +119,7 @@ function drawGrid(poly: any) {
   }
 }
 
-function calculateGridCellPoints(cellX: number, cellY: number, poly: any) {
+function calculateGridCellPoints(cellX: number, cellY: number, poly: any): Vector2[] {
   const { gridCellHeight, gridCellWidth, min } = poly;
   // min added to initial point, in order to shift the grid cells to the poly"s starting position
   const x = cellX * gridCellWidth + min.x;
@@ -135,7 +134,7 @@ function calculateGridCellPoints(cellX: number, cellY: number, poly: any) {
   ];
 }
 
-function isGridCellInsidePoly(cellX: number, cellY: number, poly: any) {
+function isGridCellInsidePoly(cellX: number, cellY: number, poly: any): boolean {
   const gridCellPoints = calculateGridCellPoints(cellX, cellY, poly);
   const polyPoints = [...poly.points];
   // Connect the polygon to its starting point
@@ -189,7 +188,7 @@ function isGridCellInsidePoly(cellX: number, cellY: number, poly: any) {
   return true;
 }
 
-function pointInPoly(point: Vector3, poly: any) {
+function pointInPoly(point: Vector3, poly: any): boolean {
   const { x, y } = point;
   const minX = poly.min.x;
   const minY = poly.min.y;
@@ -210,7 +209,6 @@ function pointInPoly(point: Vector3, poly: any) {
   const { grid } = poly;
   if (grid) {
     const { gridDivisions } = poly;
-    const { size } = poly;
     const gridPosX = x - minX;
     const gridPosY = y - minY;
     const gridCellX = (gridPosX * gridDivisions); // size.x
@@ -231,10 +229,9 @@ function pointInPoly(point: Vector3, poly: any) {
   return windingNumber(point, poly.points);
 }
 
-function calculateLinesForDrawingGrid(poly: any) {
+function calculateLinesForDrawingGrid(poly: any): void {
   // console.log(poly, "polyy");
   // console.log(poly.gridXPoints, "gridXPoints");
-  const lines = {};
   // TODO: this
 
   // eslint-disable-next-line guard-for-in,no-restricted-syntax
@@ -315,7 +312,7 @@ export class PolyZone {
     this.options = zone.options;
   }
 
-  private initDebug(poly: any, options: any) {
+  private initDebug(poly: any, options: any): void {
     if (options.debugBlip) {
       // todo: add blip thing
     }
@@ -345,7 +342,7 @@ export class PolyZone {
 
   private createGrid(poly: any, options: {
     debugGrid: boolean
-  }) {
+  }): void {
     poly.gridArea = 0.0;
     poly.gridCellWidth = poly.size.x / poly.gridDivisions;
     poly.gridCellHeight = poly.size.y / poly.gridDivisions;
@@ -376,7 +373,7 @@ export class PolyZone {
     }
   }
 
-  private calculatePoly(poly: any, options: any) {
+  private calculatePoly(poly: any, options: any): void {
     if (!poly.min || !poly.max || !poly.size || !poly.center || !poly.area) {
       let minX = Number.MAX_SAFE_INTEGER;
       let minY = Number.MAX_SAFE_INTEGER;
@@ -430,7 +427,7 @@ export class PolyZone {
     this.poly = poly;
   }
 
-  public create(additionalOptions: Record<string, any> = {}) {
+  public create(additionalOptions: Record<string, any> = {}): void {
     const { points, options } = this;
     if (!points[0]) {
       throw new Error("[PolyZoneJS] Error: No points supplied to create");
@@ -467,7 +464,7 @@ export class PolyZone {
     this.poly = poly;
 
     this.initDebug(poly, this.options);
-    return this;
+    // return this;
   }
 
   public isPointInside(point: Vector3): boolean {
@@ -478,11 +475,11 @@ export class PolyZone {
     return pointInPoly(point, this.poly);
   }
 
-  public addDebugBlip() {
+  public addDebugBlip(): number {
     return addBlip(this.poly.center);
   }
 
-  private draw(drawDist = 45.0) {
+  private draw(drawDist = 45.0): void {
     const [r, g, b] = defaultColorOutline;
     const [wR, wG, wB] = defaultColorWalls;
     const pedPos = Cfx.Game.PlayerPed.Position;
@@ -509,7 +506,7 @@ export class PolyZone {
     }
   }
 
-  public destroy() {
+  public destroy(): void {
     this.destroyed = true;
     if (this.options.debugGrid) {
       console.log(`[PolyZoneJS] Debug: Destroying zone ${this.options.name}`);
@@ -520,7 +517,7 @@ export class PolyZone {
     return this.isPointInside(Cfx.Game.PlayerPed.Position);
   }
 
-  public onPlayerInOut(onPointInOutCb: (isCurrInside: boolean, pedPos: Cfx.Vector3) => void, waitInMS = 500) {
+  public onPlayerInOut(onPointInOutCb: (isCurrInside: boolean, pedPos: Cfx.Vector3) => void, waitInMS = 500): void {
     let isInside = false;
 
     this.tick = setTick(async () => {

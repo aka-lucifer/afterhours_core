@@ -85,34 +85,34 @@ class WebhookMessage {
     this.files = [];
   }
 
-  setContent(content: string) {
+  setContent(content: string): string {
     this.content = content;
-    return this;
+    return this.content;
   }
 
-  setUsername(username: string) {
+  setUsername(username: string): string {
     this.username = username;
-    return this;
+    return this.username;
   }
 
-  setAvatar(url: string) {
+  setAvatar(url: string): string {
     this.avatarUrl = url;
-    return this;
+    return this.avatarUrl;
   }
 
-  setTts(tts: boolean) {
+  setTts(tts: boolean): boolean {
     this.tts = tts;
-    return this;
+    return this.tts;
   }
 
-  addEmbed(embed: Embed) {
+  addEmbed(embed: Embed): Embed[] {
     this.embeds.push(embed);
-    return this;
+    return this.embeds;
   }
 
-  attachFile(file: File) {
+  attachFile(file: File): File[] {
     this.files.push(file);
-    return this;
+    return this.files;
   }
 
   toJSON(): WebhookMessageData {
@@ -125,7 +125,7 @@ class WebhookMessage {
     };
   }
 
-  toFormData() {
+  toFormData(): FormData {
     const formData = new FormData();
 
     const files = [...this.files];

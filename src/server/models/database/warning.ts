@@ -9,16 +9,14 @@ import * as Database from "../../managers/database/database";
 
 import {LogTypes} from "../../enums/logging";
 
-import {addZero, Error, Inform} from "../../utils";
-
 import {Ranks} from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/logging/embedColours";
-import {ErrorCodes} from "../../../shared/enums/logging/errors";
-import * as sharedConfig from "../../../configs/shared.json"
-import * as serverConfig from "../../../configs/server.json"
 import {Events} from "../../../shared/enums/events/events";
 import {Message} from "../../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../../shared/enums/ui/chat/types";
+
+import * as sharedConfig from "../../../configs/shared.json"
+import * as serverConfig from "../../../configs/server.json"
 
 export class Warning {
   private id: number;

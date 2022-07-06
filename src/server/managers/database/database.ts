@@ -25,7 +25,7 @@ export async function isConnected(): Promise<[boolean, any]> {
   let errorState;
   let finished = false;
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function(err) {
     if (!err) {
       dbConnected = true;
     } else {

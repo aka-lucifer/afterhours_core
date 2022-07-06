@@ -1,4 +1,4 @@
-import { Game, VehicleSeat } from 'fivem-js';
+import { Game } from 'fivem-js';
 
 import { Client } from '../../client';
 import { Delay, Inform, speedToMph } from '../../utils';

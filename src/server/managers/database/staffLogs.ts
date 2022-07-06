@@ -1,9 +1,9 @@
-import {Player} from "../../models/database/player";
-import {StaffLog} from "../../models/database/staffLog";
-
 import * as Database from "./database";
-import {Server} from "../../server"
-import {Log} from "../../utils"
+
+import { Server } from "../../server"
+import { Log } from "../../utils"
+
+import { StaffLog } from "../../models/database/staffLog";
 
 export class StaffLogManager {
   public server: Server;

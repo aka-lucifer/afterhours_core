@@ -1,4 +1,4 @@
-import { Vector3, Game, Ped, VehicleSeat, InputMode, Control } from "fivem-js";
+import { Game, InputMode, Control } from "fivem-js";
 
 import { Client } from "../client";
 import { Inform } from "../utils";

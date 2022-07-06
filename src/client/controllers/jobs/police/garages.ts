@@ -1,4 +1,4 @@
-import { Blip, Color, Control, Game, InputMode, Screen, Vector3, Vehicle, VehicleSeat, World } from 'fivem-js';
+import { Blip, Color, Control, Game, InputMode, Screen, Vector3, VehicleSeat, World } from 'fivem-js';
 
 import { Client } from '../../../client';
 import { createVeh, Delay, Inform, sortVehicles } from '../../../utils';
@@ -147,7 +147,7 @@ export class Garages {
 
           // Spawn Button (With spawn logic)
           if (menuPermission) {
-            const spawnButton = this.menu.BindButton(`${vehicle.brand}, ${vehicle.name}`, async () => {
+            this.menu.BindButton(`${vehicle.brand}, ${vehicle.name}`, async () => {
               const [positionAvailable, position, heading] = await this.findPosition(this.currentGarage.spawnLocations);
               const myPed = Game.PlayerPed;
               let spawnPos = position;

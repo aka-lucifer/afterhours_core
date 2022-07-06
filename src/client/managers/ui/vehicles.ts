@@ -41,19 +41,19 @@ export class Vehicles {
     });
 
     RegisterNuiCallback(NuiCallbacks.CreateVehicle, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.createVehicle, {data}, (cbData, passedData) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.createVehicle, {data}, (cbData) => {
         cb(cbData)
       }));
     });
 
     RegisterNuiCallback(NuiCallbacks.EditVehicle, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editVehicle, {data}, (cbData, passedData) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editVehicle, {data}, (cbData) => {
         cb(cbData)
       }));
     });
 
     RegisterNuiCallback(NuiCallbacks.DeleteVehicle, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteVehicle, {data}, (cbData, passedData) => {
+      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteVehicle, {data}, (cbData) => {
         cb(cbData)
       }));
     });

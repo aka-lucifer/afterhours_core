@@ -42,10 +42,10 @@ export class WeaponRemovers {
         const myPed = Game.PlayerPed;
         
         if (this.currentWeapon === undefined) { // If our current weapon is unassigned
-          const [wep, currWeapon] = GetCurrentPedWeapon(myPed.Handle, true);
+          const [_, currWeapon] = GetCurrentPedWeapon(myPed.Handle, true);
           this.currentWeapon = currWeapon;
         } else { // If it is assigned check if it's different
-          const [wep, currWeapon] = GetCurrentPedWeapon(myPed.Handle, true);
+          const [_, currWeapon] = GetCurrentPedWeapon(myPed.Handle, true);
           if (currWeapon !== this.currentWeapon) {
             // console.log("changed weapon!");
             // console.log("diff weapon!")
@@ -66,17 +66,17 @@ export class WeaponRemovers {
             // If the combat roll disabler tick isn't running, and we're armed with a roll weapon, start it
             if (!this.client.weaponManager.disablers.RollActive) {
               await Delay(200); // Wait 0.2 seconds as we may not have access to this weapon, due to our rank
-          
+
               // If the weapon is still on our ped
               if (GetSelectedPedWeapon(myPed.Handle) !== Weapons.Unarmed) {
                 this.client.weaponManager.disablers.startRoll();
               }
             }
-          
+
             if (this.client.weaponManager.disablers.PunchActive) {
               this.client.weaponManager.disablers.stopPunch();
             }
-          
+
             if (this.client.player.Rank >= Ranks.Admin) {
               if (!this.client.staffManager.staffMenu.WeaponActive) {
                 this.client.staffManager.staffMenu.startWeapon();
@@ -87,11 +87,11 @@ export class WeaponRemovers {
             if (this.client.weaponManager.disablers.RollActive) {
               this.client.weaponManager.disablers.stopRoll();
             }
-          
+
             if (!this.client.weaponManager.disablers.PunchActive) {
               this.client.weaponManager.disablers.startPunch();
             }
-          
+
             if (this.client.player.Rank >= Ranks.Admin) {
               if (this.client.staffManager.staffMenu.WeaponActive) {
                 this.client.staffManager.staffMenu.stopWeapon();

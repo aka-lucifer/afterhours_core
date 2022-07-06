@@ -1,5 +1,3 @@
-import {Playtime} from "./playtime";
-
 export class DBPlayer {
   public id: number;
   private license: string;

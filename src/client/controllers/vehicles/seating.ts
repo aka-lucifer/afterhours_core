@@ -46,7 +46,7 @@ export class Seating {
               return b - a;
             });
 
-            seats.every((seat: number, index : number) => { // Loop through all seats, if any of the available seats are empty, assign that as their seat
+            seats.every((seat: number) => { // Loop through all seats, if any of the available seats are empty, assign that as their seat
               if (closestVeh.isSeatFree(seat)) {
                 freeSeat = seat;
                 console.log("set!");

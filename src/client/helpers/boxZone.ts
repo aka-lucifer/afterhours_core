@@ -92,7 +92,7 @@ export class BoxZone {
     // this.initDebug(poly, this.options);
   }
 
-  private new() {
+  private new(): PolyZone {
     // center: Vec3, length: number, width: number, options: any
     const center = toVector3(this.box.x, this.box.y, this.box.z);
     const length = this.box.l;
@@ -136,7 +136,9 @@ export class BoxZone {
     const zone = new PolyZone({
       points,
       options,
-    }).create({
+    });
+    
+    zone.create({
       length,
       width,
       startPos: toVector2(center.x, center.y),
@@ -154,21 +156,21 @@ export class BoxZone {
     return zone;
   }
 
-  public create() {
+  public create(): PolyZone {
     const zone = this.new();
     this.initDebug(zone);
 
     return zone;
   }
 
-  private initDebug(zone: PolyZone) {
+  private initDebug(zone: PolyZone): void {
     const { options } = this;
     if (options.debugBlip) {
       zone.addDebugBlip();
     }
   }
 
-  public rotate(origin: Vec3, point: Vec3, theta: number) {
+  public rotate(origin: Vec3, point: Vec3, theta: number): Vec3 {
     if (!theta) return point;
     const pointVector = new Vector3(point.x, point.y, 0);
 

@@ -1,9 +1,8 @@
-import { Bone, Game, Model, Prop, Vehicle, VehicleSeat, World } from "fivem-js";
+import { Bone, Game, Model, Prop, World } from "fivem-js";
 
 import { Client } from '../../client';
-import { Delay, Inform, rightHandVehicle } from "../../utils";
+import { Delay, Inform } from "../../utils";
 
-import { LXEvents } from "../../../shared/enums/events/lxEvents";
 import { Weapons } from "../../../shared/enums/weapons";
 
 import sharedConfig from "../../../configs/shared.json";
@@ -53,7 +52,6 @@ export class VehicleWeapon {
   public start(): void {
     console.log("start veh weapon prop!");
     const myPed = Game.PlayerPed;
-    const currVeh = myPed.CurrentVehicle;
 
     if (this.propTick === undefined) this.propTick = setTick(async() => {
       if (!this.hasAttached) {

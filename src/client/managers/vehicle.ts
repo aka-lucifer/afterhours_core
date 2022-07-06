@@ -1,5 +1,3 @@
-import { Game } from "fivem-js";
-
 import { Client } from "../client";
 
 // Controllers

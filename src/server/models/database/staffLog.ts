@@ -1,9 +1,5 @@
-import { Player } from "./player";
-
 import { StaffLogs } from "../../enums/database/staffLogs";
 import * as Database from "../../managers/database/database";
-
-import { Message } from "../../../shared/models/ui/chat/message";
 
 export class StaffLog {
   private id: number;
@@ -21,11 +17,11 @@ export class StaffLog {
   }
 
   // Set Requests
-  public set Id(newId) {
+  public set Id(newId: number) {
     this.id = newId;
   }
 
-  public set Date(newTime) {
+  public set Date(newTime: Date) {
     this.date = newTime;
   }
 

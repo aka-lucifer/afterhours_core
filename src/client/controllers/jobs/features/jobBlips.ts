@@ -1,7 +1,7 @@
-import { Blip, BlipColor, BlipSprite, Game, Ped, Vector3, VehicleClass, World } from 'fivem-js';
+import { Blip, BlipColor, BlipSprite, Vector3, World } from 'fivem-js';
 
 import { Client } from "../../../client";
-import { Delay, Inform, insideVeh } from '../../../utils';
+import { Delay, Inform } from '../../../utils';
 
 import { Jobs } from "../../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../../shared/enums/events/jobs/jobEvents";

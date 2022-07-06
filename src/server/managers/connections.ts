@@ -1,17 +1,17 @@
-import { Player  } from "../models/database/player";
 import * as Database from "./database/database";
 
-import { Events } from "../../shared/enums/events/events";
 import { Server } from "../server";
-import {ErrorCodes} from "../../shared/enums/logging/errors";
-import {Ranks} from "../../shared/enums/ranks";
-
 import { Log, Error, Inform, Delay } from "../utils";
-import * as sharedConfig from "../../configs/shared.json";
+
+import { Player  } from "../models/database/player";
 import {Ban} from "../models/database/ban";
 import {BanStates} from "../enums/database/bans";
 
-const adaptiveCards = global.exports['adaptiveCards'];
+import { Events } from "../../shared/enums/events/events";
+import {ErrorCodes} from "../../shared/enums/logging/errors";
+import {Ranks} from "../../shared/enums/ranks";
+
+import * as sharedConfig from "../../configs/shared.json";
 
 export class ConnectionsManager {
   private server: Server;
@@ -42,6 +42,7 @@ export class ConnectionsManager {
 
       if (playerExists) { // If your DB entry exists
         const myLicense = await player.GetIdentifier("license");
+        console.log("players", this.server.connectedPlayerManager.GetPlayers);
         if (player.Rank != Ranks.Developer && player.Rank < Ranks.Management && await this.server.connectedPlayerManager.Exists(myLicense)) {
           deferrals.done(`[${sharedConfig.serverName}]: There is already a player connected to the server, with this license key!`);
         }
@@ -277,7 +278,7 @@ export class ConnectionsManager {
             "isVisible": true
           }
         ]
-      }, async (data, rawData) => {
+      }, async (data) => {
         // console.log("data", JSON.stringify(data), "rawData", JSON.stringify(rawData))
         if (data.submitId == "connect") {
           deferrals.handover({
@@ -290,7 +291,7 @@ export class ConnectionsManager {
           });
 
           deferrals.done();
-          // this.server.connectedPlayerManager.Add(player);
+          // await this.server.connectedPlayerManager.Add(player);
         }
       });
     } else {
@@ -304,7 +305,7 @@ export class ConnectionsManager {
       });
 
       deferrals.done();
-      // this.server.connectedPlayerManager.Add(player);
+      // await this.server.connectedPlayerManager.Add(player);
     }
   }
 }

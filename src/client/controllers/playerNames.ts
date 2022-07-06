@@ -1,7 +1,7 @@
 import { Game, Ped, VehicleSeat } from "fivem-js";
 
 import { Client } from "../client";
-import { Delay, Inform, insideVeh } from '../utils';
+import { Delay, Inform } from '../utils';
 
 import { Notification } from "../models/ui/notification";
 
@@ -296,7 +296,7 @@ export class PlayerNames {
       const notify = new Notification("Player Names", "Disabled", NotificationTypes.Error);
       await notify.send();
 
-      for (const [key, value] of Object.entries(this.createdTags)) {
+      for (const [_, value] of Object.entries(this.createdTags)) {
         RemoveMpGamerTag(value["tag"]);
       }
       

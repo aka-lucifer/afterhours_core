@@ -18,7 +18,7 @@ export class ServerCallbackManager {
     });
   }
 
-  public Add(callbackData: ServerCallback) {
+  public Add(callbackData: ServerCallback): void {
     const id = Object.keys(this.registeredCallbacks).length++;
     this.registeredCallbacks[id] = callbackData.callbackFunction;
     callbackData.data["callbackID"] = id;

@@ -238,7 +238,7 @@ export function RegisterNuiCallback(callbackName: string, callback: CallableFunc
   on(`__cfx_nui:${callbackName}`, callback);
 }
 
-export function Draw3DText(position: Vector3, colour: { r: number, g: number, b: number, a: number }, text: string, font: Font, rescaleUponDistance: boolean = true, textScale: number = 1.0, dropShadow: boolean = false) {
+export function Draw3DText(position: Vector3, colour: { r: number, g: number, b: number, a: number }, text: string, font: Font, rescaleUponDistance: boolean = true, textScale: number = 1.0, dropShadow: boolean = false): void {
   const camPosition = GetGameplayCamCoord()
   const dist = Dist(new Vector3(camPosition[0], camPosition[1], camPosition[2]), position, true);
   let scale = (1 / dist) * 20;
@@ -479,6 +479,9 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
     Game.PlayerPed.IsPositionFrozen = false;
   }
 
+  // Set heading if defined
+  if (heading !== undefined) Game.PlayerPed.Heading = heading;
+
   // Fade screen in and reset the camera angle.
   DoScreenFadeIn(500);
   SetGameplayCamRelativePitch(0.0, 1.0);
@@ -566,15 +569,6 @@ export function speedToMph(speed: number): number {
 export async function rightHandVehicle(vehicle: Vehicle): Promise<boolean> {
   const vehIndex = RightHandsideVehs.findIndex(enumVeh => enumVeh === vehicle.DisplayName.toLowerCase());
   return vehIndex !== -1;
-}
-
-/**
- *
- * @param i Integer to add zero to
- */
- export function addZero(i): string {
-  if (i < 10) {i = "0" + i}
-  return i;
 }
 
 /**
@@ -739,7 +733,7 @@ onNet(Events.soundFrontEnd, (sound: string, set?: string) => {
  */
 export async function sortVehicles(vehicles: Record<string, any>): Promise<VehData[]> {
   let vehs: VehData[] = [];
-  for (const [hash, vehData] of Object.entries(vehicles)) {
+  for (const [_, vehData] of Object.entries(vehicles)) {
     const vehicle = vehData as VehData;
     vehs.push(vehicle);
   }
@@ -761,7 +755,7 @@ export async function sortVehicles(vehicles: Record<string, any>): Promise<VehDa
  export async function sortWeapons(weapons: Record<string, any>): Promise<Weapon[]> {
   const weaps: Weapon[] = [];
   
-  for (const [hash, weapData] of Object.entries(weapons)) {
+  for (const [_, weapData] of Object.entries(weapons)) {
     const weapon = weapData as Weapon;
     weaps.push(weapon);
   }

@@ -1,5 +1,5 @@
-import { Game, Ped } from "fivem-js";
 import { Character } from "./character";
+
 import { Ranks } from '../../shared/enums/ranks';
 
 export class svPlayer {

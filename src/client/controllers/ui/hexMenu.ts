@@ -1,4 +1,4 @@
-import { Audio, Bone, Game } from 'fivem-js';
+import { Audio, Game } from 'fivem-js';
 
 import { Inform, RegisterNuiCallback } from '../../utils';
 

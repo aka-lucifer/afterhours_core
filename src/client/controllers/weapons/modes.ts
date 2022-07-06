@@ -1,6 +1,6 @@
-import { Color, Control, Entity, Game, InputMode, MarkerType, Ped, Screen, Vector3, World } from "fivem-js";
+import { Control, Game, InputMode, Screen } from "fivem-js";
 
-import { GetHash, Delay, Inform, NumToVector3 } from "../../utils";
+import { GetHash, Delay, Inform } from "../../utils";
 import { Client } from "../../client";
 
 import { Notification } from "../../models/ui/notification";
@@ -132,7 +132,6 @@ export class WeaponModes {
             }
 
             // Update weapon state
-            const oldState = this.currentState;
             if ((this.currentState - 1) < 0) {
               this.currentState = (Object.keys(Modes).length / 2) - 1;
             } else {

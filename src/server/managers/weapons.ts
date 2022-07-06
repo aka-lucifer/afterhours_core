@@ -1,15 +1,16 @@
 import { Server } from "../server";
 
 import { LogTypes } from "../enums/logging";
+
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
 
 import { Events } from "../../shared/enums/events/events";
-import sharedConfig from "../../configs/shared.json";
 import { EmbedColours } from "../../shared/enums/logging/embedColours";
-import { ErrorCodes } from "../../shared/enums/logging/errors";
 import { Ranks } from "../../shared/enums/ranks";
 import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
 import { Weapons } from "../../shared/enums/weapons";
+
+import sharedConfig from "../../configs/shared.json";
 
 export class WeaponsManager {
   private server: Server;

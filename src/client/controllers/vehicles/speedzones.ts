@@ -1,4 +1,4 @@
-import { Game, Vector3 } from "fivem-js";
+import { Game } from "fivem-js";
 
 import { Client } from "../../client";
 import { insideVeh, Delay, Inform } from "../../utils";
@@ -62,13 +62,14 @@ export class Speedzones {
             debugGrid: false,
             gridDivisions: 30
           }
-        }).create();
+        });
+        zone.create();
 
         this.zones.push(zone);
 
-        zone.onPlayerInOut(async(isInside: boolean, pedPos: Vector3) => {
+        zone.onPlayerInOut(async(isInside: boolean) => {
           if (isInside) {
-            const [currVeh, inside] = await insideVeh(Game.PlayerPed);
+            const [_, inside] = await insideVeh(Game.PlayerPed);
             if (inside) {
               if (this.client.player.Rank < Ranks.Admin) {
                 if (this.client.Player.Spawned) {
@@ -118,7 +119,6 @@ export class Speedzones {
   public stop(): void {
     if (this.createdZones) {
       for (let i = 0; this.zones.length; i++) {
-        const zoneName = this.zones[i].options.name;
         this.zones[i].destroy();
   
         // console.log(`destroyed speedzone (${i} | ${zoneName})!`);

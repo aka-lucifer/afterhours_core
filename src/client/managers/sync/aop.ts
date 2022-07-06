@@ -1,20 +1,21 @@
+import { Audio, Scaleform } from "fivem-js";
+
 import { Client } from "../../client";
 
 import { Menu } from "../../models/ui/menu/menu";
 import { Submenu } from "../../models/ui/menu/submenu";
 
-import { Inform, Capitalize, Delay } from "../../utils";
+import { Inform, Capitalize } from "../../utils";
 
 import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
 import { Events } from "../../../shared/enums/events/events";
 
-import sharedConfig from "../../../configs/shared.json";
-import { Audio, Scaleform } from "fivem-js";
 import { Ranks } from "../../../shared/enums/ranks";
 import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
 import { ServerCallback } from '../../models/serverCallback';
-import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
 import { Callbacks } from '../../../shared/enums/events/callbacks';
+
+import sharedConfig from "../../../configs/shared.json";
 
 export interface AOPLayout {
   name: string,
@@ -70,7 +71,7 @@ export class AOPManager {
 
     for (let i = 0; i < sharedConfig.aop.locations.length; i++) {
       this.aopChangerMenu.BindButton(sharedConfig.aop.locations[i].name, () => {
-        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.setAOP, {newAOP: sharedConfig.aop.locations[i]}, async(cbData, passedData) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.setAOP, {newAOP: sharedConfig.aop.locations[i]}, async(cbData) => {
           if (cbData) {
             this.aopCycling = false;
             this.client.menuManager.UpdateState(this.aopCyclingCheckbox, false);

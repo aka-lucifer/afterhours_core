@@ -1,13 +1,15 @@
 import { Server } from '../../server';
+
+import { Bugs } from '../../enums/logging';
+
 import { Command } from '../../models/ui/chat/command';
-import { concatArgs } from '../../../shared/utils';
-import { JobEvents } from '../../../shared/enums/events/jobs/jobEvents';
+import WebhookMessage from '../../models/webhook/discord/webhookMessage';
+
 import { Ranks } from '../../../shared/enums/ranks';
 import { Events } from '../../../shared/enums/events/events';
 import { Callbacks } from '../../../shared/enums/events/callbacks';
-import { Bugs, LogTypes } from '../../enums/logging';
-import WebhookMessage from '../../models/webhook/discord/webhookMessage';
 import { EmbedColours } from '../../../shared/enums/logging/embedColours';
+
 import sharedConfig from '../../../configs/shared.json';
 
 export class BugReporting {

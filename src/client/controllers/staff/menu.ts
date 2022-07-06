@@ -1,4 +1,4 @@
-import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, WeaponHash, World } from "fivem-js";
+import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, World } from "fivem-js";
 
 import { Client } from "../../client";
 import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone } from "../../utils";
@@ -273,7 +273,7 @@ export class StaffMenu {
 
       this.playerBlipCheckbox = this.playerActionsMenu.BindCheckbox("Player Blips", this.playersBlips, async (newState: boolean) => {
         this.playersBlips = newState;
-        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.togglePlayerBlips, {newState: this.playersBlips}, async(cbData, passedData) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.togglePlayerBlips, {newState: this.playersBlips}, async(cbData) => {
           if (cbData) {
             this.client.menuManager.UpdateState(this.playerBlipCheckbox, this.playersBlips);
             if (this.playersBlips) {
@@ -301,7 +301,7 @@ export class StaffMenu {
       });
 
       this.onDutyCheckbox = this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, { state: newState }, async (cbData, passedData) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, { state: newState }, async (cbData) => {
           if (cbData) {
             this.client.Character.Job.status = newState;
           }
@@ -331,7 +331,7 @@ export class StaffMenu {
 
             if (weaponIndex !== -1) {
               const hash = GetHashKey(weaponName);
-              const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
+              const [_, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
               Game.PlayerPed.giveWeapon(hash, maxAmmo, false, true);
 
               emitNet(Events.logAdminAction, AdminActions.GiveWeapon, {
@@ -359,7 +359,7 @@ export class StaffMenu {
         for (let i = 0; i < weapons.length; i++) {
           if (weapons[i].type == "weapon") {
             const hash = GetHashKey(weapons[i].name);
-            const [boolTing, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
+            const [_, maxAmmo] = GetMaxAmmo(Game.PlayerPed.Handle, hash);
             Game.PlayerPed.giveWeapon(hash, maxAmmo, false, false);
           }
 
@@ -410,15 +410,15 @@ export class StaffMenu {
 
         if (this.usingGravityGun) {
           if (!HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-            Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
-            // Game.PlayerPed.giveWeapon(WeaponHash.Pistol50, 9999, false, true);
+            // Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
+            Game.PlayerPed.giveWeapon(Weapons.AR15, 9999, false, true);
           } else {
             SetCurrentPedWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, true);
           }
         } else {
           if (HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-            Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
-            // Game.PlayerPed.removeWeapon(WeaponHash.Pistol50);
+            // Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
+            Game.PlayerPed.removeWeapon(Weapons.AR15);
           }
 
           SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
@@ -631,14 +631,14 @@ export class StaffMenu {
               const rankLabelSplit = splitCapitalsString(PoliceRanks[policeRanks[c]]);
               const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
-              const updateJob = jobTypeMenu.BindButton(formattedRankLabel, () => {
+              jobTypeMenu.BindButton(formattedRankLabel, () => {
                 this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
                   unitsNet: playerData.Id,
                   jobName: job,
                   jobLabel: jobLabel,
                   jobRank: c,
                   jobRankLabel: formattedRankLabel
-                }, async (recruitedUnit, passedData) => {
+                }, async (recruitedUnit) => {
                   if (recruitedUnit) {
                     const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
                     await notify.send();
@@ -658,14 +658,14 @@ export class StaffMenu {
               const rankLabelSplit = splitCapitalsString(CountyRanks[countyRanks[c]]);
               const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
-              const updateJob = jobTypeMenu.BindButton(formattedRankLabel, () => {
+              jobTypeMenu.BindButton(formattedRankLabel, () => {
                 this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
                   unitsNet: playerData.Id,
                   jobName: job,
                   jobLabel: jobLabel,
                   jobRank: c,
                   jobRankLabel: formattedRankLabel
-                }, async (recruitedUnit, passedData) => {
+                }, async (recruitedUnit) => {
                   if (recruitedUnit) {
                     const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
                     await notify.send();
@@ -685,14 +685,14 @@ export class StaffMenu {
               const rankLabelSplit = splitCapitalsString(StateRanks[stateRanks[c]]);
               const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
-              const updateJob = jobTypeMenu.BindButton(formattedRankLabel, () => {
+              jobTypeMenu.BindButton(formattedRankLabel, () => {
                 this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
                   unitsNet: playerData.Id,
                   jobName: job,
                   jobLabel: jobLabel,
                   jobRank: c,
                   jobRankLabel: formattedRankLabel
-                }, async (recruitedUnit, passedData) => {
+                }, async (recruitedUnit) => {
                   if (recruitedUnit) {
                     const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
                     await notify.send();
@@ -705,12 +705,12 @@ export class StaffMenu {
             }
           } else if (job == Jobs.Community) {
             const jobLabel = JobLabels.Community;
-            const updateJob = jobMenu.BindButton(jobLabel, () => {
+            jobMenu.BindButton(jobLabel, () => {
               this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
                 unitsNet: playerData.Id,
                 jobName: job,
                 jobLabel: jobLabel
-              }, async (recruitedUnit, passedData) => {
+              }, async (recruitedUnit) => {
                 if (recruitedUnit) {
                   const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to ${jobLabel}.`, NotificationTypes.Info);
                   await notify.send();
@@ -722,12 +722,12 @@ export class StaffMenu {
             });
           } else if (job == Jobs.Civilian) {
             const jobLabel = JobLabels.Civilian;
-            const updateJob = jobMenu.BindButton(jobLabel, () => {
+            jobMenu.BindButton(jobLabel, () => {
               this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
                 unitsNet: playerData.Id,
                 jobName: job,
                 jobLabel: jobLabel
-              }, async (recruitedUnit, passedData) => {
+              }, async (recruitedUnit) => {
                 if (recruitedUnit) {
                   const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to ${jobLabel}.`, NotificationTypes.Info);
                   await notify.send();
@@ -828,7 +828,7 @@ export class StaffMenu {
   }
 
   public toggleGodmode(newState: boolean): void {
-    if (this.godmode) {
+    if (this.godmode || newState !== undefined && newState) {
       if (this.godmodeTick === undefined) this.godmodeTick = setTick(() => {
         const myPed = Game.PlayerPed;
         myPed.IsInvincible = this.godmode;

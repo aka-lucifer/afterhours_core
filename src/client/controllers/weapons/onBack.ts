@@ -1,8 +1,8 @@
-import { Delay, GetHash, Inform, NumToVector3 } from "../../utils";
+import { Delay, GetHash, Inform } from "../../utils";
 
 import sharedConfig from "../../../configs/shared.json";
 import { Events } from "../../../shared/enums/events/events";
-import { Entity, EntityBone, Game, Model, Ped, Vector3, World } from "fivem-js";
+import { Entity, Game, Model, Ped, Vector3, World } from "fivem-js";
 
 interface Weapon {
   name: string,

@@ -1,4 +1,4 @@
-import { Control, ExplosionType, Game, InputMode, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
+import { Control, Game, InputMode, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
 
 import { Client } from '../client';
 import { Delay, Inform, LoadAnim, teleportToCoords } from '../utils';
@@ -74,7 +74,7 @@ export class Death {
   }
 
   // Events
-  private async EVENT_playerKilled(killer: number, killData: any): Promise<void> {
+  private async EVENT_playerKilled(): Promise<void> {
     if (this.client.carrying.Carrying || this.client.carrying.Carrying) { // If you're carrying someone, detach them
       emitNet(Events.tryCarrying);
     }
@@ -82,7 +82,7 @@ export class Death {
     await this.processDeath();
   }
 
-  private EVENT_leftVeh(vehNet: number, vehSeat: VehicleSeat, vehName: string): void {
+  private EVENT_leftVeh(vehNet: number, vehSeat: VehicleSeat): void {
     if (Game.PlayerPed.isDead()) { // If we have died in a vehicle
       if (vehNet > 0) {
         this.vehicleSeat = vehSeat;
@@ -144,7 +144,7 @@ export class Death {
     this.respawnMenu = new Menu("Respawn Menu", GetCurrentResourceName(), "middle-right");
     const positions = clientConfig.controllers.death.respawnPositions;
     for (let i = 0; i < positions.length; i++) {
-      const respawnBtn = this.respawnMenu.BindButton(positions[i].label, async() => {
+      this.respawnMenu.BindButton(positions[i].label, async() => {
         await this.respawnMenu.Close();
         const myPed = Game.PlayerPed;
 

@@ -3,13 +3,12 @@ import { Inform, randomBetween } from "../../utils";
 
 import { Command } from "../../models/ui/chat/command";
 
-import sharedConfig from "../../../configs/shared.json";
 import { Ranks } from "../../../shared/enums/ranks";
 import { Events } from "../../../shared/enums/events/events";
-import { Message } from "../../../shared/models/ui/chat/message";
-import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { Callbacks } from '../../../shared/enums/events/callbacks';
 import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
+
+import sharedConfig from "../../../configs/shared.json";
 
 interface AOPLayout {
   name: string,

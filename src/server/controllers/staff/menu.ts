@@ -1,7 +1,7 @@
 import { Vector3 } from 'fivem-js';
 
 import { Server } from '../../server';
-import { addZero, Delay } from '../../utils';
+import { Delay } from '../../utils';
 
 import { LogTypes } from '../../enums/logging';
 
@@ -18,10 +18,10 @@ import { Message } from '../../../shared/models/ui/chat/message';
 import { SystemTypes } from '../../../shared/enums/ui/chat/types';
 import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
 import { Callbacks } from '../../../shared/enums/events/callbacks';
-import { formatSplitCapitalString, splitCapitalsString } from '../../../shared/utils';
 import { Jobs } from '../../../shared/enums/jobs/jobs';
 import { EmbedColours } from '../../../shared/enums/logging/embedColours';
 import { AdminActions } from '../../../shared/enums/adminActions';
+import { formatSplitCapitalString, splitCapitalsString, addZero } from '../../../shared/utils';
 
 import serverConfig from '../../../configs/server.json';
 import sharedConfig from '../../../configs/shared.json';
@@ -588,7 +588,7 @@ export class StaffMenu {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState, passedData) => {
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState) => {
                 if (cbState == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
 
@@ -630,7 +630,7 @@ export class StaffMenu {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
 
             if (foundPlayer) {
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummonReturned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState, passedData) => {
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummonReturned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState) => {
                 if (cbState == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've returned ^3${foundPlayer.GetName}^0 to their original position.`, SystemTypes.Admin));
 
@@ -675,7 +675,7 @@ export class StaffMenu {
 
             if (foundPlayer) {
               console.log("ply stuff", player.Position, foundPlayer.Position);
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.spectatePlayer, player.Handle, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, async (cbState, passedData) => {
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.spectatePlayer, player.Handle, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, async (cbState) => {
                 if (cbState == "STARTED") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
                   

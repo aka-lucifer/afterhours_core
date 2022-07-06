@@ -5,11 +5,11 @@ import {Delay, Inform} from "../../utils";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
-import {AddonWeapons} from "../../../shared/enums/weapons";
+import {Weapons} from "../../../shared/enums/weapons";
 
 export class GravityGun {
   private client: Client;
-  private heldEntity: Entity | Vehicle | Ped;
+  private heldEntity: Entity | Vehicle | Ped = undefined;
   private holding: boolean = false;
   private controlTick: number = undefined;
 
@@ -41,12 +41,12 @@ export class GravityGun {
     if (this.client.player.Rank >= Ranks.Admin) {
       const myPed = Game.PlayerPed;
 
-      if (GetSelectedPedWeapon(myPed.Handle) == AddonWeapons.GravityGun) {
+      if (GetSelectedPedWeapon(myPed.Handle) == Weapons.AR15) {
         if (IsPlayerFreeAiming(Game.Player.Handle)) {
           if (!this.holding) { // If no entity is held
-            let [bool, foundEntity] = GetEntityPlayerIsFreeAimingAt(Game.Player.Handle);
-            bool = false;
-
+            let [_, foundEntity] = GetEntityPlayerIsFreeAimingAt(Game.Player.Handle);
+            _ = false;
+            
             if (foundEntity > 0) {
               const isPlayer = ((GetEntityType(foundEntity) == 1) && IsPedAPlayer(foundEntity));
               if (!isPlayer) {
@@ -98,10 +98,13 @@ export class GravityGun {
             }
 
             if (!isPlayer) {
-              this.heldEntity.detach();
-              new Prop(this.heldEntity.Handle).placeOnGround();
-              SetEntityAlpha(this.heldEntity.Handle, 255, false);
-              this.heldEntity = undefined;
+              if (this.heldEntity !== undefined) {
+                this.heldEntity.detach();
+                new Prop(this.heldEntity.Handle).placeOnGround();
+                SetEntityAlpha(this.heldEntity.Handle, 255, false);
+                this.heldEntity = undefined;
+              }
+              
               this.holding = false;
             } else {
               this.holding = false;
@@ -131,11 +134,13 @@ export class GravityGun {
         }
 
         if (!isPlayer) {
-          this.heldEntity.detach();
-          SetEntityAlpha(this.heldEntity.Handle, 255, false);
-          const temp = this.heldEntity;
-          this.stop();
-          ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
+          if (this.heldEntity !== undefined) {
+            this.heldEntity.detach();
+            SetEntityAlpha(this.heldEntity.Handle, 255, false);
+            const temp = this.heldEntity;
+            ApplyForceToEntity(temp.Handle, 1, 0, 350, 0, 0, 0, 0, 0, true, true, true, false, true);
+            this.stop();
+          }
         } else {
           emitNet(Events.shootEntity, GetPlayerServerId(NetworkGetPlayerIndexFromPed(this.heldEntity.Handle)));
         }
@@ -195,7 +200,7 @@ export class GravityGun {
   }
 
   private stop(): void {
-    this.heldEntity = null;
+    this.heldEntity = undefined;
     this.holding = false;
   }
 
@@ -278,22 +283,26 @@ export class GravityGun {
       this.controlTick = undefined;
     }
 
-    this.heldEntity.detach();
-    SetEntityAlpha(this.heldEntity.Handle, 255, false);
-    this.stop();
+    if (this.heldEntity !== undefined) {
+      this.heldEntity.detach();
+      SetEntityAlpha(this.heldEntity.Handle, 255, false);
+      this.stop();
+    }
   }
 
   private EVENT_getGravitied(): void {
-    this.heldEntity.detach();
-    SetEntityAlpha(this.heldEntity.Handle, 255, false);
-    
-    if (GetEntityType(this.heldEntity.Handle) == 2) { // If a vehicle
-      clearTick(this.controlTick);
-      this.controlTick = undefined;
-    }
+    if (this.heldEntity !== undefined) {
+      this.heldEntity.detach();
+      SetEntityAlpha(this.heldEntity.Handle, 255, false);
+      
+      if (GetEntityType(this.heldEntity.Handle) == 2) { // If a vehicle
+        clearTick(this.controlTick);
+        this.controlTick = undefined;
+      }
 
-    const temp = this.heldEntity;
-    this.stop();
-    ApplyForceToEntity(temp.Handle, 1, 0, 2000, 2000, 0, 0, 0, 0, true, true, true, false, true);
+      const temp = this.heldEntity;
+      ApplyForceToEntity(temp.Handle, 1, 0, 2000, 2000, 0, 0, 0, 0, true, true, true, false, true);
+      this.stop();
+    }
   }
 }

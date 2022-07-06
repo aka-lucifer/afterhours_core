@@ -5,7 +5,6 @@ import {Player} from "../../models/database/player";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Suggestion} from "../../../shared/models/ui/chat/suggestion";
-import { Jobs } from '../../../shared/enums/jobs/jobs';
 
 export class CommandManager {
   private server: Server;
@@ -37,13 +36,13 @@ export class CommandManager {
   }
 
   public createChatSuggestions(player: Player): void {
-    this.registeredCommands.forEach(async(command, index) => {
+    this.registeredCommands.forEach(async(command) => {
       if (player.Rank >= command.permission) {
         command.argsRequired || Object.keys(command.args).length > 0 ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
       }
     });
 
-    this.registeredJobCommands.forEach(async(command, index) => {
+    this.registeredJobCommands.forEach(async(command) => {
       let hasPermission = false;
 
       if (typeof command.permission == "object") {

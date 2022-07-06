@@ -1,4 +1,4 @@
-import { EntityBone, Game, InputMode, Model, Ped, Prop, Vector3, World } from "fivem-js";
+import { Game, InputMode, Model, Ped, Prop, Vector3, World } from "fivem-js";
 
 import { Client } from "../../../client";
 import { Delay, Error, Inform, LoadAnim, PlayAnim } from "../../../utils";

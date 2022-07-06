@@ -166,7 +166,7 @@ export class CommandMenu {
                             this.client.menuManager.emptyMenu(this.recruitment.handle);
 
                             // Units Menu
-                            this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[a].type }, async (receievedUnits, passedData) => {
+                            this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[a].type }, async (receievedUnits) => {
 
                               // Get dept rank
                               let ranks;
@@ -189,14 +189,14 @@ export class CommandMenu {
                                   if (c < this.client.Character.job.rank || this.client.player.Rank >= Ranks.SeniorAdmin) { // If the available ranks are less than your rank
                                     const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
 
-                                    const promoteButton = promoteMenu.BindButton(rankLabel, () => {
+                                    promoteMenu.BindButton(rankLabel, () => {
                                       this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.promoteUnit, {
                                         unitsId: receievedUnits[b].id,
                                         unitsPlayerId: receievedUnits[b].playerId,
                                         job: this.menuLocations[a].type,
                                         newRank: c,
                                         callsign: receievedUnits[b].callsign
-                                      }, async (promotedUnit, passedData) => {
+                                      }, async (promotedUnit) => {
                                         if (promotedUnit) {
                                           await this.client.menuManager.CloseMenu();
 
@@ -211,11 +211,11 @@ export class CommandMenu {
                                   }
                                 }
 
-                                const fireButton = submenu.BindButton("Fire Unit", () => {
+                                submenu.BindButton("Fire Unit", () => {
                                   this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, {
                                     unitsId: receievedUnits[b].id,
                                     unitsPlayerId: receievedUnits[b].playerId,
-                                  }, async (firedUnit, passedData) => {
+                                  }, async (firedUnit) => {
                                     if (firedUnit) {
                                       await this.client.menuManager.deleteMenu(submenu.handle);
 
@@ -241,14 +241,14 @@ export class CommandMenu {
                                       for (let c = 0; c < Object.keys(ranks).length / 2; c++) {
                                         if (c < this.client.Character.job.rank || this.client.player.Rank >= Ranks.SeniorAdmin) { // If the available ranks are less than your rank
                                           const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
-                                          const rankButton = playerMenu.BindButton(rankLabel, () => {
+                                          playerMenu.BindButton(rankLabel, () => {
 
                                             this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.recruitPlayer, {
                                               unitsNet: svPlayers[b].NetworkId,
                                               jobName: this.menuLocations[a].type,
                                               jobRank: c,
                                               jobLabel: rankLabel
-                                            }, async (recruitedUnit, passedData) => {
+                                            }, async (recruitedUnit) => {
                                               if (recruitedUnit) {
                                                 await this.client.menuManager.CloseMenu();
 

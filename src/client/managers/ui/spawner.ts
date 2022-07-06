@@ -1,7 +1,7 @@
 
-import { Game, Model, Vector3 } from "fivem-js";
+import { Vector3 } from "fivem-js";
 import {Client} from "../../client";
-import { RegisterNuiCallback, teleportToCoords } from "../../utils";
+import { RegisterNuiCallback } from "../../utils";
 
 import { BoxZone } from "../../helpers/boxZone";
 import { PolyZone } from "../../helpers/polyZone";
@@ -101,7 +101,7 @@ export class Spawner {
   }
 
   // Events
-  public EVENT_setupSpawner(currentPlayers: number, maxPlayers: number, bestPlayer: string) {
+  public EVENT_setupSpawner(currentPlayers: number, maxPlayers: number, bestPlayer: string): void {
     this.currentPlayers = currentPlayers;
     this.maxPlayers = maxPlayers;
     this.bestPlayer = bestPlayer;

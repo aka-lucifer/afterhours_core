@@ -133,7 +133,7 @@ export class GPS {
   }
 
   private async EVENT_listStreets(): Promise<void> {
-    const [currVeh, inside] = await insideVeh(Game.PlayerPed);
+    const [_, inside] = await insideVeh(Game.PlayerPed);
     if (inside) {
       let nameString = "";
 
@@ -153,7 +153,7 @@ export class GPS {
   }
 
   private async EVENT_clearGPS(): Promise<void> {
-    const [currVeh, inside] = await insideVeh(Game.PlayerPed);
+    const [_, inside] = await insideVeh(Game.PlayerPed);
     if (inside) {
       if (IsWaypointActive()) {
         SetWaypointOff();

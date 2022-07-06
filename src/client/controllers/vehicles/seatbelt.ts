@@ -1,4 +1,4 @@
-import { Game, RagdollType, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
+import { Game, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
 
 import { Client } from '../../client';
 import { Delay, getVehPassengers, Inform, NumToVector3, speedToMph } from '../../utils';

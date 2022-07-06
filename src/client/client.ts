@@ -1,4 +1,4 @@
-import {Game, Ped, Vector3, VehicleSeat, } from "fivem-js"
+import {Game, Vector3, VehicleSeat, } from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -63,7 +63,7 @@ import { Death } from './controllers/death';
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import { Delay, Inform, keyboardInput, RegisterNuiCallback, speedToMph } from './utils';
+import { Delay, Inform, keyboardInput, RegisterNuiCallback } from './utils';
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -358,7 +358,7 @@ export class Client {
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
 
-  public async nuiLoaded(cb: any, data: Record<string, any>): Promise<void> {
+  public async nuiLoaded(cb: CallableFunction): Promise<void> {
     // console.log("NUI READY!");
     this.nuiReady = true;
     await this.initialize();
@@ -366,6 +366,7 @@ export class Client {
     this.startUI();
 
     emitNet(Events.playerConnected, undefined, true);
+    cb("ok");
   }
 
   private EVENT_disableLoading(): void {
@@ -435,6 +436,8 @@ export class Client {
     this.playerStates.state.set("rankVisible", true, true);
     this.playerStates.state.set("frozen", false, true);
     this.playerStates.state.set("playerBlips", false, true);
+    this.playerStates.state.set("usingGravityGun", false, true);
+    this.playerStates.state.set("gravitiedPlayer", -1, true);
     
     // UI
     this.playerStates.state.set("chatOpen", false, true);
