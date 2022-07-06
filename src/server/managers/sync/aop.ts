@@ -138,7 +138,6 @@ export class AOPManager {
     // Get first AOP
     this.aopIndex = 1;
     this.currentAOP = this.aopLocations[this.aopIndex]; // Sandy Shores
-    console.log(`Found AOP: ${this.currentAOP.name}`);
 
     // Start cycling based on player count!
     this.startCycling();

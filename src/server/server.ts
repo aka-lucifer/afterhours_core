@@ -677,11 +677,9 @@ export class Server {
     let entryExists = false;
 
     if (await this.connectedPlayerManager.playerConnected(src)) { // If connected to server
-      console.log("connected to sv!");
       player = await this.connectedPlayerManager.GetPlayer(src);
       entryExists = true;
     } else { // If restarted resource
-      console.log("restarted CORE!");
       player = new Player(src);
       await player.Load();
     }
