@@ -1,10 +1,10 @@
-import { Control, Game, InputMode, Ped } from "fivem-js";
+import { Control, Game, InputMode } from 'fivem-js';
 
-import { Delay, Inform } from "../../utils";
+import { Delay, Inform } from '../../utils';
 
-import { Weapons } from "../../../shared/enums/weapons";
+import { Weapons } from '../../../shared/enums/weapons';
 
-import clientConfig from "../../../configs/client.json";
+import clientConfig from '../../../configs/client.json';
 
 export class WeaponDisablers {
   private rollTick: number = undefined;
@@ -41,10 +41,15 @@ export class WeaponDisablers {
   public startRoll(): void {
     // Disable Combat Roll
     if (this.rollTick === undefined) this.rollTick = setTick(async() => {
-      if (IsPedOnFoot(Game.PlayerPed.Handle)) {
-        if (IsPedArmed(Game.PlayerPed.Handle, 2 | 4)) {
-          if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Aim)) { // If aim held
-            Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Jump);
+      const myPed = Game.PlayerPed;
+
+      if (IsPedOnFoot(myPed.Handle)) {
+        const currWeapon = GetSelectedPedWeapon(myPed.Handle);
+        if (currWeapon !== Weapons.Unarmed) {
+          if (IsPedArmed(myPed.Handle, 2 | 4)) {
+            if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Aim)) { // If aim held
+              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Jump);
+            }
           }
         }
       } else {
@@ -66,26 +71,33 @@ export class WeaponDisablers {
       const myPed = Game.PlayerPed;
       if (IsPedOnFoot(Game.PlayerPed.Handle)) {
         // If we're unarmed
-        if (GetSelectedPedWeapon(myPed.Handle) == Weapons.Unarmed) {
-          // If we have punched someone
-          if (IsPedPerformingMeleeAction(myPed.Handle)) { // If punched
-            if (this.punchControlTick === undefined) this.punchControlTick = setTick(() => {
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack1);
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack2);
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy);
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackLight);
-              Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeBlock);
-            });
-            
-            await Delay(clientConfig.controllers.weapons.disablers.antiPunch.time);
+        if (GetSelectedPedWeapon(myPed.Handle) === Weapons.Unarmed) {
+          if (
+            Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Attack) ||
+            Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttackLight) ||
+            Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy) ||
+            Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate) ||
+            Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttack1) ||
+            Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttack2)) { // If punched
+            console.log("hit control");
 
-            clearTick(this.punchControlTick);
-            this.punchControlTick = undefined;
-          } else {
-            await Delay(500);
+            if (this.punchControlTick === undefined) {
+              this.punchControlTick = setTick(async () => {
+                console.log("disable controls!");
+                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
+                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
+                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack1);
+                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack2);
+                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate);
+                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackHeavy);
+                Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttackLight);
+              });
+
+              setTimeout(() => {
+                clearTick(this.punchControlTick);
+                this.punchControlTick = undefined;
+              }, clientConfig.controllers.weapons.disablers.antiPunch.time);
+            }
           }
         } else {
           await Delay(500);
