@@ -18,7 +18,7 @@ export class StaffManager {
   private readonly server: Server;
 
   // Controllers
-  private gravityGun: Gravity;
+  public gravityGun: Gravity;
   private staffMenu: StaffMenu;
   public ghostPlayers: GhostPlayers;
 
