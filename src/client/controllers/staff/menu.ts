@@ -128,6 +128,9 @@ export class StaffMenu {
   private vehGodmode: boolean = false;
   private vehGodmodeTick: number = undefined;
 
+  private infinitePetrol: boolean = false;
+  private infPetrolTick: number = undefined;
+
   // Ticks
   private weaponTick: number = undefined;
 
@@ -463,6 +466,31 @@ export class StaffMenu {
         this.vehicleActionsMenu.BindCheckbox("Godmode", this.vehGodmode, (newState: boolean) => {
           this.vehGodmode = newState;
           emit(Events.vehGodmode, this.vehGodmode);
+        });
+
+        this.vehicleActionsMenu.BindCheckbox("Infinite Fuel", this.infinitePetrol, (newState: boolean) => {
+          this.infinitePetrol = newState;
+
+          if (this.infinitePetrol) {
+            if (this.infPetrolTick === undefined) this.infPetrolTick = setTick(async() => {
+              const myPed = Game.PlayerPed;
+              if (IsPedInAnyVehicle(myPed.Handle, false)) {
+                const currVeh = myPed.CurrentVehicle;
+                if (currVeh.FuelLevel < 50) {
+                  currVeh.FuelLevel = 100;
+                } else {
+                  await Delay(500);
+                }
+              } else {
+                await Delay(500);
+              }
+            })
+          } else {
+            if (this.infPetrolTick !== undefined) {
+              clearTick(this.infPetrolTick);
+              this.infPetrolTick = undefined;
+            }
+          }
         });
       }
     }
