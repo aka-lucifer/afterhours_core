@@ -95,6 +95,18 @@ export class JobManager {
 
               await player.TriggerEvent(Events.updateCharacter, Object.assign({}, character)); // Update our character on our client (char info, job, etc)
               await player.Notify("Jobs", `You've became a ${JobLabels.Community}.`, NotificationTypes.Info);
+
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Staff Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Player Job Updated__",
+                  description: `A player has become a ${JobLabels.Community}.\n\n**Username**: ${player.GetName}\n**Character Name**: ${character.Name}\n**New Job**: ${JSON.stringify(character.Job, null, 4)}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
             }
           }
         }
