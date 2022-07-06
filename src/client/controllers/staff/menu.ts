@@ -124,6 +124,10 @@ export class StaffMenu {
   private noRecoil: boolean = false;
   private usingGravityGun: boolean = false;
 
+  // [Vehicle] Data
+  private vehGodmode: boolean = false;
+  private vehGodmodeTick: number = undefined;
+
   // Ticks
   private weaponTick: number = undefined;
 
@@ -454,6 +458,13 @@ export class StaffMenu {
           }
         }
       });
+
+      if (this.client.player.Rank >= Ranks.Admin) {
+        this.vehicleActionsMenu.BindCheckbox("Godmode", this.vehGodmode, (newState: boolean) => {
+          this.vehGodmode = newState;
+          emit(Events.vehGodmode, this.vehGodmode);
+        });
+      }
     }
   }
 
@@ -1097,29 +1108,32 @@ export class StaffMenu {
     if (this.client.player.Rank >= Ranks.Admin) {
       const myPed = Game.PlayerPed;
       const player = new svPlayer(data.player);
-      const spectatePed = new Ped(GetPlayerPed(player.NetworkId))
+      const netId = Number(player.NetworkId);
+      if (netId > 0) {
+        const spectatePed = new Ped(GetPlayerPed(netId))
 
-      this.spectatingPlayer = !this.spectatingPlayer;
+        this.spectatingPlayer = !this.spectatingPlayer;
 
-      if (this.spectatingPlayer) {
-        this.spectateLastPos = myPed.Position;
-        myPed.IsVisible = false;
-        
-        const teleported = await teleportToCoords(data.playerPos);
-        if (teleported) {
-          NetworkSetInSpectatorMode(true, spectatePed.Handle);
-          emitNet(Events.receiveClientCB, "STARTED", data);
+        if (this.spectatingPlayer) {
+          this.spectateLastPos = myPed.Position;
+          myPed.IsVisible = false;
+          
+          const teleported = await teleportToCoords(data.playerPos);
+          if (teleported) {
+            NetworkSetInSpectatorMode(true, spectatePed.Handle);
+            emitNet(Events.receiveClientCB, "STARTED", data);
+          } else {
+            emitNet(Events.receiveClientCB, "ERROR_TPING", data);
+          }
         } else {
-          emitNet(Events.receiveClientCB, "ERROR_TPING", data);
-        }
-      } else {
-        const teleported = await teleportToCoords(this.spectateLastPos);
-        if (teleported) {
-          myPed.IsVisible = true;
-          NetworkSetInSpectatorMode(false, spectatePed.Handle);
-          emitNet(Events.receiveClientCB, "STOPPED", data);
-        } else {
-          emitNet(Events.receiveClientCB, "ERROR_TPING", data);
+          const teleported = await teleportToCoords(this.spectateLastPos);
+          if (teleported) {
+            myPed.IsVisible = true;
+            NetworkSetInSpectatorMode(false, spectatePed.Handle);
+            emitNet(Events.receiveClientCB, "STOPPED", data);
+          } else {
+            emitNet(Events.receiveClientCB, "ERROR_TPING", data);
+          }
         }
       }
     }

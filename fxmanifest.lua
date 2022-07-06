@@ -24,5 +24,9 @@ files {
 	"ui/style.css"
 }
 
-client_script "dist/client/main.js"
+client_scripts {
+	"client/*.lua",
+	"dist/client/main.js"
+}
+
 server_script "dist/server/main.js"

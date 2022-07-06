@@ -144,6 +144,7 @@ export enum Events {
   receiveWarning = "astrid:client:receiveWarning",
   goToPlayer = "astrid:client:goToPlayer",
   startSpectating = "astrid:client:startSpectating",
+  vehGodmode = "astrid:client:controllers:staff:menu:vehGodmode",
   
   // Astrid Client ([Controllers] | Staff] - Ghost Players)
   createGhostPlayer = "astrid:client:controllers:staff:ghostPlayers:createGhostPlayer",
