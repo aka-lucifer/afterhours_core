@@ -43,15 +43,12 @@ export class CommunityJob {
 
   // Methods
   public init(): void {
-    console.log("create menu in here!");
-
     // Make the community officer menu here
     this.menu = new Menu("Community Officer", GetCurrentResourceName(), MenuPositions.MiddleLeft);
   }
 
   public createMenu(): void {
     if (this.client.Character.job.name === Jobs.Community) {
-      console.log("create community officer menu options here!");
       this.menu.BindCheckbox("On Duty", this.client.Character.job.status, (newState: boolean) => {
         this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async(cbData, passedData) => {
           if (cbData) {
