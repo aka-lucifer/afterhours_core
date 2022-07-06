@@ -1159,7 +1159,6 @@ const HUD = new Vue({
 
     UpdateAOP(data) {
       this.currentAOP = data.newAOP;
-      console.log("aop name", this.currentAOP);
     },
 
     UpdateUnits(data) {
@@ -1368,8 +1367,6 @@ const HUD = new Vue({
     RegisterEvent("SET_IMPORTANT", (data) => {
       this.ranks = data.ranks;
       this.myRank = data.myRank;
-
-      console.log(`Recieved Rank Data | ${JSON.stringify(this.ranks)} | ${this.myRank} | ${this.ranks[this.myRank]}`)
     });
 
     // Spawner UI
