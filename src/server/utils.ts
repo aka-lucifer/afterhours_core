@@ -1,5 +1,5 @@
 import axios, { AxiosError} from "axios";
-import {Vector3} from "fivem-js";
+import {Entity, Vector3} from "fivem-js";
 
 import {server} from "./server";
 import {LogTypes} from "./enums/logging";
@@ -277,4 +277,46 @@ export async function getClosestPlayer(myPlayer: Player): Promise<[Player, numbe
   }
 
   return [closestPlayer, closestDistance];
+}
+
+export function getOffsetFromEntityInWorldCoords(entity: number, offset: Vector3): Vector3 {
+  const position = NumToVector3(GetEntityCoords(entity));
+  const rotation = NumToVector3(GetEntityRotation(entity));
+
+  const rX = degreesToRadians(rotation.x);
+  const rY = degreesToRadians(rotation.y);
+  const rZ = degreesToRadians(rotation.z);
+  const cosRx = Math.cos(rX);
+  const cosRy = Math.cos(rY);
+  const cosRz = Math.cos(rZ);
+  const sinRx = Math.sin(rX);
+  const sinRy = Math.sin(rY);
+  const sinRz = Math.sin(rZ);
+
+  const M11 = (cosRz * cosRy) - (sinRz * sinRx * sinRy);
+  const M12 = (cosRy * sinRz) + (cosRz * sinRx * sinRy);
+  const M13 = -cosRx * sinRy;
+  const M14 = 1;
+
+  const M21 = -cosRx * sinRz;
+  const M22 = cosRz * cosRx;
+  const M23 = sinRx;
+  const M24 = 1;
+
+  const M31 = (cosRz * sinRy) + (cosRy * sinRz * sinRx);
+  const M32 = (sinRz * sinRy) - (cosRz * cosRy * sinRx);
+  const M33 = cosRx * cosRy;
+  const M34 = 1;
+
+  const matrix4 = new Vector3(position.x, position.y, position.z - 1.0);
+
+  return new Vector3(
+    (offset.x * M11) + (offset.y * M21) + (offset.z * M31) + matrix4.x,
+    (offset.x * M12) + (offset.y * M22) + (offset.z * M32) + matrix4.y,
+    (offset.x * M13) + (offset.y * M23) + (offset.z * M33) + matrix4.z
+  );
+}
+
+function degreesToRadians(degrees: number): number {
+  return degrees * (Math.PI / 180);
 }
