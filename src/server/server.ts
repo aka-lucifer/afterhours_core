@@ -1,5 +1,6 @@
 import { Player } from './models/database/player';
 import { Ban } from './models/database/ban';
+import { Kick } from './models/database/kick';
 import WebhookMessage from './models/webhook/discord/webhookMessage';
 import { ClientCallback } from './models/clientCallback';
 import { Command } from './models/ui/chat/command';
@@ -135,130 +136,20 @@ export class Server {
   private death: Death;
 
   constructor() {
-    this.debugMode = serverConfig.debug;
-    this.serverWhitelisted = serverConfig.whitelist;
-
-    // Events
-    onNet(Events.resourceStart, this.EVENT_resourceStarted.bind(this));
-    onNet(Events.playerJoined, this.EVENT_playerJoined.bind(this));
-    onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
-    onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
-    onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
-
-    // RegisterCommand("create_peds", () => {
-    //   const snrAdminPeds = [
-    //     "a_m_m_acult_01",
-    //     "s_m_y_armymech_01",
-    //     "s_m_y_blackops_01",
-    //     "s_m_y_blackops_02",
-    //     "s_m_y_blackops_03",
-    //     "s_m_y_hwaycop_01",
-    //     "s_f_y_sheriff_01",
-    //     "s_m_y_sheriff_01",
-    //     "s_m_y_swat_01",
-    //     "s_f_y_cop_01",
-    //     "s_m_y_cop_01",
-    //     "csb_cop"
-    //   ]
-    //
-    //   const trustedAnimals = [
-    //     "a_c_boar",
-    //     "a_c_cat_01",
-    //     "a_c_chickenhawk",
-    //     "a_c_chimp",
-    //     "a_c_chop",
-    //     "a_c_cormorant",
-    //     "a_c_cow",
-    //     "a_c_coyote",
-    //     "a_c_crow",
-    //     "a_c_deer",
-    //     "a_c_dolphin",
-    //     "a_c_fish",
-    //     "a_c_sharkhammer",
-    //     "a_c_hen",
-    //     "a_c_humpback",
-    //     "a_c_husky",
-    //     "a_c_killerwhale",
-    //     "a_c_mtlion",
-    //     "a_c_pig",
-    //     "a_c_pigeon",
-    //     "a_c_poodle",
-    //     "a_c_pug",
-    //     "a_c_rabbit_01",
-    //     "a_c_rat",
-    //     "a_c_retriever",
-    //     "a_c_rhesus",
-    //     "a_c_rottweiler",
-    //     "a_c_seagull",
-    //     "a_c_shepherd",
-    //     "a_c_stingray",
-    //     "a_c_sharktiger",
-    //     "a_c_westy",
-    //     "a_c_panther"
-    //   ]
-    //
-    //   const trustedPeds = [
-    //     "s_m_m_movalien_01",
-    //     "s_m_m_movspace_01",
-    //     "ig_orleans",
-    //     "cs_orleans",
-    //     "u_m_y_pogo_01",
-    //     "u_m_y_imporage",
-    //     "billy",
-    //     "obama",
-    //     "sam",
-    //     "skeleton",
-    //     "t800skel",
-    //     "therock(jeans)",
-    //     "therock(nojeans)",
-    //     "tromp",
-    //     "u_m_y_zombie_01"
-    //   ]
-    //
-    //   const jsonObject: Record<string, pedTemplate> = {};
-    //
-    //   for (let i = 0; i < snrAdminPeds.length; i++) {
-    //     const hash = GetHashKey(snrAdminPeds[i]);
-    //
-    //     jsonObject[hash] = {
-    //       model: snrAdminPeds[i],
-    //       name: snrAdminPeds[i],
-    //       type: "ped",
-    //       rank: 10
-    //     }
-    //   }
-    //
-    //   for (let i = 0; i < trustedAnimals.length; i++) {
-    //     const hash = GetHashKey(trustedAnimals[i]);
-    //
-    //     jsonObject[hash] = {
-    //       model: trustedAnimals[i],
-    //       name: trustedAnimals[i],
-    //       type: "animal",
-    //       rank: 7
-    //     }
-    //   }
-    //
-    //   for (let i = 0; i < trustedPeds.length; i++) {
-    //     const hash = GetHashKey(trustedPeds[i]);
-    //
-    //     jsonObject[hash] = {
-    //       model: trustedPeds[i],
-    //       name: trustedPeds[i],
-    //       type: "ped",
-    //       rank: 7
-    //     }
-    //   }
-    //
-    //
-    //   fs.writeFile("D:/Games/peds.json", JSON.stringify(jsonObject, null, 4), err => {
-    //     if (err) {
-    //       console.error(err);
-    //     }
-    //   });
-    //
-    //   console.log("json peds", JSON.stringify(jsonObject, null, 4));
-    // }, false);
+    const encryptionLua = LoadResourceFile(GetCurrentResourceName(), "server/security.lua");
+    if (encryptionLua !== null) { // IF AUTHORIZED START ASSETS
+      this.debugMode = serverConfig.debug;
+      this.serverWhitelisted = serverConfig.whitelist;
+  
+      // Events
+      onNet(Events.resourceStart, this.EVENT_resourceStarted.bind(this));
+      onNet(Events.playerJoined, this.EVENT_playerJoined.bind(this));
+      onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
+      onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
+      onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
+    } else {
+      Error("FATAL ERROR", "File (server/security.lua) not found, unable to initiate core!")
+    }
   }
 
   // Get Requests
@@ -283,6 +174,7 @@ export class Server {
     this.developmentMode = (GetConvar('development_server', 'false') === "true");
     this.maxPlayers = GetConvarInt("sv_maxclients", 32);
   }
+
   private async initialize(): Promise<void> {
     // Get server convars, as we are now ready
     this.getConvars();
@@ -588,18 +480,56 @@ export class Server {
       const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
       if (player) {
         this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.Handle, {}, async (cbData, passedData) => {
-          // console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+          console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
           const ban = new Ban(playerId, hardwareId, reason, issuedBy);
           ban.Logger = LogTypes.Anticheat;
 
           if (passedData.url) ban.URL = passedData.url;
-          if (takeScreenshot) ban.Screenshot = takeScreenshot;
           if (issuedBy != undefined) {
             ban.Banner = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
           }
 
           await ban.save();
         }));
+      }
+    });
+
+    global.exports("kickPlayer", async(playerId: number, reason: string, anticheatKick: boolean, issuedBy?: number) => {
+      // console.log(playerId, reason, issuedBy);
+      if (anticheatKick) {
+        const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
+        if (player) {
+          this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.Handle, {}, async (cbData, passedData) => {
+            console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+            const kick = new Kick(playerId, reason, issuedBy);
+            kick.Logger = LogTypes.Anticheat;
+
+            if (passedData.url) kick.URL = passedData.url;
+            if (issuedBy != undefined) {
+              kick.Kicker = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
+            }
+
+            await kick.save();
+            // kick.drop();
+          }));
+        }
+      } else {
+        const kick = new Kick(playerId, reason, issuedBy);
+        if (issuedBy !== undefined) {
+          kick.Kicker = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
+        }
+
+        await kick.save();
+        kick.drop();
+      }
+    });
+
+    // TYPE (SELECT, INSERT, UPDATE, DELETE)
+    global.exports("sqlQuery", async(type: string, query: string, data: Record<string, any>) => {
+      console.log("type", type, query, data);
+      if (type === "DROP") {
+        const queryData = await Database.SendQuery(query, data);
+        return queryData.error === null || queryData.error === undefined;
       }
     });
   }
