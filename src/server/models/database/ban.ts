@@ -31,7 +31,6 @@ export class Ban {
   private banner: Player;
   private logger: LogTypes = LogTypes.Action;
   private url: string;
-  private screenshot: boolean;
   private offlineBan: boolean = false;
 
   constructor(playerId: number, hwid: string, reason: string, issuedBy: number, issuedUntil?: Date) { // Default ban (PERM)
@@ -97,10 +96,6 @@ export class Ban {
     this.url = newUrl;
   }
 
-  public set Screenshot(takeScreenshot: boolean) {
-    this.screenshot = takeScreenshot;
-  }
-
   public get OfflineBan(): boolean {
     return this.offlineBan;
   }
@@ -128,15 +123,16 @@ export class Ban {
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
 
-      if (this.player.Rank > Ranks.User && this.player.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
-        await this.player.UpdateRank(Ranks.User);
-      }
-      
       if (!this.offlineBan) {
         const svPlayers = server.connectedPlayerManager.GetPlayers;
-        const playerIndex = svPlayers.findIndex(player => player.HardwareId == this.hardwareId);
+        const playerIndex = svPlayers.findIndex(player => player.Id === this.playerId);
+
         if (playerIndex != -1) {
           this.player = svPlayers[playerIndex];
+
+          if (this.player.Rank > Ranks.User && this.player.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
+            await this.player.UpdateRank(Ranks.User);
+          }
 
           if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
             if (this.issuedBy != this.playerId) {
@@ -195,10 +191,14 @@ export class Ban {
           await this.player.getTrustscore(); // Refresh the players trustscore
           return true;
         } else {
-          Error("Ban Class", "There was an issue finding the player from their hardware ID!");
+          Error("Ban Class", "There was an issue finding the player from their player ID!");
         }
       } else {
         const player = await server.playerManager.getPlayerFromId(this.playerId);
+        
+        if (player.Rank > Ranks.User && player.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
+          await player.UpdateRank(Ranks.User);
+        }
 
         if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
           await server.logManager.Send(this.logger, new WebhookMessage({
