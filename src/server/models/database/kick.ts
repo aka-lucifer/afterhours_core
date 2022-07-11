@@ -23,6 +23,8 @@ export class Kick {
   private kickReason: string;
   private kickedBy: number;
   private kicker: Player;
+  private logger: LogTypes = LogTypes.Action;
+  private url: string;
   private issuedOn: Date;
 
   constructor(playerId: number, reason: string, issuedBy?: number) {
@@ -59,6 +61,14 @@ export class Kick {
     this.kicker = newKicker;
   }
 
+  public set Logger(newType: LogTypes) {
+    this.logger = newType;
+  }
+
+  public set URL(newUrl: string) {
+    this.url = newUrl;
+  }
+
   public get Reason(): string {
     return this.kickReason;
   }
@@ -87,10 +97,13 @@ export class Kick {
       if (!this.systemKick) {
         const kickersDiscord = await this.kicker.GetIdentifier("discord");
 
-        await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+        await server.logManager.Send(this.logger, new WebhookMessage({
           username: "Kick Logs", embeds: [{
             color: EmbedColours.Red,
             title: "__Player Kicked__",
+            image: {
+              url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
+            },
             description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: [${Ranks[this.kicker.Rank]}] - ${this.kicker.GetName}\n**Kickers Discord**: ${kickersDiscord != "Unknown" ? `<@${kickersDiscord}>` : kickersDiscord}`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
@@ -99,10 +112,13 @@ export class Kick {
           }]
         }));
       } else {
-        await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+        await server.logManager.Send(this.logger, new WebhookMessage({
           username: "Kick Logs", embeds: [{
             color: EmbedColours.Red,
             title: "__Player Kicked__",
+            image: {
+              url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
+            },
             description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: System`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
