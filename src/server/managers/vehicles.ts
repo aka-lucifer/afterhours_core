@@ -158,7 +158,8 @@ export class VehicleManager {
                   if (vehData.type == "emergency") {
                     const character = await this.server.characterManager.Get(player);
                     if (character) {
-                      if (character.Job.name == vehData.job || player.Rank >= Ranks.Admin) {
+                      const jobPerm = typeof vehData.job === "object" ? vehData.job.includes(character.Job.name) : vehData.job === character.Job.name;
+                      if (jobPerm || player.Rank >= Ranks.Admin) {
                         const hasPerm = await this.hasJobPermission(character, vehData.rank);
                         if (hasPerm) {
                           // console.log("spawn police vehicle!");
@@ -204,13 +205,7 @@ export class VehicleManager {
                         DeleteEntity(entity);
 
                         // Notify the player of the error
-                        if (vehData.job == Jobs.State) {
-                          await player.Notify("State Police", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
-                        } else if (vehData.job == Jobs.County) {
-                          await player.Notify("Sheriffs Office", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
-                        } else if (vehData.job == Jobs.Police) {
-                          await player.Notify("Police Department", "You don't have permission to spawn this vehicle!!", NotificationTypes.Error, 4000);
-                        }
+                        await player.Notify("Vehicles", "You don't have permission to spawn this vehicle!", NotificationTypes.Error, 4000);
 
                         // Log it via a webhook
                         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -268,7 +263,7 @@ export class VehicleManager {
                   this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
                   const netId = NetworkGetNetworkIdFromEntity(entity);
                   
-                  this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData, passedData) => {
+                  this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData) => {
                     await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                       username: "Vehicle Logs", embeds: [{
                         color: EmbedColours.Green,
@@ -317,7 +312,8 @@ export class VehicleManager {
               if (vehData.type == "emergency") {
                 const character = await this.server.characterManager.Get(player);
                 if (character) {
-                  if (character.Job.name == vehData.job || player.Rank >= Ranks.Admin) {
+                  const jobPerm = typeof vehData.job === "object" ? vehData.job.includes(character.Job.name) : vehData.job === character.Job.name;
+                  if (jobPerm || player.Rank >= Ranks.Admin) {
                     const hasPerm = await this.hasJobPermission(character, vehData.rank);
                     if (hasPerm) {
                       // console.log("spawn police vehicle!");
@@ -404,7 +400,7 @@ export class VehicleManager {
             } else {
               this.worldVehicles.push(NetworkGetNetworkIdFromEntity(vehicle));
                   
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData, passedData) => {
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData) => {
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                   username: "Vehicle Logs", embeds: [{
                     color: EmbedColours.Green,
