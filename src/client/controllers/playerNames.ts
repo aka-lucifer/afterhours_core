@@ -69,7 +69,7 @@ export class PlayerNames {
 
           // If the other connected players aren't you
 
-          if (this.client.player.NetworkId != netId) {
+          // if (this.client.player.NetworkId != netId) {
             if (svPlayers[i].spawned) {
               const playerId = GetPlayerFromServerId(netId);
 
@@ -283,7 +283,7 @@ export class PlayerNames {
                 }
               }
             }
-          }
+          // }
         }
 
         await Delay(500);
