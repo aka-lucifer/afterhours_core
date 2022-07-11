@@ -7,16 +7,18 @@ import { Command } from '../models/ui/chat/command';
 import WebhookMessage from '../models/webhook/discord/webhookMessage';
 import { Character } from '../models/database/character';
 
-// Controllers
 import { GPS } from '../controllers/vehicles/gps';
 import { Seatbelt } from '../controllers/vehicles/seatbelt';
 import { Seating } from '../controllers/vehicles/seating';
 import {Shuffling} from '../controllers/vehicles/shuffling';
 
+import { ClientCallback } from '../models/clientCallback';
+
 import { LogTypes } from '../enums/logging';
 
 import { Ranks } from '../../shared/enums/ranks';
 import { Events } from '../../shared/enums/events/events';
+import { Callbacks } from '../../shared/enums/events/callbacks';
 import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
 import { EmbedColours } from '../../shared/enums/logging/embedColours';
 import { ErrorCodes } from '../../shared/enums/logging/errors';
@@ -145,7 +147,8 @@ export class VehicleManager {
               if (player.Spawned) {
                 // Permission Checker
                 const vehModel = GetEntityModel(entity);
-                const vehData = serverConfig.vehicles.blacklister[vehModel];                
+                const vehData = serverConfig.vehicles.blacklister[vehModel];        
+                console.log("veh data", vehModel, vehData);        
 
                 if (vehData !== undefined) {
                   // console.log("spawning veh!", entity);
@@ -263,17 +266,24 @@ export class VehicleManager {
                   }
 
                   this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
+                  const netId = NetworkGetNetworkIdFromEntity(entity);
+                  
+                  this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData, passedData) => {
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Vehicle Logs", embeds: [{
+                        color: EmbedColours.Green,
+                        title: "__Creating Vehicle__",
+                        description: "A player is creating a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
 
-                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                    username: "Vehicle Logs", embeds: [{
-                      color: EmbedColours.Green,
-                      title: "__Entering Vehicle__",
-                      description: `A player is creating a vehicle. Vehicle not found (Entity: ${entity} | Model: ${vehModel}) | Error Code: ${ErrorCodes.VehicleNotFound}\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: ${player.Id}\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}`,
-                      footer: {
-                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                        icon_url: sharedConfig.serverLogo
-                      }
-                    }]
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel
+                    }));
                   }));
                 }
               }
@@ -393,17 +403,23 @@ export class VehicleManager {
               }
             } else {
               this.worldVehicles.push(NetworkGetNetworkIdFromEntity(vehicle));
+                  
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData, passedData) => {
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Vehicle Logs", embeds: [{
+                    color: EmbedColours.Green,
+                    title: "__Entering Vehicle__",
+                    description: "A player is entering a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
 
-              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                username: "Vehicle Logs", embeds: [{
-                  color: EmbedColours.Green,
-                  title: "__Entering Vehicle__",
-                  description: `A player is entering a vehicle. Vehicle not found (Entity: ${vehicle} | Model: ${vehModel}) | Error Code: ${ErrorCodes.VehicleNotFound}\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: ${player.Id}\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}`,
-                  footer: {
-                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                    icon_url: sharedConfig.serverLogo
-                  }
-                }]
+                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel
+                }));
               }));
             }
           }

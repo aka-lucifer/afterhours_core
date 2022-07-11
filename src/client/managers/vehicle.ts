@@ -20,6 +20,8 @@ import { LXEvents } from "../../shared/enums/events/lxEvents";
 import { SystemTypes } from "../../shared/enums/ui/chat/types";
 import { Events } from "../../shared/enums/events/events";
 import { Message } from "../../shared/models/ui/chat/message";
+import { Vehicle } from "fivem-js";
+import { Callbacks } from "../../shared/enums/events/callbacks";
 
 export class VehicleManager {
   private readonly client: Client;
@@ -52,6 +54,9 @@ export class VehicleManager {
     // (Exiting/Cancelling)
     onNet(LXEvents.EnteringVehAborted_Cl, this.EVENT_enteredVehAborted.bind(this));
     onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
+
+    // Callbacks
+    onNet(Callbacks.getVehicleLabel, this.CALLBACK_getVehicleLabel.bind(this));
   }
 
   // Methods
@@ -123,5 +128,14 @@ export class VehicleManager {
     // if (this.shuffling.Started) this.shuffling.stop();
     if (this.driveBy.Started) this.driveBy.stop();
     if (this.client.hud.VehStarted) this.client.hud.stopVeh(); // Hide the vehicle HUD (If showing)
+  }
+
+  private CALLBACK_getVehicleLabel(data: Record<string, any>): void {
+    const vehHandle = NetworkGetEntityFromNetworkId(data.netId);
+    if (vehHandle > 0) {
+      const vehModel = GetEntityModel(vehHandle);
+      const displayText = GetDisplayNameFromVehicleModel(vehModel);
+      emitNet(Events.receiveClientCB, GetLabelText(displayText), data);
+    }
   }
 }

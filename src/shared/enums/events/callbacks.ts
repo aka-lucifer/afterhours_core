@@ -8,6 +8,9 @@ export enum Callbacks {
   getSummoned = "astrid:client:controllers:staff:menu:getSummoned",
   getSummonReturned = "astrid:client:controllers:staff:menu:getSummonReturned",
 
+  // Astrid Client -> Server Callbacks ([Managers] | Vehicle)
+  getVehicleLabel = "astrid:client:controllers:staff:menu:getVehicleLabel",
+
   // Astrid Server -> Client Callbacks
 
   // Characters
