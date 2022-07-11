@@ -1,3 +1,5 @@
+import * as Database from "../../managers/database/database";
+
 export class DBPlayer {
   public id: number;
   private license: string;
@@ -46,5 +48,17 @@ export class DBPlayer {
 
   public get Discord(): string {
     return this.discord;
+  }
+
+  // Methods
+  public async UpdateRank(newRank: number): Promise<boolean> {
+    this.rank = newRank;
+
+    const updated = await Database.SendQuery("UPDATE `players` SET `rank` = :newRank WHERE `player_id` = :id", {
+      newRank: newRank,
+      id: this.id
+    });
+    
+    return updated.meta.affectedRows > 0;
   }
 }
