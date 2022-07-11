@@ -30,6 +30,7 @@ export class Death {
   private client: Client;
 
   // Death Data
+  public ejectedFromVeh: boolean = false;
   private myState: DeathStates = DeathStates.Alive;
   private blackedOut: boolean = false;
   private lastAnim: {dict: string, anim: string};
@@ -42,11 +43,6 @@ export class Death {
 
   private defaultCounter: number = clientConfig.controllers.death.defaultRespawnCount
   private respawnCounter: number;
-
-  // Veh Data
-  private insideVeh: boolean = false;
-  private prevVehicle: Vehicle;
-  private vehicleSeat: VehicleSeat;
 
   // Ticks
   private deathTick: number = undefined;
@@ -67,29 +63,18 @@ export class Death {
 
     // Events
     onNet(Events.playerDead, this.EVENT_playerKilled.bind(this));
-    onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
     onNet(Events.revive, this.EVENT_revive.bind(this));
     
     Inform("Death | Controller", "Started!");
   }
 
   // Events
-  private async EVENT_playerKilled(): Promise<void> {
+  private async EVENT_playerKilled(insideVeh: boolean, seat: VehicleSeat): Promise<void> {
     if (this.client.carrying.Carrying || this.client.carrying.Carrying) { // If you're carrying someone, detach them
       emitNet(Events.tryCarrying);
     }
 
-    await this.processDeath();
-  }
-
-  private EVENT_leftVeh(vehNet: number, vehSeat: VehicleSeat): void {
-    if (Game.PlayerPed.isDead()) { // If we have died in a vehicle
-      if (vehNet > 0) {
-        this.vehicleSeat = vehSeat;
-        this.prevVehicle = new Vehicle(NetToVeh(vehNet));
-        this.insideVeh = true;
-      }
-    }
+    await this.processDeath(insideVeh, seat);
   }
 
   private async EVENT_revive(): Promise<void> {
@@ -113,7 +98,7 @@ export class Death {
     }));
 
     // Set your player state and godmode
-      this.myState = DeathStates.Alive;
+    this.myState = DeathStates.Alive;
     this.client.staffManager.staffMenu.toggleGodmode(false);
 
     // Reset variables back to default
@@ -136,6 +121,11 @@ export class Death {
       clearTick(this.animTick);
       this.animTick = undefined;
     }
+  }
+
+  // Getters
+  public get Alive(): boolean {
+    return this.myState === DeathStates.Alive;
   }
 
   // Methods
@@ -202,7 +192,7 @@ export class Death {
     }
   }
 
-  private async processDeath(): Promise<void> {
+  private async processDeath(insideVeh: boolean, vehSeat: VehicleSeat): Promise<void> {
     const loadedAnims = await this.setup(); // Make sure our death animations are loaded
     if (loadedAnims) {
       this.blackedOut = await this.blackout();
@@ -232,14 +222,13 @@ export class Death {
               this.myState = DeathStates.Dead;
 
               // Play dead animations
-              if (this.insideVeh) { // Have to check this way, as `IsPedInAnyVehicle` is ran too late
-                if (this.insideVeh) this.insideVeh = false; // Restore this data
-
-                while (this.prevVehicle.Speed > 0.5 || IsPedRagdoll(myPed.Handle)) { // Wait until our vehicle has stopped, or we've stopped ragdolling (seatbelt)
+              if (insideVeh) { // Have to check this way, as `IsPedInAnyVehicle` is ran too late
+                const veh = myPed.LastVehicle;
+                while (veh.Speed > 0.5 || IsPedRagdoll(myPed.Handle)) { // Wait until our vehicle has stopped, or we've stopped ragdolling (seatbelt)
                   await Delay(10);
                 }
 
-                myPed.setIntoVehicle(this.prevVehicle, this.vehicleSeat);
+                myPed.setIntoVehicle(veh, vehSeat);
                 TaskPlayAnim(myPed.Handle, "veh@low@front_ps@idle_duck", "sit", 2.0, 2.0, -1, 51, 0, false, false, false);
 
                 this.lastAnim = {
@@ -292,14 +281,13 @@ export class Death {
                   this.myState = DeathStates.Dead;
 
                   // Play dead animations
-                  if (this.insideVeh) { // Have to check this way, as `IsPedInAnyVehicle` is ran too late
-                    if (this.insideVeh) this.insideVeh = false; // Restore this data
-
-                    while (this.prevVehicle.Speed > 0.5 || IsPedRagdoll(myPed.Handle)) { // Wait until our vehicle has stopped, or we've stopped ragdolling (seatbelt)
+                  if (insideVeh) { // Have to check this way, as `IsPedInAnyVehicle` is ran too latecurrVeh
+                    const veh = myPed.LastVehicle;
+                    while (veh.Speed > 0.5 || IsPedRagdoll(myPed.Handle)) { // Wait until our vehicle has stopped, or we've stopped ragdolling (seatbelt)
                       await Delay(10);
                     }
 
-                    myPed.setIntoVehicle(this.prevVehicle, this.vehicleSeat);
+                    myPed.setIntoVehicle(veh, vehSeat);
                     TaskPlayAnim(myPed.Handle, "veh@low@front_ps@idle_duck", "sit", 2.0, 2.0, -1, 51, 0, false, false, false);
 
                     this.lastAnim = {

@@ -165,7 +165,7 @@ export class Client {
   public modelBlacklist: ModelBlacklist;
 
   // [Controllers] Normal
-  private death: Death;
+  public death: Death;
   private playerNames: PlayerNames;
   private afk: AFK;
 
@@ -486,8 +486,27 @@ export class Client {
   }
   
   private registerExports(): void {
+    global.exports("getRanks", async() => {
+      const ranks: Record<string, any> = {};
+      for (let i = 0; i < Object.keys(Ranks).length; i++) {
+        if (Ranks[i] != undefined) {
+          ranks[i] = Ranks[i];
+        }
+      }
+
+      return ranks;
+    });
+
     global.exports("getPlayer", async() => {
       return this.player;
+    });
+
+    global.exports("spawned", () => {
+      if (this.player !== undefined) {
+        return this.player.Spawned;
+      }
+
+      return false;
     });
 
     global.exports("getCharacter", async() => {
@@ -507,17 +526,6 @@ export class Client {
 
     global.exports("teleporting", (newState: boolean) => {
       this.Teleporting = newState;
-    });
-
-    global.exports("getRanks", async() => {
-      const ranks: Record<string, any> = {};
-      for (let i = 0; i < Object.keys(Ranks).length; i++) {
-        if (Ranks[i] != undefined) {
-          ranks[i] = Ranks[i];
-        }
-      }
-
-      return ranks;
     });
   }
 
@@ -723,7 +731,7 @@ export class Client {
           ['content-type']: 'multipart/form-data'
         }
       }, (results) => {
-        // console.log(JSON.parse(results).data.link)
+        console.log(results)
         data.url = JSON.parse(results).data.link;
         takingScreenshot = false
         emitNet(Events.receiveClientCB, false, data);

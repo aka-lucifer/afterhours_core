@@ -13,6 +13,7 @@ import { DeathStates } from '../../shared/enums/deathStates';
 import { EmbedColours } from '../../shared/enums/logging/embedColours';
 
 import sharedConfig from "../../configs/shared.json";
+import { VehicleSeat } from 'fivem-js';
 
 export class Death {
   private server: Server;
@@ -21,12 +22,13 @@ export class Death {
     this.server = server;
 
     // Events
+    onNet(Events.playerDied, this.EVENT_playerDied.bind(this));
     onNet(Events.playerKilled, this.EVENT_playerDied.bind(this));
     onNet(Events.revivePlayer, this.EVENT_revivePlayer.bind(this));
   }
 
   // Events
-  private async EVENT_playerDied(): Promise<void> {
+  private async EVENT_playerDied(killer: number, killData: Record<string, any>, insideVeh: boolean, seat: VehicleSeat): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
@@ -35,7 +37,7 @@ export class Death {
 
         if (playerStates.state.deathState === DeathStates.Alive) {
           playerStates.state.deathState = DeathStates.Dead;
-          await player.TriggerEvent(Events.playerDead);
+          await player.TriggerEvent(Events.playerDead, insideVeh, seat);
         } else {
           await player.TriggerEvent(Events.sendSystemMessage, new Message("This player isn't dead!", SystemTypes.Error));
         }
