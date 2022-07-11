@@ -553,13 +553,13 @@
               <div class="player" v-for="(player, playerIndex) in connectedPlayers" v-if="playerIndex >= (selectedPage * maxPerPage) - maxPerPage && playerIndex <= (selectedPage * maxPerPage)">
                 <div class="player_data">
                   <div class="id">
-                    {{ player.handle }}
+                    {{ player.id }}
                   </div>
                   <div class="name">
                     {{ player.name }}
                   </div>
                   <div class="rank" v-if='myRank >= ranks.Moderator'>
-                    {{ ranks[player.rank] }}
+                    {{ player.rank }}
                   </div>
                   <div class="ping">
                     <span :class="{

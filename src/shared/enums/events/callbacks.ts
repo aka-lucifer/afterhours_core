@@ -9,7 +9,7 @@ export enum Callbacks {
   getSummonReturned = "astrid:client:controllers:staff:menu:getSummonReturned",
 
   // Astrid Client -> Server Callbacks ([Managers] | Vehicle)
-  getVehicleLabel = "astrid:client:controllers:staff:menu:getVehicleLabel",
+  getVehicleLabel = "astrid:client:managers:vehicle:getVehicleLabel",
 
   // Astrid Server -> Client Callbacks
 
@@ -32,6 +32,9 @@ export enum Callbacks {
 
   // Bug Reporting
   submitBug = "astrid:server:controllers:ui:submitBug",
+  
+  // Astrid Server -> Client Callbacks ([Controllers] | UI] - Scoreboard)
+  getScoreboardData = "astrid:server:controllers:ui:scoreboard:getScoreboardData",
   
   // Astrid Server -> Client Callbacks ([Controllers] | Staff] - Menu)
   togglePlayerBlips = "astrid:server:controllers:staff:menu:togglePlayerBlips",

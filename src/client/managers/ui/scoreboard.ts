@@ -3,8 +3,11 @@ import { Vector3, Font } from "fivem-js";
 import {Client} from "../../client";
 import {Draw3DText} from "../../utils";
 
+import { ServerCallback } from "../../models/serverCallback";
+
 import {Events} from "../../../shared/enums/events/events";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
+import { Callbacks } from "../../../shared/enums/events/callbacks";
 
 
 export class Scoreboard {
@@ -13,9 +16,6 @@ export class Scoreboard {
 
   constructor(client: Client) {
     this.client = client;
-
-    // Events
-    onNet(Events.receivePlayers, this.EVENT_recievePlayers.bind(this));
 
     // Opens and Closes scoreboard
     // RegisterKeyMapping("+open_scoreboard", "Opens the scoreboard", "keyboard", "L");
@@ -31,22 +31,20 @@ export class Scoreboard {
     RegisterCommand("+scoreboard_pagedown", this.ScoreboardPrevPage.bind(this), false);
   }
 
-  // Events
-  private EVENT_recievePlayers(maxPlayers: number, recievedPlayers: any[]) {
-    SendNuiMessage(JSON.stringify({
-      event: NuiMessages.OpenScoreboard,
-      data: {
-        maxPlayers,
-        players: recievedPlayers
-      }
-    }))
-    this.tickHandle = setTick(this.TICK_DisplayId);
-  }
-
   // Key Mappings
   private OpenScoreboard(): void {
     if (this.tickHandle != -1) { clearTick(this.tickHandle); }
-    emitNet(Events.requestPlayers);
+    this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.getScoreboardData, {}, (cbData) => {
+      SendNuiMessage(JSON.stringify({
+        event: NuiMessages.OpenScoreboard,
+        data: {
+          maxPlayers: cbData.maxPlayers,
+          players: cbData.recievedPlayers
+        }
+      }));
+      
+      this.tickHandle = setTick(this.TICK_DisplayId);
+    }));
   }
 
   private CloseScoreboard(): void {

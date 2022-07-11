@@ -47,6 +47,7 @@ import { LogManager } from './managers/logging';
 // [Controllers] UI
 import { BugReporting } from './controllers/ui/bugReporting';
 import { Priority } from './controllers/ui/priority';
+import { Scoreboard } from './controllers/ui/scoreboard';
 
 // [Controllers] Civilian
 import { Kidnapping } from './controllers/civilian/kidnapping';
@@ -124,6 +125,7 @@ export class Server {
   // [Controllers | UI]
   private bugReporting: BugReporting;
   public priority: Priority;
+  private scoreboard: Scoreboard;
 
   // [Controllers] Civilian
 
@@ -146,7 +148,6 @@ export class Server {
       onNet(Events.playerJoined, this.EVENT_playerJoined.bind(this));
       onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
       onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
-      onNet(Events.requestPlayers, this.EVENT_refreshPlayers.bind(this));
     } else {
       Error("FATAL ERROR", "File (server/security.lua) not found, unable to initiate core!")
     }
@@ -221,6 +222,7 @@ export class Server {
     // [Controllers | UI] Bug Reporting
     this.bugReporting = new BugReporting(server);
     this.priority = new Priority(server);
+    this.scoreboard = new Scoreboard(server);
 
     // [Controllers] Civilian
     this.kidnapping = new Kidnapping(server);
@@ -705,17 +707,6 @@ export class Server {
         }]
       }));
     }
-  }
-
-  private async EVENT_refreshPlayers(): Promise<void> {
-    const player = await this.connectedPlayerManager.GetPlayer(source.toString());
-    const svPlayers = this.connectedPlayerManager.GetPlayers;
-
-    for (let a = 0; a < svPlayers.length; a++) {
-      svPlayers[a].RefreshPing();
-    }
-
-    await player.TriggerEvent(Events.receivePlayers, this.maxPlayers, Object.assign({}, svPlayers));
   }
 }
 
