@@ -41,7 +41,7 @@ export class Taser {
     onNet(LXEvents.Gunshot_Cl, this.gunshot.bind(this));
 
     // Keybinds
-    RegisterCommand("+toggle_laser", this.toggleLaser.bind(this), false);
+    RegisterCommand("+toggle_taser_laser", this.toggleLaser.bind(this), false);
     RegisterCommand("+reload_cartridges", this.reloadCartridges.bind(this), false);
   }
 
