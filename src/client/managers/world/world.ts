@@ -49,7 +49,7 @@ export class WorldManager {
       this.disablePolice(myPed);
       this.disablePVP(myPed);
       this.disableVehRewards(myPed);
-      this.disableHealthRecharge(myPed);
+      this.disableHealthRecharge();
       this.disableWorldTraffic(myPed);
       this.wipeInteriors();
 
@@ -102,8 +102,8 @@ export class WorldManager {
   }
 
   // Disable Health Recharge
-  private disableHealthRecharge(ped: Ped) {
-    SetPlayerHealthRechargeMultiplier(ped.Handle, 0);
+  private disableHealthRecharge() {
+    SetPlayerHealthRechargeMultiplier(PlayerId(), 0);
   }
 
   // Disable Vehicles, Peds
