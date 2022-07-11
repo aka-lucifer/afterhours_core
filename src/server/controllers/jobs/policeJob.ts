@@ -315,15 +315,17 @@ export class PoliceJob {
         for (let i = 0; i < svPlayers.length; i++) {
           const character = await this.server.characterManager.Get(svPlayers[i]);
 
-          if (character.isLeoJob() || character.isSAFREMSJob()) {
-            if (character.Job.Status) {
-              if (crossing.length > 0) {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
-              } else {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
-              }
+          if (character) {
+            if (character.isLeoJob() || character.isSAFREMSJob()) {
+              if (character.Job.Status) {
+                if (crossing.length > 0) {
+                  await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                } else {
+                  await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 Call ^0| ID: ^3#${callId} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                }
 
-              await svPlayers[i].TriggerEvent(JobEvents.receive911Call, callId,  myPlayer.Position, myCharacter.Name);
+                await svPlayers[i].TriggerEvent(JobEvents.receive911Call, callId,  myPlayer.Position, myCharacter.Name);
+              }
             }
           }
         }
