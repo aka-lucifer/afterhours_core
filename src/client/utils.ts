@@ -687,13 +687,16 @@ export async function createVeh(model: string | number, position: Vector3, headi
     if (loadedModel) {
       const vehicle = await World.createVehicle(vehModel, position, heading);
 
-      // Vehicle Setters
-      if (plate !== undefined) vehicle.NumberPlate = plate;
-      vehicle.PreviouslyOwnedByPlayer = true; // Set that a player owns the vehicle
-      vehicle.NeedsToBeHotwired = false; // Set it already hotwired
-      vehicle.RadioStation = RadioStation.RadioOff; // Set the vehicle radio turned off
-      global.exports["astrid_fuel"].SetFuel(vehicle.Handle, 100); // Set the vehicles fuel level to full
-      vehModel.markAsNoLongerNeeded(); // Removes vehicle model from memory
+      if (vehicle.Handle !== undefined) {
+        // Vehicle Setters
+        if (plate !== undefined) vehicle.NumberPlate = plate;
+        vehicle.PreviouslyOwnedByPlayer = true; // Set that a player owns the vehicle
+        vehicle.NeedsToBeHotwired = false; // Set it already hotwired
+        vehicle.RadioStation = RadioStation.RadioOff; // Set the vehicle radio turned off
+        vehicle.DirtLevel = 0.0;
+        global.exports["astrid_fuel"].SetFuel(vehicle.Handle, 100); // Set the vehicles fuel level to full
+        vehModel.markAsNoLongerNeeded(); // Removes vehicle model from memory
+      }
 
       return vehicle;
     }
