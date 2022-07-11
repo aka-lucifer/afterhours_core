@@ -66,7 +66,7 @@ export class BugReporting {
         await this.server.logManager.Send(logType, new WebhookMessage({username: "Bug Reporting", embeds: [{
             color: EmbedColours.Green,
             title: "__Bug Reported__",
-            description: `A player has reported a new bug.\n\n**Player Id**: ${player.Id}\n**Player Name**: ${player.GetName}\n**Player Rank**: ${player.Rank}\n**What Happened?**: ${data.description}\n**How To Reproduce?**: ${data.reproduction}\n**Evidence?**: ${data.evidence}`,
+            description: `A player has reported a new bug.\n\n**Player Id**: ${player.Id}\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**What Happened?**: ${data.description}\n**How To Reproduce?**: ${data.reproduction}\n**Evidence?**: ${data.evidence}`,
             footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]}));
       }
