@@ -164,8 +164,10 @@ export class Garages {
               if (IsPedInAnyVehicle(myPed.Handle, false)) myPed.CurrentVehicle.delete();
 
               const createdVeh = await createVeh(vehicle.model, spawnPos, spawnHeading);
-              TaskWarpPedIntoVehicle(myPed.Handle, createdVeh.Handle, VehicleSeat.Driver); // Set you in the drivers seat of the vehicle
-              await this.menu.Close();
+              if (createdVeh !== undefined) {
+                TaskWarpPedIntoVehicle(myPed.Handle, createdVeh.Handle, VehicleSeat.Driver); // Set you in the drivers seat of the vehicle
+                await this.menu.Close();
+              }
             });
           }
         }
