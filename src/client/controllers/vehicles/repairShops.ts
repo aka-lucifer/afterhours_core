@@ -75,7 +75,7 @@ export class RepairShops {
               const progress = new Progress(20000, {
                 vehicle: true
               }, async() => {
-                if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
+                // if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
                 SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false)
                 currVeh.IsEngineRunning = true;
                 currVeh.IsDriveable = true;
@@ -95,7 +95,7 @@ export class RepairShops {
                 SetVehicleDoorOpen(currVeh.Handle, VehicleDoorIndex.Hood, false, false);
                 currVeh.IsEngineRunning = false;
                 currVeh.IsDriveable = false;
-                global.exports["xsound"].PlayUrlPos("veh_repair", Sounds.Repair, 0.15, Game.PlayerPed.Position, false);
+                // global.exports["xsound"].PlayUrlPos("veh_repair", Sounds.Repair, 0.15, Game.PlayerPed.Position, false);
                 client.richPresence.Status = "Repairing Vehicle At Shop";
 
                 this.cancelTick = setTick(() => {
@@ -106,7 +106,7 @@ export class RepairShops {
                   };
                 });
               }, async() => {
-                if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
+                // if (global.exports["xsound"].isPlaying("veh_repair")) global.exports["xsound"].Destroy("veh_repair");
                 currVeh.repair();
                 global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
                 SetVehicleDoorShut(currVeh.Handle, VehicleDoorIndex.Hood, false);

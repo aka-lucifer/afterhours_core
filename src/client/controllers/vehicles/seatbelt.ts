@@ -65,13 +65,13 @@ export class Seatbelt {
           const notify = new Notification("Seatbelt", "You've toggled your seatbelt", NotificationTypes.Success);
           await notify.send();
 
-          global.exports["xsound"].PlayUrl("seatbeltOn", Sounds.SeatbeltOn, 0.3, false);
+          // global.exports["xsound"].PlayUrl("seatbeltOn", Sounds.SeatbeltOn, 0.3, false);
         } else {
           console.log("remove seatbelt & stop sound");
 
           const notify = new Notification("Seatbelt", "You've removed your seatbelt", NotificationTypes.Error);
           await notify.send();
-          global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false);
+          // global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false);
         }
       }
     }
@@ -249,7 +249,7 @@ export class Seatbelt {
 
       if (this.seatbeltToggled) {
         this.updateState(false);
-        global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false); // Do seatbelt off sound, when u exit vehicle
+        // global.exports["xsound"].PlayUrl("seatbeltOff", Sounds.SeatbeltOff, 0.3, false); // Do seatbelt off sound, when u exit vehicle
       }
       
       this.ticks = 0;
