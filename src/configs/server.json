@@ -2889,6 +2889,13 @@
           "type": "management",
           "rank": 12
       },
+      "630900558": {
+          "model": "thot",
+          "brand": "Thot",
+          "name": "Patrol (Management)",
+          "type": "management",
+          "rank": 12
+      },
       "1896491931": {
           "model": "moonbeam2",
           "brand": "Declasse",

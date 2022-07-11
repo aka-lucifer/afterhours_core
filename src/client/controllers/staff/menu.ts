@@ -1,7 +1,7 @@
-import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, World } from "fivem-js";
+import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, VehicleSeat, World } from "fivem-js";
 
 import { Client } from "../../client";
-import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone } from "../../utils";
+import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone, createVeh } from "../../utils";
 
 import { Menu } from "../../models/ui/menu/menu";
 import { Submenu } from "../../models/ui/menu/submenu";
@@ -447,7 +447,7 @@ export class StaffMenu {
           const currVeh = myPed.CurrentVehicle;
           if (currVeh.Health < currVeh.MaxHealth) {
             currVeh.repair();
-            global.exports["vehDeformation"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
+            global.exports["astrid_deform"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
             currVeh.DirtLevel = 0.0;
             currVeh.IsEngineRunning = true;
 
@@ -461,6 +461,18 @@ export class StaffMenu {
           }
         }
       });
+
+      if (this.client.player.Rank >= Ranks.Management) {
+        this.vehicleActionsMenu.BindButton("Thot Patrol", async() => {
+          const myPed = Game.PlayerPed;
+          if (IsPedInAnyVehicle(myPed.Handle, false)) {
+            myPed.CurrentVehicle.delete();
+          }
+
+          const createdVeh = await createVeh("thot", myPed.Position, myPed.Heading);
+          if (createdVeh !== undefined) TaskWarpPedIntoVehicle(myPed.Handle, createdVeh.Handle, VehicleSeat.Driver); // Set you in the drivers seat of the vehicle
+        });
+      }
 
       if (this.client.player.Rank >= Ranks.Admin) {
         this.vehicleActionsMenu.BindCheckbox("Godmode", this.vehGodmode, (newState: boolean) => {
