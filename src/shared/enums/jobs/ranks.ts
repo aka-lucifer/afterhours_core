@@ -19,7 +19,7 @@ export enum CountyRanks {
   Lieutenant,
   Captain,
   Commander,
-  ChiefDeputy,
+  Undersheriff,
   Sheriff
 }
 
@@ -31,6 +31,7 @@ export enum StateRanks {
   Sergeant,
   Lieutenant,
   Captain,
-  AsstCommander,
-  Commander
+  Major,
+  DeputyCommissoner,
+  Commissoner
 }
