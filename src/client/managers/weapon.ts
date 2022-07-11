@@ -39,7 +39,7 @@ export class WeaponManager {
     this.modes = new WeaponModes(this.client); // done
     this.spamPreventor = new SpamPreventor(this.client); // done
     this.recoil = new WeaponRecoil(this.client); // done
-    this.disablers = new WeaponDisablers(); // done (0.05ms-0.07ms)
+    this.disablers = new WeaponDisablers(this.client); // done (0.05ms-0.07ms)
     this.jamming = new WeaponJamming(this.client); // done
     this.taser = new Taser(this.client); // done
     this.onBack = new OnBack(); // done
