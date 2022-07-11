@@ -194,8 +194,10 @@ export class PoliceJob {
                         if (svPlayers[i].Handle !== player.Handle) {
                           if (svPlayers[i].Spawned) {
                             const character = await this.server.characterManager.Get(svPlayers[i]);
-                            if (character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status) {
-                              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                            if (character) {
+                              if (character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status) {
+                                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`911 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                              }
                             }
                           }
                         }
@@ -215,8 +217,10 @@ export class PoliceJob {
                         if (svPlayers[i].Handle !== player.Handle) {
                           if (svPlayers[i].Spawned) {
                             const character = await this.server.characterManager.Get(svPlayers[i]);
-                            if (character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status) {
-                              await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                            if (character) {
+                              if (character.isLeoJob() && character.Job.status || character.isSAFREMSJob() && character.Job.status) {
+                                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 (#${callId}) Response ^0| Unit: ^3[${character.Job.Callsign}] - ${responderName} ^0| Message: ^3${message}`, SystemTypes.Dispatch));
+                              }
                             }
                           }
                         }
@@ -334,12 +338,14 @@ export class PoliceJob {
           for (let i = 0; i < svPlayers.length; i++) {
             const character = await this.server.characterManager.Get(svPlayers[i]);
 
-            if (character.isLeoJob() || character.isSAFREMSJob()) {
-              if (character.Job.Status) {
-                await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId,  myPlayer.Position, myCharacter.Name);
-                const callIndex = this.activeCalls.findIndex(call => call.id == callId);
-                if (callIndex !== -1) {
-                  this.activeCalls.splice(callIndex, 1);
+            if (character) {
+              if (character.isLeoJob() || character.isSAFREMSJob()) {
+                if (character.Job.Status) {
+                  await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId,  myPlayer.Position, myCharacter.Name);
+                  const callIndex = this.activeCalls.findIndex(call => call.id == callId);
+                  if (callIndex !== -1) {
+                    this.activeCalls.splice(callIndex, 1);
+                  }
                 }
               }
             }
@@ -373,15 +379,17 @@ export class PoliceJob {
         for (let i = 0; i < svPlayers.length; i++) {
           const character = await this.server.characterManager.Get(svPlayers[i]);
 
-          if (character.isLeoJob() || character.isSAFREMSJob()) {
-            if (character.Job.Status) {
-              if (crossing.length > 0) {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
-              } else {
-                await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
-              }
+          if (character) {
+            if (character.isLeoJob() || character.isSAFREMSJob()) {
+              if (character.Job.Status) {
+                if (crossing.length > 0) {
+                  await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0 / ^3${crossing}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                } else {
+                  await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`311 Call ^0| ID: ^3#${svPlayers[i].Handle} ^0| Name: ^3${myCharacter.Name} ^0| Location: ^3${street}^0, ^0[^3${zone}^0] (^3Postal ^0- ^3${postal}^0) | Description: ^3${description}`, SystemTypes.Dispatch));
+                }
 
-              await svPlayers[i].TriggerEvent(JobEvents.receive311Call, callId,  myPlayer.Position, myCharacter.Name);
+                await svPlayers[i].TriggerEvent(JobEvents.receive311Call, callId,  myPlayer.Position, myCharacter.Name);
+              }
             }
           }
         }
@@ -390,9 +398,11 @@ export class PoliceJob {
           for (let i = 0; i < svPlayers.length; i++) {
             const character = await this.server.characterManager.Get(svPlayers[i]);
 
-            if (character.isLeoJob() || character.isSAFREMSJob()) {
-              if (character.Job.Status) {
-                await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId,  myPlayer.Position, myCharacter.Name);
+            if (character) {
+              if (character.isLeoJob() || character.isSAFREMSJob()) {
+                if (character.Job.Status) {
+                  await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId,  myPlayer.Position, myCharacter.Name);
+                }
               }
             }
           }
@@ -409,26 +419,28 @@ export class PoliceJob {
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
-        if (character.isLeoJob()) { // If your selected character is an LEO
-          if (character.Job.Status) { // If your character is on duty
-            const [closest, dist] = await getClosestPlayer(player);
+        if (character) {
+          if (character.isLeoJob()) { // If your selected character is an LEO
+            if (character.Job.Status) { // If your character is on duty
+              const [closest, dist] = await getClosestPlayer(player);
 
-            if (closest) {
-              if (dist < 3) {
-                const closestCharacter = await this.server.characterManager.Get(closest);
-                if (closestCharacter) {
-                  await closest.TriggerEvent(JobEvents.takeOffMask);
+              if (closest) {
+                if (dist < 3) {
+                  const closestCharacter = await this.server.characterManager.Get(closest);
+                  if (closestCharacter) {
+                    await closest.TriggerEvent(JobEvents.takeOffMask);
+                  } else {
+                    await player.Notify("Police", "This person hasn't selected a character!", NotificationTypes.Error);
+                  }
                 } else {
-                  await player.Notify("Police", "This person hasn't selected a character!", NotificationTypes.Error);
+                  await player.Notify("Police", "Player is too far away!", NotificationTypes.Error);
                 }
               } else {
-                await player.Notify("Police", "Player is too far away!", NotificationTypes.Error);
+                await player.Notify("Police", "No one found!", NotificationTypes.Error);
               }
             } else {
-              await player.Notify("Police", "No one found!", NotificationTypes.Error);
+              await player.Notify("Police", "You aren't on duty!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Police", "You aren't on duty!", NotificationTypes.Error);
           }
         }
       }
