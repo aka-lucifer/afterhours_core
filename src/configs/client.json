@@ -442,7 +442,6 @@
                 "shopLocations": [
                     {"name": "Hayes Auto Body Shop", "location": {"x": 480.8, "y": -1317.32, "z": 28.58, "l": 7.0, "w": 6.4}},
                     {"name": "West Mirror Dr Body Shop", "location": {"x": 1139.02, "y": -777.92, "z": 56.97, "l": 7.0, "w": 6.4}},
-                    {"name": "Flywheels Repair Garage", "location": {"x": 1767.64, "y": 3329.24, "z": 40.81, "l": 7.0, "w": 6.4}},
                     {"name": "Paleto Body Shop", "location": {"x": -79.32, "y": 6420.31, "z": 30.86, "l": 7.0, "w": 6.4}},
                     {"name": "Route 68 Body Shop", "location": {"x": 1174.73, "y": 2640.57, "z": 37.13, "l": 7.0, "w": 6.4}},
                     {"name": "Los Santos Customs", "location": {"x": -337.3863, "y": -136.92, "z": 38.57, "l": 7.0, "w": 6.4}},
@@ -8124,8 +8123,8 @@
                 "label": "Paleto Bay Highway Station"
               },
               {
-                "x": 847.57,
-                "y": -1295.99,
+                "x": 833.77,
+                "y": -1296.29,
                 "z": 28.23,
                 "rank": "state",
                 "label": "La Mesa Highway Station"
