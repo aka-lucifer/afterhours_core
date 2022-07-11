@@ -1,4 +1,7 @@
+import { VehicleSeat } from 'fivem-js';
+
 import { Server } from '../server';
+import { Error, Inform } from '../utils';
 
 import { LogTypes } from "../enums/logging";
 
@@ -13,7 +16,6 @@ import { DeathStates } from '../../shared/enums/deathStates';
 import { EmbedColours } from '../../shared/enums/logging/embedColours';
 
 import sharedConfig from "../../configs/shared.json";
-import { VehicleSeat } from 'fivem-js';
 
 export class Death {
   private server: Server;
@@ -132,6 +134,32 @@ export class Death {
         }
       }
     }, Ranks.User);
+
+    RegisterCommand("revive", async(source: number, args: any[]) => {
+      if (source === 0) {
+        const reviving = await this.server.connectedPlayerManager.GetPlayer(args[0]); // If your entered server ID is null, revive yourself
+        if (reviving) {
+          if (reviving.Spawned) {
+            const playerStates = Player(reviving.Handle);
+
+            if (playerStates.state.deathState == DeathStates.Dead) {
+              playerStates.state.deathState = DeathStates.Alive;
+              await reviving.TriggerEvent(Events.revive); // Revive player
+
+              // Send revived chat messages
+              Inform("Revive Command", `You have revived [${reviving.Handle}] - ${reviving.GetName} | ${reviving.selectedCharacter.firstName} ${reviving.selectedCharacter.lastName}`)
+              await reviving.TriggerEvent(Events.sendSystemMessage, new Message(`You have been revived by ^3System^0.`, SystemTypes.Admin));
+            } else {
+              Error("Revive Command", "This player isn't dead!");
+            }
+          } else {
+            Error("Revive Command", "This player isn't spawned in!");
+          }
+        } else {
+          Error("Revive Command", "No player found with that server ID!");
+        }
+      }
+    }, false);
   }
 
   public init(): void {
