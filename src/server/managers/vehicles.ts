@@ -268,7 +268,7 @@ export class VehicleManager {
                       username: "Vehicle Logs", embeds: [{
                         color: EmbedColours.Green,
                         title: "__Creating Vehicle__",
-                        description: "A player is creating a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+                        description: "A player is creating a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
                         footer: {
                           text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                           icon_url: sharedConfig.serverLogo
@@ -277,7 +277,7 @@ export class VehicleManager {
                     }));
 
                     await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                      username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel
+                      username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ")."
                     }));
                   }));
                 }
@@ -405,7 +405,7 @@ export class VehicleManager {
                   username: "Vehicle Logs", embeds: [{
                     color: EmbedColours.Green,
                     title: "__Entering Vehicle__",
-                    description: "A player is entering a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+                    description: "A player is entering a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
                     footer: {
                       text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                       icon_url: sharedConfig.serverLogo
@@ -414,7 +414,7 @@ export class VehicleManager {
                 }));
 
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                  username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel
+                  username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ")."
                 }));
               }));
             }

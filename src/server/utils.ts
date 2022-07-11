@@ -52,7 +52,7 @@ export function Error(reference: string, message: string): void {
  * @param hashValue A string to convert to a hash
  * @returns: A converted string into a hash format
  */
-export function GetHash(hashValue: string): string | number {
+export function GetHash(hashValue: string | number): string | number {
   if (typeof hashValue == "number") return hashValue;
   if (typeof hashValue == "string") return GetHashKey(hashValue);
 }
