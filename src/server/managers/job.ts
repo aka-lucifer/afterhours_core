@@ -473,7 +473,7 @@ export class JobManager {
     } else if (job == Jobs.Police) {
       return rank >= PoliceRanks.Lieutenant;
     } else if (job == Jobs.State) {
-      return rank >= StateRanks.Lieutenant;
+      return rank >= StateRanks.Major;
     }
   }
 }
