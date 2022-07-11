@@ -84,8 +84,6 @@ export class VehicleManager {
   }
 
   private EVENT_enteredVeh(): void {
-    console.log("entered veh!");
-
     if (!this.speedZones.Started) this.speedZones.start(); // done (0.01ms-0.02ms)
     if (!this.weapon.Started) this.weapon.start(); // done (0.01ms-0.03ms)
     if (!this.antiControl.RollStarted) this.antiControl.startRoll(); // done (0.01ms)
@@ -114,8 +112,6 @@ export class VehicleManager {
   }
 
   private EVENT_leftVeh(): void {
-    console.log("left veh!");
-    
     if (this.speedZones.Started) this.speedZones.stop(); // done (0.01ms-0.02ms)
     if (this.weapon.Started) this.weapon.stop(); // done (0.01ms-0.03ms)
     if (this.antiControl.RollStarted) this.antiControl.stopRoll(); // done (0.01ms)
