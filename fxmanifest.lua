@@ -6,6 +6,8 @@
 fx_version "bodacious"
 game "gta5"
 
+lua54 "yes"
+
 ui_page "ui/index.html"
 
 files {
@@ -25,8 +27,11 @@ files {
 }
 
 client_scripts {
-	"client/*.lua",
+	"client/vehGodmode.lua",
 	"dist/client/main.js"
 }
 
-server_script "dist/server/main.js"
+server_scripts {
+	"server/security.lua",
+	"dist/server/main.js"
+}
