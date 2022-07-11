@@ -183,7 +183,7 @@ export class CommandMenu {
                               for (let b = 0; b < receievedUnits.length; b++) {
                                 const submenu = this.units.BindSubmenu(`[${receievedUnits[b].callsign}] | ${receievedUnits[b].firstName}. ${receievedUnits[b].lastName} - ${receievedUnits[b].rank}`);
 
-                                const promoteMenu = submenu.BindSubmenu("Promote Unit");
+                                const promoteMenu = submenu.BindSubmenu("Promote/Demote Unit");
 
                                 for (let c = 0; c < Object.keys(ranks).length / 2; c++) {
                                   if (c < this.client.Character.job.rank || this.client.player.Rank >= Ranks.SeniorAdmin) { // If the available ranks are less than your rank

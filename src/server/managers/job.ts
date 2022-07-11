@@ -275,6 +275,14 @@ export class JobManager {
         if (character) {
           if (character.isLeoJob()) {
             if (character.Job.Boss) {
+              const tempPlayer = await this.server.playerManager.getPlayerFromId(data.unitsPlayerId);
+              if (tempPlayer) {
+                if (tempPlayer.Rank >= Ranks.SeniorAdmin) {
+                  await player.Notify("Command Menu", "You can't fire a Senior Admin or above!", NotificationTypes.Error);
+                  return;
+                }
+              }
+
               const newJob = new Job("civilian", "Civilian");
               const updatedJob = await Database.SendQuery("UPDATE `player_characters` SET `job` = :newJob WHERE `id` = :id AND `player_id` = :playerId", {
                 id: data.unitsId,
@@ -340,6 +348,14 @@ export class JobManager {
         if (character) {
           if (character.isLeoJob()) {
             if (character.Job.Boss) {
+              const tempPlayer = await this.server.playerManager.getPlayerFromId(data.unitsPlayerId);
+              if (tempPlayer) {
+                if (tempPlayer.Rank >= Ranks.SeniorAdmin) {
+                  await player.Notify("Command Menu", "You can't promote/demote a Senior Admin or above!", NotificationTypes.Error);
+                  return;
+                }
+              }
+
               const highCommand = this.server.jobManager.highCommand(character.Job.name, data.newRank);
               const newJob = new Job(character.Job.name, character.Job.label, data.newRank, highCommand, data.callsign);
 
