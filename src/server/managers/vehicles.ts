@@ -147,8 +147,7 @@ export class VehicleManager {
               if (player.Spawned) {
                 // Permission Checker
                 const vehModel = GetEntityModel(entity);
-                const vehData = serverConfig.vehicles.blacklister[vehModel];        
-                console.log("veh data", vehModel, vehData);        
+                const vehData = serverConfig.vehicles.blacklister[vehModel];
 
                 if (vehData !== undefined) {
                   // console.log("spawning veh!", entity);
@@ -187,7 +186,7 @@ export class VehicleManager {
                             username: "Vehicle Logs", embeds: [{
                               color: EmbedColours.Green,
                               title: "__Created Vehicle__",
-                              description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                              description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                               footer: {
                                 text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                                 icon_url: sharedConfig.serverLogo
@@ -212,7 +211,7 @@ export class VehicleManager {
                           username: "Vehicle Logs", embeds: [{
                             color: EmbedColours.Green,
                             title: "__Created Vehicle__",
-                            description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                            description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                             footer: {
                               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                               icon_url: sharedConfig.serverLogo
@@ -241,7 +240,7 @@ export class VehicleManager {
                         username: "Vehicle Logs", embeds: [{
                           color: EmbedColours.Green,
                           title: "__Created Vehicle__",
-                          description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                          description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                           footer: {
                             text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                             icon_url: sharedConfig.serverLogo
@@ -268,7 +267,7 @@ export class VehicleManager {
                       username: "Vehicle Logs", embeds: [{
                         color: EmbedColours.Green,
                         title: "__Creating Vehicle__",
-                        description: "A player is creating a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+                        description: "A player is creating a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
                         footer: {
                           text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                           icon_url: sharedConfig.serverLogo
@@ -277,7 +276,7 @@ export class VehicleManager {
                     }));
 
                     await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                      username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ")."
+                      username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ")."
                     }));
                   }));
                 }
@@ -336,7 +335,7 @@ export class VehicleManager {
                         username: "Vehicle Logs", embeds: [{
                           color: EmbedColours.Green,
                           title: "__Entering Vehicle__",
-                          description: `A player has tried to enter a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                          description: `A player has tried to enter a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                           footer: {
                             text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                             icon_url: sharedConfig.serverLogo
@@ -362,7 +361,7 @@ export class VehicleManager {
                       username: "Vehicle Logs", embeds: [{
                         color: EmbedColours.Green,
                         title: "__Created Vehicle__",
-                        description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                        description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                         footer: {
                           text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                           icon_url: sharedConfig.serverLogo
@@ -388,7 +387,7 @@ export class VehicleManager {
                     username: "Vehicle Logs", embeds: [{
                       color: EmbedColours.Green,
                       title: "__Entering Vehicle__",
-                      description: `A player has tried to enter a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                      description: `A player has tried to enter a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                       footer: {
                         text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                         icon_url: sharedConfig.serverLogo
@@ -405,7 +404,7 @@ export class VehicleManager {
                   username: "Vehicle Logs", embeds: [{
                     color: EmbedColours.Green,
                     title: "__Entering Vehicle__",
-                    description: "A player is entering a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+                    description: "A player is entering a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
                     footer: {
                       text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                       icon_url: sharedConfig.serverLogo
@@ -414,7 +413,7 @@ export class VehicleManager {
                 }));
 
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                  username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHash(vehModel) + ")."
+                  username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ")."
                 }));
               }));
             }
