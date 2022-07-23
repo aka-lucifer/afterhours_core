@@ -82,35 +82,6 @@ export class PoliceJob {
                     if (foundChar) {
                       const charLicenses = foundChar.Metadata.licensesToLabel();
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`^0Name: ^3${foundChar.Name} ^0| DOB: ^3${foundChar.DOB} ^0| Nationality: ^3${foundChar.Nationality} ^0| Gender: ^3${foundChar.Gender} ^0| Drivers License: ^3${Capitalize(charLicenses.includes("driver").toString())} ^0| Weapons License: ^3${Capitalize(charLicenses.includes("weapon").toString())}^0.`, SystemTypes.Dispatch));
-
-                      
-                      const vehicles = await this.server.charVehicleManager.GetCharVehicles(foundChar);
-                      if (vehicles.length > 0) {
-                        let vehString = "";
-
-                        if (vehicles.length > 1) {
-                          for (let i = 0; i < vehicles.length; i++) {
-                            console.log("vehs", i, vehicles.length - 1)
-                            if (i == vehicles.length - 1) {
-                              if (vehString.length > 0) {
-                                vehString = `${vehString}<br><br>^0Model: ^3${vehicles[i].Label} ^0| Type: ^3${vehicles[i].Type} ^0| Colour: ^3${vehicles[i].Colour} ^0| Plate: ^3${vehicles[i].Plate} ^0| Registered On: ^3${new Date(vehicles[i].Registered).toUTCString()}^0.`
-                              } else {
-                                vehString = `^0Model: ^3${vehicles[i].Label} ^0| Type: ^3${vehicles[i].Type} ^0| Colour: ^3${vehicles[i].Colour} ^0| Plate: ^3${vehicles[i].Plate} ^0| Registered On: ^3${new Date(vehicles[i].Registered).toUTCString()}^0.`
-                              }
-                            } else {
-                              if (vehString.length > 0) {
-                                vehString = `${vehString}<br><br>^0Model: ^3${vehicles[i].Label} ^0| Type: ^3${vehicles[i].Type} ^0| Colour: ^3${vehicles[i].Colour} ^0| Plate: ^3${vehicles[i].Plate} ^0| Registered On: ^3${new Date(vehicles[i].Registered).toUTCString()}`;
-                              } else {
-                                vehString = `^0Model: ^3${vehicles[i].Label} ^0| Type: ^3${vehicles[i].Type} ^0| Colour: ^3${vehicles[i].Colour} ^0| Plate: ^3${vehicles[i].Plate} ^0| Registered On: ^3${new Date(vehicles[i].Registered).toUTCString()}^0.`;
-                              }
-                            }
-                          }
-                        } else {
-                          vehString = `^0Model: ^3${vehicles[0].Label} ^0| Type: ^3${vehicles[0].Type} ^0| Colour: ^3${vehicles[0].Colour} ^0| Plate: ^3${vehicles[0].Plate} ^0| Registered On: ^3${new Date(vehicles[0].Registered).toUTCString()}^0.`;
-                        }
-
-                        await player.TriggerEvent(Events.sendSystemMessage, new Message(`Owned Vehicles ^0| ${vehString}`, SystemTypes.Dispatch));
-                      }
                     } else {
                       await player.TriggerEvent(Events.sendSystemMessage, new Message("No character online with that name!", SystemTypes.Error));
                     }
