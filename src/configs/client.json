@@ -382,7 +382,7 @@
                 }
               },
               "cartridges": {
-                "max": 3,
+                "max": 2,
                 "refillLength": 5000
               }
             }
