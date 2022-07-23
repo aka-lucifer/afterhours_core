@@ -840,7 +840,7 @@ const HUD = new Vue({
         data = {};
       }
 
-      $.post(`http://${this.resource}/${event}`, JSON.stringify(data), cb);
+      $.post(`https://${this.resource}/${event}`, JSON.stringify(data), cb);
     },
 
     Clear() {
@@ -1112,6 +1112,10 @@ const HUD = new Vue({
         }
 
         this.deathDisplaying = data.display;
+        if (!this.deathDisplaying) { // If hiding the UI (set data back to default)
+          if (data.respawnCounter !== undefined) this.deathData.respawnCounter = data.respawnCounter;
+          if (data.holdCounter !== undefined) this.deathData.holdCounter = data.holdCounter;
+        }
       }
     },
 
@@ -1521,11 +1525,6 @@ const HUD = new Vue({
           break;
       }
     });
-
-    // NUI Ready
-    setTimeout(() => {
-      HUD.Post("NUI_READY");
-    }, 0);
   }
 });
 
@@ -1624,3 +1623,8 @@ $(document).on('keydown', function(event) {
 
 RegisterEvent("OPEN_HEX_MENU", AxMenu.Open);
 RegisterEvent("CLOSE_HEX_MENU", AxMenu.Close);
+
+
+$(document).ready(function (){
+  $.post(`https://${GetParentResourceName()}/NUI_READY`, {});
+});

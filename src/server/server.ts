@@ -561,31 +561,33 @@ export class Server {
 
       const rejoined = this.connectionsManager.disconnectedPlayers.findIndex(tempPlayer => tempPlayer.license == player.GetIdentifier("license") || tempPlayer.ip == player.GetIdentifier("ip") || tempPlayer.hardwareId == player.HardwareId);
       if (rejoined !== -1) { // If the player hasn't left the server
-        if (this.connectionsManager.disconnectedPlayers[rejoined].name != player.GetName) {
-          await this.logManager.Send(LogTypes.Anticheat, new WebhookMessage({
-            username: "Anticheat Logs", embeds: [{
-              color: EmbedColours.Red,
-              title: "__Name Change Detected__",
-              description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
-              footer: {
-                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                icon_url: sharedConfig.serverLogo
-              }
-            }]
-          }));
-          this.connectionsManager.disconnectedPlayers.splice(rejoined, 1); // Remove entry from array
-        } else {
-          await this.logManager.Send(LogTypes.Connection, new WebhookMessage({
-            username: "Connection Logs", embeds: [{
-              color: EmbedColours.Green,
-              title: "__Player Connected__",
-              description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
-              footer: {
-                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                icon_url: sharedConfig.serverLogo
-              }
-            }]
-          }));
+        if (player.Rank < Ranks.Moderator) {
+          if (this.connectionsManager.disconnectedPlayers[rejoined].name != player.GetName) {
+            await this.logManager.Send(LogTypes.Anticheat, new WebhookMessage({
+              username: "Anticheat Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Name Change Detected__",
+                description: `A player has connected to the server with a changed name.\n\n**Old Name**: ${this.connectionsManager.disconnectedPlayers[rejoined].name}\n**New Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+            this.connectionsManager.disconnectedPlayers.splice(rejoined, 1); // Remove entry from array
+          } else {
+            await this.logManager.Send(LogTypes.Connection, new WebhookMessage({
+              username: "Connection Logs", embeds: [{
+                color: EmbedColours.Green,
+                title: "__Player Connected__",
+                description: `A player has connected to the server.\n\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+          }
         }
       } else {
         await this.logManager.Send(LogTypes.Connection, new WebhookMessage({

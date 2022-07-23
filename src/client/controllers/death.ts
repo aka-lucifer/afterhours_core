@@ -1,4 +1,4 @@
-import { Control, Game, InputMode, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
+import { Control, Game, InputMode, Ped, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
 
 import { Client } from '../client';
 import { Delay, Inform, LoadAnim, teleportToCoords } from '../utils';
@@ -10,6 +10,7 @@ import clientConfig from '../../configs/client.json';
 import { NuiMessages } from '../../shared/enums/ui/nuiMessages';
 import { Menu } from '../models/ui/menu/menu';
 import { Events } from '../../shared/enums/events/events';
+import { GameEvents } from '../../shared/enums/events/gameEvents';
 
 interface KillerData {
   position: Vector3,
@@ -33,7 +34,6 @@ export class Death {
   public ejectedFromVeh: boolean = false;
   private myState: DeathStates = DeathStates.Alive;
   private blackedOut: boolean = false;
-  private lastAnim: {dict: string, anim: string};
 
   // UI Data
   private respawnMenu: Menu;
@@ -62,13 +62,38 @@ export class Death {
     // - Do ui of keybind [E] (Hold [E] for 5 seconds to respawn).
 
     // Events
+    onNet(Events.gameEventTriggered, this.EVENT_entityDamaged.bind(this));
     onNet(Events.playerDead, this.EVENT_playerKilled.bind(this));
     onNet(Events.revive, this.EVENT_revive.bind(this));
     
     Inform("Death | Controller", "Started!");
   }
 
+  // Getters
+  public get Alive(): boolean {
+    return this.myState === DeathStates.Alive;
+  }
+
   // Events
+  private EVENT_entityDamaged(eventName: string, eventArgs: any[]): void {
+    if (eventName == GameEvents.entityDamaged) {
+      const damagedEntity = eventArgs[0];
+
+      if (IsPedAPlayer(damagedEntity) && damagedEntity == Game.PlayerPed.Handle) {
+        const damagedPed = new Ped(damagedEntity);
+        const isFatal = eventArgs[5];
+        if (isFatal) {
+          if (IsPedInAnyVehicle(damagedEntity, false)) {
+            const vehSeat = this.getPedsVehSeat(damagedPed);
+            emitNet(Events.playersDeath, true, vehSeat);
+          } else {
+            emitNet(Events.playersDeath, false);
+          }
+        }
+      }
+    }
+  }
+
   private async EVENT_playerKilled(insideVeh: boolean, seat: VehicleSeat): Promise<void> {
     if (this.client.carrying.Carrying || this.client.carrying.Carrying) { // If you're carrying someone, detach them
       emitNet(Events.tryCarrying);
@@ -93,18 +118,21 @@ export class Death {
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.DisplayDeath,
       data: {
-        display: false
+        display: false,
+        respawnCounter: this.defaultCountdown,
+        holdCounter: this.defaultCounter
       }
     }));
 
     // Set your player state and godmode
     this.myState = DeathStates.Alive;
-    this.client.staffManager.staffMenu.toggleGodmode(false);
+    // this.client.staffManager.staffMenu.toggleGodmode(false);
 
     // Reset variables back to default
     this.UIState = UIState.Hidden;
     this.countdownTimer = this.defaultCountdown; // Set the respawn timer to the default time
     this.respawnCounter = this.defaultCounter; // Set the respawn counter to the default time
+    // Sync new info to UI
 
     // Delete ticks
     if (this.deathTick !== undefined) {
@@ -121,15 +149,44 @@ export class Death {
       clearTick(this.animTick);
       this.animTick = undefined;
     }
-  }
 
-  // Getters
-  public get Alive(): boolean {
-    return this.myState === DeathStates.Alive;
+    if (this.countdownTick !== undefined) {
+      clearTick(this.countdownTick);
+      this.countdownTick = undefined;
+    }
+
+    if (this.respawnTick !== undefined) {
+      clearTick(this.respawnTick);
+      this.respawnTick = undefined;
+    }
+    
+    console.log("data reset to", this.defaultCountdown, this.countdownTimer, this.defaultCounter, this.respawnCounter);
   }
 
   // Methods
+  private registerExports(): void {
+    global.exports("isDead", () => {
+      return this.myState !== DeathStates.Alive; 
+    });
+  }
+
+  private getPedsVehSeat(ped: Ped): VehicleSeat {
+    if (IsPedInAnyVehicle(ped.Handle, false)) {
+      const currVeh = ped.CurrentVehicle;
+      const maxPassengers = GetVehicleMaxNumberOfPassengers(currVeh.Handle);
+      for (let i = -2; i < maxPassengers; i++) {
+        if (currVeh.getPedOnSeat(i).Handle == ped.Handle) {
+          return i;
+        }
+      }
+    }
+
+    return VehicleSeat.None;
+  }
+  
   public async init(): Promise<void> {
+    this.registerExports();
+
     // make menu
     this.respawnMenu = new Menu("Respawn Menu", GetCurrentResourceName(), "middle-right");
     const positions = clientConfig.controllers.death.respawnPositions;
@@ -144,7 +201,7 @@ export class Death {
           myPed.clearBloodDamage();
 
           this.myState = DeathStates.Alive;
-          this.client.staffManager.staffMenu.toggleGodmode(false);
+          // this.client.staffManager.staffMenu.toggleGodmode(false);
           const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
           if (detachedWeapons) {
             Game.PlayerPed.removeAllWeapons();
@@ -215,7 +272,7 @@ export class Death {
               const myPos = myPed.Position;
               NetworkResurrectLocalPlayer(myPos.x, myPos.y, myPos.z, myPed.Heading, true, false);
               myPed.clearBloodDamage();
-              this.client.staffManager.staffMenu.toggleGodmode(true);
+              // this.client.staffManager.staffMenu.toggleGodmode(true);
 
               // Set you as dead
               // playerStates.state.deathState = DeathStates.Dead;
@@ -230,18 +287,8 @@ export class Death {
 
                 myPed.setIntoVehicle(veh, vehSeat);
                 TaskPlayAnim(myPed.Handle, "veh@low@front_ps@idle_duck", "sit", 2.0, 2.0, -1, 51, 0, false, false, false);
-
-                this.lastAnim = {
-                  dict: "veh@low@front_ps@idle_duck",
-                  anim: "sit"
-                }
               } else {
                 TaskPlayAnim(myPed.Handle, "dead", "dead_a", 1,.0, 1.0, 14, 0, false, false, false);
-
-                this.lastAnim = {
-                  dict: "dead",
-                  anim: "dead_a"
-                }
               }
 
               // Reset Vehicle Data
@@ -274,7 +321,7 @@ export class Death {
                   const myPos = myPed.Position;
                   NetworkResurrectLocalPlayer(myPos.x, myPos.y, myPos.z, myPed.Heading, true, false);
                   myPed.clearBloodDamage();
-                  this.client.staffManager.staffMenu.toggleGodmode(true);
+                  // this.client.staffManager.staffMenu.toggleGodmode(true);
 
                   // Set you as dead
                   // playerStates.state.deathState = DeathStates.Dead;
@@ -289,18 +336,8 @@ export class Death {
 
                     myPed.setIntoVehicle(veh, vehSeat);
                     TaskPlayAnim(myPed.Handle, "veh@low@front_ps@idle_duck", "sit", 2.0, 2.0, -1, 51, 0, false, false, false);
-
-                    this.lastAnim = {
-                      dict: "veh@low@front_ps@idle_duck",
-                      anim: "sit"
-                    }
                   } else {
                     TaskPlayAnim(myPed.Handle, "dead", "dead_a", 1,.0, 1.0, 14, 0, false, false, false);
-
-                    this.lastAnim = {
-                      dict: "dead",
-                      anim: "dead_a"
-                    }
                   }
                 }
               }
