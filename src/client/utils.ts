@@ -485,7 +485,6 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
   // Fade screen in and reset the camera angle.
   DoScreenFadeIn(500);
   SetGameplayCamRelativePitch(0.0, 1.0);
-  client.Teleporting = false;
   return success;
 }
 
