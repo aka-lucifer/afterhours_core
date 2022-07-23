@@ -3,8 +3,12 @@
 -- Designed & Written By akaLucifer#0103
 -- Releasing or Claiming this as your own is against, this resources License
 ------------------------------------------------------------------------------------
-fx_version "bodacious"
+fx_version "cerulean"
 game "gta5"
+
+author "akaLucifer#0103"
+description "Core systems that manages and controls everything in the server"
+version "1.0.0"
 
 lua54 "yes"
 
