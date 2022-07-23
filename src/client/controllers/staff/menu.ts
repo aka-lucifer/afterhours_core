@@ -984,44 +984,44 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_updatePlayerBlips(units: ConnectedPlayer[]) {
+  private async EVENT_updatePlayerBlips(players: ConnectedPlayer[]) {
     if (this.client.Player.Spawned && this.client.Player.Rank >= Ranks.Admin) {
       // console.log("passed players", units);
       
       if (this.playersBlips) {
-        for (let i = 0; i < units.length; i++) {
-          const netId = parseInt(units[i].netId);
+        for (let i = 0; i < players.length; i++) {
+          const netId = Number(players[i].netId); // Force it to be a number, for some reason showing as string
 
-          // if (netId !== this.client.Player.NetworkId) {
-            if (units[i].coords !== undefined) {
+          if (netId !== this.client.Player.NetworkId) {
+            if (players[i].coords !== undefined) {
               const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
 
               if (blipIndex === -1) { // If the blip doesn't exist make it
-                const blip = World.createBlip(new Vector3(units[i].coords.x, units[i].coords.y, units[i].coords.z));
+                const blip = World.createBlip(new Vector3(players[i].coords.x, players[i].coords.y, players[i].coords.z));
                 blip.IsShortRange = false;
                 blip.Display = 2;
 
-                if (units[i].inVeh) {
-                  if (units[i].vehType == "automobile") {
+                if (players[i].inVeh) {
+                  if (players[i].vehType == "automobile") {
                     blip.Sprite = BlipSprite.PersonalVehicleCar;
-                  } else if (units[i].vehType == "bike") {
+                  } else if (players[i].vehType == "bike") {
                     blip.Sprite = BlipSprite.PersonalVehicleBike;
-                  } else if (units[i].vehType == "heli") {
+                  } else if (players[i].vehType == "heli") {
                     blip.Sprite = BlipSprite.Helicopter;
-                  } else if (units[i].vehType == "boat") {
+                  } else if (players[i].vehType == "boat") {
                     blip.Sprite = BlipSprite.Boat;
-                  } else if (units[i].vehType == "plane") {
+                  } else if (players[i].vehType == "plane") {
                     blip.Sprite = BlipSprite.Plane;
                   }
 
-                  blip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
-                  blip.Rotation = units[i].heading;
+                  blip.Name = `[${players[i].netId}] ${players[i].name} | ${Ranks[players[i].rank]}`;
+                  blip.Rotation = players[i].heading;
                   blip.ShowHeadingIndicator = true;
                 } else {
                   blip.Sprite = BlipSprite.Standard;
                   
-                  blip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
-                  blip.Rotation = units[i].heading;
+                  blip.Name = `[${players[i].netId}] ${players[i].name} | ${Ranks[players[i].rank]}`;
+                  blip.Rotation = players[i].heading;
                   blip.ShowHeadingIndicator = true;
                 }
 
@@ -1033,32 +1033,32 @@ export class StaffMenu {
                 const blipData = this.createdBlips[blipIndex];
                 const foundBlip = new Blip(blipData.blip.Handle); // see if this fixes stupid bug
 
-                foundBlip.Position = units[i].coords;
+                foundBlip.Position = players[i].coords;
 
-                if (units[i].inVeh) {
-                  if (units[i].vehType == "automobile") {
+                if (players[i].inVeh) {
+                  if (players[i].vehType == "automobile") {
                     foundBlip.Sprite = BlipSprite.PersonalVehicleCar;
-                  } else if (units[i].vehType == "bike") {
+                  } else if (players[i].vehType == "bike") {
                     foundBlip.Sprite = BlipSprite.PersonalVehicleBike;
-                  } else if (units[i].vehType == "heli") {
+                  } else if (players[i].vehType == "heli") {
                     foundBlip.Sprite = BlipSprite.Helicopter;
-                  } else if (units[i].vehType == "boat") {
+                  } else if (players[i].vehType == "boat") {
                     foundBlip.Sprite = BlipSprite.Boat;
                   }
 
-                  foundBlip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
-                  foundBlip.Rotation = units[i].heading;
+                  foundBlip.Name = `[${players[i].netId}] ${players[i].name} | ${Ranks[players[i].rank]}`;
+                  foundBlip.Rotation = players[i].heading;
                   foundBlip.ShowHeadingIndicator = true;
                 } else {
                   foundBlip.Sprite = BlipSprite.Standard;
 
-                  foundBlip.Name = `[${units[i].netId}] ${units[i].name} | ${Ranks[units[i].rank]}`;
-                  foundBlip.Rotation = units[i].heading;
+                  foundBlip.Name = `[${players[i].netId}] ${players[i].name} | ${Ranks[players[i].rank]}`;
+                  foundBlip.Rotation = players[i].heading;
                   foundBlip.ShowHeadingIndicator = true;
                 }
               }
             }
-          // }
+          }
         }
       } else {
         if (this.createdBlips.length > 0) {

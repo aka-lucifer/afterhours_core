@@ -54,9 +54,9 @@ export class JobBlips {
           // console.log("blips length", this.createdBlips.length);
 
           for (let i = 0; i < units.length; i++) {
-            const netId = parseInt(units[i].netId);
+            const netId = Number(units[i].netId); // Force it to be a number, for some reason showing as string
 
-            if (netId !== this.client.Player.NetworkId) {
+            if (this.client.Player.NetworkId !== netId) {
               if (units[i].coords !== undefined) {
                 const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
 
