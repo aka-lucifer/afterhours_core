@@ -62,7 +62,7 @@ export class PlayerNames {
 
         // Loop through all players
         for(let i = 0; i < svPlayers.length; i++) {
-          const netId = Number(svPlayers[i].NetworkId); // Force it to be a number, for some reason showing as string
+          const netId = svPlayers[i].NetworkId; // Force it to be a number, for some reason showing as string
 
           // If the other connected players aren't you
 
