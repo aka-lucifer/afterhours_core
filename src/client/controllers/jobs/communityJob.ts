@@ -65,6 +65,14 @@ export class CommunityJob {
                   SetPlayerModel(Game.Player.Handle, newModel.Hash); // Apply the model to your player
                   this.client.modelBlacklist.Model = newModel; // Set this model to your new model in the model blacklist controller
                   newModel.markAsNoLongerNeeded(); // Remove the model from memory
+
+                  // Sets styling of ped
+                  SetPedComponentVariation(Game.PlayerPed.Handle, 0, 1, 1, 0);
+                  SetPedComponentVariation(Game.PlayerPed.Handle, 1, 0, 0, 0);
+                  SetPedComponentVariation(Game.PlayerPed.Handle, 2, 0, 0, 0);
+                  SetPedComponentVariation(Game.PlayerPed.Handle, 3, 1, 0, 0);
+                  SetPedComponentVariation(Game.PlayerPed.Handle, 4, 0, 0, 0);
+                  SetPedComponentVariation(Game.PlayerPed.Handle, 8, 2, 0, 0);
                 }
               }
 
