@@ -553,11 +553,10 @@ export class Server {
   }
 
   private async EVENT_resourceStopped(resourceName: string): Promise<void> {
-    console.log("start res", resourceName, GetCurrentResourceName())
     if (resourceName !== GetCurrentResourceName()) {
-      if (resourceName === "astrid-poop") {
+      if (resourceName === "astrid_metas" || resourceName == "astrid_notify") {
         await Delay(1000); // Wait until resource has stopped
-        StartResource("astrid-poop"); // Start it back up
+        StartResource(resourceName); // Start it back up
       }
     }
   }
