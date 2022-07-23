@@ -59,7 +59,7 @@ import { ModelBlacklist } from './controllers/civilian/modelBlacklist';
 import { Death } from './controllers/death';
 
 import { LogTypes } from './enums/logging';
-import { Capitalize, Dist, Error, GetHash, Inform, Log, logCommand } from './utils';
+import { Capitalize, Delay, Dist, Error, GetHash, Inform, Log, logCommand } from './utils';
 
 import serverConfig from '../configs/server.json';
 import sharedConfig from '../configs/shared.json';
@@ -145,6 +145,7 @@ export class Server {
   
       // Events
       onNet(Events.resourceStart, this.EVENT_resourceStarted.bind(this));
+      onNet(Events.resourceStop, this.EVENT_resourceStopped.bind(this));
       onNet(Events.playerJoined, this.EVENT_playerJoined.bind(this));
       onNet(Events.playerConnected, this.EVENT_playerConnected.bind(this));
       onNet(Events.logDeath, this.EVENT_playerKilled.bind(this));
@@ -444,7 +445,7 @@ export class Server {
       const rolePerms: string[] = sharedConfig.permissions[Ranks[role]];
       const index = rolePerms.findIndex(rolePermission => rolePermission == permission);
       // console.log("index", index)
-      return index != -1;
+      return index !== -1;
     });
 
     global.exports("getPlayer", async(source: string) => {
@@ -492,6 +493,7 @@ export class Server {
           }
 
           await ban.save();
+          ban.drop();
         }));
       }
     });
@@ -546,6 +548,16 @@ export class Server {
       } else { // DB online, initiate all required managers
         if (this.debugMode) Inform("Database Connection", "Database connection successful!");
         await this.initialize();
+      }
+    }
+  }
+
+  private async EVENT_resourceStopped(resourceName: string): Promise<void> {
+    console.log("start res", resourceName, GetCurrentResourceName())
+    if (resourceName !== GetCurrentResourceName()) {
+      if (resourceName === "astrid-poop") {
+        await Delay(1000); // Wait until resource has stopped
+        StartResource("astrid-poop"); // Start it back up
       }
     }
   }
@@ -606,17 +618,26 @@ export class Server {
   }
 
   private async EVENT_playerConnected(): Promise<void> {
+    console.log("CONNECTED EVENT!");
     const src = source.toString();
     let player: Player;
     let entryExists = false;
 
     if (await this.connectedPlayerManager.playerConnected(src)) { // If connected to server
+      console.log("FROM CONNECTING!")
       player = await this.connectedPlayerManager.GetPlayer(src);
+      console.log("CONNECTING 1!");
       entryExists = true;
+      console.log("CONNECTING 2!");
     } else { // If restarted resource
+      console.log("FROM RESTARTING!");
       player = new Player(src);
+      console.log("RESTARTING 1!");
       await player.Load();
+      console.log("RESTARTING 2!");
     }
+
+    console.log("loaded info", player, entryExists);
 
     if (player) {
       if (!entryExists) await this.connectedPlayerManager.Add(player); // If no entry found (add player data into the connected player manager | if restarted resource)

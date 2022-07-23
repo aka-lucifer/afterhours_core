@@ -174,6 +174,7 @@ export class CharacterManager {
   public async Add(character: Character): Promise<number> {
     const addedData = this.characters.push(character);
     if (this.server.IsDebugging) Log("Character Manager (Add)", `[Char Id: ${character.Id}]: ${character.Name} | [Player Id: ${character.Owner.Handle}]: ${character.Owner.GetName}`);
+    console.log("chars", this.characters)
     return addedData;
   }
 
