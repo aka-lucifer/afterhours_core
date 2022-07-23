@@ -14,7 +14,7 @@ export class svPlayer {
   constructor(playerData: Record<string, any>) {
     // console.log("ply data", playerData)
     this.id = playerData.id;
-    this.netId = playerData.handle;
+    this.netId = Number(playerData.handle);
     this.name = playerData.name;
     this.rank = playerData.rank;
     this.joinedAt = playerData.joinTime;
