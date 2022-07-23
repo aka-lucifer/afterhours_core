@@ -693,7 +693,8 @@ export async function createVeh(model: string | number, position: Vector3, headi
         vehicle.NeedsToBeHotwired = false; // Set it already hotwired
         vehicle.RadioStation = RadioStation.RadioOff; // Set the vehicle radio turned off
         vehicle.DirtLevel = 0.0;
-        global.exports["astrid_fuel"].SetFuel(vehicle.Handle, 100); // Set the vehicles fuel level to full
+        vehicle.FuelLevel = 100;
+        DecorSetFloat(vehicle.Handle, "ASTRID_FUEL_LEVEL", vehicle.FuelLevel)
         vehModel.markAsNoLongerNeeded(); // Removes vehicle model from memory
       }
 
