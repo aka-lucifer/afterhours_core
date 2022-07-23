@@ -267,7 +267,7 @@ export class PoliceJob {
           blip.Sprite = 817; // Call Icon
           blip.Color = BlipColor.Red;
           blip.IsShortRange = false;
-          blip.Scale = 2.0;
+          blip.Scale = 1.4;
           blip.Name = `911 Call | ${callersName}`;
           Audio.playSoundFrontEnd("Menu_Accept", "Phone_SoundSet_Default");
 
@@ -297,7 +297,7 @@ export class PoliceJob {
           blip.Sprite = 817; // Call Icon
           blip.Color = BlipColor.White;
           blip.IsShortRange = false;
-          blip.Scale = 2.0;
+          blip.Scale = 1.4;
           blip.Name = `311 Call | ${callersName}`;
           Audio.playSoundFrontEnd("Menu_Accept", "Phone_SoundSet_Default");
 
