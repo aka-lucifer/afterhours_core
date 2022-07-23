@@ -458,6 +458,30 @@
         "rank": 0
       },
 
+      "-1917086021": {
+        "model": "mrap",
+        "brand": "MRAP",
+        "name": "Patriot",
+        "type": "emergency",
+        "job": ["police", "county", "state", "ems", "fire"],
+        "rank": 0
+      },
+
+      "-957711770": {
+        "model": "pubcop2",
+        "brand": "(CPolice) Ford",
+        "name": "Taurus",
+        "type": "sedan",
+        "rank": 0
+      },
+
+      "-1582648734": {
+        "model": "pubcop2",
+        "brand": "(CPolice) Ford",
+        "name": "Explorer",
+        "type": "sedan",
+        "rank": 0
+      },
       
       "6774487": {
         "model": "chimera",
@@ -1788,7 +1812,7 @@
           "rank": 0
       },
       "987469656": {
-          "model": "Sugoi",
+          "model": "sugoi",
           "brand": "Dinka",
           "name": "Sugoi",
           "type": "sports",
