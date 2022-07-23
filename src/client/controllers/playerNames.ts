@@ -17,7 +17,8 @@ interface GamerTag {
   ped: Ped,
   carIcon: boolean,
   bikeIcon: boolean,
-  passengerIcon: boolean
+  passengerIcon: boolean,
+  healthInfo: boolean
 }
 
 export class PlayerNames {
@@ -33,12 +34,8 @@ export class PlayerNames {
   constructor(client: Client) {
     this.client = client;
     
+    // Keymappings
     RegisterCommand("+toggle_names", this.toggleNames.bind(this), false);
-    RegisterCommand("get_player_id", () => {
-      console.log("1 - ", PlayerId(), GetPlayerFromServerId(this.client.player.NetworkId));
-      console.log("2 - ", GetPlayerFromServerId(1))
-    }, false);
-    // RegisterCommand("-toggle_names", this.hideNames.bind(this), false);
     
     Inform("Player Names | Disablers Controller", "Started!");
   }
@@ -69,7 +66,7 @@ export class PlayerNames {
 
           // If the other connected players aren't you
 
-          // if (this.client.player.NetworkId != netId) {
+          // if (this.client.player.NetworkId != netId) { (Disables so you can see your own name)
             if (svPlayers[i].spawned) {
               const playerId = GetPlayerFromServerId(netId);
 
@@ -118,7 +115,8 @@ export class PlayerNames {
                     ped: ped,
                     carIcon: false,
                     bikeIcon: false,
-                    passengerIcon: false
+                    passengerIcon: false,
+                    healthInfo: false
                   }
                 } else {
                   this.createdTags[netId] = {
@@ -127,7 +125,8 @@ export class PlayerNames {
                     ped: ped,
                     carIcon: this.createdTags[netId].carIcon,
                     bikeIcon: this.createdTags[netId].bikeIcon,
-                    passengerIcon: this.createdTags[netId].passengerIcon
+                    passengerIcon: this.createdTags[netId].passengerIcon,
+                    healthInfo: this.createdTags[netId].healthInfo
                   }
                 }
 
@@ -176,9 +175,20 @@ export class PlayerNames {
                   SetMpGamerTagVisibility(tag, tagIcons.Name, true);
                   SetMpGamerTagAlpha(tag, tagIcons.Name, 255);
 
-                  SetMpGamerTagVisibility(tag, tagIcons.Health, true); // Health
-                  SetMpGamerTagAlpha(tag, tagIcons.Health, 255);
-                  SetMpGamerTagHealthBarColour(tag, 25); // Health Colour
+                  if (IsPlayerFreeAimingAtEntity(Game.Player.Handle, ped.Handle)) {
+                    if (!this.createdTags[netId].healthInfo) {
+                      this.createdTags[netId].healthInfo = true;
+                      SetMpGamerTagVisibility(tag, tagIcons.Health, true); // Health
+                      SetMpGamerTagAlpha(tag, tagIcons.Health, 255);
+                      SetMpGamerTagHealthBarColour(tag, 25); // Health Colour
+                    }
+                  } else {
+                    if (this.createdTags[netId].healthInfo) {
+                      this.createdTags[netId].healthInfo = false;
+                      SetMpGamerTagVisibility(tag, tagIcons.Health, false); // Health
+                      SetMpGamerTagAlpha(tag, tagIcons.Health, 0);
+                    }
+                  }
 
                   // SetMpGamerTagVisibility(tag, tagIcons.CrewTag, true); // Crew Tag
                   // SetMpGamerTagVisibility(tag, tagIcons.Passive, true); // Paused
