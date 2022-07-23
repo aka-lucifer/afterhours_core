@@ -63,7 +63,7 @@ import { Death } from './controllers/death';
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import { Delay, Inform, keyboardInput, RegisterNuiCallback } from './utils';
+import { Delay, Inform, keyboardInput, RegisterNuiCallback, sortWeapons } from './utils';
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -175,9 +175,9 @@ export class Client {
     
     // Events
     // Resources & Importance
-    on(Events.mapStarted, Client.disableAutospawn.bind(this));
+    on(Events.mapStarted, this.setupMapData.bind(this));
     on(Events.serverStarted, this.EVENT_serverStarted.bind(this));
-    on(Events.resourceStart, Client.disableAutospawn.bind(this));
+    on(Events.resourceStart, this.setupMapData.bind(this));
     on(Events.resourceStop, this.EVENT_resourceStop.bind(this));
 
     // NUI/Game Ready
@@ -191,6 +191,7 @@ export class Client {
     onNet(Events.characterSpawned, this.EVENT_characterSpawned.bind(this));
     onNet(Events.changeDevMode, this.EVENT_changeDevMode.bind(this));
     onNet(Events.syncPlayers, this.EVENT_syncPlayers.bind(this));
+    onNet(Events.teleporting, (newState: boolean) => this.Teleporting = newState);
     
     // (General Event Listeners)
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
@@ -265,11 +266,14 @@ export class Client {
   }
 
   // Methods (Handles disabling auto respawning when you die)
-  private static disableAutospawn(resourceName: string): void {
+  private setupMapData(resourceName: string): void {
     if (resourceName !== undefined) {
       if (resourceName == GetCurrentResourceName()) {
+        // Disable Auto Spawning
         global.exports["spawnmanager"].setAutoSpawn(false);
-        console.log("auto spawn disabled!");
+        
+        // Exports Ready
+        emit(Events.exportsReady); // Might cause threads to be run twice
       }
     }
   }
@@ -355,11 +359,13 @@ export class Client {
 
     this.registerExports();
 
+    emit(Events.exportsReady);
+
     Inform(sharedConfig.serverName, "Successfully Loaded!");
   }
 
   public async nuiLoaded(data: Record<string, any>, cb: CallableFunction): Promise<void> {
-    // console.log("NUI READY!");
+    console.log("NUI READY!");
     this.nuiReady = true;
     await this.initialize();
     await this.spawner.init();
@@ -522,27 +528,45 @@ export class Client {
 
     global.exports("keyboardInput", keyboardInput);
 
-    global.exports("isTeleporting", this.Teleporting);
+    global.exports("isTeleporting", () => {
+      return this.Teleporting
+    });
 
     global.exports("teleporting", (newState: boolean) => {
       this.Teleporting = newState;
+    });
+
+    global.exports("getWeapons", async() => {
+      const weapons = await sortWeapons(sharedConfig.weapons);
+      return weapons;
     });
   }
 
   // Events
   private EVENT_resourceStop(resourceName: string): void {
     if (resourceName == GetCurrentResourceName()) {
-      this.vehicleManager.weapon.stop();
-
-      if (this.jobManager.policeJob !== undefined) {
-        this.jobManager.policeJob.cuffing.stop();
-        this.jobManager.policeJob.grabbing.stop();
+      
+      if (this.vehicleManager !== undefined) {
+        if (this.vehicleManager.weapon !== undefined) {
+          this.vehicleManager.weapon.stop();
+        }
       }
 
-      this.kidnapping.stop();
+      if (this.jobManager !== undefined) {
+        if (this.jobManager.policeJob !== undefined) {
+          this.jobManager.policeJob.cuffing.stop();
+          this.jobManager.policeJob.grabbing.stop();
+        }
+      }
 
-      if (this.carrying.Carried || this.carrying.Carrying) { // If you're carrying someone or being carried
-        this.carrying.EVENT_stopCarrying();
+      if (this.kidnapping !== undefined) {
+        this.kidnapping.stop();
+      }
+
+      if (this.carrying !== undefined) {
+        if (this.carrying.Carried || this.carrying.Carrying) { // If you're carrying someone or being carried
+          this.carrying.EVENT_stopCarrying();
+        }
       }
     }
   }
@@ -727,7 +751,7 @@ export class Client {
       takingScreenshot = true;
       global.exports['astrid_notify'].requestScreenshotUpload("https://api.imgur.com/3/image", 'imgur', {
         headers: {
-          ['authorization']: "Client-ID 3886c6731298c37",
+          ['authorization']: "Client-ID 4c75f07085cdf77",
           ['content-type']: 'multipart/form-data'
         }
       }, (results) => {
