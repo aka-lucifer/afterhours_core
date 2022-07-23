@@ -152,7 +152,6 @@ export class Characters {
 
   // Methods
   public displayCharacters(nuiFocus: boolean): void {
-    // console.log("Send chars to UI!");
     if (nuiFocus) SetNuiFocus(true, true);
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.DisplayCharacters,

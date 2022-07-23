@@ -85,11 +85,11 @@ export class WeaponDisablers {
               Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttackAlternate) ||
               Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttack1) ||
               Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.MeleeAttack2)) { // If punched
-              console.log("hit control");
+              // console.log("hit control");
 
               if (this.punchControlTick === undefined) {
                 this.punchControlTick = setTick(async () => {
-                  console.log("disable controls!");
+                  // console.log("disable controls!");
                   Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack);
                   Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.Attack2);
                   Game.disableControlThisFrame(InputMode.MouseAndKeyboard, Control.MeleeAttack1);
