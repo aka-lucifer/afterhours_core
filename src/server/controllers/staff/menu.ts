@@ -535,6 +535,7 @@ export class StaffMenu {
 
                       // TP to their location
                       const myPed = GetPlayerPed(player.Handle);
+                      await player.TriggerEvent(Events.teleporting, true);
                       SetEntityCoords(myPed, foundPosition.x, foundPosition.y, foundPosition.z, false, false, false, false);
 
                       // Spawn inside the vehicle
@@ -544,6 +545,9 @@ export class StaffMenu {
                       // TP into the vehicle
                       SetPedIntoVehicle(myPed, tpVehicle, passedData.freeSeat); // See if this places u into other seats, if that seat is full
 
+                      await Delay(3000);
+                      await player.TriggerEvent(Events.teleporting, false);
+                      
                       const playersDiscord = await player.GetIdentifier("discord");
                       await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                         username: "Staff Logs", embeds: [{
@@ -765,8 +769,12 @@ export class StaffMenu {
             const ped = GetPlayerPed(svPlayers[i].Handle);
             console.log("players ped!", ped);
             if (ped > 0) {
+              await svPlayers[i].TriggerEvent(Events.teleporting, true);
               SetEntityCoords(ped, myPos.x, myPos.y, myPos.z, false, false, false, false);
               await svPlayers[i].TriggerEvent(Events.sendSystemMessage, new Message(`You've been brought to ^3${player.GetName}^0.`, SystemTypes.Admin));
+              
+              await Delay(3000);
+              await svPlayers[i].TriggerEvent(Events.teleporting, false);
             } else {
               console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
             }

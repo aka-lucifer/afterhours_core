@@ -105,6 +105,7 @@ export enum Events {
   requestCommends = "astrid:server:requestCommends",
 
   // Astrid Client Events
+  exportsReady = "astrid:client:exportsReady",
   serverStarted = "astrid:client:serverStarted",
   playerLoaded = "astrid:client:playerLoaded",
   playerReady = "astrid:client:playerReady",
@@ -114,6 +115,7 @@ export enum Events {
   receiveServerCB = "astrid:client:recieveServerCB",
   changeDevMode = "astrid:client:changeDevMode",
   syncPlayers = "astrid:client:syncPlayers",
+  teleporting = "astrid:client:teleporting",
 
   // Astrid Client (Utils)
   soundFrontEnd = "astrid:client:soundFrontEnd",
@@ -246,5 +248,6 @@ export enum Events {
   revive = "astrid:client:death:revive",
 
   // Astrid Server (Death)
+  playersDeath = "astrid:server:death:playersDeath",
   revivePlayer = "astrid:server:death:revivePlayer"
 }

@@ -945,6 +945,9 @@ export class StaffMenu {
 
           const notify = new Notification("Teleporter", "Teleported to waypoint", NotificationTypes.Success);
           await notify.send();
+
+          await Delay(3000);
+          this.client.Teleporting = false;
         }
       }
     }
@@ -970,6 +973,9 @@ export class StaffMenu {
           });
 
           this.lastLocation = undefined;
+
+          await Delay(3000);
+          this.client.Teleporting = false;
         }
       } else {
         const notify = new Notification("Teleporter", "You haven't teleported anywhere!", NotificationTypes.Error);
@@ -1113,6 +1119,9 @@ export class StaffMenu {
         const teleported = await teleportToCoords(playerPos);
         if (teleported) {
           emit(Events.sendSystemMessage, new Message(`You've teleported to ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+
+          await Delay(3000);
+          this.client.Teleporting = false;
         }
       }
     }
@@ -1162,6 +1171,9 @@ export class StaffMenu {
           if (teleported) {
             NetworkSetInSpectatorMode(true, spectatePed.Handle);
             emitNet(Events.receiveClientCB, "STARTED", data);
+
+            await Delay(3000);
+            this.client.Teleporting = false;
           } else {
             emitNet(Events.receiveClientCB, "ERROR_TPING", data);
           }
@@ -1171,6 +1183,9 @@ export class StaffMenu {
             myPed.IsVisible = true;
             NetworkSetInSpectatorMode(false, spectatePed.Handle);
             emitNet(Events.receiveClientCB, "STOPPED", data);
+
+            await Delay(3000);
+            this.client.Teleporting = false;
           } else {
             emitNet(Events.receiveClientCB, "ERROR_TPING", data);
           }
@@ -1189,6 +1204,9 @@ export class StaffMenu {
         if (teleported) {
           emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
           emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff summoning you
+
+          await Delay(3000);
+          this.client.Teleporting = false;
         } else {
           emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff summoning you
         }
@@ -1208,6 +1226,9 @@ export class StaffMenu {
 
             emit(Events.sendSystemMessage, new Message(`You've been returned to your previous location, by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
             emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff returning you
+
+            await Delay(3000);
+            this.client.Teleporting = false;
           } else {
             emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff returning you
           }
