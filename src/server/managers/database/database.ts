@@ -74,6 +74,8 @@ export async function SendQuery(query: string, data: Record<string, any>): Promi
       } else {
         resolve(new DBResult([], new DBMeta(0, 0, 0), error));
       }
+      
+      connection.release();
     })
   })
 }
