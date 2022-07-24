@@ -66,7 +66,7 @@ export class BanManager {
     return banIndex !== -1;
   }
 
-  public async Delete(player: DBPlayer, banId: number): Promise<boolean> {
+  public async Delete(player: DBPlayer | Player, banId: number): Promise<boolean> {
     const deletedBans = await Database.SendQuery("DELETE FROM `player_bans` WHERE `id` = :id AND `player_id` = :playerId", {
       id: banId,
       playerId: player.Id

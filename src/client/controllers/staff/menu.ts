@@ -24,6 +24,8 @@ import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
 import { CountyRanks, PoliceRanks, StateRanks } from "../../../shared/enums/jobs/ranks";
 import { AdminActions } from "../../../shared/enums/adminActions";
 
+import { PlayerBan } from "../../../shared/interfaces/ban";
+
 import sharedConfig from "../../../configs/shared.json";
 
 interface PlayerMenu {
@@ -63,6 +65,7 @@ export class StaffMenu {
   private menu: Menu;
   
   // Menus [Connected Players]
+  private playerBans: Submenu;
   private playersMenu: Submenu;
   private playerMenus: PlayerMenu[] = [];
   private warningScaleform: Scaleform;
@@ -224,6 +227,7 @@ export class StaffMenu {
     this.menu = new Menu("Staff Menu", GetCurrentResourceName(), MenuPositions.MiddleLeft);
 
     // Connected Players
+    this.playerBans = this.menu.BindSubmenu("Player Bans");
     this.playersMenu = this.menu.BindSubmenu("Connected Players");
 
     // Server Management
@@ -505,6 +509,37 @@ export class StaffMenu {
           }
         });
       }
+    }
+  }
+
+  
+
+  public sortBans(bans: Record<string, any>): void {
+    if (this.playerBans !== undefined) {
+      this.client.menuManager.emptyMenu(this.playerBans.handle);
+    }
+
+    const oldBans = Object.keys(bans);
+    for (let i = 0; i < oldBans.length; i++) {
+      const ban: PlayerBan = {
+        id: bans[i].id,
+        playerId: bans[i].playerId,
+        playerName: bans[i].playerName,
+        reason: bans[i].reason,
+        banState: bans[i].banState,
+        issuedBy: bans[i].issuedBy,
+        issuedName: bans[i].issuedName,
+        issuedOn: bans[i].issuedOn,
+        issuedUntil: bans[i].issuedUntil
+      }
+      
+      const playerSubmenu = this.playerBans.BindSubmenu(`#${ban.id} | ${ban.playerName} - ${ban.reason}`);
+      // playerSubmenu.BindButton("End Ban", () => {});
+      playerSubmenu.BindButton("Delete Ban", async() => {
+        emitNet(Events.unbanPlayer, ban);
+        await this.menu.Close();
+        this.client.menuManager.emptyMenu(this.playerBans.handle);
+      });
     }
   }
 
@@ -872,8 +907,18 @@ export class StaffMenu {
 
     if (havePerm) {
       if (!await this.client.menuManager.IsMenuOpen(this.menu.handle)) {
-        this.refreshPlayers();
-        await this.menu.Open();
+
+        if (this.client.player.Rank >= Ranks.Admin) {
+          this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.getBans, {}, async(cbData) => {
+            this.refreshPlayers();
+            this.sortBans(cbData);
+            await this.menu.Open();
+          }));
+        } else if (this.client.player.Rank === Ranks.Moderator) {
+          this.refreshPlayers();
+  
+          await this.menu.Open();
+        }
       }
     }
   }

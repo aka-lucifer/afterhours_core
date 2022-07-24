@@ -36,7 +36,8 @@ export enum Callbacks {
   // Astrid Server -> Client Callbacks ([Controllers] | UI] - Scoreboard)
   getScoreboardData = "astrid:server:controllers:ui:scoreboard:getScoreboardData",
   
-  // Astrid Server -> Client Callbacks ([Controllers] | Staff] - Menu)
+  // Astrid Server -> Client Callbacks ([Controllers] | Staff] - Menu),
+  getBans = "astrid:server:controllers:staff:menu:getBans",
   togglePlayerBlips = "astrid:server:controllers:staff:menu:togglePlayerBlips",
   updatePlayerJob = "astrid:server:controllers:staff:menu:updatePlayerJob"
 }

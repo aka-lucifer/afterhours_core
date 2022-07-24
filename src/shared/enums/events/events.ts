@@ -65,6 +65,7 @@ export enum Events {
   summonPlayer = "astrid:server:controllers:staff:menu:summonPlayer",
   returnSummonedPlayer = "astrid:server:controllers:staff:menu:returnSummonedPlayer",
   spectatePlayer = "astrid:server:controllers:staff:menu:spectatePlayer",
+  unbanPlayer = "astrid:server:controllers:staff:menu:unbanPlayer",
 
   // Astrid Server ([Controllers] | Staff] - Menu | [Server Management])
   changeWeather = "astrid:server:changeWeather",
