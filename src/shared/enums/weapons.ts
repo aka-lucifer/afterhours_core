@@ -266,3 +266,51 @@ export enum Explosions {
   Proxmine = 37,
   ValkyrieCannon = 38
 }
+
+export enum AmmoType {
+  Melee = 0,
+  FireExtinguisher = 1359393852,
+  Flare = 1808594799,
+  FlareGun = 1173416293,
+  PetrolCan = 3395492001,
+  Shotgun = -1878508229,
+  Pistol = 1950175060,
+  Ball = 4287981158,
+  Snowball = 2182627693,
+  Sniper = 1285032059,
+  AssaultRifle = 218444191,
+  SMG = 1820140472,
+  Molotov = 1446246869,
+  StunGun = 2955849184,
+  MG = 1788949567,
+  GrenadeLauncher = 1003267566,
+  RPG = 1742569970,
+  Minigun = 2680539266,
+  Firework = 2938367503,
+  Railgun = 2034517757,
+  HomingLauncher = 2568293933,
+  Grenade = 1003688881,
+  StickyBomb = 1411692055,
+  ProximityMine = 2938243239,
+  PipeBomb = 357983224,
+  SmokeGrenade = 3859679398,
+  BZGas = 2608103076,
+  
+  PistolMk2FMJAmmo = -1132792829,
+  PistolMk2HPAmmo = -836519658,
+  PistolMk2TracerAmmo = -1193480661,
+
+  SMGMk2FMJAmmo = 758230489,
+  SMGMk2HPAmmo = 670318226,
+  SMGMk2TracerAmmo = 1569785553,
+
+  RifleMk2APAmmo = 423744068,
+  RifleMk2FMJAmmo = 1586900444,
+  RifleMk2TracerAmmo = -1340502689,
+  
+  ShotgunMk2SBShells = 1923327840,
+  ShotgunMk2FSheels = 2089185906,
+  
+  SniperMk2APAmmo = -1497580119,
+  SniperMk2FMJAmmo = -168704490,
+}
