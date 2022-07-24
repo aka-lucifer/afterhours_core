@@ -155,58 +155,41 @@ export class Player {
   }
 
   public async Exists(): Promise<boolean> {
-    console.log("exists method!");
     if (GetConvar('sv_lan', "off") == "false") {
-      console.log("get player info")
       this.license = await this.GetIdentifier("license");
-      console.log("my license", this.license);
       const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `playtime`, `whitelisted` FROM `players` WHERE `identifier` = :identifier", {
         identifier: this.license
       });
 
-      console.log("exists data", results);
-
       if (results.data.length > 0) {
-        console.log("EXISTS 1 STEP 1!");
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
         this.rank = results.data[0].rank;
-        console.log("EXISTS 1 STEP 2!");
 
         // Refresh the identifiers, once we have obtained your rank
         this.identifiers = this.GetAllIdentifiers();
-        console.log("EXISTS 1 STEP 3!");
 
         this.playtime = results.data[0].playtime;
         this.trustscore = await this.getTrustscore();
         this.whitelisted = results.data[0].whitelisted > 0;
-        console.log("EXISTS 1 STEP 4!");
         return true;
       }
     } else {
-      console.log("get player info 2");
-      console.log("my steam", await this.GetIdentifier("steam"));
-      console.log("my ip", await this.GetIdentifier("ip"));
-
       const results = await Database.SendQuery("SELECT `player_id`, `hardware_id`, `rank`, `playtime`, `whitelisted` FROM `players` WHERE `steam_hex` = :steam OR `ip` = :ip", {
         steam: await this.GetIdentifier("steam"),
         ip: await this.GetIdentifier("ip")
       });
 
       if (results.data.length > 0) {
-        console.log("EXISTS 2 STEP 1!");
         this.id = results.data[0].player_id;
         this.hardwareId = results.data[0].hardware_id;
         this.rank = results.data[0].rank;
-        console.log("EXISTS 2 STEP 2!");
 
         // Refresh the identifiers, once we have obtained your rank
         this.identifiers = this.GetAllIdentifiers();
-        console.log("EXISTS 2 STEP 3!");
 
         this.playtime = results.data[0].playtime;
         this.whitelisted = results.data[0].whitelisted > 0;
-        console.log("EXISTS 2 STEP 4!");
         return true;
       }
 
