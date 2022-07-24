@@ -6108,7 +6108,7 @@
         "type": "Sedans",
         "rank": 0
       },
-      "2817386317": {
+      "-1477580979": {
         "model": "stanier",
         "brand": "Vapid",
         "name": "Stanier",
@@ -6269,7 +6269,7 @@
         "type": "Couples",
         "rank": 0
       },
-      "2333339779": {
+      "-1961627517": {
         "model": "stretch",
         "brand": "Dundreary",
         "name": "Stretch",
@@ -6339,14 +6339,14 @@
         "type": "Bicycle",
         "rank": 0
       },
-      "3061159916": {
+      "-400295096": {
         "model": "tribike2",
         "brand": "Pedal and Metals",
         "name": "Endurex Race Bike",
         "type": "Bicycle",
         "rank": 0
       },
-      "4108429845": {
+      "-186537451": {
         "model": "scorcher",
         "brand": "Pedal and Metals",
         "name": "Scorcher",
@@ -6367,8 +6367,8 @@
         "type": "Bicycle",
         "rank": 0
       },
-      "2588363614": {
-        "model": "avisa",
+      "-1706603682": {
+        "model": "-1706603682",
         "brand": "Kraken Submersibles",
         "name": "Avisa",
         "type": "Boat",
@@ -6381,7 +6381,7 @@
         "type": "Boat",
         "rank": [11, 12, 13, 14]
       },
-      "4018222598": {
+      "-276744698": {
         "model": "patrolboat",
         "brand": "Warstock",
         "name": "Kurtz 31 Patrol Boat",
@@ -6402,7 +6402,7 @@
         "type": "Boat",
         "rank": 0
       },
-      "3806844075": {
+      "-488123221": {
         "model": "Predator",
         "brand": "Warstock",
         "name": "Police Predator",
