@@ -35,6 +35,10 @@ export class WeaponRemovers {
     return false;
   }
 
+  public async init(): Promise<void> {
+    const boolInit = await LoadAnim("reaction@intimidation@1h");
+  }
+
   public start(): void {
     // console.log("start tick!");
     if (this.changeTick === undefined) this.changeTick = setTick(async() => {
