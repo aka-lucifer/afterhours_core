@@ -8,7 +8,7 @@ import { LeaveDoorOpen } from "../controllers/vehicles/leaveDoorOpen";
 import { CruiseControl } from "../controllers/vehicles/cruiseControl";
 import { RepairShops } from "../controllers/vehicles/repairShops";
 import { GPS } from "../controllers/vehicles/gps";
-import { KeepWheel } from "../controllers/vehicles/keepWheel";
+// import { KeepWheel } from "../controllers/vehicles/keepWheel";
 import { Rolling } from "../controllers/vehicles/rolling";
 import { Seatbelt } from "../controllers/vehicles/seatbelt";
 import { ReverseBraking } from '../controllers/vehicles/reverseBraking';
@@ -34,7 +34,7 @@ export class VehicleManager {
   private cruiseControl: CruiseControl;
   private repairShops: RepairShops;
   public gps: GPS;
-  private keepWheel: KeepWheel;
+  // private keepWheel: KeepWheel;
   private rolling: Rolling;
   public seatbelt: Seatbelt;
   private reverseBraking: ReverseBraking;
@@ -68,7 +68,7 @@ export class VehicleManager {
     this.cruiseControl = new CruiseControl(); // done
     this.repairShops = new RepairShops(); // done
     this.gps = new GPS(); // done
-    this.keepWheel = new KeepWheel(); // done - (0.10ms)
+    // this.keepWheel = new KeepWheel(); // done - (0.10ms)
     this.rolling = new Rolling(); // done
     this.seatbelt = new Seatbelt(this.client); // done - (0.10ms)
     this.reverseBraking = new ReverseBraking(); // done - (0.10ms)
@@ -94,7 +94,7 @@ export class VehicleManager {
     if (!this.antiControl.RollStarted) this.antiControl.startRoll(); // done (0.01ms)
     if (!this.antiControl.AirStarted) this.antiControl.startAir(); // done (0.01ms)
     if(!this.leaveDoorOpen.Started) this.leaveDoorOpen.start(); // done - (0.07ms)
-    if (!this.keepWheel.Started) this.keepWheel.start(); // done - (0.10ms)
+    // if (!this.keepWheel.Started) this.keepWheel.start(); // done - (0.10ms)
     if (!this.seatbelt.Started) this.seatbelt.start(); // done - (0.10ms)
     if (!this.reverseBraking.Started) this.reverseBraking.start(); // done - (0.10ms)
     if (!this.repairShops.Started) this.repairShops.start(); // done
