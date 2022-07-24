@@ -8,6 +8,8 @@ import {Gravity} from "../controllers/staff/gravity";
 import { StaffMenu } from "../controllers/staff/menu";
 import { GhostPlayers } from "../controllers/staff/ghostPlayers";
 
+import * as Database from "../managers/database/database";
+
 import {Ranks} from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";
 import { concatArgs, isDateValid } from "../../shared/utils";
@@ -147,6 +149,29 @@ export class StaffManager {
             }
           } else {
             Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+          }
+        } else {
+          Error("Ban Command", "There is no player with that game license!");
+        }
+      } else {
+        Error("Ban Command", "Player license not entered!");
+      }
+    }, false);
+
+    RegisterCommand("unban", async(source: string, args: any[]) => {
+      if (args[0]) {
+        const player = await this.server.playerManager.getPlayerFromLicense(args[0]);
+        if (player) {
+          const bans = this.server.banManager.GetBans;
+          for (let i = 0; i < bans.length; i++) {
+            const deletedBans = await Database.SendQuery("DELETE FROM `player_bans` WHERE `player_id` = :playerId", {
+              playerId: player.Id
+            });
+        
+            if (deletedBans.meta.affectedRows > 0) {
+              console.log(`Deleting Players Bans (Id: ${bans[i].Id} | Player Id: ${bans[i].PlayerId} | Name: ${player.GetName})`);
+              this.server.banManager.Remove(bans[i].Id);
+            }
           }
         } else {
           Error("Ban Command", "There is no player with that game license!");
