@@ -55,6 +55,13 @@ export class BanManager {
     return addedData;
   }
 
+  public Remove(banId: number): void {
+    const banIndex = this.bannedPlayers.findIndex(ban => ban.Id == banId);
+    if (banIndex !== -1) {
+      this.bannedPlayers.splice(banIndex, 1);
+    }
+  }
+
   public async GetBan(banId: number): Promise<Ban> {
     const banIndex = this.bannedPlayers.findIndex(ban => ban.Id == banId);
     if (banIndex != -1) {
