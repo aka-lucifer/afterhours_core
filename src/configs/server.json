@@ -1,6 +1,6 @@
 {
   "debug": true,
-  "whitelist": true,
+  "whitelist": false,
   "maxPing": 350,
   "trustscore": {
     "default": 75,
@@ -728,7 +728,7 @@
       "276773164": {
           "model": "dinghy2",
           "brand": "Nagasaki",
-          "name": "Dinghy 2",
+          "name": "Dinghy",
           "type": "boat",
           "rank": 0
       },
@@ -2159,8 +2159,9 @@
           "name": "Sparrow",
           "type": "helicopters",
           "rank": [
-              1,
-              2
+              10,
+              11,
+              12
           ]
       },
       "1233534620": {
@@ -2610,8 +2611,9 @@
           "name": "Sparrow",
           "type": "helicopters",
           "rank": [
-              1,
-              2
+              10,
+              11,
+              12
           ]
       },
       "1617472902": {
@@ -5073,8 +5075,9 @@
           "name": "Sea Sparrow",
           "type": "helicopters",
           "rank": [
-              1,
-              2
+              10,
+              11,
+              12
           ]
       },
       "-440768424": {
@@ -6013,6 +6016,538 @@
           "name": "Warrener HKR",
           "type": "sedans",
           "rank": 0
+      },
+      "2485144969": {
+        "model": "asea",
+        "brand": "Declasse",
+        "name": "Asea",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "2391954683": {
+        "model": "asterope",
+        "brand": "Karin",
+        "name": "Asterope",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3690124666": {
+        "model": "cognoscenti2",
+        "brand": "Enus",
+        "name": "Cognoscenti 55 (Armored)",
+        "type": "Sedans",
+        "rank": [11, 12, 13, 14]
+      },
+      "906642318": {
+        "model": "cog55",
+        "brand": "Enus",
+        "name": "Cognoscenti 55",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3609690755": {
+        "model": "emperor",
+        "brand": "Albany",
+        "name": "Emperor",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "886934177": {
+        "model": "intruder",
+        "brand": "Karin",
+        "name": "Intruder",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "1909141499": {
+        "model": "fugitive",
+        "brand": "Cheval",
+        "name": "Fugitive",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3005245074": {
+        "model": "ingot",
+        "brand": "Vulcar",
+        "name": "Ingot",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "627094268": {
+        "model": "romero",
+        "brand": "Chariot",
+        "name": "Romero Hearse",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3381377750": {
+        "model": "glendale2",
+        "brand": "Benefactor",
+        "name": "Glendale Custom",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "2254540506": {
+        "model": "primo2",
+        "brand": "Albany",
+        "name": "Primo Custom",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "75131841": {
+        "model": "glendale",
+        "brand": "Benefactor",
+        "name": "Glendale",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "1922255844": {
+        "model": "schafter6",
+        "brand": "Benefactor",
+        "name": "Schafter LWB (Armored)",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "2817386317": {
+        "model": "stanier",
+        "brand": "Vapid",
+        "name": "Stanier",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "1777363799": {
+        "model": "washington",
+        "brand": "Albany",
+        "name": "Washington",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "2411098011": {
+        "model": "premier",
+        "brand": "Declasse",
+        "name": "Premier",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "1123216662": {
+        "model": "superd",
+        "brand": "Enus",
+        "name": "Super Diamond",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3039514899": {
+        "model": "schafter2",
+        "brand": "Benefactor",
+        "name": "Schafter",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3903372712": {
+        "model": "felon",
+        "brand": "Lampadati",
+        "name": "Felon",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "1416471345": {
+        "model": "previon",
+        "brand": "Karin",
+        "name": "Previon",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "3286105550": {
+        "model": "tailgater",
+        "brand": "Obey",
+        "name": "Tailgater",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3144368207": {
+        "model": "primo",
+        "brand": "Albany",
+        "name": "Primo",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "2400073108": {
+        "model": "surge",
+        "brand": "Cheval",
+        "name": "Surge",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "3050505892": {
+        "model": "tailgater2",
+        "brand": "Obey",
+        "name": "Tailgater S",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "4280472072": {
+        "model": "regina",
+        "brand": "Dundreary",
+        "name": "Regina",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "1349725314": {
+        "model": "sentinel",
+        "brand": "Ubermacht",
+        "name": "Sentinel XS",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "1348744438": {
+        "model": "oracle",
+        "brand": "Ubermacht",
+        "name": "Oracle XS",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "873639469": {
+        "model": "sentinel2",
+        "brand": "Ubermacht",
+        "name": "Sentinel",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "3703357000": {
+        "model": "f620",
+        "brand": "Ocelot",
+        "name": "F620",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "330661258": {
+        "model": "cogcabrio",
+        "brand": "Enus",
+        "name": "Cognoscenti Cabrio",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "4180339789": {
+        "model": "limo2",
+        "brand": "Benefactor",
+        "name": "Turreted Limo",
+        "type": "Sedans",
+        "rank": [11, 12, 13, 14]
+      },
+      "2809443750": {
+        "model": "schafter3",
+        "brand": "Benefactor",
+        "name": "Schafter V12",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "321186144": {
+        "model": "stafford",
+        "brand": "Enus",
+        "name": "Stafford",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "1723137093": {
+        "model": "stratum",
+        "brand": "Zirconium",
+        "name": "Stratum",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3101863448": {
+        "model": "zion2",
+        "brand": "Ubermacht",
+        "name": "Zion Cabrio",
+        "type": "Coupes",
+        "rank": 0
+      },
+      "3670438162": {
+        "model": "jackal",
+        "brand": "Ocelot",
+        "name": "Jackal",
+        "type": "Couples",
+        "rank": 0
+      },
+      "2333339779": {
+        "model": "stretch",
+        "brand": "Dundreary",
+        "name": "Stretch",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3406724313": {
+        "model": "schafter5",
+        "brand": "Benefactor",
+        "name": "Schafter V12 (Armoured)",
+        "type": "Sedans",
+        "rank": [11, 12, 13, 14]
+      },
+      "1104234922": {
+        "model": "sentinel3",
+        "brand": "Ubermacht",
+        "name": "Sentinel Classic",
+        "type": "Sedans",
+        "rank": 0
+      },
+      "3812247419": {
+        "model": "italigtb2",
+        "brand": "Progen",
+        "name": "Itali GTB Custom",
+        "type": "Super",
+        "rank": 0
+      },
+      "1886712733": {
+        "model": "bulldozer",
+        "brand": "HVY",
+        "name": "Dozer",
+        "type": "Industrial",
+        "rank": 3
+      },
+      "2164484578": {
+        "model": "dump",
+        "brand": "HVY",
+        "name": "Dump",
+        "type": "Industrial",
+        "rank": 3
+      },
+      "444583674": {
+        "model": "handler",
+        "brand": "HVY",
+        "name": "Dock Handler",
+        "type": "Industrial",
+        "rank": 3
+      },
+      "1131912276": {
+        "model": "BMX",
+        "brand": "Pedal and Metals",
+        "name": "BMX",
+        "type": "Bicycle",
+        "rank": 0
+      },
+      "448402357": {
+        "model": "cruiser",
+        "brand": "Pedal and Metals",
+        "name": "Cruiser",
+        "type": "Bicycle",
+        "rank": 0
+      },
+      "3458454463": {
+        "model": "fixter",
+        "brand": "Pedal and Metals",
+        "name": "Fixter",
+        "type": "Bicycle",
+        "rank": 0
+      },
+      "3061159916": {
+        "model": "tribike2",
+        "brand": "Pedal and Metals",
+        "name": "Endurex Race Bike",
+        "type": "Bicycle",
+        "rank": 0
+      },
+      "4108429845": {
+        "model": "scorcher",
+        "brand": "Pedal and Metals",
+        "name": "Scorcher",
+        "type": "Bicycle",
+        "rank": 0
+      },
+      "1127861609": {
+        "model": "tribike",
+        "brand": "Pedal and Metals",
+        "name": "Whippet Race Bike",
+        "type": "Bicycle",
+        "rank": 0
+      },
+      "3894672200": {
+        "model": "tribike3",
+        "brand": "Pedal and Metals",
+        "name": "Tri-Cycles Race Bike",
+        "type": "Bicycle",
+        "rank": 0
+      },
+      "2588363614": {
+        "model": "avisa",
+        "brand": "Kraken Submersibles",
+        "name": "Avisa",
+        "type": "Boat",
+        "rank": 2
+      },
+      "3314393930": {
+        "model": "dinghy5",
+        "brand": "Nagasaki",
+        "name": "Weaponized Dinghy",
+        "type": "Boat",
+        "rank": [11, 12, 13, 14]
+      },
+      "4018222598": {
+        "model": "patrolboat",
+        "brand": "Warstock",
+        "name": "Kurtz 31 Patrol Boat",
+        "type": "Boat",
+        "rank": [11, 12, 13, 14]
+      },
+      "1336872304": {
+        "model": "kosatka",
+        "brand": "RUNE",
+        "name": "Kosatka",
+        "type": "Submarine",
+        "rank": [11, 12, 13, 14]
+      },
+      "1861786828": {
+        "model": "longfin",
+        "brand": "Shitzu",
+        "name": "Longfin",
+        "type": "Boat",
+        "rank": 0
+      },
+      "3806844075": {
+        "model": "Predator",
+        "brand": "Warstock",
+        "name": "Police Predator",
+        "type": "Boat",
+        "rank": [11, 12, 13, 14]
+      },
+      "4244420235": {
+        "model": "Cargobob",
+        "brand": "Western Company",
+        "name": "Cargobob",
+        "type": "Helicopter",
+        "rank": 7
+      },
+      "741586030": {
+        "model": "pranger",
+        "brand": "Declasse",
+        "name": "Park Ranger",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "1171614426": {
+        "model": "AMBULANCE",
+        "brand": "Declasse",
+        "name": "Ambulance",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "1922257928": {
+        "model": "sheriff2",
+        "brand": "Declasse",
+        "name": "Sheriff SUV",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "2287941233": {
+        "model": "pbus",
+        "brand": "Declasse",
+        "name": "Prison Bus",
+        "type": "Emergency",
+        "rank": 0
+      },
+      "2611638396": {
+        "model": "SHERIFF",
+        "brand": "Declasse",
+        "name": "Sheriff Cruiser",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "2758042359": {
+        "model": "policeold1",
+        "brand": "Declasse",
+        "name": "Police Rancher",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "469291905": {
+        "model": "lguard",
+        "brand": "Declasse",
+        "name": "Lifeguard",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "2667966721": {
+        "model": "police2",
+        "brand": "Declasse",
+        "name": "Police Cruiser",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "353883353": {
+        "model": "polmav",
+        "brand": "Buckingham",
+        "name": "Police Maverick",
+        "type": "Helicopter",
+        "rank": 0
+      },
+      "2601952180": {
+        "model": "riot2",
+        "brand": "HVY",
+        "name": "RCV",
+        "type": "Industrial",
+        "rank": [11, 12, 13, 14]
+      },
+      "1543134283": {
+        "model": "valkyrie2",
+        "brand": "Buckingham",
+        "name": "Valkyrie MOD.0",
+        "type": "Helicopter",
+        "rank": [11, 12, 13, 14]
+      },
+      "2321795001": {
+        "model": "police4",
+        "brand": "Declasse",
+        "name": "Unmarked Cruiser",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "1127131465": {
+        "model": "FBI",
+        "brand": "Declasse",
+        "name": "FIB",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "4260343491": {
+        "model": "policeb",
+        "brand": "Declasse",
+        "name": "Police Bike",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "456714581": {
+        "model": "policet",
+        "brand": "Vapid",
+        "name": "Police Transporter",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "1938952078": {
+        "model": "firetruk",
+        "brand": "MTL",
+        "name": "Fire Truck",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "2515846680": {
+        "model": "policeold2",
+        "brand": "Declasse",
+        "name": "Police Roadcruiser",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
+      },
+      "2306538597": {
+        "model": "terbyte",
+        "brand": "Benefactor",
+        "name": "Terrorbyte",
+        "type": "Commercial",
+        "rank": [11, 12, 13, 14]
+      },
+      "3089277354": {
+        "model": "RIOT",
+        "brand": "MTL",
+        "name": "Police Riot",
+        "type": "Emergency",
+        "rank": [11, 12, 13, 14]
       }
     }
   },
