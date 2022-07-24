@@ -417,15 +417,15 @@ export class StaffMenu {
 
         if (this.usingGravityGun) {
           if (!HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-            // Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
-            Game.PlayerPed.giveWeapon(Weapons.AR15, 9999, false, true);
+            Game.PlayerPed.giveWeapon(AddonWeapons.GravityGun, 9999, false, true);
+            // Game.PlayerPed.giveWeapon(Weapons.AR15, 9999, false, true);
           } else {
             SetCurrentPedWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, true);
           }
         } else {
           if (HasPedGotWeapon(Game.PlayerPed.Handle, AddonWeapons.GravityGun, false)) {
-            // Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
-            Game.PlayerPed.removeWeapon(Weapons.AR15);
+            Game.PlayerPed.removeWeapon(AddonWeapons.GravityGun);
+            // Game.PlayerPed.removeWeapon(Weapons.AR15);
           }
 
           SetCurrentPedWeapon(Game.PlayerPed.Handle, Weapons.Unarmed, true);
