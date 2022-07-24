@@ -84,24 +84,20 @@ export class WeaponRecoil {
           this.weapon = new Prop(GetCurrentPedWeaponEntityIndex(myPed.Handle));
 
           // console.log(`Weapon: ${this.currentWeapon} | Object: ${this.weapon.Handle} | Ammo Type: ${this.ammoType} | Default Recoil: ${this.baseRecoil} | Wind Speed: ${GetWindSpeed()} | Wind Direction: ${GetWindDirection()}`);
-          
-          console.log("Ammo Types", this.ammoType, AmmoType.Pistol, AmmoType.PistolMk2FMJAmmo, AmmoType.PistolMk2HPAmmo, AmmoType.PistolMk2ExplosiveAmmo, AmmoType.PistolMk2TracerAmmo)
 
-          if (this.ammoType === AmmoType.Pistol || this.ammoType === AmmoType.PistolMk2FMJAmmo || this.ammoType === AmmoType.PistolMk2HPAmmo || this.ammoType === AmmoType.PistolMk2ExplosiveAmmo || this.ammoType === AmmoType.PistolMk2TracerAmmo) {
+          if (this.ammoType === AmmoType.Pistol || this.ammoType === AmmoType.PistolMk2FMJAmmo || this.ammoType === AmmoType.PistolMk2HPAmmo || this.ammoType === AmmoType.PistolMk2TracerAmmo) {
             this.currentRecoil = this.pistolAmmoRecoil;
-          } else if (this.ammoType === AmmoType.SMG) {
+          } else if (this.ammoType === AmmoType.SMG || this.ammoType === AmmoType.SMGMk2FMJAmmo || this.ammoType === AmmoType.SMGMk2HPAmmo || this.ammoType === AmmoType.SMGMk2TracerAmmo) {
             this.currentRecoil = this.smgAmmoRecoil;
-          } else if (this.ammoType === AmmoType.SMG) {
-            this.currentRecoil = this.rifleAmmoRecoil;
-          } else if (this.ammoType === AmmoType.SMG) {
-            this.currentRecoil = this.sniperAmmoRecoil;
-          } else if (this.ammoType === AmmoType.Shotgun || this.ammoType === AmmoType.CombatShotgun) {
-            this.currentRecoil = this.shotgunAmmoRecoil;
           } else if (this.ammoType === AmmoType.MG) {
             this.currentRecoil = this.lmgAmmoRecoil;
+          } else if (this.ammoType === AmmoType.AssaultRifle || this.ammoType === AmmoType.RifleMk2APAmmo || this.ammoType === AmmoType.RifleMk2FMJAmmo || this.ammoType === AmmoType.RifleMk2TracerAmmo) {
+            this.currentRecoil = this.rifleAmmoRecoil;
+          } else if (this.ammoType === AmmoType.Sniper || this.ammoType === AmmoType.SniperMk2APAmmo || this.ammoType === AmmoType.SniperMk2FMJAmmo) {
+            this.currentRecoil = this.sniperAmmoRecoil;
+          } else if (this.ammoType === AmmoType.Shotgun || this.ammoType === AmmoType.ShotgunMk2SBShells || this.ammoType === AmmoType.ShotgunMk2FSheels) {
+            this.currentRecoil = this.shotgunAmmoRecoil;
           }
-
-          console.log("after ammo type", this.currentRecoil);
 
           if (this.currentRecoil > 0) {
             this.currentRecoil = this.baseRecoil + this.currentRecoil;
