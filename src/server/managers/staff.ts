@@ -14,7 +14,7 @@ import {Ranks} from "../../shared/enums/ranks";
 import { Events } from "../../shared/enums/events/events";
 import { concatArgs, isDateValid } from "../../shared/utils";
 import { Message } from "../../shared/models/ui/chat/message";
-import { ChatTypes } from "../../shared/enums/ui/chat/types";
+import { ChatTypes, SystemTypes } from "../../shared/enums/ui/chat/types";
 
 export class StaffManager {
   private readonly server: Server;
@@ -82,6 +82,21 @@ export class StaffManager {
         Error("Ban Command", "Server ID not entered!");
       }
     }, Ranks.Management);
+    
+    new Command("announce", "Make an administration announcement to the entire server.", [{name: "content", help: "The announcement you are going to be broadcasting."}], true, async(source: string, args: any[]) => {
+      if (args[0]) {
+        const player = await this.server.connectedPlayerManager.GetPlayer(source);
+        if (player) {
+          if (player.Spawned) {
+            const message = concatArgs(0, args);
+            await player.TriggerEvent(Events.sendSystemMessage, new Message(message, SystemTypes.Admin));
+            await logCommand("/announce", player, message);
+          }
+        }
+      } else {
+        Error("Ban Command", "Server ID not entered!");
+      }
+    }, Ranks.Admin);
   }
 
   private registerRCONCommands(): void {
