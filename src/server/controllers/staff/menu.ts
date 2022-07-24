@@ -778,10 +778,10 @@ export class StaffMenu {
             } else {
               console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
             }
-          } else {
-            console.log("can't bring yourself!");
           }
         }
+
+        await player.TriggerEvent(Events.sendSystemMessage, new Message("You've brought all players to you.", SystemTypes.Admin));
 
         const playersDiscord = await player.GetIdentifier("discord");
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -827,10 +827,10 @@ export class StaffMenu {
             } else {
               console.log(`Can't find players (${svPlayers[i].Id} | ${svPlayers[i].Handle}) ped!`);
             }
-          } else {
-            console.log("can't bring yourself!");
           }
         }
+
+        await player.TriggerEvent(Events.sendSystemMessage, new Message("You've froze/unfroze all players.", SystemTypes.Admin));
         
         const playersDiscord = await player.GetIdentifier("discord");
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
