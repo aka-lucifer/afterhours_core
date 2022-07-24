@@ -1,4 +1,4 @@
-import { AmmoType, Control, Game, InputMode, Screen } from "fivem-js";
+import { Control, Game, InputMode, Screen } from "fivem-js";
 
 import { Client } from "../../client";
 import { randomBetween, LoadAnim, PlayAnim, Inform, GetHash, Error } from "../../utils";
@@ -7,7 +7,7 @@ import { Notification } from "../../models/ui/notification";
 import { Progress } from "../../models/ui/progress";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
-import { Weapons } from "../../../shared/enums/weapons";
+import { Weapons, AmmoType } from "../../../shared/enums/weapons";
 import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
 import { Weapon } from "../../../shared/interfaces/weapon";
 
@@ -52,27 +52,24 @@ export class WeaponJamming {
             let unjamLength;
             let unjamDict;
 
-            switch(currAmmoType) {
-              case AmmoType.Pistol:
-                unjamLength = 10000;
-                unjamDict = "anim@cover@weapon@reloads@pistol@flare";
-                break;
-              case AmmoType.SMG:
-                unjamLength = 15000;
-                unjamDict = "anim@cover@weapon@machinegun@gusenberg_str";
-                break;
-              case AmmoType.AssaultRifle:
-                unjamLength = 20000;
-                unjamDict = "anim@cover@weapon@reloads@rifle@spcarbine";
-                break;
-              case AmmoType.Shotgun:
-                unjamLength = 20000;
-                unjamDict = "anim@cover@weapon@reloads@rifle@dbshot";
-                break;
-              case AmmoType.Sniper:
-                unjamLength = 25000;
-                unjamDict = "cover@weapon@reloads@rifle@sniper_rifle";
-                break;
+            if (currAmmoType === AmmoType.Pistol || currAmmoType === AmmoType.PistolMk2FMJAmmo || currAmmoType === AmmoType.PistolMk2HPAmmo || currAmmoType === AmmoType.PistolMk2TracerAmmo) {
+              unjamLength = 10000;
+              unjamDict = "anim@cover@weapon@reloads@pistol@flare";
+            } else if (currAmmoType === AmmoType.SMG || currAmmoType === AmmoType.SMGMk2FMJAmmo || currAmmoType === AmmoType.SMGMk2HPAmmo || currAmmoType === AmmoType.SMGMk2TracerAmmo) {
+              unjamLength = 15000;
+              unjamDict = "anim@cover@weapon@machinegun@gusenberg_str";
+            } else if (currAmmoType === AmmoType.AssaultRifle || currAmmoType === AmmoType.RifleMk2APAmmo || currAmmoType === AmmoType.RifleMk2FMJAmmo || currAmmoType === AmmoType.RifleMk2TracerAmmo) {
+              unjamLength = 20000;
+              unjamDict = "anim@cover@weapon@reloads@rifle@spcarbine";
+            } else if (currAmmoType === AmmoType.Sniper || currAmmoType === AmmoType.SniperMk2APAmmo || currAmmoType === AmmoType.SniperMk2FMJAmmo) {
+              unjamLength = 25000;
+              unjamDict = "cover@weapon@reloads@rifle@sniper_rifle";
+            } else if (currAmmoType === AmmoType.MG) {
+              unjamLength = 20000;
+              unjamDict = "anim@cover@weapon@machinegun@gusenberg_str";
+            } else if (currAmmoType === AmmoType.Shotgun || currAmmoType === AmmoType.ShotgunMk2SBShells || currAmmoType === AmmoType.ShotgunMk2FSheels) {
+              unjamLength = 20000;
+              unjamDict = "anim@cover@weapon@reloads@rifle@dbshot";
             }
 
             const progress = new Progress(unjamLength, {
