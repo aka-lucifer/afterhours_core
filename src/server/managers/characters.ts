@@ -353,7 +353,6 @@ export class CharacterManager {
         character.Owner = player; // Make the character owned by you
         player.Spawned = true; // Set us spawned in with our spawn system
 
-        await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
         await player.TriggerEvent(Events.setCharacter, Object.assign({}, character)); // Update our character on our client (char info, job, etc)
         await player.Notify("Characters", `You've logged in as ${character.Name}`, NotificationTypes.Success);
 
@@ -401,6 +400,7 @@ export class CharacterManager {
         if (charVehicles) {
           await player.TriggerEvent(Events.setupVehicles, charVehicles);
         }
+        await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
 
         // Log it to discord
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
