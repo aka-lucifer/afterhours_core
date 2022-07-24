@@ -1,10 +1,10 @@
-import { AmmoType, Game, Prop } from "fivem-js";
+import { Game, Prop } from "fivem-js";
 
 import { Client } from "../../client";
 import { GetHash, Inform } from "../../utils";
 
 import { LXEvents } from "../../../shared/enums/events/lxEvents";
-import { AddonWeapons, Weapons } from "../../../shared/enums/weapons";
+import { AddonWeapons, Weapons, AmmoType } from "../../../shared/enums/weapons";
 
 import clientConfig from "../../../configs/client.json";
 import { Ranks } from '../../../shared/enums/ranks';
@@ -31,7 +31,7 @@ export class WeaponRecoil {
   private silencerSubtractor: number;
   private crouchSubractor: number;
   private tickHandler: number;
-  private currentRecoil: number;
+  private currentRecoil: number = 0;
   private vehRecoil: number;
   private hipFireRecoil: number;
 
@@ -72,6 +72,7 @@ export class WeaponRecoil {
     const noRecoil = this.client.Player.Rank >= Ranks.Admin ? this.client.staffManager.staffMenu.NoRecoil : false; // Determines if no recoil should be applied or not.
 
     if (!noRecoil) {
+      this.currentRecoil = 0;
       this.currentWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle); // Update our current weapon variable
 
       // if we aren't unarmed
@@ -83,27 +84,24 @@ export class WeaponRecoil {
           this.weapon = new Prop(GetCurrentPedWeaponEntityIndex(myPed.Handle));
 
           // console.log(`Weapon: ${this.currentWeapon} | Object: ${this.weapon.Handle} | Ammo Type: ${this.ammoType} | Default Recoil: ${this.baseRecoil} | Wind Speed: ${GetWindSpeed()} | Wind Direction: ${GetWindDirection()}`);
+          
+          console.log("Ammo Types", this.ammoType, AmmoType.Pistol, AmmoType.PistolMk2FMJAmmo, AmmoType.PistolMk2HPAmmo, AmmoType.PistolMk2ExplosiveAmmo, AmmoType.PistolMk2TracerAmmo)
 
-          switch (this.ammoType) {
-            case AmmoType.Pistol:
-              this.currentRecoil = this.pistolAmmoRecoil;
-              break;
-            case AmmoType.SMG:
-              this.currentRecoil = this.smgAmmoRecoil;
-              break;
-            case AmmoType.AssaultRifle:
-              this.currentRecoil = this.rifleAmmoRecoil;
-              break;
-            case AmmoType.Sniper:
-              this.currentRecoil = this.sniperAmmoRecoil;
-              break;
-            case AmmoType.Shotgun:
-              this.currentRecoil = this.shotgunAmmoRecoil;
-              break;
-            case AmmoType.MG:
-              this.currentRecoil = this.lmgAmmoRecoil;
-              break;
+          if (this.ammoType === AmmoType.Pistol || this.ammoType === AmmoType.PistolMk2FMJAmmo || this.ammoType === AmmoType.PistolMk2HPAmmo || this.ammoType === AmmoType.PistolMk2ExplosiveAmmo || this.ammoType === AmmoType.PistolMk2TracerAmmo) {
+            this.currentRecoil = this.pistolAmmoRecoil;
+          } else if (this.ammoType === AmmoType.SMG) {
+            this.currentRecoil = this.smgAmmoRecoil;
+          } else if (this.ammoType === AmmoType.SMG) {
+            this.currentRecoil = this.rifleAmmoRecoil;
+          } else if (this.ammoType === AmmoType.SMG) {
+            this.currentRecoil = this.sniperAmmoRecoil;
+          } else if (this.ammoType === AmmoType.Shotgun || this.ammoType === AmmoType.CombatShotgun) {
+            this.currentRecoil = this.shotgunAmmoRecoil;
+          } else if (this.ammoType === AmmoType.MG) {
+            this.currentRecoil = this.lmgAmmoRecoil;
           }
+
+          console.log("after ammo type", this.currentRecoil);
 
           if (this.currentRecoil > 0) {
             this.currentRecoil = this.baseRecoil + this.currentRecoil;

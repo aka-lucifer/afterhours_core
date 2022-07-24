@@ -326,7 +326,7 @@
                 "lmgAmmoRecoil": 2.0,
                 "sniperAmmoRecoil": 5.0,
                 "rifleAmmoRecoil": 0.35,
-                "shotgunAmmoRecoil": 2.5,
+                "shotgunAmmoRecoil": 0.75,
                 "shortGunsMult": 2.0,
                 "longGunsMult": 0.5,
                 "aimedShotMult": 0.5,
