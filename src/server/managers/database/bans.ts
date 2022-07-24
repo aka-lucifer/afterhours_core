@@ -2,10 +2,12 @@ import {Ban} from "../../models/database/ban";
 
 import * as Database from "./database";
 import {Server} from "../../server"
-
 import {Log} from "../../utils"
+
 import {BanStates} from "../../enums/database/bans";
+
 import {Player} from "../../models/database/player";
+import { DBPlayer } from "../../models/database/dbPlayer";
 
 export class BanManager {
   public server: Server;
@@ -55,10 +57,26 @@ export class BanManager {
     return addedData;
   }
 
-  public Remove(banId: number): void {
+  public Remove(banId: number): boolean {
     const banIndex = this.bannedPlayers.findIndex(ban => ban.Id == banId);
     if (banIndex !== -1) {
       this.bannedPlayers.splice(banIndex, 1);
+    }
+
+    return banIndex !== -1;
+  }
+
+  public async Delete(player: DBPlayer, banId: number): Promise<boolean> {
+    const deletedBans = await Database.SendQuery("DELETE FROM `player_bans` WHERE `id` = :id AND `player_id` = :playerId", {
+      id: banId,
+      playerId: player.Id
+    });
+
+    if (deletedBans.meta.affectedRows > 0) {
+      if (this.server.IsDebugging) Log("Ban Manager | Deleting", `(Id: ${banId} | Player Id: ${player.Id} | Name: ${player.GetName})`);
+      return this.server.banManager.Remove(banId);
+    } else {
+      return false;
     }
   }
 
