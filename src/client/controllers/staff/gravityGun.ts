@@ -5,7 +5,7 @@ import {Delay, Inform, NumToVector3} from "../../utils";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
-import {Weapons} from "../../../shared/enums/weapons";
+import {AddonWeapons, Weapons} from "../../../shared/enums/weapons";
 
 export class GravityGun {
   private client: Client;
@@ -41,7 +41,7 @@ export class GravityGun {
     if (this.client.player.Rank >= Ranks.Admin) {
       const myPed = Game.PlayerPed;
 
-      if (GetSelectedPedWeapon(myPed.Handle) == Weapons.AR15) {
+      if (GetSelectedPedWeapon(myPed.Handle) == AddonWeapons.GravityGun) {
         if (IsPlayerFreeAiming(Game.Player.Handle)) {
           if (!this.holding) { // If no entity is held
             let [_, foundEntity] = GetEntityPlayerIsFreeAimingAt(Game.Player.Handle);
