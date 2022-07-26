@@ -46,11 +46,14 @@ export class JobBlips {
             if (character.isLeoJob() || character.isSAFREMSJob() || character.Job.name == Jobs.Community) { // If character is LEO, Fire/EMS or Community Officers
               if (character.Job.Status) { // If character is on duty
                 const ped = GetPlayerPed(svPlayers[i].Handle); // Get their characters ped
+                const pedCoords = GetEntityCoords(ped);
+                const pedPosition = new Vector3(pedCoords[0], pedCoords[1], pedCoords[2]);
                 const currVeh = GetVehiclePedIsIn(ped, false); // Check if they're inside a vehicle
 
+                console.log("info before push (unit blips)", ped, JSON.stringify(pedCoords), pedPosition, currVeh, GetVehicleType(currVeh), character.Job, character.firstName, character.lastName, IsVehicleSirenOn(currVeh));
                 activeUnits.push({ // Push new element into active units array.
                   netId: svPlayers[i].Handle,
-                  coords: svPlayers[i].Position,
+                  coords: pedPosition,
                   heading: Math.ceil(GetEntityHeading(ped)),
                   firstName: character.firstName,
                   lastName: character.lastName,
@@ -67,6 +70,7 @@ export class JobBlips {
         }
 
         if (i == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
+          if (activeUnits.length > 0) console.log("unit blips", activeUnits);
           for (let b = 0; b < activeUnits.length; b++) { // For all of the active units, send the active units array to each of them
             emitNet(JobEvents.refreshBlipData, activeUnits[b].netId, activeUnits);
           }
