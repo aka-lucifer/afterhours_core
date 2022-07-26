@@ -374,7 +374,7 @@
         "name": "CVPI (2011)",
         "type": "emergency",
         "job": "police",
-        "rank": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        "rank": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "-1293679527": {
         "model": "pd2",
@@ -382,7 +382,7 @@
         "name": "Caprice (2013)",
         "type": "emergency",
         "job": "police",
-        "rank": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        "rank": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "1477136041": {
         "model": "pd3",
@@ -390,7 +390,7 @@
         "name": "Explorer (2013)",
         "type": "emergency",
         "job": "police",
-        "rank": [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        "rank": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "1196272942": {
         "model": "pd4",
@@ -398,7 +398,7 @@
         "name": "Charger (2014)",
         "type": "emergency",
         "job": "police",
-        "rank": [2, 3, 4, 5, 6, 7, 8, 9]
+        "rank": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "-1937164380": {
         "model": "pd5",
@@ -406,7 +406,7 @@
         "name": "Explorer (2016)",
         "type": "emergency",
         "job": "police",
-        "rank": [3, 4, 5, 6, 7, 8, 9]
+        "rank": [2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "1707272728": {
         "model": "pd6",
@@ -414,7 +414,7 @@
         "name": "Charger (2018)",
         "type": "emergency",
         "job": "police",
-        "rank": [4, 5, 6, 7, 8, 9]
+        "rank": [3, 4, 5, 6, 7, 8, 9, 10]
       },
       "543809383": {
         "model": "pd7",
@@ -422,7 +422,7 @@
         "name": "Explorer (2018)",
         "type": "emergency",
         "job": "police",
-        "rank": [5, 6, 7, 8, 9]
+        "rank": [3, 4, 5, 6, 7, 8, 9, 10]
       },
       "153006289": {
         "model": "pd8",
@@ -430,7 +430,7 @@
         "name": "F-150 (2018)",
         "type": "emergency",
         "job": "police",
-        "rank": [6, 7, 8, 9]
+        "rank": [5, 6, 7, 8, 9, 10]
       },
       "852329518": {
         "model": "pd9",
@@ -438,7 +438,7 @@
         "name": "Tahoe (2020)",
         "type": "emergency",
         "job": "police",
-        "rank": [6, 7, 8, 9]
+        "rank": [6, 7, 8, 9, 10]
       },
       "-244897883": {
         "model": "pd10",
@@ -446,7 +446,7 @@
         "name": "Durango (2021)",
         "type": "emergency",
         "job": "police",
-        "rank": [7, 8, 9]
+        "rank": [7, 8, 9, 10]
       },
 
       "-162245135": {

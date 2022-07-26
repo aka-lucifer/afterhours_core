@@ -1,13 +1,14 @@
 export enum PoliceRanks {
-  ProbationaryOfficer,
   Officer,
+  SeniorOfficer,
   Corporal,
   Sergeant,
   StaffSergeant,
   Lieutenant,
-  PatrolLieutenant,
   Captain,
+  Commander,
   DeputyChief,
+  AssistantChief,
   Chief
 }
 
