@@ -159,6 +159,7 @@ export class StaffMenu {
       onNet(Callbacks.spectatePlayer, this.CALLBACK_spectatePlayer.bind(this));
       onNet(Callbacks.getSummoned, this.CALLBACK_getSummoned.bind(this));
       onNet(Callbacks.getSummonReturned, this.CALLBACK_getSummonReturned.bind(this));
+      onNet(Callbacks.getKilled, this.CALLBACK_getKilled.bind(this));
 
       // Key Mapped Commands
       RegisterCommand("+toggle_menu", this.toggleMenu.bind(this), false);
@@ -828,6 +829,12 @@ export class StaffMenu {
         }
       }
 
+      if (this.client.player.Rank >= Ranks.Admin) {
+        menu.BindButton("Crumpet Dis Fuker", () => {
+          emitNet(Events.killPlayer, playerData.NetworkId);
+        });
+      }
+
       if (this.client.player.Rank >= Ranks.Moderator) {
         menu.BindButton("Freeze", () => {
           emitNet(Events.freezePlayer, playerData.NetworkId);
@@ -1253,7 +1260,8 @@ export class StaffMenu {
     if (this.client.player.Rank >= Ranks.Admin) {
       const foundPlayer = new svPlayer(data.player);
       if (foundPlayer) {
-        this.summonLastLocation = Game.PlayerPed.Position;
+        const myPos = Game.PlayerPed.Position;
+        if (this.summonLastLocation === undefined) this.summonLastLocation = Game.PlayerPed.Position;
 
         const teleported = await teleportToCoords(data.playerPos);
         if (teleported) {
@@ -1269,6 +1277,11 @@ export class StaffMenu {
     }
   }
 
+  private CALLBACK_getKilled(data: any): void {
+    console.log("YO BITCH ASS GOT SLAYED PUSSIO!");
+    Game.PlayerPed.kill();
+    emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff who killed yo bitch ass
+  }
   
   private async CALLBACK_getSummonReturned(data: any): Promise<void> {
     if (this.client.player.Rank >= Ranks.Admin) {

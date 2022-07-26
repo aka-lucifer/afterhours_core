@@ -59,6 +59,7 @@ export enum Events {
   warnPlayer = "astrid:server:controllers:staff:menu:warnPlayer",
   commendPlayer = "astrid:server:controllers:staff:menu:commendPlayer",
   updatePlayerRank = "astrid:server:controllers:staff:menu:controllers:updatePlayerRank",
+  killPlayer = "astrid:server:controllers:staff:menu:controllers:killPlayer",
   freezePlayer = "astrid:server:controllers:staff:menu:freezePlayer",
   tpToPlayer = "astrid:server:controllers:staff:menu:tpToPlayer",
   tpToVehicle = "astrid:server:controllers:staff:menu:tpToVehicle",

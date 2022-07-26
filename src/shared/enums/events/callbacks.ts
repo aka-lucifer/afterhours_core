@@ -6,6 +6,7 @@ export enum Callbacks {
   getVehicleFreeSeat = "astrid:client:controllers:staff:menu:getVehicleFreeSeat",
   spectatePlayer = "astrid:client:controllers:staff:menu:spectatePlayer",
   getSummoned = "astrid:client:controllers:staff:menu:getSummoned",
+  getKilled = "astrid:client:controllers:staff:menu:getKilled",
   getSummonReturned = "astrid:client:controllers:staff:menu:getSummonReturned",
 
   // Astrid Client -> Server Callbacks ([Managers] | Vehicle)

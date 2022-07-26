@@ -60,6 +60,7 @@ export class StaffMenu {
     onNet(Events.warnPlayer, this.EVENT_warnPlayer.bind(this));
     onNet(Events.commendPlayer, this.EVENT_commendPlayer.bind(this));
     onNet(Events.updatePlayerRank, this.EVENT_updatePlayerRank.bind(this));
+    onNet(Events.killPlayer, this.EVENT_killPlayer.bind(this));
     onNet(Events.freezePlayer, this.EVENT_freezePlayer.bind(this));
     onNet(Events.tpToPlayer, this.EVENT_tpToPlayer.bind(this));
     onNet(Events.tpToVehicle, this.EVENT_tpToVehicle.bind(this));
@@ -439,6 +440,45 @@ export class StaffMenu {
       }
     } else {
       console.log("player id doesn't exist!");
+    }
+  }
+
+  private async EVENT_killPlayer(netId: number): Promise<void> {
+    if (netId > 0) {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+      if (player) {
+        const havePerm = this.havePermission(player.Rank, Ranks.Admin);
+
+        if (havePerm) {
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
+
+            if (foundPlayer) {
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getKilled, foundPlayer.Handle, {}, async (cbState) => {
+                if (cbState == "SUCCESS") {
+                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been killed by ^3${player.GetName}^0.`, SystemTypes.Admin));
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've killed ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+
+                  const playersDiscord = await player.GetIdentifier("discord");
+                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                    username: "Staff Logs", embeds: [{
+                      color: EmbedColours.Green,
+                      title: "__Player Slayed__",
+                      description: `A player has been slayed.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Slayed By**: ${player.GetName}\n**Slayers Rank**: ${Ranks[player.Rank]}\n**Slayers Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                      footer: {
+                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                        icon_url: sharedConfig.serverLogo
+                      }
+                    }]
+                  }));
+                } else if (cbState == "ERROR_KILLING") {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to kill ^3${foundPlayer.GetName}^0!`, SystemTypes.Error));
+                }
+              }));
+            }
+          }
+        }
+      }
     }
   }
 
