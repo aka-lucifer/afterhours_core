@@ -1,7 +1,7 @@
 import { Client } from "../client";
 
 // Controllers
-import { Speedzones } from "../controllers/vehicles/speedzones";
+// import { Speedzones } from "../controllers/vehicles/speedzones";
 import { VehicleWeapon } from "../controllers/vehicles/vehWeapon";
 import { AntiControl } from "../controllers/vehicles/antiControl";
 import { LeaveDoorOpen } from "../controllers/vehicles/leaveDoorOpen";
@@ -27,7 +27,7 @@ export class VehicleManager {
   private readonly client: Client;
 
   // Controllers
-  public speedZones: Speedzones;
+  // public speedZones: Speedzones;
   public weapon: VehicleWeapon;
   private antiControl: AntiControl;
   private leaveDoorOpen: LeaveDoorOpen;
@@ -61,7 +61,7 @@ export class VehicleManager {
 
   // Methods
   public init(): void {
-    this.speedZones = new Speedzones(this.client); // done (0.01ms-0.02ms)
+    // this.speedZones = new Speedzones(this.client); // done (0.01ms-0.02ms)
     this.weapon = new VehicleWeapon(this.client); // done (0.01ms-0.03ms)
     this.antiControl = new AntiControl(); // done (0.02ms)
     this.leaveDoorOpen = new LeaveDoorOpen(); // done - (0.07ms)
@@ -77,7 +77,7 @@ export class VehicleManager {
     this.driveBy = new DriveBy(this.client);
 
     // Inits
-    this.speedZones.init(); // done (0.01ms-0.02ms)
+    // this.speedZones.init(); // done (0.01ms-0.02ms)
     this.repairShops.init(); // done
     this.gps.init(); // done
     this.rolling.init(); // done
@@ -89,7 +89,7 @@ export class VehicleManager {
   }
 
   private EVENT_enteredVeh(): void {
-    if (!this.speedZones.Started) this.speedZones.start(); // done (0.01ms-0.02ms)
+    // if (!this.speedZones.Started) this.speedZones.start(); // done (0.01ms-0.02ms)
     if (!this.weapon.Started) this.weapon.start(); // done (0.01ms-0.03ms)
     if (!this.antiControl.RollStarted) this.antiControl.startRoll(); // done (0.01ms)
     if (!this.antiControl.AirStarted) this.antiControl.startAir(); // done (0.01ms)
@@ -117,7 +117,7 @@ export class VehicleManager {
   }
 
   private EVENT_leftVeh(): void {
-    if (this.speedZones.Started) this.speedZones.stop(); // done (0.01ms-0.02ms)
+    // if (this.speedZones.Started) this.speedZones.stop(); // done (0.01ms-0.02ms)
     if (this.weapon.Started) this.weapon.stop(); // done (0.01ms-0.03ms)
     if (this.antiControl.RollStarted) this.antiControl.stopRoll(); // done (0.01ms)
     if (this.antiControl.AirStarted) this.antiControl.stopAir(); // done (0.01ms)

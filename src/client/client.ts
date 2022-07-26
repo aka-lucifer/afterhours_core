@@ -10,7 +10,7 @@ import {StaffManager} from "./managers/staff";
 
 // [Managers] World
 import {WorldManager} from "./managers/world/world";
-import { SafezoneManager } from "./managers/world/safezones";
+// import { SafezoneManager } from "./managers/world/safezones";
 
 // [Managers] Syncing
 import {TimeManager} from "./managers/sync/time";
@@ -116,7 +116,7 @@ export class Client {
 
   // [Managers] World
   private worldManager: WorldManager;
-  public safezoneManager: SafezoneManager;
+  // public safezoneManager: SafezoneManager;
 
   // [Managers] Syncing
   public timeManager: TimeManager;
@@ -214,6 +214,21 @@ export class Client {
         }
       }
     }, false);
+
+    let spawnTick = setTick(async() => {
+      if (NetworkIsPlayerActive(PlayerId()) && this.nuiReady) {
+        // console.log("READY FOR SPAWNER UI!");
+        await this.initialize();
+        await this.spawner.init();
+        this.startUI();
+    
+        emitNet(Events.playerConnected, undefined, true);
+        // console.log("DELETING SPAWN TICK", spawnTick);
+        clearTick(spawnTick);
+        spawnTick = undefined;
+        // console.log("DELETED SPAWN TICK", spawnTick);
+      }
+    });
   }
 
   // Getters & Setters 
@@ -274,21 +289,6 @@ export class Client {
         
         // Exports Ready
         emit(Events.exportsReady); // Might cause threads to be run twice
-
-        let spawnTick = setTick(async() => {
-          if (NetworkIsPlayerActive(PlayerId()) && this.nuiReady) {
-            // console.log("READY FOR SPAWNER UI!");
-            await this.initialize();
-            await this.spawner.init();
-            this.startUI();
-        
-            emitNet(Events.playerConnected, undefined, true);
-            // console.log("DELETING SPAWN TICK", spawnTick);
-            clearTick(spawnTick);
-            spawnTick = undefined;
-            // console.log("DELETED SPAWN TICK", spawnTick);
-          }
-        });
       }
     }
   }
@@ -307,8 +307,8 @@ export class Client {
 
     // [Managers] World
     this.worldManager = new WorldManager(client);
-    this.safezoneManager = new SafezoneManager(client);
-    this.safezoneManager.init();
+    // this.safezoneManager = new SafezoneManager(client);
+    // this.safezoneManager.init();
 
     // [Managers] Syncing
     this.timeManager = new TimeManager(client);
@@ -441,7 +441,7 @@ export class Client {
     // Managers Inits
     this.aopManager.init();
     this.weaponManager.start();
-    this.safezoneManager.start();
+    // this.safezoneManager.start();
 
     if (this.developmentMode) {
       if (!this.worldBlips.Started) this.worldBlips.start();
