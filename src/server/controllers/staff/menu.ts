@@ -630,7 +630,11 @@ export class StaffMenu {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState) => {
+              const myPed = GetPlayerPed(player.Handle);
+              const myPos = GetEntityCoords(myPed);
+              const myCoords = new Vector3(myPos[0], myPos[1], myPos[2]);
+              
+              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: myCoords}, async (cbState) => {
                 if (cbState == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
 
