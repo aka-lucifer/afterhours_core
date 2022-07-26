@@ -49,18 +49,22 @@ export class JobBlips {
     if (this.client.Player.Spawned) {
       if (this.client.Character.isLeoJob() || this.client.Character.isSAFREMSJob() || this.client.Character.Job.name == Jobs.Community) {
         if (this.client.Character.Job.status) {
-          // await this.deleteBlips(); // delete all active blips
-
-          // console.log("blips length", this.createdBlips.length);
+          console.log("passed units", units.length);
+          
+          console.log("blips", this.createdBlips);
 
           for (let i = 0; i < units.length; i++) {
             const netId = Number(units[i].netId); // Force it to be a number, for some reason showing as string
 
-            if (this.client.Player.NetworkId !== netId) {
+            console.log("netId", netId, this.client.Player.NetworkId, typeof netId, typeof this.client.Player.NetworkId, netId !== this.client.Player.NetworkId);
+            if (netId !== this.client.Player.NetworkId) {
+              console.log("coords", units[i].coords)
               if (units[i].coords !== undefined) {
                 const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
 
-                if (blipIndex === -1) {
+                console.log("blip index thing!", blipIndex, netId);
+
+                if (blipIndex === -1) { // If the blip doesn't exist make it
                   const blip = World.createBlip(new Vector3(units[i].coords.x, units[i].coords.y, units[i].coords.z));
                   blip.IsShortRange = true;
                   blip.Display = 4;
@@ -202,7 +206,10 @@ export class JobBlips {
 
                   if (units[i].status) { // If the person is still on duty
                     const foundBlip = new Blip(blipData.blip.Handle); // see if this fixes stupid bug
+                    // console.log("update blip pos", foundBlip.Position);
+    
                     foundBlip.Position = units[i].coords;
+                    // console.log("updated blip pos", foundBlip.Position);
 
                     if (units[i].inVeh) {
                       if (units[i].vehType == "automobile") {

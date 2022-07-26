@@ -103,7 +103,7 @@ export class StaffMenu {
           const pedPosition = new Vector3(pedCoords[0], pedCoords[1], pedCoords[2]);
           const currVeh = GetVehiclePedIsIn(ped, false); // Check if they're inside a vehicle
 
-          console.log("info before push (player blips)", ped, JSON.stringify(pedCoords), pedPosition, currVeh, GetVehicleType(currVeh), svPlayers[a].Handle, svPlayers[a].Rank);
+          // console.log("info before push (player blips)", ped, JSON.stringify(pedCoords), pedPosition, currVeh, GetVehicleType(currVeh), svPlayers[a].Handle, svPlayers[a].Rank);
 
           this.playerBlips.push({ // Push new element into active units array.
             netId: svPlayers[a].Handle,
@@ -118,10 +118,10 @@ export class StaffMenu {
 
 
         if (a == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
-          if (this.playerBlips.length > 0) console.log("player blips", this.playerBlips);
+          // if (this.playerBlips.length > 0) console.log("player blsips", this.playerBlips);
           for (let b = 0; b < svPlayers.length; b++) {
             if (svPlayers[b].Rank >= Ranks.Moderator) {
-              const playerStates = Player(svPlayers[a].Handle);
+              const playerStates = Player(svPlayers[b].Handle);
               if (playerStates.state.playerBlips) await svPlayers[b].TriggerEvent(Events.updatePlayerBlips, this.playerBlips);
             }
           }
@@ -135,7 +135,6 @@ export class StaffMenu {
   private async updateRank(myPlayer: any, otherPlayer: any, newRank: Ranks): Promise<void> {
     const updatedRank = await otherPlayer.UpdateRank(newRank);
     if (updatedRank) {
-      console.log("give them honourable or above");
       const rankLabelSplit = splitCapitalsString(Ranks[myPlayer.Rank]);
       const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 

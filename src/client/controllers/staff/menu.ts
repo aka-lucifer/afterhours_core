@@ -1031,16 +1031,23 @@ export class StaffMenu {
   }
 
   private async EVENT_updatePlayerBlips(players: ConnectedPlayer[]) {
-    if (this.client.Player.Spawned && this.client.Player.Rank >= Ranks.Admin) {
-      // console.log("passed players", units);
+    console.log("update blips", this.client.Player.Spawned, this.client.Player.Rank);
+    if (this.client.Player.Spawned && this.client.Player.Rank >= Ranks.Moderator) {
+      console.log("passed players", players);
       
+      console.log("blips", this.playersBlips);
       if (this.playersBlips) {
+        console.log("players length", players.length);
         for (let i = 0; i < players.length; i++) {
           const netId = Number(players[i].netId); // Force it to be a number, for some reason showing as string
 
+          console.log("netId", netId, this.client.Player.NetworkId, typeof netId, typeof this.client.Player.NetworkId);
           if (netId !== this.client.Player.NetworkId) {
+            console.log("coords", players[i].coords)
             if (players[i].coords !== undefined) {
               const blipIndex = this.createdBlips.findIndex(blip => blip.netId == netId);
+
+              console.log("blip index thing!", blipIndex, netId);
 
               if (blipIndex === -1) { // If the blip doesn't exist make it
                 const blip = World.createBlip(new Vector3(players[i].coords.x, players[i].coords.y, players[i].coords.z));
@@ -1078,8 +1085,10 @@ export class StaffMenu {
               } else { // If the blip exists, update it's properties
                 const blipData = this.createdBlips[blipIndex];
                 const foundBlip = new Blip(blipData.blip.Handle); // see if this fixes stupid bug
+                console.log("update blip pos", foundBlip.Position);
 
                 foundBlip.Position = players[i].coords;
+                console.log("updated blip pos", foundBlip.Position);
 
                 if (players[i].inVeh) {
                   if (players[i].vehType == "automobile") {

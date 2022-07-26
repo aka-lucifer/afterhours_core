@@ -23,6 +23,7 @@ interface ActiveUnit {
 export class JobBlips {
   private server: Server;
 
+  public activeUnits: ActiveUnit[] = [];
   // Tick Data
   private blipTick: number = undefined;
   private lastUpdate: number = undefined;
@@ -36,7 +37,7 @@ export class JobBlips {
     if (this.blipTick === undefined) this.blipTick = setTick(async() => {
       // loop through on duty LEO, Fire/EMS & Community Officers and send their location and info to every on duty client.
       const svPlayers = this.server.connectedPlayerManager.GetPlayers;
-      const activeUnits: ActiveUnit[] = [];
+      this.activeUnits = [];
 
       for (let i = 0; i < svPlayers.length; i++) { // Loop through all server players
         if (svPlayers[i].Spawned) { // If selected their character
@@ -50,8 +51,8 @@ export class JobBlips {
                 const pedPosition = new Vector3(pedCoords[0], pedCoords[1], pedCoords[2]);
                 const currVeh = GetVehiclePedIsIn(ped, false); // Check if they're inside a vehicle
 
-                console.log("info before push (unit blips)", ped, JSON.stringify(pedCoords), pedPosition, currVeh, GetVehicleType(currVeh), character.Job, character.firstName, character.lastName, IsVehicleSirenOn(currVeh));
-                activeUnits.push({ // Push new element into active units array.
+                // console.log("info before push (unit blips)", ped, JSON.stringify(pedCoords), pedPosition, currVeh, GetVehicleType(currVeh), character.Job, character.firstName, character.lastName, IsVehicleSirenOn(currVeh));
+                this.activeUnits.push({ // Push new element into active units array.
                   netId: svPlayers[i].Handle,
                   coords: pedPosition,
                   heading: Math.ceil(GetEntityHeading(ped)),
@@ -70,9 +71,9 @@ export class JobBlips {
         }
 
         if (i == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
-          if (activeUnits.length > 0) console.log("unit blips", activeUnits);
-          for (let b = 0; b < activeUnits.length; b++) { // For all of the active units, send the active units array to each of them
-            emitNet(JobEvents.refreshBlipData, activeUnits[b].netId, activeUnits);
+          // if (this.activeUnits.length > 0) console.log("unit blips", this.activeUnits);
+          for (let b = 0; b < this.activeUnits.length; b++) { // For all of the active units, send the active units array to each of them
+            emitNet(JobEvents.refreshBlipData, this.activeUnits[b].netId, this.activeUnits);
           }
         }
       }
