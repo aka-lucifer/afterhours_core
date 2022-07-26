@@ -637,7 +637,7 @@ const HUD = new Vue({
     // SCOREBOARD
     DisplayScoreboard(data) {
       this.connectedPlayers = data.players || [];
-      this.currentPlayers = Object.keys(this.connectedPlayers).length;
+      this.currentPlayers = this.connectedPlayers.length;
       this.maxPlayers = data.maxPlayers || 32;
       console.log("page", this.pageCount);
       this.displaying = true;
@@ -1273,7 +1273,7 @@ const HUD = new Vue({
   
   computed: {
     pageCount: function() {
-      return Math.ceil(Object.keys(this.connectedPlayers).length / 10);
+      return Math.ceil(this.connectedPlayers.length / 10);
     },
 
     getters: {

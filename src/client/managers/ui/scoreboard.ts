@@ -9,7 +9,6 @@ import {Events} from "../../../shared/enums/events/events";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 
-
 export class Scoreboard {
   private client: Client;
   private tickHandle: number = -1;
@@ -18,7 +17,6 @@ export class Scoreboard {
     this.client = client;
 
     // Opens and Closes scoreboard
-    // RegisterKeyMapping("+open_scoreboard", "Opens the scoreboard", "keyboard", "L");
     RegisterCommand("+open_scoreboard", this.OpenScoreboard.bind(this), false);
     RegisterCommand("-open_scoreboard", this.CloseScoreboard.bind(this), false);
 
