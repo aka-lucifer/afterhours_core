@@ -274,6 +274,21 @@ export class Client {
         
         // Exports Ready
         emit(Events.exportsReady); // Might cause threads to be run twice
+
+        let spawnTick = setTick(async() => {
+          if (NetworkIsPlayerActive(PlayerId()) && this.nuiReady) {
+            // console.log("READY FOR SPAWNER UI!");
+            await this.initialize();
+            await this.spawner.init();
+            this.startUI();
+        
+            emitNet(Events.playerConnected, undefined, true);
+            // console.log("DELETING SPAWN TICK", spawnTick);
+            clearTick(spawnTick);
+            spawnTick = undefined;
+            // console.log("DELETED SPAWN TICK", spawnTick);
+          }
+        });
       }
     }
   }
@@ -367,11 +382,11 @@ export class Client {
   public async nuiLoaded(data: Record<string, any>, cb: CallableFunction): Promise<void> {
     console.log("NUI READY!");
     this.nuiReady = true;
-    await this.initialize();
-    await this.spawner.init();
-    this.startUI();
+    // await this.initialize();
+    // await this.spawner.init();
+    // this.startUI();
 
-    emitNet(Events.playerConnected, undefined, true);
+    // emitNet(Events.playerConnected, undefined, true);
     cb("ok");
   }
 
