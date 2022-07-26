@@ -8284,7 +8284,29 @@
     "spawnInfo": {
         "changelog": [
           {
-            "version": "Pre-Release",
+            "version": "v1.0.1",
+            "additions": [
+              "A unban command for our web panel to unban members when we aren’t in-game.",
+              "A player bans submenu inside the staff menu to unban players.",
+              "New vehicle data in the server.json.",
+              "Chat message for the staff member when using bring/freeze all players.",
+              "A /announce staff command to inform all players in the game when needed.",
+              "A new chat message in the chat cycling notifier, to inform players how to show their ID to police and other players (/showid).",
+              "Additional support for MK2 and LMGs into the weapon jamming system."
+            ],
+            "fixes": [
+              "The database manager now releases connections from our connection pool, so our rate limit isn’t hit.",
+              "The spawnedIn() export is now set to true, later on after spawning in, to prevent spawnedIn being called too early on the anticheat.",
+              "Disables alpha systems in the anticheat (Sprint multipliers & ragdoll detection).",
+              "Correct gravity gun given via the staff menu.",
+              "Weapon recoil has now been lowered on certain weapons and the bullet modifiers for MK2 weapons has also been patched, so it no longer goes straight to the sky."
+            ],
+            "removals": [
+              "Persistent wheel has been removed, whilst it receives some important rewrites & fixes."
+            ]
+          },
+          {
+            "version": "v1.0.0",
             "additions": [
               "Player manager controlling ranks, playtime, metadata, etc.",
               "Character manager controlling all of your characters data (name, dob, phone, metadata, backstory, job)",
