@@ -297,15 +297,15 @@
                     <div v-if='change.fixes.length > 0'>
                       <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Bug Fixes</h2><br>
                       <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="fix in change.fixes">
-                          <li>{{ fix }}</li>
+                        <li style='line-height: 2;'>{{ fix }}</li>
                       </ul><br>
                     </div>
 
 
                     <div v-if='change.removals.length > 0'>
                       <h2 style="text-align: left; font-size: 1.3em; text-decoration: underline; color: white;">Removals</h2><br>
-                      <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="fix in change.removals">
-                        <li>{{ fix }}</li>
+                      <ul style="margin-left: 25px; font-size: 1em; color: white;" v-for="removal in change.removals">
+                        <li style='line-height: 2;'>{{ removal }}</li>
                       </ul><br>
                     </div>
                   </div>

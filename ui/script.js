@@ -639,6 +639,7 @@ const HUD = new Vue({
       this.connectedPlayers = data.players || [];
       this.currentPlayers = Object.keys(this.connectedPlayers).length;
       this.maxPlayers = data.maxPlayers || 32;
+      console.log("page", this.pageCount);
       this.displaying = true;
     },
 
