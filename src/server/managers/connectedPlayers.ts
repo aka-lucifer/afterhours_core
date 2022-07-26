@@ -281,11 +281,13 @@ export class ConnectedPlayerManager {
   private processPing(): void {
     if (this.pingTick === undefined) this.pingTick = setTick(async() => {
       for (let i = 0; i < this.connectedPlayers.length; i++) {
-        if (this.connectedPlayers[i].Rank < Ranks.Moderator) { // If they aren't staff
-          const newPing = this.connectedPlayers[i].RefreshPing();
+        if (this.connectedPlayers[i].Spawned) {
+          if (this.connectedPlayers[i].Rank < Ranks.Moderator) { // If they aren't staff
+            const newPing = this.connectedPlayers[i].RefreshPing();
 
-          if (newPing > serverConfig.maxPing) { // If their ping is greater than the max ping, kick them
-            DropPlayer(this.connectedPlayers[i].Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName} for having too high ping. (Ping: ${newPing})`);
+            if (newPing > serverConfig.maxPing) { // If their ping is greater than the max ping, kick them
+              DropPlayer(this.connectedPlayers[i].Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName} for having too high ping. (Ping: ${newPing})`);
+            }
           }
         }
       }
