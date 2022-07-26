@@ -1260,27 +1260,31 @@ export class StaffMenu {
     if (this.client.player.Rank >= Ranks.Admin) {
       const foundPlayer = new svPlayer(data.player);
       if (foundPlayer) {
-        const myPos = Game.PlayerPed.Position;
+        const newPos = new Vector3(data.playerPos.x, data.playerPos.y, data.playerPos.z);
         if (this.summonLastLocation === undefined) this.summonLastLocation = Game.PlayerPed.Position;
 
-        const teleported = await teleportToCoords(data.playerPos);
-        if (teleported) {
-          emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
-          emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff summoning you
+        this.client.Teleporting = true;
+        SetEntityCoords(Game.PlayerPed.Handle, newPos.x, newPos.y, newPos.z, false, false, false, false);
 
-          await Delay(3000);
-          this.client.Teleporting = false;
-        } else {
-          emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff summoning you
-        }
+        emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+        emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff summoning you
+
+        await Delay(3000);
+        this.client.Teleporting = false;
+        
+
+        // const teleported = await teleportToCoords(data.playerPos);
+        // if (teleported) {
+        //   emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+        //   emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff summoning you
+
+        //   await Delay(3000);
+        //   this.client.Teleporting = false;
+        // } else {
+        //   emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff summoning you
+        // }
       }
     }
-  }
-
-  private CALLBACK_getKilled(data: any): void {
-    console.log("YO BITCH ASS GOT SLAYED PUSSIO!");
-    Game.PlayerPed.kill();
-    emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff who killed yo bitch ass
   }
   
   private async CALLBACK_getSummonReturned(data: any): Promise<void> {
@@ -1305,5 +1309,11 @@ export class StaffMenu {
         }
       }
     }
+  }
+
+  private CALLBACK_getKilled(data: any): void {
+    console.log("YO BITCH ASS GOT SLAYED PUSSIO!");
+    Game.PlayerPed.kill();
+    emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff who killed yo bitch ass
   }
 }
