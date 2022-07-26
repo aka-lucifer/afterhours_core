@@ -44,13 +44,13 @@ export class Death {
     }
   }
 
-  private async EVENT_revivePlayer(playerId: number): Promise<void> {
+  private async EVENT_revivePlayer(netId: number): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       if (player.Spawned) {
         if (player.Rank >= Ranks.Moderator) {
-          const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
           if (foundPlayer) {
             if (foundPlayer.Spawned) {
               const playerStates = Player(foundPlayer.Handle);

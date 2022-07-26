@@ -214,7 +214,7 @@ export class CommandMenu {
                                 submenu.BindButton("Fire Unit", () => {
                                   this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, {
                                     unitsId: receievedUnits[b].id,
-                                    unitsPlayerId: receievedUnits[b].playerId,
+                                    unitsPlayerId: receievedUnits[b].playerId
                                   }, async (firedUnit) => {
                                     if (firedUnit) {
                                       await this.client.menuManager.deleteMenu(submenu.handle);

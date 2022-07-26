@@ -452,8 +452,8 @@ export class Server {
       return await this.connectedPlayerManager.GetPlayer(source);
     });
 
-    global.exports("getCharacter", async(playerId: number) => {
-      const player = await this.connectedPlayerManager.GetPlayerFromId(playerId)
+    global.exports("getCharacter", async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source)
       if (player) {
         return await this.characterManager.Get(player);
       } else {

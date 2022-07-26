@@ -4,6 +4,7 @@ import { Server } from '../../server';
 import { Delay } from '../../utils';
 
 import { LogTypes } from '../../enums/logging';
+import { BanStates } from '../../enums/database/bans';
 
 import { Kick } from '../../models/database/kick';
 import { Warning } from '../../models/database/warning';
@@ -21,6 +22,9 @@ import { Callbacks } from '../../../shared/enums/events/callbacks';
 import { Jobs } from '../../../shared/enums/jobs/jobs';
 import { EmbedColours } from '../../../shared/enums/logging/embedColours';
 import { AdminActions } from '../../../shared/enums/adminActions';
+
+import { PlayerBan } from '../../../shared/interfaces/ban';
+
 import { formatSplitCapitalString, splitCapitalsString, addZero } from '../../../shared/utils';
 
 import serverConfig from '../../../configs/server.json';
@@ -62,6 +66,7 @@ export class StaffMenu {
     onNet(Events.summonPlayer, this.EVENT_summonPlayer.bind(this));
     onNet(Events.returnSummonedPlayer, this.EVENT_returnSummonedPlayer.bind(this));
     onNet(Events.spectatePlayer, this.EVENT_spectatePlayer.bind(this));
+    onNet(Events.unbanPlayer, this.EVENT_unbanPlayer.bind(this));
 
     // [Events | Server Management]
     onNet(Events.changeWeather, this.EVENT_changeWeather.bind(this));
@@ -70,6 +75,7 @@ export class StaffMenu {
     onNet(Events.freezeAll, this.EVENT_freezeAll.bind(this));
 
     // Callbacks
+    onNet(Callbacks.getBans, this.CALLBACK_getBans.bind(this));
     onNet(Callbacks.updatePlayerJob, this.CALLBACK_updatePlayerJob.bind(this));
     onNet(Callbacks.togglePlayerBlips, this.CALLBACK_togglePlayerBlips.bind(this));
 
@@ -93,11 +99,15 @@ export class StaffMenu {
       for (let a = 0; a < svPlayers.length; a++) { // Loop through all server players
         if (svPlayers[a].Spawned) {
           const ped = GetPlayerPed(svPlayers[a].Handle); // Get their characters ped
+          const pedCoords = GetEntityCoords(ped);
+          const pedPosition = new Vector3(pedCoords[0], pedCoords[1], pedCoords[2]);
           const currVeh = GetVehiclePedIsIn(ped, false); // Check if they're inside a vehicle
+
+          console.log("info before push (player blips)", ped, JSON.stringify(pedCoords), pedPosition, currVeh, GetVehicleType(currVeh), svPlayers[a].Handle, svPlayers[a].Rank);
 
           this.playerBlips.push({ // Push new element into active units array.
             netId: svPlayers[a].Handle,
-            coords: svPlayers[a].Position,
+            coords: pedPosition,
             heading: Math.ceil(GetEntityHeading(ped)),
             name: svPlayers[a].GetName,
             rank: svPlayers[a].Rank,
@@ -106,7 +116,9 @@ export class StaffMenu {
           });
         }
 
+
         if (a == (svPlayers.length - 1)) { // Once we're on the last entry in connected players, send all active units to every client
+          if (this.playerBlips.length > 0) console.log("player blips", this.playerBlips);
           for (let b = 0; b < svPlayers.length; b++) {
             if (svPlayers[b].Rank >= Ranks.Moderator) {
               const playerStates = Player(svPlayers[a].Handle);
@@ -167,9 +179,35 @@ export class StaffMenu {
     return havePermission;
   }
 
+  private async sortBans(bans: Record<string, any>): Promise<PlayerBan[]> {
+    const newBans: PlayerBan[] = [];
+
+    for (const [_, banData] of Object.entries(bans)) {
+      const banned = await this.server.playerManager.getPlayerFromId(banData.playerId);
+      const banner = await this.server.playerManager.getPlayerFromId(banData.issuedBy);
+      const bannedBy = banData.issuedBy === banData.playerId ? "System" : banner.GetName
+      
+      const ban: PlayerBan = {
+        id: banData.id,
+        playerId: banned.Id,
+        playerName: banned.GetName,
+        reason: banData.banReason,
+        banState: banData.state,
+        issuedBy: banner.Id,
+        issuedName: bannedBy,
+        issuedOn: new Date(banData.issuedOn).toUTCString(),
+        issuedUntil: new Date(banData.issuedUntil).toUTCString()
+      }
+
+      newBans.push(ban);
+    }
+  
+    return newBans;
+  }
+
   // Events  [Connected Players]
-  private async EVENT_banPlayer(playerId: number, banReason: string, banPermanent: boolean, banType?: string, banLength?: number): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_banPlayer(netId: number, banReason: string, banPermanent: boolean, banType?: string, banLength?: number): Promise<void> {
+    if (netId > 0) {
       if (banReason != null) {
         if (banReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
@@ -177,8 +215,8 @@ export class StaffMenu {
             const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
-                const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
+              if (player.Handle !== netId.toString()) {
+                const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
                 if (foundPlayer) {
                   if (foundPlayer.Rank < player.Rank) {
@@ -239,8 +277,8 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_kickPlayer(playerId: number, kickReason: string): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_kickPlayer(netId: number, kickReason: string): Promise<void> {
+    if (netId > 0) {
       if (kickReason != null) {
         if (kickReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
@@ -248,8 +286,8 @@ export class StaffMenu {
             const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
-                const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
+              if (player.Handle !== netId.toString()) {
+                const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
                 if (foundPlayer) {
                   if (foundPlayer.Rank < player.Rank) {
@@ -277,8 +315,8 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_warnPlayer(playerId: number, warnReason: string): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_warnPlayer(netId: number, warnReason: string): Promise<void> {
+    if (netId > 0) {
       if (warnReason != null) {
         if (warnReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
@@ -286,8 +324,8 @@ export class StaffMenu {
             const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
-                const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
+              if (player.Handle !== netId.toString()) {
+                const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
                 if (foundPlayer) {
                   if (foundPlayer.Rank < player.Rank) {
@@ -315,8 +353,8 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_commendPlayer(playerId: number, commendReason: string): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_commendPlayer(netId: number, commendReason: string): Promise<void> {
+    if (netId > 0) {
       if (commendReason != null) {
         if (commendReason.length > 0) {
           const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
@@ -324,8 +362,8 @@ export class StaffMenu {
             const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
             if (havePerm) {
-              if (player.Id !== playerId) {
-                const foundPlayer = await this.server.playerManager.getPlayerFromId(playerId);
+              if (player.Handle !== netId.toString()) {
+                const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
                 if (foundPlayer) {
                   const commend = new Commend(foundPlayer.Id, commendReason, player.Id);
@@ -347,15 +385,15 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_updatePlayerRank(playerId: number, newRank: Ranks): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_updatePlayerRank(netId: number, newRank: Ranks): Promise<void> {
+    if (netId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.SeniorAdmin);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               const hasBypass = player.Rank >= Ranks.SeniorAdmin; // If you have management bypass or not
@@ -405,15 +443,15 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_freezePlayer(playerId: number): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_freezePlayer(netId: number): Promise<void> {
+    if (netId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               const ped = GetPlayerPed(foundPlayer.Handle);
@@ -475,15 +513,15 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_tpToPlayer(playerId: number): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_tpToPlayer(netId: number): Promise<void> {
+    if (netId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               await player.TriggerEvent(Events.goToPlayer, Object.assign({}, foundPlayer), foundPlayer.Position);
@@ -513,14 +551,14 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_tpToVehicle(playerId: number): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_tpToVehicle(netId: number): Promise<void> {
+    if (netId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
         if (havePerm) {
-          if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               const foundPed = GetPlayerPed(foundPlayer.Handle);
@@ -581,15 +619,15 @@ export class StaffMenu {
     }
   }
   
-  private async EVENT_summonPlayer(playerId: number): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_summonPlayer(netId: number): Promise<void> {
+    if (netId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState) => {
@@ -623,15 +661,15 @@ export class StaffMenu {
     }
   }
   
-  private async EVENT_returnSummonedPlayer(playerId: number): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_returnSummonedPlayer(netId: number): Promise<void> {
+    if (netId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummonReturned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState) => {
@@ -667,18 +705,17 @@ export class StaffMenu {
     }
   }
 
-  private async EVENT_spectatePlayer(playerId: number): Promise<void> {
-    if (playerId > 0) {
+  private async EVENT_spectatePlayer(netId: number): Promise<void> {
+    if (netId > 0) {
       const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Id !== playerId) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(playerId);
+          if (player.Handle !== netId.toString()) {
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
-              console.log("ply stuff", player.Position, foundPlayer.Position);
               this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.spectatePlayer, player.Handle, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, async (cbState) => {
                 if (cbState == "STARTED") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
@@ -726,6 +763,36 @@ export class StaffMenu {
       }
     } else {
       console.log("player id doesn't exist!");
+    }
+  }
+
+  private async EVENT_unbanPlayer(banData: PlayerBan): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+    if (player) {
+      const havePerm = this.havePermission(player.Rank, Ranks.Admin);
+
+      if (havePerm) {
+        const foundPlayer = await this.server.playerManager.getPlayerFromId(banData.playerId);
+        if (foundPlayer) {
+          const deleted = this.server.banManager.Delete(foundPlayer, banData.id)
+          if (deleted) {
+            await player.Notify("Server Bans", `You've deleted the ban (#${banData.id} | ${banData.playerName} - ${banData.reason})`, NotificationTypes.Info);
+
+            const issuedBy = banData.issuedBy === banData.playerId ? "System" : banData.issuedName;
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              username: "Staff Logs", embeds: [{
+                color: EmbedColours.Green,
+                title: "__Player Unbanned__",
+                description: `A players ban has been deleted.\n\n**Id**: ${banData.id}\n**Player Id**: ${banData.playerId}\n**Player Name**: ${banData.playerName}\n**Reason**: ${banData.reason}\n**Issued By**: ${issuedBy}\n**Unbanned By**: [${Ranks[player.Rank]}] - ${player.GetName}\n**Issued On**: ${banData.issuedOn}\n**Issued Until**: ${banData.issuedUntil}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+          }
+        }
+      }
     }
   }
 
@@ -1157,6 +1224,20 @@ export class StaffMenu {
   }
 
   // Callbacks
+  private async CALLBACK_getBans(data: Record<string, any>): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+    if (player) {
+      if (player.Spawned) {
+        const havePerm = this.havePermission(player.Rank, Ranks.Admin);
+
+        if (havePerm) {
+          const bans = await this.sortBans(this.server.banManager.GetBans);
+          await player.TriggerEvent(Events.receiveServerCB, Object.assign({}, bans), data); // Returns true or false, if it sucessfully updated players job (fired them)
+        }
+      }
+    }
+  }
+
   private async CALLBACK_updatePlayerJob(data: Record<string, any>): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
@@ -1167,7 +1248,7 @@ export class StaffMenu {
           const character = await this.server.characterManager.Get(player);
           if (character) {
 
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsNet);
+            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(data.unitsNet);
             if (foundPlayer) {
               if (foundPlayer.Spawned) {
                 const foundCharacter = await this.server.characterManager.Get(foundPlayer);
@@ -1339,4 +1420,6 @@ export class StaffMenu {
       }
     }
   }
+
+
 }

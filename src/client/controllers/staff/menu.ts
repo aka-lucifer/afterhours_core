@@ -227,11 +227,12 @@ export class StaffMenu {
     this.menu = new Menu("Staff Menu", GetCurrentResourceName(), MenuPositions.MiddleLeft);
 
     // Connected Players
-    this.playerBans = this.menu.BindSubmenu("Player Bans");
     this.playersMenu = this.menu.BindSubmenu("Connected Players");
 
     // Server Management
     if (this.client.Player.Rank >= Ranks.Admin) {
+      this.playerBans = this.menu.BindSubmenu("Player Bans");
+      
       this.serverMenu = this.menu.BindSubmenu("Server Management");
 
       this.weatherMenu = this.serverMenu.BindSubmenu("Weather");
@@ -719,7 +720,7 @@ export class StaffMenu {
 
               jobTypeMenu.BindButton(formattedRankLabel, () => {
                 this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                  unitsNet: playerData.Id,
+                  unitsNet: playerData.NetworkId,
                   jobName: job,
                   jobLabel: jobLabel,
                   jobRank: c,
@@ -829,31 +830,31 @@ export class StaffMenu {
 
       if (this.client.player.Rank >= Ranks.Moderator) {
         menu.BindButton("Freeze", () => {
-          emitNet(Events.freezePlayer, playerData.Id);
+          emitNet(Events.freezePlayer, playerData.NetworkId);
         });
 
         menu.BindButton("Revive", () => {
-          emitNet(Events.revivePlayer, playerData.Id);
+          emitNet(Events.revivePlayer, playerData.NetworkId);
         });
 
         menu.BindButton("Teleport To", () => {
-          emitNet(Events.tpToPlayer, playerData.Id);
+          emitNet(Events.tpToPlayer, playerData.NetworkId);
         });
 
         menu.BindButton("Teleport Inside Vehicle", () => {
-          emitNet(Events.tpToVehicle, playerData.Id);
+          emitNet(Events.tpToVehicle, playerData.NetworkId);
         });
 
         menu.BindButton("Summon", () => {
-          emitNet(Events.summonPlayer, playerData.Id);
+          emitNet(Events.summonPlayer, playerData.NetworkId);
         });
 
         menu.BindButton("Return Player", () => {
-          emitNet(Events.returnSummonedPlayer, playerData.Id);
+          emitNet(Events.returnSummonedPlayer, playerData.NetworkId);
         });
 
         menu.BindButton("Spectate", () => {
-          emitNet(Events.spectatePlayer, playerData.Id);
+          emitNet(Events.spectatePlayer, playerData.NetworkId);
         });
       }
 
