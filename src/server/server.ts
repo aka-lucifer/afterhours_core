@@ -441,11 +441,13 @@ export class Server {
     });
 
     global.exports("hasPermission", async(role: number, permission: string) => {
-      // console.log("perm", role, permission)
-      const rolePerms: string[] = sharedConfig.permissions[Ranks[role]];
-      const index = rolePerms.findIndex(rolePermission => rolePermission == permission);
-      // console.log("index", index)
-      return index !== -1;
+      if (sharedConfig.permissions[Ranks[role]] !== undefined) { // If permissions found
+        const rolePerms: string[] = sharedConfig.permissions[Ranks[role]];
+        const index = rolePerms.findIndex(rolePermission => rolePermission == permission);
+        return index !== -1;
+      } else {
+        return false;
+      }
     });
 
     global.exports("getPlayer", async(source: string) => {
