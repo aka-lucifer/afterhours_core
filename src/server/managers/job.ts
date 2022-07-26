@@ -277,7 +277,7 @@ export class JobManager {
             if (character.Job.Boss) {
               const tempPlayer = await this.server.playerManager.getPlayerFromId(data.unitsPlayerId);
               if (tempPlayer) {
-                if (tempPlayer.Rank >= Ranks.SeniorAdmin) {
+                if (player.Rank < Ranks.Management && tempPlayer.Rank >= Ranks.SeniorAdmin) {
                   await player.Notify("Command Menu", "You can't fire a Senior Admin or above!", NotificationTypes.Error);
                   return;
                 }
@@ -292,7 +292,7 @@ export class JobManager {
 
               if (updatedJob.meta.affectedRows > 0) {
                 const playerConnected = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsPlayerId);
-                if (playerConnected) {
+                if (playerConnected) { // If in the server
                   if (playerConnected.Spawned) {
                     const connectedCharacter = await this.server.characterManager.Get(playerConnected);
                     if (connectedCharacter) {
@@ -367,7 +367,7 @@ export class JobManager {
 
               if (updatedJob.meta.affectedRows > 0) {
                 const playerConnected = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsPlayerId);
-                if (playerConnected) {
+                if (playerConnected) { // If in the server
                   if (playerConnected.Spawned) {
                     const connectedCharacter = await this.server.characterManager.Get(playerConnected);
                     if (connectedCharacter) {
