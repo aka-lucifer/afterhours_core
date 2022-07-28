@@ -109,10 +109,10 @@ export class Death {
     NetworkResurrectLocalPlayer(myPos.x, myPos.y, myPos.z, myPed.Heading, true, false);
     myPed.clearBloodDamage();
 
-    const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
-    if (detachedWeapons) {
-      Game.PlayerPed.removeAllWeapons();
-    }
+    // const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
+    // if (detachedWeapons) {
+    //   Game.PlayerPed.removeAllWeapons();
+    // }
 
     // Hide the UI
     SendNuiMessage(JSON.stringify({
@@ -202,10 +202,10 @@ export class Death {
 
           this.myState = DeathStates.Alive;
           // this.client.staffManager.staffMenu.toggleGodmode(false);
-          const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
-          if (detachedWeapons) {
-            Game.PlayerPed.removeAllWeapons();
-          }
+          // const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
+          // if (detachedWeapons) {
+          //   Game.PlayerPed.removeAllWeapons();
+          // }
 
           // Disable Ticks
           if (this.deathTick !== undefined) {

@@ -612,7 +612,7 @@ export class Client {
   private async EVENT_setCharacter(character: any): Promise<void> {
     // Clear Previous Character Data
     Game.PlayerPed.removeAllWeapons();
-    await this.weaponManager.onBack.clearWeapons();
+    // await this.weaponManager.onBack.clearWeapons();
 
     // Load New Character Data
     this.character = new Character(character);
