@@ -113,6 +113,13 @@ export function formatSplitCapitalString(toFormat: string[]): string {
   return newString;
 }
 
+export function formatRank(rankString: string): string {
+  const rankLabelSplit = splitCapitalsString(rankString);
+  const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
+
+  return formattedRankLabel;
+}
+
 /**
  *
  * @param i Integer to add zero to

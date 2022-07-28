@@ -673,7 +673,11 @@ export class StaffMenu {
               const myPos = GetEntityCoords(myPed);
               const myCoords = new Vector3(myPos[0], myPos[1], myPos[2]);
               
+              await player.TriggerEvent(Events.showLoading, "Summoning Player...");
+              
               this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: myCoords}, async (cbState) => {
+                await player.TriggerEvent(Events.stopLoading);
+
                 if (cbState == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
 

@@ -120,7 +120,9 @@ export enum Events {
   teleporting = "astrid:client:teleporting",
 
   // Astrid Client (Utils)
-  soundFrontEnd = "astrid:client:soundFrontEnd",
+  soundFrontEnd = "astrid:client:utils:soundFrontEnd",
+  showLoading = "astrid:client:utils:showLoading",
+  stopLoading = "astrid:client:utils:stopLoading",
 
   // Astrid Client ([Staff])
   rankUpdated = "astrid:client:staffManager:rankUpdated",
