@@ -724,17 +724,12 @@ export async function getClosestVehicle(ped: Ped): Promise<[number, Vehicle]> {
   return [distance, closest];
 }
 
-// EVENTS
-onNet(Events.soundFrontEnd, (sound: string, set?: string) => {
-  Audio.playSoundFrontEnd(sound, set);
-})
-
 /**
  * 
  * @param vehicles The vehicle array/object from the JSON to sort
  * @returns A sorted array of the vehicles information
  */
-export async function sortVehicles(vehicles: Record<string, any>): Promise<VehData[]> {
+ export async function sortVehicles(vehicles: Record<string, any>): Promise<VehData[]> {
   let vehs: VehData[] = [];
   for (const [_, vehData] of Object.entries(vehicles)) {
     const vehicle = vehData as VehData;
@@ -765,3 +760,18 @@ export async function sortVehicles(vehicles: Record<string, any>): Promise<VehDa
 
   return weaps;
 }
+
+// EVENTS
+onNet(Events.soundFrontEnd, (sound: string, set?: string) => {
+  Audio.playSoundFrontEnd(sound, set);
+});
+
+onNet(Events.showLoading, (loadingText: string) => {
+  BeginTextCommandBusyspinnerOn("STRING");
+  AddTextComponentSubstringPlayerName(loadingText);
+  EndTextCommandBusyspinnerOn(3);
+});
+
+onNet(Events.stopLoading, () => {
+  BusyspinnerOff();
+});
