@@ -50,7 +50,6 @@ export class WorldManager {
       this.disablePVP(myPed);
       this.disableVehRewards(myPed);
       this.disableHealthRecharge();
-      this.disableWorldTraffic(myPed);
       this.wipeInteriors();
 
       await Delay(500);
@@ -104,30 +103,6 @@ export class WorldManager {
   // Disable Health Recharge
   private disableHealthRecharge() {
     SetPlayerHealthRechargeMultiplier(PlayerId(), 0);
-  }
-
-  // Disable Vehicles, Peds
-  private disableWorldTraffic(ped: Ped) {
-
-    // Density
-    SetVehicleDensityMultiplierThisFrame(0.1);
-    SetRandomVehicleDensityMultiplierThisFrame(0.1);
-    SetParkedVehicleDensityMultiplierThisFrame(0.1);
-    SetDistantCarsEnabled(false);
-
-    // Traffic
-    SetGarbageTrucks(false); // Stop garbage trucks from randomly spawning
-    SetRandomBoats(false); // Stop random boats from spawning in the water.
-    SetCreateRandomCops(false); // Disable random cops walking/driving around.
-    SetCreateRandomCopsNotOnScenarios(false); // Stop random cops (not in a scenario) from spawning.
-    SetCreateRandomCopsOnScenarios(false); // Stop random cops (in a scenario) from spawning.
-    SetVehicleModelIsSuppressed(GetHash("rubble"), true);
-    SetVehicleModelIsSuppressed(GetHash("taco"), true);
-    SetVehicleModelIsSuppressed(GetHash("biff"), true);
-    SetVehicleModelIsSuppressed(GetHash("blimp"), true);
-    SetVehicleModelIsSuppressed(GetHash("ambulance"), true);
-    SetVehicleModelIsSuppressed(GetHash("frogger"), true);
-    SetIgnoreLowPriorityShockingEvents(ped.Handle, true);
   }
 
   // Disable Interior Peds
