@@ -26,6 +26,7 @@ import { NotificationTypes } from '../../shared/enums/ui/notifications/types';
 import { Jobs } from '../../shared/enums/jobs/jobs';
 import { SystemTypes } from '../../shared/enums/ui/chat/types';
 import { Message } from '../../shared/models/ui/chat/message';
+import { formatRank } from '../../shared/utils';
 
 import serverConfig from '../../configs/server.json';
 import sharedConfig from '../../configs/shared.json';
@@ -70,43 +71,46 @@ export class VehicleManager {
     }, Ranks.Admin);
   }
 
-  private async hasPermission(myRank: Ranks, vehRanks: number[] | number, donatorAsset: boolean): Promise<boolean> {
+  private async hasPermission(myRank: Ranks, vehRanks: number[] | number, donatorAsset: boolean): Promise<[boolean, number]> {
     // If the asset is a donator package or whatever, only the donators of that rank or above, or admin and above can drive the vehicle (disables honor & trusted from accesing)
     if (donatorAsset) {
       if (vehRanks !== undefined) {
         if (typeof vehRanks == "object") {
           for (let i = 0; i < vehRanks.length; i++) {
             if (myRank == vehRanks[i] || myRank >= Ranks.Admin) {
-              return true;
+              return [true, vehRanks[i]];
             }
           }
         } else if (typeof vehRanks == "number") {
           if (myRank == vehRanks || myRank >= Ranks.Admin) {
-            return true;
+            return [true, vehRanks];
           }
         }
 
-        return false;
+        return [false, -1];
       } else {
-        return true; // for fun debugging
+        return [true, -1]; // for fun debugging
       }
     } else { // If it's not a donator package, any rank that is equal or above can drive it.
       if (vehRanks !== undefined) {
         if (typeof vehRanks == "object") {
           for (let i = 0; i < vehRanks.length; i++) {
             if (myRank >= vehRanks[i]) {
-              return true;
+              return [true, vehRanks[i]];
             }
           }
+
+          // If no match found (return first entry)
+        return [false, vehRanks[0]];
         } else if (typeof vehRanks == "number") {
           if (myRank >= vehRanks) {
-            return true;
+            return [true, vehRanks];
+          } else {
+            return [false, vehRanks];
           }
         }
-
-        return false;
       } else {
-        return true; // for fun debugging
+        return [true, 0]; // for fun debugging
       }
     }
   }
@@ -222,7 +226,7 @@ export class VehicleManager {
                     }
                   } else { // General vehicles
                     const donatorAsset = vehData.donatorAsset !== undefined && true;
-                    const hasPermission = await this.hasPermission(player.Rank, vehData.rank, donatorAsset);
+                    const [hasPermission, rank] = await this.hasPermission(player.Rank, vehData.rank, donatorAsset);
 
                     if (hasPermission) {
                       // console.log("has spawn permission!", vehData);
@@ -234,7 +238,8 @@ export class VehicleManager {
                       // Delete the entity, incase cancelling the event, hasn't prevented the entity from being spawned
                       DeleteEntity(entity);
 
-                      await player.Notify("Vehicles", "You aren't the correct rank to spawn this vehicle!", NotificationTypes.Error, 4000);
+                      const requiredRank = formatRank(Ranks[rank]);
+                      await player.Notify("Vehicles", `You aren't the correct rank to spawn this vehicle! (${requiredRank})`, NotificationTypes.Error, 4000);
 
                       await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                         username: "Vehicle Logs", embeds: [{
@@ -260,25 +265,25 @@ export class VehicleManager {
                   }
 
                   this.worldVehicles.push(NetworkGetNetworkIdFromEntity(entity));
-                  const netId = NetworkGetNetworkIdFromEntity(entity);
+                  // const netId = NetworkGetNetworkIdFromEntity(entity);
                   
-                  this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData) => {
-                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                      username: "Vehicle Logs", embeds: [{
-                        color: EmbedColours.Green,
-                        title: "__Creating Vehicle__",
-                        description: "A player is creating a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
-                        footer: {
-                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                          icon_url: sharedConfig.serverLogo
-                        }
-                      }]
-                    }));
+                  // this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData) => {
+                  //   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  //     username: "Vehicle Logs", embeds: [{
+                  //       color: EmbedColours.Green,
+                  //       title: "__Creating Vehicle__",
+                  //       description: "A player is creating a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+                  //       footer: {
+                  //         text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  //         icon_url: sharedConfig.serverLogo
+                  //       }
+                  //     }]
+                  //   }));
 
-                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                      username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ")."
-                    }));
-                  }));
+                  //   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                  //     username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ")."
+                  //   }));
+                  // }));
                 }
               }
             }
@@ -311,7 +316,7 @@ export class VehicleManager {
               if (vehData.type == "emergency") {
                 const character = await this.server.characterManager.Get(player);
                 if (character) {
-                  const jobPerm = typeof vehData.job === "object" ? vehData.job.includes(character.Job.name) : vehData.job === character.Job.name;
+                  const jobPerm = typeof vehData.job === "object" ? vehData.job.includes(character.Job.name) : vehData.job === character.Job.name || vehData.job === Jobs.Civilian;
                   if (jobPerm || player.Rank >= Ranks.Admin) {
                     const hasPerm = await this.hasJobPermission(character, vehData.rank);
                     if (hasPerm) {
@@ -372,7 +377,7 @@ export class VehicleManager {
                 }
               } else { // General vehicles
                 const donatorAsset = vehData.donatorAsset !== undefined && true;
-                const hasPermission = await this.hasPermission(player.Rank, vehData.rank, donatorAsset);
+                const [hasPermission, rank] = await this.hasPermission(player.Rank, vehData.rank, donatorAsset);
 
                 if (hasPermission) {
                   // console.log("has spawn permission!", vehData);
@@ -381,7 +386,8 @@ export class VehicleManager {
                   // Make you leave the vehicle (since you aren't in the vehicle, basically just clears the task)
                   TaskLeaveVehicle(ped, vehicle, 0);
 
-                  await player.Notify("Vehicles", "You aren't the correct rank to drive this vehicle!", NotificationTypes.Error, 4000);
+                  const requiredRank = formatRank(Ranks[rank]);
+                  await player.Notify("Vehicles", `You aren't the correct rank to drive this vehicle! (${requiredRank})`, NotificationTypes.Error, 4000);
 
                   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                     username: "Vehicle Logs", embeds: [{
@@ -399,23 +405,23 @@ export class VehicleManager {
             } else {
               this.worldVehicles.push(NetworkGetNetworkIdFromEntity(vehicle));
                   
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData) => {
-                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                  username: "Vehicle Logs", embeds: [{
-                    color: EmbedColours.Green,
-                    title: "__Entering Vehicle__",
-                    description: "A player is entering a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
-                    footer: {
-                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                      icon_url: sharedConfig.serverLogo
-                    }
-                  }]
-                }));
+              // this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleLabel, player.Handle, {netId: netId}, async (cbData) => {
+              //   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              //     username: "Vehicle Logs", embeds: [{
+              //       color: EmbedColours.Green,
+              //       title: "__Entering Vehicle__",
+              //       description: "A player is entering a vehicle, that isn't found in `server.json` (**Label**: " + cbData + " | **Entity**: " + entity + " | **Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ").\n\n**Error Code**: " + ErrorCodes.VehicleNotFound + "\n\n**If you see this, contact <@276069255559118859>!**\n\n**Player Id**: " + player.Id + "\n**Player Name**: " + player.GetName + "\n**Player Rank**: " + Ranks[player.Rank],
+              //       footer: {
+              //         text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+              //         icon_url: sharedConfig.serverLogo
+              //       }
+              //     }]
+              //   }));
 
-                await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                  username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ")."
-                }));
-              }));
+              //   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+              //     username: "Vehicle Logs", content: "<@276069255559118859> Vehicle found not in `server.json`\n\n**Label**: " + cbData + "\n**Entity**: " + entity + "\n**Model**: " + vehModel + " | **Hash**: " + GetHashKey(vehModel.toString()) + ")."
+              //   }));
+              // }));
             }
           }
         }

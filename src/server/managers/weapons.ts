@@ -9,6 +9,7 @@ import { EmbedColours } from "../../shared/enums/logging/embedColours";
 import { Ranks } from "../../shared/enums/ranks";
 import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
 import { Weapons } from "../../shared/enums/weapons";
+import { formatRank } from "../../shared/utils";
 
 import sharedConfig from "../../configs/shared.json";
 
@@ -23,43 +24,43 @@ export class WeaponsManager {
   }
 
   // Methods
-  private async hasPermission(myRank: Ranks, weaponRanks: number[] | number, donatorAsset: boolean): Promise<boolean> {
-    // If the asset is a donator package or whatever, only the donators of that rank or above, or admin and above can drive the vehicle (disables honor & trusted from accesing)
+  private async hasPermission(myRank: Ranks, weaponRanks: number[] | number, donatorAsset: boolean): Promise<[boolean, number]> {
+    // If the asset is a donator package or whatever, only the donators of that rank or above, or admin and above can drive the Weapon (disables honor & trusted from accesing)
     if (donatorAsset) {
       if (weaponRanks !== undefined) {
         if (typeof weaponRanks == "object") {
           for (let i = 0; i < weaponRanks.length; i++) {
             if (myRank == weaponRanks[i] || myRank >= Ranks.Admin) {
-              return true;
+              return [true, weaponRanks[i]];
             }
           }
         } else if (typeof weaponRanks == "number") {
           if (myRank == weaponRanks || myRank >= Ranks.Admin) {
-            return true;
+            return [true, weaponRanks];
           }
         }
 
-        return false;
+        return [false, -1];
       } else {
-        return true; // for fun debugging
+        return [true, -1]; // for fun debugging
       }
     } else { // If it's not a donator package, any rank that is equal or above can drive it.
       if (weaponRanks !== undefined) {
         if (typeof weaponRanks == "object") {
           for (let i = 0; i < weaponRanks.length; i++) {
             if (myRank >= weaponRanks[i]) {
-              return true;
+              return [true, weaponRanks[i]];
             }
           }
         } else if (typeof weaponRanks == "number") {
           if (myRank >= weaponRanks) {
-            return true;
+            return [true, weaponRanks];
+          } else {
+            return [false, weaponRanks];
           }
         }
-
-        return false;
       } else {
-        return true; // for fun debugging
+        return [true, 0]; // for fun debugging
       }
     }
   }
@@ -74,7 +75,8 @@ export class WeaponsManager {
 
       if (weaponData !== undefined) {
         const donatorAsset = weaponData.donatorAsset !== undefined && true;
-        const hasPermission = await this.hasPermission(player.Rank, weaponData.rank, donatorAsset);
+        const [hasPermission, rank] = await this.hasPermission(player.Rank, weaponData.rank, donatorAsset);
+        console.log("perm", weaponData, hasPermission, rank, Ranks[rank], player.Rank, Ranks[player.Rank])
         
         if (!hasPermission) {
           // Remove weapon from ped and set to unarmed
@@ -82,14 +84,15 @@ export class WeaponsManager {
           RemoveWeaponFromPed(ped, currentWeapon);
           SetCurrentPedWeapon(ped, Weapons.Unarmed, true);
 
-          await player.Notify("Weapons", "You aren't the correct rank to equip this weapon!", NotificationTypes.Error, 4000);
+          const requiredRank = formatRank(Ranks[rank]);
+          await player.Notify("Weapons", `You aren't the correct rank to equip this weapon! (${requiredRank})`, NotificationTypes.Error, 4000);
 
           const discord = await player.GetIdentifier("discord");
           await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-            username: "Vehicle Logs", embeds: [{
+            username: "Weapon Logs", embeds: [{
               color: EmbedColours.Green,
               title: "__Weapon Removed__",
-              description: `A player has tried to equip a weapon, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(weaponData, null, 4)}**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+              description: `A player has tried to equip a weapon, they don't have access to!\n\n**Weapon Data**: ${JSON.stringify(weaponData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));
