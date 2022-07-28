@@ -142,12 +142,25 @@ const HUD = new Vue({
     maxPlayers: 32,
 
     // [SCOREBOARD] - Page Data
+    pageCount: 1,
     selectedPage: 1,
     maxPerPage: 10,
     animating: false,
 
     // [SCOREBOARD] - Players
-    connectedPlayers: [],
+    connectedPlayers: [
+      {id: 1, name: "Player 1", rank: "User", ping: 40},
+      {id: 2, name: "Player 2", rank: "User", ping: 40},
+      {id: 3, name: "Player 3", rank: "User", ping: 40},
+      {id: 4, name: "Player 4", rank: "User", ping: 40},
+      {id: 5, name: "Player 5", rank: "User", ping: 40},
+      {id: 6, name: "Player 6", rank: "User", ping: 40},
+      {id: 7, name: "Player 7", rank: "User", ping: 40},
+      {id: 8, name: "Player 8", rank: "User", ping: 40},
+      {id: 9, name: "Player 9", rank: "User", ping: 40},
+      {id: 10, name: "Player 10", rank: "User", ping: 40},
+      {id: 11, name: "Player 11", rank: "User", ping: 40}
+    ],
 
     // [CHAT]
     chatToggled: true, // Chat Visibility (INSERT)
@@ -639,8 +652,10 @@ const HUD = new Vue({
       this.connectedPlayers = data.players || [];
       this.currentPlayers = this.connectedPlayers.length;
       this.maxPlayers = data.maxPlayers || 32;
-      console.log("page", this.pageCount);
+      this.pageCount = Math.ceil(this.connectedPlayers.length / 10);
       this.displaying = true;
+
+      console.log("SCOREBOARD DATA", JSON.stringify(this.connectedPlayers), this.connectedPlayers.length, this.currentPlayers, this.maxPlayers, this.pageCount, this.selectedPage, this.displaying);
     },
 
     CloseScoreboard() {
@@ -652,10 +667,10 @@ const HUD = new Vue({
 
     ChangePage(data) {
       if (this.animating || this.pageCount === 1) { return; }
-        const element = document.getElementById("scoreboard_animation");
-        element.className = "fadeIn";
-        this.animating = true;
-        setTimeout(() => {
+      const element = document.getElementById("scoreboard_animation");
+      element.className = "fadeIn";
+      this.animating = true;
+      setTimeout(() => {
           this.selectedPage = this.selectedPage + data.value;
           if (this.selectedPage > this.pageCount) {
             this.selectedPage = 1;
@@ -1272,19 +1287,6 @@ const HUD = new Vue({
   },
   
   computed: {
-    pageCount: function() {
-      return Math.ceil(this.connectedPlayers.length / 10);
-    },
-
-    getters: {
-      get() {
-        return this.pageCount;
-      },
-      set(newValue) {
-        return newValue;
-      }
-    },
-
     currentSuggestions() {
       if (this.chatMessage === "" || this.chatMessage == null) {
         return [];
