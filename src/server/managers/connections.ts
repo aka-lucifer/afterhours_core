@@ -278,8 +278,9 @@ export class ConnectionsManager {
           }
         ]
       }, async (data) => {
-        // console.log("data", JSON.stringify(data), "rawData", JSON.stringify(rawData))
+        console.log("data", JSON.stringify(data))
         if (data.submitId == "connect") {
+          console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormatRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
           deferrals.handover({
             id: player.id,
             name: player.GetName,
@@ -294,6 +295,7 @@ export class ConnectionsManager {
         }
       });
     } else {
+      console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormatRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
       deferrals.handover({
         id: player.id,
         name: player.GetName,
