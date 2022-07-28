@@ -23,7 +23,7 @@ export class Spawner {
   // AOP Spawn Data
   private spawnPosition: Vector3;
   private spawnHeading: number;
-  private spawnBoxZone: PolyZone;
+  // private spawnBoxZone: PolyZone;
   private spawnTick: number = undefined;
 
   constructor(client: Client) {
@@ -39,6 +39,7 @@ export class Spawner {
       console.log("TP TO AOP & THEN DISPLAY CHAR UI HERE IF NO CHARACTERS");
       // Get random location from AOP positions array
       const aopPosition = this.client.aopManager.AOP.positions[Math.floor(Math.random() * this.client.aopManager.AOP.positions.length)];
+      console.log("AOP spawn", aopPosition);
 
       this.spawnPosition = new Vector3(aopPosition.x, aopPosition.y, aopPosition.z);
       this.spawnHeading = aopPosition.heading;
@@ -61,16 +62,16 @@ export class Spawner {
       this.client.characters.displayCharacters(false);
       this.client.richPresence.Text = "Selecting Character";
 
-      this.spawnBoxZone = new BoxZone({
-        box: {
-          x: this.spawnPosition.x, y: this.spawnPosition.y, z: this.spawnPosition.z, l: 13.2, w: 12.2,
-        },
-        options: {
-          name: "spawn_position",
-          // heading: ,
-          debugPoly: false
-        },
-      }).create();
+      // this.spawnBoxZone = new BoxZone({
+      //   box: {
+      //     x: this.spawnPosition.x, y: this.spawnPosition.y, z: this.spawnPosition.z, l: 13.2, w: 12.2,
+      //   },
+      //   options: {
+      //     name: "spawn_position",
+      //     // heading: ,
+      //     debugPoly: false
+      //   },
+      // }).create();
       cb("ok");
     });
   }
