@@ -24,7 +24,7 @@ import {Warning} from "./warning";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {Notification} from "../ui/notification";
 import { Character, Metadata } from "./character";
-import { getRankFromValue } from "../../../shared/utils";
+import { formatRank, getRankFromValue } from "../../../shared/utils";
 import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
 
 export class Player {
@@ -83,6 +83,10 @@ export class Player {
 
   public set Rank(newRank: number) {
     this.rank = newRank;
+  }
+
+  public get FormatRank(): string {
+    return formatRank(Ranks[this.rank]);
   }
 
   public get Identifiers(): Record<string, string> {
