@@ -76,7 +76,6 @@ export class WeaponsManager {
       if (weaponData !== undefined) {
         const donatorAsset = weaponData.donatorAsset !== undefined && true;
         const [hasPermission, rank] = await this.hasPermission(player.Rank, weaponData.rank, donatorAsset);
-        console.log("perm", weaponData, hasPermission, rank, Ranks[rank], player.Rank, Ranks[player.Rank])
         
         if (!hasPermission) {
           // Remove weapon from ped and set to unarmed
