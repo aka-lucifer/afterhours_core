@@ -697,7 +697,7 @@ export class StaffMenu {
             const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
             rankMenu.BindButton(formattedRankLabel, () => {
-              emitNet(Events.updatePlayerRank, playerData.Id, b);
+              emitNet(Events.updatePlayerRank, playerData.NetworkId, b);
             })
           }
         }
@@ -748,7 +748,7 @@ export class StaffMenu {
 
               jobTypeMenu.BindButton(formattedRankLabel, () => {
                 this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                  unitsNet: playerData.Id,
+                  unitsNet: playerData.NetworkId,
                   jobName: job,
                   jobLabel: jobLabel,
                   jobRank: c,
@@ -775,7 +775,7 @@ export class StaffMenu {
 
               jobTypeMenu.BindButton(formattedRankLabel, () => {
                 this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                  unitsNet: playerData.Id,
+                  unitsNet: playerData.NetworkId,
                   jobName: job,
                   jobLabel: jobLabel,
                   jobRank: c,
@@ -795,7 +795,7 @@ export class StaffMenu {
             const jobLabel = JobLabels.Community;
             jobMenu.BindButton(jobLabel, () => {
               this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                unitsNet: playerData.Id,
+                unitsNet: playerData.NetworkId,
                 jobName: job,
                 jobLabel: jobLabel
               }, async (recruitedUnit) => {
@@ -812,7 +812,7 @@ export class StaffMenu {
             const jobLabel = JobLabels.Civilian;
             jobMenu.BindButton(jobLabel, () => {
               this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                unitsNet: playerData.Id,
+                unitsNet: playerData.NetworkId,
                 jobName: job,
                 jobLabel: jobLabel
               }, async (recruitedUnit) => {
