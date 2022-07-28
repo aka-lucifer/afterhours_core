@@ -669,34 +669,42 @@ export class StaffMenu {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
-              const myPed = GetPlayerPed(player.Handle);
-              const myPos = GetEntityCoords(myPed);
-              const myCoords = new Vector3(myPos[0], myPos[1], myPos[2]);
-              
-              await player.TriggerEvent(Events.showLoading, "Summoning Player...");
-              
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: myCoords}, async (cbState) => {
-                await player.TriggerEvent(Events.stopLoading);
+              const foundStates = Player(foundPlayer.Handle);
 
-                if (cbState == "SUCCESS") {
-                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+              if (!foundStates.state.beingSummoned) {
+                const myPed = GetPlayerPed(player.Handle);
+                const myPos = GetEntityCoords(myPed);
+                const myCoords = new Vector3(myPos[0], myPos[1], myPos[2]);
+                
+                await player.TriggerEvent(Events.showLoading, "Summoning Player...");
+                foundStates.state.beingSummoned = true;
+                
+                this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: myCoords}, async (cbState) => {
+                  await player.TriggerEvent(Events.stopLoading);
+                  foundStates.state.beingSummoned = false;
 
-                  const playersDiscord = await player.GetIdentifier("discord");
-                  await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                    username: "Staff Logs", embeds: [{
-                      color: EmbedColours.Green,
-                      title: "__Player Summoned__",
-                      description: `A player has been summoned.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Summoned By**: ${player.GetName}\n**Summoners Rank**: ${Ranks[player.Rank]}\n**Summoners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
-                      footer: {
-                        text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                        icon_url: sharedConfig.serverLogo
-                      }
-                    }]
-                  }));
-                } else if (cbState == "ERROR_TPING") {
-                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to summon ^3${foundPlayer.GetName} ^0to your location!`, SystemTypes.Error));
-                }
-              }));
+                  if (cbState == "SUCCESS") {
+                    await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+
+                    const playersDiscord = await player.GetIdentifier("discord");
+                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                      username: "Staff Logs", embeds: [{
+                        color: EmbedColours.Green,
+                        title: "__Player Summoned__",
+                        description: `A player has been summoned.\n\n**Username**: ${foundPlayer.GetName}\n**Rank**: ${Ranks[foundPlayer.Rank]}\n**Summoned By**: ${player.GetName}\n**Summoners Rank**: ${Ranks[player.Rank]}\n**Summoners Discord**: ${playersDiscord != "Unknown" ? `<@${playersDiscord}>` : playersDiscord}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
+                  } else if (cbState == "ERROR_TPING") {
+                    await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to summon ^3${foundPlayer.GetName} ^0to your location!`, SystemTypes.Error));
+                  }
+                }));
+              } else {
+                await player.TriggerEvent(Events.sendSystemMessage, new Message("This player is already being summoned!", SystemTypes.Error));
+              }
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }

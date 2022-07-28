@@ -459,6 +459,7 @@ export class Client {
     this.playerStates.state.set("playerBlips", false, true);
     this.playerStates.state.set("usingGravityGun", false, true);
     this.playerStates.state.set("gravitiedPlayer", -1, true);
+    this.playerStates.state.set("beingSummoned", false, true);
     
     // UI
     this.playerStates.state.set("chatOpen", false, true);
