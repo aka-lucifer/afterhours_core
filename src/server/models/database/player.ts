@@ -85,7 +85,7 @@ export class Player {
     this.rank = newRank;
   }
 
-  public get FormatRank(): string {
+  public get FormattedRank(): string {
     return formatRank(Ranks[this.rank]);
   }
 
@@ -174,7 +174,7 @@ export class Player {
         this.identifiers = this.GetAllIdentifiers();
 
         this.playtime = results.data[0].playtime;
-        this.trustscore = await this.getTrustscore();
+        [this.trustscore] = await this.getTrustscore();
         this.whitelisted = results.data[0].whitelisted > 0;
         return true;
       }
@@ -261,7 +261,7 @@ export class Player {
 
         this.whitelisted = playerData.data[0].whitelisted > 0;
         this.playtime = playerData.data[0].playtime;
-        this.trustscore = await this.getTrustscore();
+        [this.trustscore] = await this.getTrustscore();
         this.joinTime = await Utils.GetTimestamp();
 
         return true;
@@ -346,12 +346,17 @@ export class Player {
     return avatarUrl;
   }
 
-  public async getTrustscore(): Promise<number> {
+  public async getTrustscore(): Promise<[number, number, number, number, number]> {
     let currTrustscore = serverConfig.trustscore.default;
+    let myBans = 0;
+    let myKicks = 0;
+    let myWarnings = 0;
+    let myCommends = 0;
+
     const svBans = server.banManager.GetBans;
     const svKicks = server.kickManager.GetKicks;
     const svWarnings = server.warnManager.GetWarnings;
-    const myCommends = await Database.SendQuery("SELECT * FROM `player_commends` WHERE `player_id` = :playerId", {
+    const foundCommends = await Database.SendQuery("SELECT * FROM `player_commends` WHERE `player_id` = :playerId", {
       playerId: this.Id
     });
 
@@ -363,6 +368,7 @@ export class Player {
 
     svBans.forEach((ban: Ban) => {
       if (ban.PlayerId == this.id) {
+        myBans++;
         // console.log(`Ban (Id: ${ban.Id} | Reason: ${ban.Reason}) is yours!\nBan Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.banRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.banRemoval;
       }
@@ -370,6 +376,7 @@ export class Player {
 
     svKicks.forEach((kick: Kick) => {
       if (kick.PlayerId == this.id) {
+        myKicks++;
         // console.log(`Kick (Id: ${kick.Id} | Reason: ${kick.Reason}) is yours!\nKick Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.kickRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.kickRemoval;
       }
@@ -377,14 +384,18 @@ export class Player {
 
     svWarnings.forEach((warn: Warning) => {
       if (warn.PlayerId == this.id) {
+        myWarnings++;
         // console.log(`Warning (Id: ${warn.Id} | Reason: ${warn.Reason}) is yours!\nWarning Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.warningRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.warningRemoval;
       }
     });
 
-    for (let i = 0; i < myCommends.data.length; i++) {
-      // console.log(`Commend (Id: ${myCommends.data[i].id} | Reason: ${myCommends.data[i].reason})\nCommend Addition - From (${currTrustscore}) -> To (${currTrustscore + serverConfig.trustscore.commendAddition})\n`);
-      currTrustscore = currTrustscore + serverConfig.trustscore.commendAddition;
+    if (foundCommends.data.length > 0) {
+      myCommends = foundCommends.data.length;
+      for (let i = 0; i < foundCommends.data.length; i++) {
+        // console.log(`Commend (Id: ${myCommends.data[i].id} | Reason: ${myCommends.data[i].reason})\nCommend Addition - From (${currTrustscore}) -> To (${currTrustscore + serverConfig.trustscore.commendAddition})\n`);
+        currTrustscore = currTrustscore + serverConfig.trustscore.commendAddition;
+      }
     }
 
     if (currTrustscore > 100) currTrustscore = 100;
@@ -392,7 +403,7 @@ export class Player {
 
     // console.log("Final Trustscore", currTrustscore);
 
-    return currTrustscore;
+    return [currTrustscore, myBans, myKicks, myWarnings, myCommends];
   }
 
   public async isBanned(): Promise<[boolean, Ban]> {

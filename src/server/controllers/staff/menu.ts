@@ -367,6 +367,9 @@ export class StaffMenu {
 
                 if (foundPlayer) {
                   const commend = new Commend(foundPlayer.Id, commendReason, player.Id);
+                  commend.IssuedBy = player;
+                  commend.Receiver = foundPlayer;
+
                   const saved = await commend.save();
                   if (saved) {
                     await player.Notify("Commend", `You've commended ${foundPlayer.GetName}, for ${commendReason}.`, NotificationTypes.Info, 5000);
