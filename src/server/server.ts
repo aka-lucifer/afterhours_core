@@ -283,9 +283,22 @@ export class Server {
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
 
-    RegisterCommand("join_test", () => {
-      emitNet(Events.sendSystemMessage, -1, new Message(`^3akaLucifer ^0has joined ${sharedConfig.serverName}.`, SystemTypes.Admin));
-      emitNet(Events.sendSystemMessage, -1, new Message(`^3akaLucifer ^0has left ${sharedConfig.serverName}.`, SystemTypes.Admin));
+    RegisterCommand("join_test", async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const playtime = await player.GetPlaytime.FormatTime();
+          const [trustscore, bans, kicks, warnings, commends] = await player.getTrustscore();
+          
+          emitNet(Events.sendSystemMessage, -1, new Message(`[^3${player.FormattedRank}^0] - ^3akaLucifer ^0has joined ^3${sharedConfig.serverName} ^0(^2${trustscore}% Trustscore ^0| 
+            ^1${bans} ${bans > 1 || bans < 1 ? "Bans" : "Ban"} ^0| 
+            ^4${kicks} ${kicks > 1 || kicks < 1 ? "Kicks" : "Kick"} ^0| 
+            ^3${warnings} ${warnings > 1 || warnings < 1 ? "Warnings" : "Warning"} ^0| 
+            ^5${commends} ${commends > 1 || commends < 1 ? "Commends" : "Commend"} ^0 | 
+            ^9Playtime - ${playtime}^0).`,
+          SystemTypes.Admin));
+        }
+      }
     }, false);
   }
 
@@ -606,7 +619,20 @@ export class Server {
       player.Connected = true;
       await this.connectedPlayerManager.Add(player);
       const discord = await player.GetIdentifier("discord");
+      
+      // Joined Server Message
+      const playtime = await player.GetPlaytime.FormatTime();
+      const [trustscore, bans, kicks, warnings, commends] = await player.getTrustscore();
+      
+      emitNet(Events.sendSystemMessage, -1, new Message(`[^3${player.FormattedRank}^0] - ^3akaLucifer ^0has joined ^3${sharedConfig.serverName} ^0(^2${trustscore}% Trustscore ^0| 
+        ^1${bans} ${bans > 1 || bans < 1 ? "Bans" : "Ban"} ^0| 
+        ^4${kicks} ${kicks > 1 || kicks < 1 ? "Kicks" : "Kick"} ^0| 
+        ^3${warnings} ${warnings > 1 || warnings < 1 ? "Warnings" : "Warning"} ^0| 
+        ^5${commends} ${commends > 1 || commends < 1 ? "Commends" : "Commend"} ^0 | 
+        ^9Playtime - ${playtime}^0)`,
+      SystemTypes.Admin));
 
+      // Changed Username Logic
       const rejoined = this.connectionsManager.disconnectedPlayers.findIndex(tempPlayer => tempPlayer.license == player.GetIdentifier("license") || tempPlayer.ip == player.GetIdentifier("ip") || tempPlayer.hardwareId == player.HardwareId);
       if (rejoined !== -1) { // If the player hasn't left the server
         if (player.Rank < Ranks.Moderator) {
