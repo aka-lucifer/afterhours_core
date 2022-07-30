@@ -695,14 +695,19 @@ const HUD = new Vue({
     },
     
     OpenChat(data) {
+      console.log("OPEN CHAT STEP 1!");
       setTimeout(() => {
+        console.log("OPEN CHAT STEP 2!");
         if (data.toggle) {
+          console.log("OPEN CHAT STEP 3!");
           // Clear close timeout if exists
           if (this.closeTimeout) {
+            console.log("OPEN CHAT STEP 4!");
             clearTimeout(this.closeTimeout);
             this.closeTimeout = null;
           }
 
+          console.log("OPEN CHAT STEP 5!");
           setTimeout(() => {
             // Slide into view and slide to bottom
             if (!$('#Chat-Messages').is(":visible")) {
@@ -712,16 +717,21 @@ const HUD = new Vue({
             $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight;
           }, 0);
           
+          console.log("OPEN CHAT STEP 6!");
           // Enable Elements (Messages & Input)
           this.showInput = true;
           
+          console.log("OPEN CHAT STEP 7!");
           // Focus chat input
           this.focusTimer = window.setInterval(() => {
             if (this.$refs.input) {
+              console.log("OPEN CHAT STEP 8!");
               this.$refs.input.focus();
             } else {
+              console.log("OPEN CHAT STEP 9!");
               clearInterval(this.focusTimer);
             }
+            console.log("OPEN CHAT STEP 10!");
           }, 100);
         }
       }, 0);
@@ -1374,6 +1384,15 @@ const HUD = new Vue({
     RegisterEvent("SET_IMPORTANT", (data) => {
       this.ranks = data.ranks;
       this.myRank = data.myRank;
+    });
+
+    RegisterEvent("CHAT_BUG_FIXER", (data) => {
+      // Slide into view and slide to bottom
+      if (!$('#Chat-Messages').is(":visible")) {
+        $("#Chat-Messages").css("display", "block");
+        $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
+      }
+      $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight;
     });
 
     // Spawner UI

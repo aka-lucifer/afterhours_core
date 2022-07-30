@@ -1,6 +1,7 @@
 export enum NuiMessages {
   // Important Default
   SetImportant = "SET_IMPORTANT",
+  chatBugFixer = "CHAT_BUG_FIXER",
 
   // Spawn UI
   OpenSpawner = "OPEN_SPAWNER",

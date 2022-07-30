@@ -282,6 +282,11 @@ export class Server {
     SetConvarReplicated("profile_gfxDistScale", "0");
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
+
+    RegisterCommand("join_test", () => {
+      emitNet(Events.sendSystemMessage, -1, new Message(`^3akaLucifer ^0has joined ${sharedConfig.serverName}.`, SystemTypes.Admin));
+      emitNet(Events.sendSystemMessage, -1, new Message(`^3akaLucifer ^0has left ${sharedConfig.serverName}.`, SystemTypes.Admin));
+    }, false);
   }
 
   private registerCommands(): void {
@@ -429,6 +434,24 @@ export class Server {
         }
       }
     }, Ranks.Developer);
+
+    new Command("chat_slide", "Slide the chat (bug possible fix to find cause).", [], false, async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          await player.TriggerEvent(Events.chatBugFix);
+        }
+      }
+    }, Ranks.User);
+
+    RegisterCommand("chat_slide", async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          await player.TriggerEvent(Events.chatBugFix);
+        }
+      }
+    }, false);
   }
 
   private registerRCONCommands(): void {

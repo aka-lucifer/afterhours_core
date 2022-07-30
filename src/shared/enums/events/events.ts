@@ -118,6 +118,7 @@ export enum Events {
   changeDevMode = "astrid:client:changeDevMode",
   syncPlayers = "astrid:client:syncPlayers",
   teleporting = "astrid:client:teleporting",
+  chatBugFix = "astrid:client:chatBugFix",
 
   // Astrid Client (Utils)
   soundFrontEnd = "astrid:client:utils:soundFrontEnd",

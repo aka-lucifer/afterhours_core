@@ -192,6 +192,11 @@ export class Client {
     onNet(Events.changeDevMode, this.EVENT_changeDevMode.bind(this));
     onNet(Events.syncPlayers, this.EVENT_syncPlayers.bind(this));
     onNet(Events.teleporting, (newState: boolean) => this.Teleporting = newState);
+    onNet(Events.chatBugFix, () => {
+      SendNuiMessage(JSON.stringify({
+        event: NuiMessages.chatBugFixer
+      }));
+    });
     
     // (General Event Listeners)
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
