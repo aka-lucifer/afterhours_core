@@ -887,6 +887,8 @@ export class StaffMenu {
 
               if (currWeapon !== Weapons.MiniGun && currWeapon !== Weapons.DoubleAction) {
                 PedSkipNextReloading(myPed.Handle);
+
+                if (IsPedInAnyVehicle(myPed.Handle, false)) await Delay(500);
               }
             } else {
               await Delay(500);
