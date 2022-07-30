@@ -90,7 +90,6 @@ export class StaffManager {
   }
 
   private async EVENT_showAnnouncement(announcementMessage: string): Promise<void> {
-    console.log("start announcement scaleform", announcementMessage);
     this.announcementScaleform = new Scaleform("MIDSIZED_MESSAGE");
       const loadedScaleform = await this.announcementScaleform.load();
       if (loadedScaleform) {
