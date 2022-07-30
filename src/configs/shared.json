@@ -1514,7 +1514,7 @@
         "canAttach": false,
         "model": "w_mg_minigun"
       },
-      "rank": 7
+      "rank": 10
     },
     "-1238556825": {
       "name": "weapon_rayminigun", "label": "Widowmaker", "ammoType": "AMMO_MINIGUN",
@@ -1566,7 +1566,7 @@
       "rank": 12
     },
     "-1568386805": {
-      "name": "weapon_grenadelauncher", "label": "Gernade Launcher", "ammoType": "AMMO_GERNADELAUNCHER",
+      "name": "weapon_grenadelauncher", "label": "Grenade Launcher", "ammoType": "AMMO_GERNADELAUNCHER",
       "reason": "obliterated",
       "type": "weapon",
       "attaching": {
