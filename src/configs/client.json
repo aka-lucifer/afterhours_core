@@ -8238,6 +8238,14 @@
               "colour": 3
             },
             "nearVehiclesDist": 3.5
+          },
+          "teleporterMenu": {
+            "locations": [
+              {"x": 1858.92, "y": 3677.27, "z": 33.68, "heading": 27.96, "label": "Sandy Shores Sheriff Station"},
+              {"x": -439.73, "y": 6019.77, "z": 31.49, "heading": 133.65, "label": "Paleto Bay State Police"},
+              {"x": 427.84, "y": -980.72, "z": 30.71, "heading": 265.16, "label": "Mission Row Police Department"},
+              {"x": 816.31, "y": -1288.12, "z": 26.29, "heading": 264.94, "label": "La Mesa State Police"}
+            ]
           }
         },
         "death": {

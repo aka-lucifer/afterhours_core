@@ -1,16 +1,23 @@
 import { Audio, Blip, BlipColor, Game, Vector3, World } from "fivem-js";
 
 import { Client } from "../../client";
-import { getLocation, getZone, Inform } from '../../utils';
+import { Delay, getLocation, getZone, Inform, teleportToCoords } from '../../utils';
 
 // Controllers
 import { Cuffing } from "./police/cuffing";
 import { Grabbing } from './police/grabbing';
 import { CommandMenu } from './police/commandMenu';
+import { Garages } from './police/garages';
+
+import { Menu } from "../../models/ui/menu/menu";
+import { Notification } from "../../models/ui/notification";
 
 import { Jobs } from "../../../shared/enums/jobs/jobs";
 import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
-import { Garages } from './police/garages';
+import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
+import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+
+import clientConfig from "../../../configs/client.json";
 
 interface Call {
   id: number;
@@ -21,10 +28,14 @@ interface Call {
 export class PoliceJob {
   private client: Client
 
+  // Clocking In/Out
   private madeClockInZones: boolean = false;
 
   // 911/311 Blips
   private callBlips: Call[] = [];
+
+  // Menus
+  private teleportMenu: Menu;
 
   // Controllers
   public cuffing: Cuffing
@@ -43,16 +54,13 @@ export class PoliceJob {
 
     // Events
     onNet(JobEvents.setupMRAP, this.EVENT_setupMRAP.bind(this));
-
     onNet(JobEvents.deleteCall, this.EVENT_deleteCall.bind(this));
-    
     onNet(JobEvents.start911Call, this.EVENT_start911Call.bind(this));
     onNet(JobEvents.receive911Call, this.EVENT_receive911Call.bind(this));
-
     onNet(JobEvents.start311Call, this.EVENT_start311Call.bind(this));
     onNet(JobEvents.receive311Call, this.EVENT_receive311Call.bind(this));
-
-    onNet(JobEvents.removeMask, this.EVENT_removeMask.bind(this));
+    onNet(JobEvents.takeOffMask, this.EVENT_takeOffMask.bind(this));
+    onNet(JobEvents.teleportMenu, this.EVENT_teleportMenu.bind(this));
 
     Inform("Police | Jobs Controller", "Started!");
   }
@@ -227,6 +235,25 @@ export class PoliceJob {
     this.commandMenu.init();
     this.garages.init();
 
+    // Teleporter Menu
+    this.teleportMenu = new Menu("PD Teleporter", GetCurrentResourceName(), MenuPositions.MiddleLeft);
+    const tpLocations = clientConfig.controllers.police.teleporterMenu.locations;
+    for (let i = 0; i < tpLocations.length; i++) {
+      this.teleportMenu.BindButton(tpLocations[i].label, async() => {
+        console.log("teleport to", JSON.stringify(tpLocations[i]));
+
+        const teleported = await teleportToCoords(new Vector3(tpLocations[i].x, tpLocations[i].y, tpLocations[i].z));
+        if (teleported) {
+          Game.PlayerPed.Heading = tpLocations[i].heading;
+          const notify = new Notification("Teleporter", `Teleported to ${tpLocations[i].label}.`, NotificationTypes.Success);
+          await notify.send();
+
+          await Delay(3000);
+          this.client.Teleporting = false;
+        }
+      });
+    }
+
     this.registerExports();
   }
 
@@ -311,7 +338,7 @@ export class PoliceJob {
     }
   }
 
-  private EVENT_removeMask(): void {
+  private EVENT_takeOffMask(): void {
     const myPed = Game.PlayerPed;
     ClearPedProp(myPed.Handle, 0)
 
@@ -319,5 +346,9 @@ export class PoliceJob {
     if (myModel === GetHashKey("mp_m_freemode_01") || myModel === GetHashKey("mp_f_freemode_01")) { // Mp Model
       SetPedComponentVariation(myPed.Handle, 1, 0, 0, 0);
     }
+  }
+
+  private async EVENT_teleportMenu(): Promise<void> {
+    if (this.teleportMenu !== undefined) await this.teleportMenu.Open();
   }
 }

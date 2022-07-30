@@ -21,6 +21,7 @@ export enum JobEvents {
 
   start311Call = "astrid:client:jobs:police:start311Call",
   receive311Call = "astrid:client:jobs:police:receive311Call",
+  teleportMenu = "astrid:client:jobs:police:teleportMenu",
 
   // LEO (Server | Calls)
   send911Call = "astrid:server:jobs:police:send911Call",

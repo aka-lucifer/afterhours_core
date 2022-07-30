@@ -261,6 +261,21 @@ export class PoliceJob {
         }
       }
     }, [Jobs.State, Jobs.Police, Jobs.County]);
+
+    new JobCommand("teleporter", "PD location teleporter.", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const character = await this.server.characterManager.Get(player);
+
+          if (character) {
+            if (character.isLeoJob()) {
+              await player.TriggerEvent(JobEvents.teleportMenu);
+            }
+          }
+        }
+      }
+    }, [Jobs.State, Jobs.Police, Jobs.County]);
   }
 
   public init(): void {
