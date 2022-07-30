@@ -59,7 +59,7 @@ import { ModelBlacklist } from './controllers/civilian/modelBlacklist';
 import { Death } from './controllers/death';
 
 import { LogTypes } from './enums/logging';
-import { Capitalize, Delay, Dist, Error, GetHash, Inform, Log, logCommand } from './utils';
+import { Capitalize, Delay, Dist, Error, getClosestVehicle, GetHash, Inform, Log, logCommand } from './utils';
 
 import serverConfig from '../configs/server.json';
 import sharedConfig from '../configs/shared.json';
@@ -313,7 +313,7 @@ export class Server {
       }
     }, Ranks.Admin);
 
-    new Command("dv", "Deletes the vehicle you're inside.", [{}], false, async (source: string) => {
+    new Command("dv", "Deletes the vehicle you're inside/near.", [], false, async (source: string) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
       if (player) {
         if (player.Spawned) {
@@ -321,9 +321,21 @@ export class Server {
           const currVeh = GetVehiclePedIsIn(myPed, false);
           if (currVeh > 0) {
             DeleteEntity(currVeh);
-            await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle Deleted", SystemTypes.Success));
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("Current vehicle deleted.", SystemTypes.Success));
             Error("Del Veh Cmd", "Vehicle Deleted");
-            await logCommand("/delveh", player);
+            await logCommand("/dv", player);
+          } else {
+            const [closestVeh, vehDistance] = await getClosestVehicle(player);
+            console.log("closest vehicle data", closestVeh, vehDistance, closestVeh.Position);
+
+            if (vehDistance <= 5.0) {
+              DeleteEntity(closestVeh.Handle);
+              await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle deleted.", SystemTypes.Success));
+              Error("Del Veh Cmd", "Vehicle Deleted");
+              await logCommand("/dv", player);
+            } else {
+              await player.Notify("Vehicle Deleter", "No vehicle found!", NotificationTypes.Error);
+            }
           }
         }
       }

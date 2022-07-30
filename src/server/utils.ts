@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Vector3} from "fivem-js";
+import {Vector3, Vehicle, World} from "fivem-js";
 
 import {server} from "./server";
 import {LogTypes} from "./enums/logging";
@@ -307,4 +307,44 @@ export function getOffsetFromEntityInWorldCoords(entity: number, offset: Vector3
 
 function degreesToRadians(degrees: number): number {
   return degrees * (Math.PI / 180);
+}
+
+/**
+ * 
+ * @returns Returns all known server vehicles in a vehicle class array
+ */
+export async function getWorldVehicles(): Promise<Vehicle[]> {
+  const vehicles = GetAllVehicles();
+  const worldVehicles = [];
+
+  for (let i = 0; i < vehicles.length; i++) {
+    const vehicle = new Vehicle(vehicles[i]);
+    worldVehicles.push(vehicle);
+  }
+
+  return worldVehicles;
+}
+
+/**
+ * 
+ * @param player The player to get the nearest vehicle & distance to.
+ * @returns A closest vehicle variable and the distance to the vehicle in a decimal.
+ */
+export async function getClosestVehicle(player: Player): Promise<[Vehicle, number]> {
+  let closestVehicle;
+  let closestDistance = 1000;
+  
+  const worldVehicles = await getWorldVehicles();
+  for (let i = 0; i < worldVehicles.length; i++) {
+    const vehicle = worldVehicles[i];
+
+    const dist = player.Position.distance(vehicle.Position);
+
+    if (closestVehicle == undefined || dist < closestDistance) {
+      closestVehicle = vehicle;
+      closestDistance = dist;
+    }
+  }
+
+  return [closestVehicle, closestDistance];
 }
