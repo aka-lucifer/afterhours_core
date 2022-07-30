@@ -1,4 +1,4 @@
-import { VehicleSeat, World } from "fivem-js";
+import { Audio, Scaleform, VehicleSeat, World } from "fivem-js";
 
 import {Client} from "../client";
 
@@ -15,6 +15,11 @@ import { SystemTypes } from "../../shared/enums/ui/chat/types";
 export class StaffManager {
   private readonly client: Client;
 
+  // Announcement Data
+  private announcementScaleform: Scaleform;
+  private announcementTimeout: NodeJS.Timeout = undefined;
+  private announcementTick: number = undefined;
+
   // Controllers
   private gravityGun: GravityGun;
   public staffMenu: StaffMenu;
@@ -27,7 +32,8 @@ export class StaffManager {
     // Events
     onNet(Events.rankUpdated, this.EVENT_rankUpdated.bind(this));
     onNet(Events.showRank, this.EVENT_showRank.bind(this));
-    onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this))
+    onNet(Events.clearWorldVehs, this.EVENT_clearVehs.bind(this));
+    onNet(Events.showAnnouncement, this.EVENT_showAnnouncement.bind(this));
   }
 
   // Methods
@@ -81,5 +87,36 @@ export class StaffManager {
         }
       }
     }
+  }
+
+  private async EVENT_showAnnouncement(announcementMessage: string): Promise<void> {
+    console.log("start announcement scaleform", announcementMessage);
+    this.announcementScaleform = new Scaleform("MIDSIZED_MESSAGE");
+      const loadedScaleform = await this.announcementScaleform.load();
+      if (loadedScaleform) {
+        this.announcementScaleform.callFunction("SHOW_COND_SHARD_MESSAGE", "~r~Server Announcement", announcementMessage, 2);
+        Audio.playSoundFrontEnd("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET");
+
+        if (this.announcementTick == undefined) this.announcementTick = setTick(async() => {
+          await this.announcementScaleform.render2D();
+        })
+
+        if (this.announcementTimeout === undefined) {
+          this.announcementTimeout = setTimeout(() => {
+            if (this.announcementTick != undefined) {
+              clearTick(this.announcementTick);
+              this.announcementTick = undefined;
+            }
+          }, 5000);
+        } else {
+          clearTimeout(this.announcementTimeout);
+          this.announcementTimeout = setTimeout(() => {
+            if (this.announcementTick != undefined) {
+              clearTick(this.announcementTick);
+              this.announcementTick = undefined;
+            }
+          }, 5000);
+        }
+      }
   }
 }

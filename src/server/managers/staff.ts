@@ -89,7 +89,15 @@ export class StaffManager {
         if (player) {
           if (player.Spawned) {
             const message = concatArgs(0, args);
-            await player.TriggerEvent(Events.sendSystemMessage, new Message(message, SystemTypes.Admin));
+            const svPlayers = this.server.connectedPlayerManager.GetPlayers;
+
+            for (let a = 0; a < svPlayers.length; a++) {
+              if (svPlayers[a].Spawned) {
+                await svPlayers[a].TriggerEvent(Events.sendSystemMessage, new Message(message, SystemTypes.Admin));
+                await svPlayers[a].TriggerEvent(Events.showAnnouncement, message);
+              }
+            }
+            
             await logCommand("/announce", player, message);
           }
         }
