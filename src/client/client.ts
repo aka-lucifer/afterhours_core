@@ -223,6 +223,7 @@ export class Client {
     let spawnTick = setTick(async() => {
       if (NetworkIsPlayerActive(PlayerId()) && this.nuiReady) {
         // console.log("READY FOR SPAWNER UI!");
+        DisplayRadar(false);
         await this.initialize();
         await this.spawner.init();
         this.startUI();
