@@ -18,6 +18,7 @@ import { LogTypes } from '../enums/logging';
 
 import { Ranks } from '../../shared/enums/ranks';
 import { Events } from '../../shared/enums/events/events';
+import { LXEvents } from '../../shared/enums/events/lxEvents';
 import { Callbacks } from '../../shared/enums/events/callbacks';
 import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
 import { EmbedColours } from '../../shared/enums/logging/embedColours';
@@ -46,7 +47,7 @@ export class VehicleManager {
 
     // Events
     onNet(Events.entityCreated, this.EVENT_entityCreated.bind(this));
-    onNet(Events.enteringVehicle, this.EVENT_enteringVeh.bind(this));
+    onNet(LXEvents.EnteredVeh_Sv, this.EVENT_enteringVeh.bind(this));
     onNet(Events.entityRemoved, this.EVENT_entityRemoved.bind(this));
   }
 
@@ -152,6 +153,8 @@ export class VehicleManager {
                 // Permission Checker
                 const vehModel = GetEntityModel(entity);
                 const vehData = serverConfig.vehicles.blacklister[vehModel];
+
+                console.log("veh files", vehModel, vehData);
 
                 if (vehData !== undefined) {
                   // console.log("spawning veh!", entity);
@@ -293,8 +296,8 @@ export class VehicleManager {
     }
   }
 
-  private async EVENT_enteringVeh(entity: number, seat: VehicleSeat, name: string, netId: number): Promise<void> {
-    const vehicle = NetworkGetEntityFromNetworkId(netId);
+  private async EVENT_enteringVeh(driversNet: number, vehNet: number, vehSeat: VehicleSeat, vehName: string): Promise<void> {
+    const vehicle = NetworkGetEntityFromNetworkId(vehNet);
 
     if (DoesEntityExist(vehicle)) {
       // If the entity is a vehicle
@@ -309,7 +312,6 @@ export class VehicleManager {
             const vehData = serverConfig.vehicles.blacklister[vehModel];
 
             if (vehData !== undefined) {
-              // console.log("spawning veh!", entity);
               const discord = await player.GetIdentifier("discord");
 
               // If LEO, Fire or EMS vehicle
@@ -324,7 +326,7 @@ export class VehicleManager {
                       this.worldVehicles.push(NetworkGetNetworkIdFromEntity(vehicle));
                     } else {
                       // Make you leave the vehicle (since you aren't in the vehicle, basically just clears the task)
-                      TaskLeaveVehicle(ped, vehicle, 0);
+                      ClearPedTasksImmediately(ped);
 
                       // Notify the player of the error
                       if (vehData.job == Jobs.State) {
@@ -384,7 +386,7 @@ export class VehicleManager {
                   this.worldVehicles.push(NetworkGetNetworkIdFromEntity(vehicle));
                 } else {
                   // Make you leave the vehicle (since you aren't in the vehicle, basically just clears the task)
-                  TaskLeaveVehicle(ped, vehicle, 0);
+                  ClearPedTasksImmediately(ped);
 
                   const requiredRank = formatRank(Ranks[rank]);
                   await player.Notify("Vehicles", `You aren't the correct rank to drive this vehicle! (${requiredRank})`, NotificationTypes.Error, 4000);
