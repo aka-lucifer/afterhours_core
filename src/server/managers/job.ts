@@ -487,7 +487,7 @@ export class JobManager {
     if (job == Jobs.County) {
       return rank >= CountyRanks.Lieutenant;
     } else if (job == Jobs.Police) {
-      return rank >= PoliceRanks.Lieutenant;
+      return rank >= PoliceRanks.Commander;
     } else if (job == Jobs.State) {
       return rank >= StateRanks.Major;
     }
