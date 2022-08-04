@@ -1,4 +1,4 @@
-import {Game, Vector3, VehicleSeat, } from "fivem-js"
+import {Game, Model, Vector3, VehicleSeat, } from "fivem-js"
 
 import { svPlayer } from "./models/player";
 import {Notification} from "./models/ui/notification";
@@ -63,7 +63,7 @@ import { Death } from './controllers/death';
 import { PlayerNames } from "./controllers/playerNames";
 import { AFK } from "./controllers/afk";
 
-import { Delay, Inform, keyboardInput, RegisterNuiCallback, sortWeapons } from './utils';
+import { Delay, Inform, keyboardInput, RegisterNuiCallback, sortVehicles, sortWeapons, getOffsetFromEntityInWorldCoords } from './utils';
 
 // Shared
 import {Events} from "../shared/enums/events/events";
@@ -220,21 +220,7 @@ export class Client {
       }
     }, false);
 
-    let spawnTick = setTick(async() => {
-      if (NetworkIsPlayerActive(PlayerId()) && this.nuiReady) {
-        // console.log("READY FOR SPAWNER UI!");
-        DisplayRadar(false);
-        await this.initialize();
-        await this.spawner.init();
-        this.startUI();
-    
-        emitNet(Events.playerConnected, undefined, true);
-        // console.log("DELETING SPAWN TICK", spawnTick);
-        clearTick(spawnTick);
-        spawnTick = undefined;
-        // console.log("DELETED SPAWN TICK", spawnTick);
-      }
-    });
+    this.connected();
   }
 
   // Getters & Setters 
@@ -302,6 +288,27 @@ export class Client {
   private EVENT_serverStarted(development: boolean, maxPlayers: number): void {
     this.developmentMode = development;
     this.maxPlayers = maxPlayers;
+  }
+
+  /**
+   * Controls showing the connected UI
+   */
+  private connected(): void {
+    let spawnTick = setTick(async() => {
+      if (NetworkIsPlayerActive(PlayerId()) && this.nuiReady) {
+        // console.log("READY FOR SPAWNER UI!");
+        DisplayRadar(false);
+        await this.initialize();
+        await this.spawner.init();
+        this.startUI();
+    
+        emitNet(Events.playerConnected, undefined, true);
+        // console.log("DELETING SPAWN TICK", spawnTick);
+        clearTick(spawnTick);
+        spawnTick = undefined;
+        // console.log("DELETED SPAWN TICK", spawnTick);
+      }
+    });
   }
 
   public async initialize(): Promise<void> {
