@@ -292,7 +292,7 @@ export class ChatManager {
           emitNet(Events.sendSystemMessage, -1, new Message(`The chat has been cleared by ^3[${Ranks[player.Rank]}] ^0- ^3${player.GetName}!`, SystemTypes.Announcement));
         }
       }
-    }, Ranks.Admin);
+    }, Ranks.Moderator);
 
     new Command("freezechat", "Freezes the chat", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
@@ -307,7 +307,7 @@ export class ChatManager {
           }
         }
       }
-    }, Ranks.Admin);
+    }, Ranks.Moderator);
 
     new Command("warnings", "Display all of your warnings", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);

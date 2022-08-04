@@ -17,7 +17,7 @@ export class GravityGun {
   constructor(client: Client) {
     this.client = client;
 
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       // Events
       // (Players)
       onNet(Events.setHeldEntity, this.EVENT_setHeldEntity.bind(this));
@@ -39,7 +39,7 @@ export class GravityGun {
 
   // Methods
   private async attachEntity(): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       const myPed = Game.PlayerPed;
 
       if (GetSelectedPedWeapon(myPed.Handle) == AddonWeapons.GravityGun) {
@@ -119,7 +119,7 @@ export class GravityGun {
   }
 
   private shootEntity(): void {
-    if (this.client.player.Rank >= Ranks.SeniorAdmin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       if (this.holding && this.heldEntity != undefined) {
         let isPlayer;
 
@@ -153,7 +153,7 @@ export class GravityGun {
   }
 
   private scrollForward(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       if (this.holding && this.heldEntity != undefined) {
         const myPed = Game.PlayerPed;
         const myPos = myPed.Position;
@@ -166,7 +166,7 @@ export class GravityGun {
   }
 
   private scrollBackward(): void {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       if (this.holding && this.heldEntity != undefined) {
         const myPed = Game.PlayerPed;
         const myPos = myPed.Position;
@@ -179,7 +179,7 @@ export class GravityGun {
   }
 
   private async deleteEntity(): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       if (this.holding && this.heldEntity !== undefined) {
         if (NetworkGetEntityIsNetworked(this.heldEntity.Handle)) {
           let attempt = 0;

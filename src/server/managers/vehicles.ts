@@ -69,7 +69,7 @@ export class VehicleManager {
       emitNet(Events.sendSystemMessage, -1, new Message(`All empty world vehicles are going to be deleted in ${serverConfig.vehicles.clearCommand.interval} seconds, if you wish to keep your vehicle, enter it.`, SystemTypes.Announcement));
       await Delay(serverConfig.vehicles.clearCommand.interval * 1000);
       emitNet(Events.clearWorldVehs, -1);
-    }, Ranks.Admin);
+    }, Ranks.Moderator);
   }
 
   private async hasPermission(myRank: Ranks, vehRanks: number[] | number, donatorAsset: boolean): Promise<[boolean, number]> {

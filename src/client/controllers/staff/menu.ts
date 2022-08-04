@@ -271,14 +271,12 @@ export class StaffMenu {
     // Player Actions Menu
     this.playerActionsMenu = this.menu.BindSubmenu("Player Actions");
 
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       this.playerActionsMenu.BindCheckbox("Godmode", this.godmode, (newState: boolean) => {
         this.godmode = newState;
         this.toggleGodmode(this.godmode);
       });
-    }
 
-    if (this.client.player.Rank >= Ranks.Moderator) {
       this.playerActionsMenu.BindCheckbox("NoClip", this.client.staffManager.noclip.Active, () => {
         this.client.staffManager.noclip.toggleNoclip();
       });
@@ -479,12 +477,14 @@ export class StaffMenu {
         });
       }
 
-      if (this.client.player.Rank >= Ranks.Admin) {
+      if (this.client.player.Rank >= Ranks.Moderator) {
         this.vehicleActionsMenu.BindCheckbox("Godmode", this.vehGodmode, (newState: boolean) => {
           this.vehGodmode = newState;
           emit(Events.vehGodmode, this.vehGodmode);
         });
-
+      }
+      
+      if (this.client.player.Rank >= Ranks.Admin) {
         this.vehicleActionsMenu.BindCheckbox("Infinite Fuel", this.infinitePetrol, (newState: boolean) => {
           this.infinitePetrol = newState;
 
