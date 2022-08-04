@@ -40,7 +40,7 @@ export class CommendManager {
     const commends = [];
 
     for (let i = 0; i < this.playerCommends.length; i++) {
-      if (this.playerCommends[i].Receiver == playerId) {
+      if (this.playerCommends[i].ReceiverId == playerId) {
         commends.push(this.playerCommends[i]);
       }
     }

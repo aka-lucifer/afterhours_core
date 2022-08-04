@@ -348,7 +348,7 @@ export class ChatManager {
           const commends = await this.server.commendManager.getPlayerCommends(player.Id);
 
           for (let i = 0; i < commends.length; i++) {
-            const player = await this.server.playerManager.getPlayerFromId(commends[i].IssuedBy);
+            const player = await this.server.playerManager.getPlayerFromId(commends[i].IssuedById);
             receivedCommends.push({
               id: commends[i].Id,
               issuedBy: `[${Ranks[player.Rank]}] - ${player.GetName}`,
