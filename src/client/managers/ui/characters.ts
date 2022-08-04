@@ -1,6 +1,6 @@
 import { Ped, Game, Font, Vector3 } from "fivem-js";
 import { Client } from "../../client";
-import { Delay, Draw3DText, NumToVector3, RegisterNuiCallback } from "../../utils";
+import { Delay, Draw3DText, RegisterNuiCallback } from "../../utils";
 
 import { Character } from "../../models/character"
 import { ServerCallback } from "../../models/serverCallback";
@@ -9,6 +9,7 @@ import { Events } from "../../../shared/enums/events/events";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
+import { NumToVector3 } from "../../../shared/utils";
 
 import clientConfig from "../../../configs/client.json";
 
@@ -91,8 +92,10 @@ export class Characters {
         this.calculatorTick = setTick(async() => {
         
           for (let i = 0; i < this.meMessages.length; i++) {
-            const player = GetPlayerFromServerId(this.meMessages[i].drawedBy);
+            const player = GetPlayerFromServerId(Number(this.meMessages[i].drawedBy));
             const ped = new Ped(GetPlayerPed(player));
+
+            console.log("player", this.meMessages[i].drawedBy, player, ped.Handle, Game.Player.Handle, Game.PlayerPed.Handle);
 
             if (ped) {
               const dist = ped.Position.distance(Game.PlayerPed.Position);
@@ -102,7 +105,7 @@ export class Characters {
                   this.mePosition = ped.Position;
                 }
 
-                if (this.displayTick == undefined) this.displayTick = setTick(() => {
+                if (this.meMessages[i].tick == undefined) this.meMessages[i].tick = setTick(() => {
                   if (this.meMessages[i].content) {
                     const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.2));
                     Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, true, 0.1, true);
@@ -114,9 +117,7 @@ export class Characters {
 
           if (this.meMessages.length <= 0) {
             clearTick(this.calculatorTick);
-            clearTick(this.displayTick);
             this.calculatorTick = undefined;
-            this.displayTick = undefined;
             
             // console.log("Clear 3d me text tick 1!");
           }
@@ -128,9 +129,7 @@ export class Characters {
                 this.mePosition = undefined;
                 
                 clearTick(this.calculatorTick);
-                clearTick(this.displayTick);
                 this.calculatorTick = undefined;
-                this.displayTick = undefined;
                 
                 // console.log("Clear 3d me text tick, due to leaving the proximity!");
               }
@@ -142,9 +141,7 @@ export class Characters {
       }
     } else {
       clearTick(this.calculatorTick);
-      clearTick(this.displayTick);
       this.calculatorTick = undefined;
-      this.displayTick = undefined;
       
       // console.log("Clear 3d me text tick 2!");
     }

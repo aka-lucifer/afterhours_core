@@ -1,11 +1,12 @@
 import {Game, Entity, Bone, Prop, Ped, Vehicle, VehicleSeat} from "fivem-js";
 
 import {Client} from "../../client";
-import {Delay, Inform, NumToVector3} from "../../utils";
+import {Delay, Inform} from "../../utils";
 
 import {Events} from "../../../shared/enums/events/events";
 import {Ranks} from "../../../shared/enums/ranks";
-import {AddonWeapons, Weapons} from "../../../shared/enums/weapons";
+import {AddonWeapons} from "../../../shared/enums/weapons";
+import { NumToVector3 } from "../../../shared/utils";
 
 export class GravityGun {
   private client: Client;

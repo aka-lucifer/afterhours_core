@@ -1,5 +1,6 @@
 import { PoliceRanks, StateRanks, CountyRanks} from "./enums/jobs/ranks";
 import { Jobs } from "./enums/jobs/jobs";
+import { Vector3 } from "fivem-js";
 /**
  * 
  * @param rank Rank Enum
@@ -129,4 +130,13 @@ export function formatRank(rankString: string): string {
   if (i < 10) newValue = "0" + i;
 
   return newValue;
+}
+
+/**
+ * 
+ * @param numberData The number array
+ * @returns: The number array data converted into a Vector3 format
+ */
+ export function NumToVector3(numberData: number[]): Vector3 {
+  return new Vector3(numberData[0], numberData[1], numberData[2])
 }

@@ -18,13 +18,13 @@ import { Events } from "../../../shared/enums/events/events";
 import { Ranks } from "../../../shared/enums/ranks";
 import {EmbedColours} from "../../../shared/enums/logging/embedColours";
 import sharedConfig from "../../../configs/shared.json"
-import {Delay, NumToVector3} from "../../utils";
+import {Delay} from "../../utils";
 import {Kick} from "./kick";
 import {Warning} from "./warning";
 import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 import {Notification} from "../ui/notification";
 import { Character, Metadata } from "./character";
-import { formatRank, getRankFromValue } from "../../../shared/utils";
+import { formatRank, getRankFromValue, NumToVector3 } from "../../../shared/utils";
 import { JobEvents } from "../../../shared/enums/events/jobs/jobEvents";
 
 export class Player {
