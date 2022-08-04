@@ -440,7 +440,7 @@ body {
   text-decoration: underline;
 
   font-family: "PT-Sans-Bold";
-  font-size: 2em;
+  font-size: 1.7vw;
 }
 
 #Card_Body {
@@ -468,7 +468,7 @@ body {
   text-align: center;
 
   font-family: "PT-Sans-Bold";
-  font-size: 1.3em;
+  font-size: 1vw;
 }
 
 #Server_Banner {
@@ -500,9 +500,10 @@ body {
 #Page_Selector {
   position: absolute;
 
-  bottom: 37%;
+  bottom: 30vh;
+  /* bottom: 37%; */
   left: 1%;
-  transform: translate(-1%, 37%);
+  /* transform: translate(-1%, 30vh); */
 
   width: 12%;
   height: fit-content;
@@ -511,6 +512,10 @@ body {
 
   border-radius: 15px;
   background: var(--logoGradient);
+}
+
+#spawnPage {
+  font-size: .7vw;
 }
 
 #Middle_Card {
@@ -677,7 +682,7 @@ body {
 #Spawn_Btn {
   position: relative;
 
-  top: 3%;
+  top: 2.5vh;
   left: 50%;
   transform: translate(-50%, -3%);
   

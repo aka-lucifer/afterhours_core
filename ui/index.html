@@ -367,7 +367,7 @@
           
           <div id="Page_Selector">
             <v-tabs v-model="currentPage" vertical background-color="transparent" color="white" :hide-slider="true">
-              <v-tab v-for="page in pages" :key="page.icon" style="border-left: 0" :ripple="false">
+              <v-tab id="spawnPage" v-for="page in pages" :key="page.icon" style="border-left: 0" :ripple="false">
                 <v-icon left>{{ page.icon }}</v-icon>
                 {{ page.label }}
               </v-tab>
