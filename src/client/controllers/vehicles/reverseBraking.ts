@@ -1,5 +1,6 @@
-import { Delay, Inform, NumToVector3 } from '../../utils';
+import { Delay, Inform } from '../../utils';
 import { Control, Game, InputMode, VehicleClass } from 'fivem-js';
+import { NumToVector3 } from '../../../shared/utils';
 
 export class ReverseBraking {
   private brakingForward: boolean = false;

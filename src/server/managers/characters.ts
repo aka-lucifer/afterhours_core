@@ -1,5 +1,5 @@
 import { Server } from "../server";
-import {Dist, Inform, Log, logCommand, NumToVector3} from "../utils";
+import {Dist, Inform, Log, logCommand} from "../utils";
 
 import { Player } from "../models/database/player";
 import { Character } from "../models/database/character";
@@ -18,10 +18,11 @@ import { EmbedColours } from "../../shared/enums/logging/embedColours";
 import { Message } from "../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../shared/enums/ui/chat/types";
 import { Ranks } from "../../shared/enums/ranks";
+import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
+import { NumToVector3 } from "../../shared/utils";
 
 import sharedConfig from "../../configs/shared.json";
 import serverConfig from "../../configs/server.json";
-import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
 
 export class CharacterManager {
   public server: Server;

@@ -6,14 +6,16 @@ import {LogTypes} from "./enums/logging";
 
 import WebhookMessage from "./models/webhook/discord/webhookMessage";
 import {StaffLog} from "./models/database/staffLog";
+import {Player} from "./models/database/player";
+
+import sharedConfig from "../configs/shared.json";
+import serverConfig from "../configs/server.json"
 
 import {EmbedColours} from "../shared/enums/logging/embedColours";
 import {Ranks} from "../shared/enums/ranks";
-import sharedConfig from "../configs/shared.json";
-import serverConfig from "../configs/server.json"
-import {Player} from "./models/database/player";
 import {StaffLogs} from "./enums/database/staffLogs";
 import {ErrorCodes} from "../shared/enums/logging/errors";
+import { NumToVector3 } from "../shared/utils";
 
 /**
  * @param reference Title for organisation logs
@@ -118,15 +120,6 @@ export function Delay(ms : number) : Promise<void> {
  */
 export function randomBetween(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-/**
- * 
- * @param numberData The number array
- * @returns: The number array data converted into a Vector3 format
- */
-export function NumToVector3(numberData: number[]): Vector3 {
-  return new Vector3(numberData[0], numberData[1], numberData[2])
 }
 
 /**

@@ -1,13 +1,14 @@
 import { Game, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
 
 import { Client } from '../../client';
-import { Delay, getVehPassengers, Inform, NumToVector3, randomBetween, speedToMph } from '../../utils';
+import { Delay, getVehPassengers, Inform, randomBetween, speedToMph } from '../../utils';
 
 import { Notification } from '../../models/ui/notification';
 
 import { Events } from '../../../shared/enums/events/events';
 import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
 import { Sounds } from '../../../shared/enums/sounds';
+import { NumToVector3 } from '../../../shared/utils';
 
 export class Seatbelt {
   private client: Client;

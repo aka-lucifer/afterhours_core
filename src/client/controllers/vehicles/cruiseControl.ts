@@ -1,6 +1,7 @@
 import { Control, Game, InputMode, Ped, Screen, Vehicle } from "fivem-js";
+import { NumToVector3 } from "../../../shared/utils";
 
-import { NumToVector3, Delay, Inform, speedToMph } from "../../utils";
+import { Delay, Inform, speedToMph } from "../../utils";
 
 export class CruiseControl {
   // Player Data

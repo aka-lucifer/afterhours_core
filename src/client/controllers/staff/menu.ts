@@ -1,7 +1,7 @@
 import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, VehicleSeat, World } from "fivem-js";
 
 import { Client } from "../../client";
-import { teleportToCoords, NumToVector3, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone, createVeh } from "../../utils";
+import { teleportToCoords, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone, createVeh } from "../../utils";
 
 import { Menu } from "../../models/ui/menu/menu";
 import { Submenu } from "../../models/ui/menu/submenu";
@@ -19,11 +19,10 @@ import { Weathers, WinterWeathers } from "../../../shared/enums/sync/weather";
 import { Message } from "../../../shared/models/ui/chat/message";
 import { SystemTypes } from "../../../shared/enums/ui/chat/types";
 import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
-import { formatSplitCapitalString, splitCapitalsString } from "../../../shared/utils";
+import { formatSplitCapitalString, NumToVector3, splitCapitalsString } from "../../../shared/utils";
 import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
 import { CountyRanks, PoliceRanks, StateRanks } from "../../../shared/enums/jobs/ranks";
 import { AdminActions } from "../../../shared/enums/adminActions";
-
 import { PlayerBan } from "../../../shared/interfaces/ban";
 
 import sharedConfig from "../../../configs/shared.json";
