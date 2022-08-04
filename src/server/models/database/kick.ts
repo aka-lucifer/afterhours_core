@@ -17,25 +17,28 @@ export class Kick {
   private id: number;
   public systemKick: boolean;
 
-  private playerId: number;
-  private player: Player;
+  private readonly receiverId: number;
+  private receiver: Player;
 
   private kickReason: string;
-  private kickedBy: number;
-  private kicker: Player;
+
+  private readonly issuedById: number;
+  private issuedBy: Player;
+
   private logger: LogTypes = LogTypes.Action;
   private url: string;
   private issuedOn: Date;
 
   constructor(playerId: number, reason: string, issuedBy?: number) {
-    this.playerId = playerId;
+    this.receiverId = playerId;
     this.kickReason = reason;
 
-    if (issuedBy < 0 || issuedBy === undefined || issuedBy == this.playerId) {
-      this.systemKick = true;
-    } else {
-      this.kickedBy = issuedBy;
-    }
+    // if (issuedBy < 0 || issuedBy === undefined || issuedBy == this.playerId) {
+    //   this.systemKick = true;
+    // } else {
+    //   this.kickedBy = issuedBy;
+    // }
+    this.issuedById = issuedBy;
 
     // Inform("Kick Class", `Defined Kick Class Data: ${JSON.stringify((this))}`);
   }
@@ -49,16 +52,24 @@ export class Kick {
     this.id = newId;
   }
 
-  public get PlayerId(): number {
-    return this.playerId;
+  public get ReceiverId(): number {
+    return this.receiverId;
   }
 
-  public get Kicker(): Player {
-    return this.kicker;
+  public get Reason(): string {
+    return this.kickReason;
   }
 
-  public set Kicker(newKicker: Player) {
-    this.kicker = newKicker;
+  public get IssuedById(): number {
+    return this.issuedById;
+  }
+
+  public set Receiver(newPlayer: Player) {
+    this.receiver = newPlayer;
+  }
+
+  public set IssuedBy(newPlayer: Player) {
+    this.issuedBy = newPlayer;
   }
 
   public set Logger(newType: LogTypes) {
@@ -69,10 +80,6 @@ export class Kick {
     this.url = newUrl;
   }
 
-  public get Reason(): string {
-    return this.kickReason;
-  }
-
   public set IssuedOn(dateIssued: Date) {
     this.issuedOn = dateIssued;
   }
@@ -80,22 +87,21 @@ export class Kick {
   // Methods
   public async save(): Promise<boolean> {
     const inserted = await Database.SendQuery("INSERT INTO `player_kicks` (`player_id`, `reason`, `issued_by`) VALUES (:id, :reason, :issuedBy)", {
-      id: this.playerId,
+      id: this.receiverId,
       reason: this.kickReason,
-      issuedBy: !this.systemKick ? this.kickedBy : this.playerId
+      issuedBy: !this.systemKick ? this.issuedById : this.receiverId
     });
 
     if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
       this.id = inserted.meta.insertId;
-      this.player = await server.connectedPlayerManager.GetPlayerFromId(this.playerId);
-      await this.player.getTrustscore(); // Refresh the players trustscore
+      await this.receiver.getTrustscore(); // Refresh the players trustscore
 
-      if (this.player.Rank > Ranks.User && this.player.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
-        await this.player.UpdateRank(Ranks.User);
+      if (this.receiver.Rank > Ranks.User && this.receiver.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
+        await this.receiver.UpdateRank(Ranks.User);
       }
 
       if (!this.systemKick) {
-        const kickersDiscord = await this.kicker.GetIdentifier("discord");
+        const kickersDiscord = await this.receiver.GetIdentifier("discord");
 
         await server.logManager.Send(this.logger, new WebhookMessage({
           username: "Kick Logs", embeds: [{
@@ -104,7 +110,7 @@ export class Kick {
             image: {
               url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
             },
-            description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: [${Ranks[this.kicker.Rank]}] - ${this.kicker.GetName}\n**Kickers Discord**: ${kickersDiscord != "Unknown" ? `<@${kickersDiscord}>` : kickersDiscord}`,
+            description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}\n**Kickers Discord**: ${kickersDiscord != "Unknown" ? `<@${kickersDiscord}>` : kickersDiscord}`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
               icon_url: sharedConfig.serverLogo
@@ -119,7 +125,7 @@ export class Kick {
             image: {
               url: this.logger == LogTypes.Anticheat && this.url != undefined ? this.url : undefined
             },
-            description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.player.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: System`,
+            description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: System`,
             footer: {
               text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
               icon_url: sharedConfig.serverLogo
@@ -129,7 +135,7 @@ export class Kick {
       }
 
       server.kickManager.Add(this);
-      await this.player.getTrustscore(); // Refresh the players trustscore
+      await this.receiver.getTrustscore(); // Refresh the players trustscore
       return true
     }
 
@@ -138,11 +144,11 @@ export class Kick {
 
   public drop(): void {
     if (!this.systemKick) {
-      emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.kicker.Rank]}] - ^3${this.kicker.GetName} ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
-      DropPlayer(this.player.Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: [${Ranks[this.kicker.Rank]}] - ${this.kicker.GetName}\n__Reason__: ${this.kickReason}`);
+      emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.receiver.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3[${Ranks[this.issuedBy.Rank]}] - ^3${this.issuedBy.GetName} ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
+      DropPlayer(this.receiver.Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}\n__Reason__: ${this.kickReason}`);
     } else {
-      emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.player.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
-      DropPlayer(this.player.Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: System\n__Reason__: ${this.kickReason}`);
+      emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.receiver.GetName} ^0has been kicked from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.kickReason}^0!`, SystemTypes.Admin));
+      DropPlayer(this.receiver.Handle, `\n__[${sharedConfig.serverName}]__: You were kicked from ${sharedConfig.serverName}.\n__By__: System\n__Reason__: ${this.kickReason}`);
     }
   }
 }

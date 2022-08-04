@@ -521,7 +521,7 @@ export class Server {
       // console.log(playerId, hardwareId, reason, issuedBy);
       const ban = new Ban(playerId, hardwareId, reason, issuedBy);
       if (issuedBy != undefined) {
-        ban.Banner = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
+        ban.IssuedBy = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
       }
       await ban.save();
       ban.drop();
@@ -539,7 +539,7 @@ export class Server {
 
           if (passedData.url) ban.URL = passedData.url;
           if (issuedBy != undefined) {
-            ban.Banner = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
+            ban.IssuedBy = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
           }
 
           await ban.save();
@@ -556,25 +556,33 @@ export class Server {
           this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.Handle, {}, async (cbData, passedData) => {
             console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
             const kick = new Kick(playerId, reason, issuedBy);
+
             kick.Logger = LogTypes.Anticheat;
 
             if (passedData.url) kick.URL = passedData.url;
             if (issuedBy != undefined) {
-              kick.Kicker = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
+              kick.IssuedBy = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
             }
+
+            kick.systemKick = true;
 
             await kick.save();
             // kick.drop();
           }));
         }
       } else {
-        const kick = new Kick(playerId, reason, issuedBy);
-        if (issuedBy !== undefined) {
-          kick.Kicker = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
-        }
+        const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
+        if (player) {
+          const kick = new Kick(playerId, reason, issuedBy);
+          kick.Receiver = player;
 
-        await kick.save();
-        kick.drop();
+          if (issuedBy !== undefined) {
+            kick.IssuedBy = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
+          }
+
+          await kick.save();
+          kick.drop();
+        }
       }
     });
 

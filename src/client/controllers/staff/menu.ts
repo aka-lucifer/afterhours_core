@@ -607,7 +607,7 @@ export class StaffMenu {
               if (!this.banPermanent) {
                 if (!this.banLengthType !== undefined) {
                   if (this.banLength !== undefined && this.banLength > 0) {
-                    emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent, this.banLengthType.toUpperCase(), this.banLength);
+                    emitNet(Events.banPlayer, playerData.NetworkId, this.banReason, this.banPermanent, this.banLengthType.toUpperCase(), this.banLength);
 
                     this.banReason = undefined;
                     this.banLengthType = undefined;
@@ -622,7 +622,7 @@ export class StaffMenu {
                   await notify.send();
                 }
               } else {
-                emitNet(Events.banPlayer, playerData.Id, this.banReason, this.banPermanent);
+                emitNet(Events.banPlayer, playerData.NetworkId, this.banReason, this.banPermanent);
 
                 this.banReason = undefined;
                 this.banLengthType = undefined;
@@ -646,7 +646,7 @@ export class StaffMenu {
           if (kickReason != null) {
             if (kickReason.length > 0) {
               this.kickReason = kickReason;
-              emitNet(Events.kickPlayer, playerData.Id, this.kickReason);
+              emitNet(Events.kickPlayer, playerData.NetworkId, this.kickReason);
             } else {
               const notify = new Notification("Staff", `You haven't entered a kick reason!`, NotificationTypes.Error);
               await notify.send();
@@ -661,7 +661,7 @@ export class StaffMenu {
           const warnReason = await keyboardInput("Warn Reason", 250);
           if (warnReason != null) {
             if (warnReason.length > 0) {
-              emitNet(Events.warnPlayer, playerData.Id, warnReason);
+              emitNet(Events.warnPlayer, playerData.NetworkId, warnReason);
             } else {
               const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
               await notify.send();
@@ -676,7 +676,7 @@ export class StaffMenu {
           const commendReason = await keyboardInput("Commend Reason", 250);
           if (commendReason != null) {
             if (commendReason.length > 0) {
-              emitNet(Events.commendPlayer, playerData.Id, commendReason);
+              emitNet(Events.commendPlayer, playerData.NetworkId, commendReason);
             } else {
               const notify = new Notification("Staff", `You haven't entered a commend reason!`, NotificationTypes.Error);
               await notify.send();

@@ -25,6 +25,7 @@ export class WarnManager {
       const warning = new Warning(warnData.data[i].player_id, warnData.data[i].reason, warnData.data[i].issued_by);
       warning.Id = warnData.data[i].id;
       warning.IssuedOn = new Date(warnData.data[i].issued_on);
+      if (warning.ReceiverId === warning.WarnedById) warning.SystemWarning = true;
       this.playerWarnings.push(warning);
     }
 
@@ -33,7 +34,7 @@ export class WarnManager {
 
   public Add(warnData: Warning): number {
     const addedData = this.playerWarnings.push(warnData);
-    if (this.server.IsDebugging) Log("Warn Manager | Added", `(Id: ${warnData.Id} | Player Id: ${warnData.PlayerId} | Reason: ${warnData.Reason} | Warners Id: ${!warnData.systemWarning ? warnData.Warner.Id : "System"})`);
+    if (this.server.IsDebugging) Log("Warn Manager | Added", `(Id: ${warnData.Id} | Player Id: ${warnData.ReceiverId} | Reason: ${warnData.Reason} | Warners Id: ${!warnData.systemWarning ? warnData.WarnedById : "System"})`);
     return addedData;
   }
 
@@ -48,7 +49,7 @@ export class WarnManager {
     const warnings = [];
 
     for (let i = 0; i < this.playerWarnings.length; i++) {
-      if (this.playerWarnings[i].PlayerId == playerId) {
+      if (this.playerWarnings[i].ReceiverId == playerId) {
         warnings.push(this.playerWarnings[i]);
       }
     }

@@ -171,7 +171,10 @@ export class ChatManager {
               // Warning Processor
               if (this.playerWarnings[player.Id] >= 3) {
                 const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings.ts", player.Id);
-                kick.Kicker = player;
+                kick.IssuedBy = player;
+                kick.Receiver = player;
+                kick.systemKick = true;
+                
                 await kick.save();
                 kick.drop();
                 return;
@@ -213,7 +216,10 @@ export class ChatManager {
               // Warning Processor
               if (this.playerWarnings[player.Id] >= 3) {
                 const kick = new Kick(player.Id, "Sent a chat message containing blacklisted contents after several warnings.ts", player.Id);
-                kick.Kicker = player;
+                kick.IssuedBy = player;
+                kick.Receiver = player;
+                kick.systemKick = true;
+
                 await kick.save();
                 kick.drop();
                 return;
@@ -318,7 +324,7 @@ export class ChatManager {
 
           for (let i = 0; i < warnings.length; i++) {
             if (!warnings[i].systemWarning) {
-              const player = await this.server.playerManager.getPlayerFromId(warnings[i].WarnedBy);
+              const player = await this.server.playerManager.getPlayerFromId(warnings[i].WarnedById);
               receivedWarnings.push({
                 id: warnings[i].Id,
                 issuedBy: `[${Ranks[player.Rank]}] - ${player.GetName}`,

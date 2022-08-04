@@ -31,7 +31,7 @@ export class KickManager {
 
   public Add(kickData: Kick): number {
     const addedData = this.kickedPlayers.push(kickData);
-    if (this.server.IsDebugging) Log("Kick Manager | Added", `(Id: ${kickData.Id} | Player Id: ${kickData.PlayerId} | Reason: ${kickData.Reason} | Kickers Id: ${!kickData.systemKick ? kickData.Kicker.Id : "System"})`);
+    if (this.server.IsDebugging) Log("Kick Manager | Added", `(Id: ${kickData.Id} | Player Id: ${kickData.ReceiverId} | Reason: ${kickData.Reason} | Kickers Id: ${!kickData.systemKick ? kickData.IssuedById : "System"})`);
     return addedData;
   }
 

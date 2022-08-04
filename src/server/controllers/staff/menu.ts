@@ -244,18 +244,20 @@ export class StaffMenu {
 
                     if (!banPermanent) {
                       const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, player.Id, newDate);
-                      ban.Banner = player;
+                      ban.IssuedBy = player;
+                      ban.Receiver = foundPlayer;
+
                       const saved = await ban.save();
-                      
                       if (saved) {
                         ban.drop();
                         await player.Notify("Ban", `You've banned ${foundPlayer.GetName}, for ${banReason}, until ${newDate.toUTCString()}.`, NotificationTypes.Info, 5000);
                       }
                     } else {
                       const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, player.Id);
-                      ban.Banner = player;
-                      const saved = await ban.save();
+                      ban.IssuedBy = player;
+                      ban.Receiver = foundPlayer;
 
+                      const saved = await ban.save();
                       if (saved) {
                         ban.drop();
                         await player.Notify("Ban", `You've permanently banned ${foundPlayer.GetName}, for ${banReason}.`, NotificationTypes.Info, 5000);
@@ -292,7 +294,8 @@ export class StaffMenu {
                 if (foundPlayer) {
                   if (foundPlayer.Rank < player.Rank) {
                     const kick = new Kick(foundPlayer.Id, kickReason, player.Id);
-                    kick.Kicker = player;
+                    kick.IssuedBy = player;
+                    kick.Receiver = foundPlayer;
   
                     const saved = await kick.save();
                     if (saved) {
@@ -330,7 +333,8 @@ export class StaffMenu {
                 if (foundPlayer) {
                   if (foundPlayer.Rank < player.Rank) {
                     const warning = new Warning(foundPlayer.Id, warnReason, player.Id);
-                    warning.Warner = player;
+                    warning.WarnedBy = player;
+                    warning.Receiver = foundPlayer;
                     
                     const saved = await warning.save();
                     if (saved) {

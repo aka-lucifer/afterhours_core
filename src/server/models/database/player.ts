@@ -367,7 +367,7 @@ export class Player {
     if (currTrustscore > 100) currTrustscore = 100;
 
     svBans.forEach((ban: Ban) => {
-      if (ban.PlayerId == this.id) {
+      if (ban.ReceiverId === this.id) {
         myBans++;
         // console.log(`Ban (Id: ${ban.Id} | Reason: ${ban.Reason}) is yours!\nBan Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.banRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.banRemoval;
@@ -375,7 +375,7 @@ export class Player {
     });
 
     svKicks.forEach((kick: Kick) => {
-      if (kick.PlayerId == this.id) {
+      if (kick.ReceiverId == this.id) {
         myKicks++;
         // console.log(`Kick (Id: ${kick.Id} | Reason: ${kick.Reason}) is yours!\nKick Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.kickRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.kickRemoval;
@@ -383,7 +383,7 @@ export class Player {
     });
 
     svWarnings.forEach((warn: Warning) => {
-      if (warn.PlayerId == this.id) {
+      if (warn.ReceiverId == this.id) {
         myWarnings++;
         // console.log(`Warning (Id: ${warn.Id} | Reason: ${warn.Reason}) is yours!\nWarning Removal - From (${currTrustscore}) -> To (${currTrustscore - serverConfig.trustscore.warningRemoval})\n`);
         currTrustscore = currTrustscore - serverConfig.trustscore.warningRemoval;

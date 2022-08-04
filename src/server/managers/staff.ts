@@ -192,7 +192,7 @@ export class StaffManager {
             });
         
             if (deletedBans.meta.affectedRows > 0) {
-              console.log(`Deleting Players Bans (Id: ${bans[i].Id} | Player Id: ${bans[i].PlayerId} | Name: ${player.GetName})`);
+              console.log(`Deleting Players Bans (Id: ${bans[i].Id} | Player Id: ${bans[i].ReceiverId} | Name: ${player.GetName})`);
               this.server.banManager.Remove(bans[i].Id);
             }
           }

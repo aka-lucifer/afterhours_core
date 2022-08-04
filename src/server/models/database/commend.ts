@@ -18,11 +18,15 @@ import * as sharedConfig from "../../../configs/shared.json"
 
 export class Commend {
   private id: number;
+
   private readonly receiverId: number;
   private receiver: Player;
+  
   private readonly reason: string;
+
   private readonly issuedById: number;
   private issuedBy: Player;
+
   public issuedOn: Date;
 
   constructor(receiver: number, reason: string, issuedBy: number) {

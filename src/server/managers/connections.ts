@@ -49,7 +49,7 @@ export class ConnectionsManager {
         const [isBanned, banData] = await player.isBanned();
         if (isBanned) {
           if (player.Rank < Ranks.Management && banData.State == BanStates.Active) {
-            if (banData.IssuedBy != player.id) {
+            if (banData.IssuedById !== player.Id) {
               const results = await Database.SendQuery("SELECT `name`, `rank` FROM `players` WHERE `player_id` = :playerId", {
                 playerId: banData.IssuedBy
               });
@@ -77,6 +77,7 @@ export class ConnectionsManager {
             // await server.connectedPlayerManager.Remove(player.handle);
           }
         }
+        Log("Connection Manager", `${player.GetName} Connecting...`);
 
         deferrals.update(`[${sharedConfig.serverName}]: We're checking your name...`);
 
@@ -117,6 +118,15 @@ export class ConnectionsManager {
       }
 
       player.steamAvatar = await player.GetProfileAvatar(await player.GetIdentifier("steam"));
+      console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormattedRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
+      deferrals.handover({
+        id: player.id,
+        name: player.GetName,
+        rank: Ranks[player.Rank],
+        playtime: await player.GetPlaytime.FormatTime(),
+        avatar:  player.steamAvatar,
+        development: this.server.Developing
+      });
 
       if (this.server.Whitelisted) {
         Inform("Whitelist Check", "Whitelist Active!");
@@ -280,7 +290,7 @@ export class ConnectionsManager {
       }, async (data) => {
         console.log("data", JSON.stringify(data))
         if (data.submitId == "connect") {
-          console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormatRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
+          console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormattedRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
           deferrals.handover({
             id: player.id,
             name: player.GetName,
@@ -295,7 +305,7 @@ export class ConnectionsManager {
         }
       });
     } else {
-      console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormatRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
+      console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormattedRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
       deferrals.handover({
         id: player.id,
         name: player.GetName,
