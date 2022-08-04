@@ -5,6 +5,7 @@ import * as Database from './database/database';
 
 import { LogTypes } from '../enums/logging';
 
+import { Player } from '../models/database/player';
 import { Job } from '../models/jobs/job';
 import WebhookMessage from '../models/webhook/discord/webhookMessage';
 import { Playtime } from '../models/database/playtime';
@@ -180,19 +181,34 @@ export class JobManager {
             } else {
               const currTime = new Date();
               const timeCalculated = (currTime.getTime() / 1000) - (new Date(character.Job.statusTime).getTime() / 1000);
-              const dutyTime = new Playtime(timeCalculated);
+              if (timeCalculated > 0) {
+                const dutyTime = new Playtime(timeCalculated);
+                const dutyTotalTime = await dutyTime.FormatTime();
 
-              await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
-                username: "Timesheet Logging", embeds: [{
-                  color: EmbedColours.Red,
-                  title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
-                  description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: ${await dutyTime.FormatTime()}\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
-                  footer: {
-                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                    icon_url: sharedConfig.serverLogo
-                  }
-                }]
-              }));
+                await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
+                  username: "Timesheet Logging", embeds: [{
+                    color: EmbedColours.Red,
+                    title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
+                    description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: ${dutyTotalTime}\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              } else {
+                await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
+                  username: "Timesheet Logging", embeds: [{
+                    color: EmbedColours.Red,
+                    title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
+                    description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: Less than zero sort this shit bby!\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
             }
           }
         }
@@ -477,6 +493,49 @@ export class JobManager {
                 await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
               }
             }
+          }
+        }
+      }
+    }
+  }
+
+  // Methods
+  public async Disconnect(player: Player): Promise<void> {
+    if (player) {
+      if (player.Spawned) {
+        const character = await this.server.characterManager.Get(player);
+        if (character) {
+          const discord = await player.GetIdentifier("discord");
+          const currTime = new Date();
+          const timeCalculated = (currTime.getTime() / 1000) - (new Date(character.Job.statusTime).getTime() / 1000);
+
+          if (timeCalculated > 0) {
+            const dutyTime = new Playtime(timeCalculated);
+            const dutyTotalTime = await dutyTime.FormatTime();
+
+            await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
+              username: "Timesheet Logging", embeds: [{
+                color: EmbedColours.Red,
+                title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
+                description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: ${dutyTotalTime}\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
+          } else {
+            await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
+              username: "Timesheet Logging", embeds: [{
+                color: EmbedColours.Red,
+                title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
+                description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: Less than zero sort this shit bby!\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                footer: {
+                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                  icon_url: sharedConfig.serverLogo
+                }
+              }]
+            }));
           }
         }
       }
