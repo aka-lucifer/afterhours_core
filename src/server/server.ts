@@ -387,7 +387,7 @@ export class Server {
           await player.TriggerEvent(Events.setAFK);
         }
       }
-    }, Ranks.Developer);
+    }, Ranks.Moderator);
 
     new Command("report", "Report a player.", [{name: "server_id", help: "The server ID of the player you're reporting."}, {name: "reason", help: "The reason you're reporting the player."}], true, async(source: string, args: any[]) => {
       if (args[0]) {
