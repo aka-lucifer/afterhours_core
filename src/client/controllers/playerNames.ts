@@ -133,7 +133,7 @@ export class PlayerNames {
                 // Store the tag
                 const tag = this.createdTags[netId].tag;
 
-                if (this.createdTags[netId].ped.Position.distance(myPed.Position) <= clientConfig.characters.meCommand.distance && HasEntityClearLosToEntity(this.createdTags[netId].ped.Handle, myPed.Handle, 17)) {
+                if (this.createdTags[netId].ped.Position.distance(myPed.Position) <= clientConfig.controllers.staff.playerNames.distance && HasEntityClearLosToEntity(this.createdTags[netId].ped.Handle, myPed.Handle, 17)) {
 
                   // Sets gamertag name colour
                   switch(svPlayers[i].Rank) {
