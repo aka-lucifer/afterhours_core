@@ -3,6 +3,7 @@ import { Inform, Error, logCommand } from "../utils";
 
 import { Command } from "../models/ui/chat/command";
 import { Ban } from "../models/database/ban";
+import { Warning } from "../models/database/warning";
 
 import {Gravity} from "../controllers/staff/gravity";
 import { StaffMenu } from "../controllers/staff/menu";
@@ -201,6 +202,41 @@ export class StaffManager {
         }
       } else {
         Error("Ban Command", "Player license not entered!");
+      }
+    }, false);
+    
+    RegisterCommand("offline_warn", async(source: string, args: any[]) => {
+      // NOTES
+      // - First arg is the players license
+      // - Third arg is the ban reason
+
+      if (args[0]) {
+        const player = await this.server.playerManager.getPlayerFromLicense(args[0]);
+        if (player) {
+          if (args[1]) {
+            const warnReason = concatArgs(1, args);
+            if (player.Rank < Ranks.Management) {
+              Inform("Offline Warn Command", `Warning: [${player.Id}] - ${player.GetName} | For: ${warnReason}`);
+              const warn = new Warning(player.Id, warnReason, player.Id)
+              warn.OfflineReceiver = player;
+              warn.OfflineWarning = true;
+              warn.SystemWarning = true;
+              
+              const saved = await warn.save();
+              if (saved) {
+                Inform("Offline Warn Command", `Warned: [${player.Id}] - ${player.GetName} | For: ${warnReason}`);
+              }
+            } else {
+              Error("Offline Warn Command", "You can't warn management or above!");
+            }
+          } else {
+            Error("Offline Warn Command", "No warning reason provided!");
+          }
+        } else {
+          Error("Offline Warn Command", "There is no player with that game license!");
+        }
+      } else {
+        Error("Offline Warn Command", "Player license not entered!");
       }
     }, false);
   }

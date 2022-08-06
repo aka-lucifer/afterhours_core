@@ -194,8 +194,6 @@ export class Ban {
         await this.receiver.getTrustscore(); // Refresh the players trustscore
         return true;
       } else {
-        const bannersDiscord = await this.issuedBy.GetIdentifier("discord");
-
         if (this.receiver.Rank > Ranks.User && this.receiver.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
           await this.receiver.UpdateRank(Ranks.User);
         }
@@ -205,7 +203,7 @@ export class Ban {
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Offline Banned__",
-              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Discord**: ${bannersDiscord !== "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}\n**Banned By**: System`,
+              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Banned By**: System`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));
@@ -216,7 +214,7 @@ export class Ban {
             username: "Ban Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Offline Banned__",
-              description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.banReason}\n**Discord**: ${bannersDiscord !== "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}\n**Banned By**: System`,
+              description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: System`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));

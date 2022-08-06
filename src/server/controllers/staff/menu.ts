@@ -183,10 +183,10 @@ export class StaffMenu {
     const newBans: PlayerBan[] = [];
 
     for (const [_, banData] of Object.entries(bans)) {
-      const banned = await this.server.playerManager.getPlayerFromId(banData.playerId);
-      const banner = await this.server.playerManager.getPlayerFromId(banData.issuedBy);
+      const banned = await this.server.playerManager.getPlayerFromId(banData.receiverId);
+      const banner = await this.server.playerManager.getPlayerFromId(banData.issuedById);
       const bannedBy = banData.issuedBy === banData.playerId ? "System" : banner.GetName
-      
+
       const ban: PlayerBan = {
         id: banData.id,
         playerId: banned.Id,
@@ -333,8 +333,8 @@ export class StaffMenu {
                 if (foundPlayer) {
                   if (foundPlayer.Rank < player.Rank) {
                     const warning = new Warning(foundPlayer.Id, warnReason, player.Id);
-                    warning.WarnedBy = player;
                     warning.Receiver = foundPlayer;
+                    warning.WarnedBy = player;
                     
                     const saved = await warning.save();
                     if (saved) {
