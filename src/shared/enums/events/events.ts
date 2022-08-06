@@ -221,7 +221,8 @@ export enum Events {
   receiveCharacters = "astrid:client:receiveCharacters",
   // setupCharacters = "astrid:client:setupCharacters",
   displayCharacters = "astrid:client:displayCharacters",
-  syncMeMessages = "astrid:client:syncMeMessages",
+  addMeMessage = "astrid:client:characters:meMessages:add",
+  removeMeMessage = "astrid:client:characters:meMessages:remove",
 
   // Astrid Client (Vehicles)
   setupVehicles = "astrid:client:setupVehicles",

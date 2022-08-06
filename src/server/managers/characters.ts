@@ -24,6 +24,12 @@ import { NumToVector3 } from "../../shared/utils";
 import sharedConfig from "../../configs/shared.json";
 import serverConfig from "../../configs/server.json";
 
+interface meDrawing {
+  id: number,
+  netId: number,
+  content: string
+}
+
 export class CharacterManager {
   public server: Server;
   private characters: Character[] = [];
@@ -242,20 +248,29 @@ export class CharacterManager {
   }
 
   public async meDrawing(sender: number, content: string): Promise<void> {
-    this.meDrawnings.push(new meDrawing(sender, content));
-    console.log(`Sync /me command | (${content}) by (${JSON.stringify(sender)})`);
+    const drawingId = this.meDrawnings.length <= 0 ? 1 : this.meDrawnings.length + 1;
+    const newMessage: meDrawing = {
+      id: drawingId,
+      netId: sender,
+      content: content
+    }
+
+    this.meDrawnings.push(newMessage);
+
+    console.log(`Start /me command | (${content}) by (${sender}) - ID: (${drawingId})`);
     // sync to client
-    emitNet(Events.syncMeMessages, -1, this.meDrawnings);
+    emitNet(Events.addMeMessage, -1, newMessage);
 
     // Allow to draw for this length
     setTimeout(async() => {
-      const meIndex = this.meDrawnings.findIndex(drawing => drawing.By == sender && drawing.Content == content);
-      if (meIndex != -1) {
+      const meIndex = this.meDrawnings.findIndex(drawing => drawing.id === drawingId && drawing.netId === sender);
+      console.log("/me message index", meIndex);
+      if (meIndex !== -1) {
         this.meDrawnings.splice(meIndex, 1);
-        console.log(`Sync deleted /me content | (${content}) by (${JSON.stringify(sender)})`);
-        emitNet(Events.syncMeMessages, -1, this.meDrawnings);
-        // resync to client
+        console.log(`Remove /me command | (${content}) by (${sender}) - ID: (${drawingId})`);
+        emitNet(Events.removeMeMessage, -1, newMessage);
       }
+    // }, 3000);
     }, serverConfig.characters.meCommand.drawLength);
   }
 
@@ -470,23 +485,4 @@ export enum ProximityTypes {
   Local,
   Me,
   ID
-}
-
-export class meDrawing {
-  private drawedBy: number;
-  private content: string;
-
-  constructor(drawer: number, content: string) {
-    this.drawedBy = drawer;
-    this.content = content;
-  }
-
-  // Getters
-  public get By(): number {
-    return this.drawedBy;
-  }
-
-  public get Content(): string {
-    return this.content;
-  }
 }
