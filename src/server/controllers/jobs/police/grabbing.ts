@@ -55,6 +55,7 @@ export class Grabbing {
 
                 myStates.state.grabState = GrabState.None;
                 grabbeesStates.state.grabState = GrabState.None;
+                grabbeesStates.state.grabbedBy = -1;
                 await player.TriggerEvent(JobEvents.stopGrabbing);
                 await closest.TriggerEvent(JobEvents.stopGrabbing);
 
@@ -91,9 +92,9 @@ export class Grabbing {
     const grabbingPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (grabbingPlayer) {
       if (grabbeeId) {
-        // console.log("setting player as grabbed", grabbingPlayer.Handle, grabbeeId);
         const grabbeeStates = Player(grabbeeId);
         grabbeeStates.state.grabState = GrabState.Held;
+        grabbeeStates.state.grabbedBy = grabbingPlayer.Handle;
         emitNet(JobEvents.setGrabbed, grabbeeId, grabbingPlayer.Handle);
 
         const grabbedPlayer = await this.server.connectedPlayerManager.GetPlayer(grabbeeId.toString());
@@ -112,11 +113,26 @@ export class Grabbing {
             }));
           }
         }
-      } else {
-        console.log("closest ped isn't found!");
       }
-    } else {
-      console.log("your ped isn't found!");
+    }
+  }
+
+  // Methods
+  
+  /**
+   * Handles cancelling the grabbing animation and the logic for the grabber, if you leave the server
+   * @param playersNet The server ID of the grabbee.
+   */
+  public async checkReleasing(playersNet: string): Promise<void> {
+    const myStates = Player(playersNet);
+
+    if (myStates.state.grabState === GrabState.Held) { // If you're being held
+      const grabbingPlayer = await this.server.connectedPlayerManager.GetPlayer(myStates.state.grabbedBy); // Get the player who is holding you
+      if (grabbingPlayer) { // If you have found the player holding you, make him stop grabbing, as you're no longer in the server.
+        myStates.state.grabState = GrabState.None;
+        myStates.state.grabbedBy = -1;
+        await grabbingPlayer.TriggerEvent(JobEvents.stopGrabbing);
+      }
     }
   }
 }

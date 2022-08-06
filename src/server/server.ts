@@ -130,7 +130,7 @@ export class Server {
   // [Controllers] Civilian
 
   private kidnapping: Kidnapping;
-  private carrying: Carrying;
+  public carrying: Carrying;
   private gagging: Gagging;
   private modelBlacklist: ModelBlacklist;
 

@@ -41,7 +41,7 @@ export class PoliceJob {
 
   // Controllers
   private cuffing: Cuffing;
-  private grabbing: Grabbing;
+  public grabbing: Grabbing;
 
   constructor(server: Server) {
     this.server = server;

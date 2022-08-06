@@ -487,6 +487,7 @@ export class Client {
     // Jobs
     this.playerStates.state.set("cuffState", CuffState.Uncuffed, true);
     this.playerStates.state.set("grabState", GrabState.None, true);
+    this.playerStates.state.set("grabbedBy", -1, true);
     this.playerStates.state.set("interactionState", InteractionStates.None, true);
     this.playerStates.state.set("deathState", DeathStates.Alive, true);
 
@@ -494,6 +495,7 @@ export class Client {
     this.playerStates.state.set("kidnapState", KidnapStates.Free, true);
     this.playerStates.state.set("surrenderState", SurrenderState.Down, true);
     this.playerStates.state.set("carryState", CarryStates.Free, true);
+    this.playerStates.state.set("carriedBy", -1, true);
     this.playerStates.state.set("gagState", GagStates.Free, true);
 
     this.statesTick = setTick(async() => {

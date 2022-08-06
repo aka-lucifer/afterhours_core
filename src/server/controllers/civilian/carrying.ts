@@ -32,16 +32,13 @@ export class Carrying {
           if (dist < 3) {
             if (closest.Spawned) {
               const myStates = Player(player.Handle);
-              console.log("cuff states ting", myStates.state.cuffState);
               if (myStates.state.cuffState === CuffState.Uncuffed) { // If you aren't handcuffed
-                console.log("my carryState", myStates.state.carryState);
                 if (myStates.state.carryState === CarryStates.Free || myStates.state.carryState === CarryStates.Carrying) { // If you aren't carrying anyone or being carried
                   const closestStates = Player(closest.Handle);
-                  console.log("closest carryState", closestStates.state.carryState);
                   if (closestStates.state.carryState === CarryStates.Free) { // If they aren't being carried
-                    console.log("start carrying", player.Handle, closest.Handle);
                     myStates.state.carryState = CarryStates.Carrying; // Set you to carrying
                     closestStates.state.carryState = CarryStates.Carried; // Set them to carried
+                    closestStates.state.carriedBy = player.Handle;
                     await closest.TriggerEvent(Events.carryPlayer, player.Handle);
                     await player.TriggerEvent(Events.startCarrying);
 
@@ -57,9 +54,9 @@ export class Carrying {
                       }]
                     }));
                   } else {
-                    console.log("stop carrying", player.Handle, closest.Handle);
                     myStates.state.carryState = CarryStates.Free; // Set you to free
                     closestStates.state.carryState = CarryStates.Free; // Set them to free
+                    closestStates.state.carriedBy = -1;
                     await closest.TriggerEvent(Events.stopCarrying);
                     await player.TriggerEvent(Events.stopCarrying);
 
@@ -90,6 +87,25 @@ export class Carrying {
         } else {
           await player.Notify("Carrying", "No one found!", NotificationTypes.Error);
         }
+      }
+    }
+  }
+
+  // Methods
+  
+  /**
+   * Handles cancelling the carrying animation and the logic for the carrier, if you leave the server
+   * @param playersNet The server ID of the grabbee.
+   */
+  public async checkReleasing(playersNet: string): Promise<void> {
+    const myStates = Player(playersNet);
+
+    if (myStates.state.carryState === CarryStates.Carried) { // If you're being carried
+      const carryingPlayer = await this.server.connectedPlayerManager.GetPlayer(myStates.state.carriedBy); // Get the player who is carrying you
+      if (carryingPlayer) { // If you have found the player carrying you, make him stop carrying, as you're no longer in the server.
+        myStates.state.carryState = CarryStates.Free;
+        myStates.state.carriedBy = -1;
+        await carryingPlayer.TriggerEvent(Events.stopCarrying);
       }
     }
   }

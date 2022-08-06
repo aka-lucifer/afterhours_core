@@ -40,7 +40,7 @@ export class JobManager {
   private server: Server;
 
   // Jobs
-  private policeJob: PoliceJob;
+  public policeJob: PoliceJob;
 
   // Controllers
   private jobBlips: JobBlips;
