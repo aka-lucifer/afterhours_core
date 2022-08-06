@@ -22,6 +22,13 @@ export class GhostPlayers {
 
   constructor(server: Server) {
     this.server = server;
+
+    RegisterCommand("test_player_leave", async() => {
+      const player = await this.server.connectedPlayerManager.GetPlayer("10");
+      if (player) {
+        await this.playerLeft(player);
+      }
+    }, false);
   }
 
   // Methods
@@ -53,14 +60,14 @@ export class GhostPlayers {
     // After 20 seconds remove their information from S & C, then delete their ped
     setTimeout(async() => {
       const playerIndex = this.leftPlayers.findIndex(leftPlayer => leftPlayer.netId === player.Handle);
-      if (playerIndex != -1) {
+      if (playerIndex !== -1) {
         this.leftPlayers.splice(playerIndex, 1);
         
         const svPlayers = this.server.connectedPlayerManager.GetPlayers;
         for (let i = 0; i < svPlayers.length; i++) {
           if (svPlayers[i].Spawned) {
             if (svPlayers[i].Rank >= Ranks.Moderator) {
-              await svPlayers[i].TriggerEvent(Events.deleteGhostPlayer, player.Handle);
+              await svPlayers[i].TriggerEvent(Events.deleteGhostPlayer, parseInt(player.Handle));
             }
           }
         }
