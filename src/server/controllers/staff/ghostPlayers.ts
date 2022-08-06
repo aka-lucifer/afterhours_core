@@ -22,13 +22,6 @@ export class GhostPlayers {
 
   constructor(server: Server) {
     this.server = server;
-
-    RegisterCommand("test_player_leave", async() => {
-      const player = await this.server.connectedPlayerManager.GetPlayer("10");
-      if (player) {
-        await this.playerLeft(player);
-      }
-    }, false);
   }
 
   // Methods
