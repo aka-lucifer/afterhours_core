@@ -1,5 +1,7 @@
-import {Player} from "./player";
 import { server } from "../../server";
+
+import {Player} from "./player";
+import { DBPlayer } from "./dbPlayer";
 
 import WebhookMessage from "../webhook/discord/webhookMessage";
 import * as Database from "../../managers/database/database";
@@ -30,6 +32,8 @@ export class Ban {
 
   private issuedById: number;
   private issuedBy: Player;
+  
+  private offlineReceiver: DBPlayer;
 
   private issuedOn: Date;
   private issuedUntil: Date;
@@ -84,6 +88,10 @@ export class Ban {
 
   public set Receiver(newPlayer: Player) {
     this.receiver = newPlayer;
+  }
+
+  public set OfflineReceiver(newPlayer: DBPlayer) {
+    this.offlineReceiver = newPlayer;
   }
 
   public set IssuedBy(newPlayer: Player) {
@@ -194,32 +202,60 @@ export class Ban {
         await this.receiver.getTrustscore(); // Refresh the players trustscore
         return true;
       } else {
-        if (this.receiver.Rank > Ranks.User && this.receiver.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
-          await this.receiver.UpdateRank(Ranks.User);
+        if (this.offlineReceiver.Rank > Ranks.User && this.offlineReceiver.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
+          await this.offlineReceiver.UpdateRank(Ranks.User);
         }
 
-        if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
-          await server.logManager.Send(this.logger, new WebhookMessage({
-            username: "Ban Logs", embeds: [{
-              color: EmbedColours.Red,
-              title: "__Player Offline Banned__",
-              description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Banned By**: System`,
-              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-            }]
-          }));
+        console.log("offling ban data", this.offlineBan, this.offlineReceiver, this.issuedBy);
 
-          emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.receiver.GetName} ^0has been banned from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
-        } else { // Perm ban
-          await server.logManager.Send(this.logger, new WebhookMessage({
-            username: "Ban Logs", embeds: [{
-              color: EmbedColours.Red,
-              title: "__Player Offline Banned__",
-              description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: System`,
-              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-            }]
-          }));
-          
-          emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.receiver.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
+        if (this.issuedBy !== undefined) { // If offline banned by staff in game
+          if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
+            emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.offlineReceiver.GetName} ^0has been offline banned from ^3${sharedConfig.serverName}^0, by [^3${Ranks[this.issuedBy.Rank]}^0] - ^3${this.issuedBy.GetName} ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
+
+            await server.logManager.Send(this.logger, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Offline Banned__",
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Banned By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          } else { // Perm ban
+            emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.offlineReceiver.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by [^3${Ranks[this.issuedBy.Rank]}^0] - ^3${this.issuedBy.GetName} ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
+
+            await server.logManager.Send(this.logger, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Offline Banned__",
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          }
+        } else { // If banned by RCON "/offline_ban" command
+          if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
+            emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.offlineReceiver.GetName} ^0has been offline banned from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
+
+            await server.logManager.Send(this.logger, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Offline Banned__",
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Banned By**: System`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          } else { // Perm ban
+            emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.offlineReceiver.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by ^3System ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
+            
+            await server.logManager.Send(this.logger, new WebhookMessage({
+              username: "Ban Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Player Offline Banned__",
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: System`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+              }]
+            }));
+          }
         }
 
         server.banManager.Add(this);

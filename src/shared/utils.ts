@@ -46,12 +46,8 @@ export async function getRankFromValue(rank: PoliceRanks | StateRanks | CountyRa
  * @returns // The message content ting!
  */
 export function concatArgs(startPosition: number, args: string[]): string {
-  const tempString = args.join(" "); // Define the args into a string
-  const messageArgs = args[startPosition]; // Get the argument content from the provided position
-  const stringThing = messageArgs[0]; // Get the very first char of the first argument
-  const result = tempString.indexOf(stringThing); // Get the very first char of the first argument from the join string args into a string.
-  
-  return args.join(" ").slice(result)
+  args.splice(0, startPosition);
+  return args.join(" ");
 }
 
 export function isDateValid(date: Date): boolean {

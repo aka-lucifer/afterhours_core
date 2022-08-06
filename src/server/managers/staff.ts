@@ -106,6 +106,98 @@ export class StaffManager {
         Error("Ban Command", "Server ID not entered!");
       }
     }, Ranks.Admin);
+
+    
+
+    new Command("offline_ban", "Bans a player that has disconnected from the server", [{name: "player_license", help: "The game license of the player you're banning"}, {name: "banned_until", help: "The date the player is banned until - FORMAT (YYYY-MM-DD)"}, {name: "ban_reason", help: "The reason you're banning this player."}], true, async(source: string, args: any[]) => {
+      // NOTES
+      // - First arg is the players license
+      // - Second arg is a DOB format (31/12/9999)
+      // - Third arg is the ban reason
+
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          if (args[0]) {
+            const foundPlayer = await this.server.playerManager.getPlayerFromLicense(args[0]);
+            if (foundPlayer) {
+              if (args[1]) {
+                const date = new Date(args[1]);
+                if (isDateValid(date)) {
+                  if (args[2]) {
+                    const banReason = concatArgs(2, args);
+                    if (foundPlayer.Rank < Ranks.Management) {
+                      Inform("Offline Ban Command", `Banned: [${foundPlayer.Id}] - ${foundPlayer.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
+                      const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, foundPlayer.Id, date);
+                      ban.OfflineBan = true;
+                      ban.OfflineReceiver = foundPlayer;
+                      ban.IssuedBy = player;
+
+                      const saved = await ban.save();
+                      // if (saved) {
+                      //   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've offline banned ^3${foundPlayer.GetName}^0, until ^3${date.toUTCString()}^0, for ^3${banReason}^0.`, SystemTypes.Admin));
+                      // }
+                    } else {
+                      Error("Offline Ban Command", "You can't ban management or above!");
+                    }
+                  } else {
+                    Error("Offline Ban Command", "No ban reason provided!");
+                  }
+                } else {
+                  Error("Offline Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
+                }
+              } else {
+                Error("Offline Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+              }
+            } else {
+              Error("Offline Ban Command", "There is no player with that game license!");
+            }
+          } else {
+            Error("Offline Ban Command", "Player license not entered!");
+          }
+        }
+      }
+    }, Ranks.Admin);
+    
+    new Command("offline_warn", "Warns a player that has disconnected from the server", [{name: "player_license", help: "The game license of the player you're banning"}, {name: "ban_reason", help: "The reason you're banning this player."}], true, async(source: string, args: any[]) => {
+      // NOTES
+      // - First arg is the players license
+      // - Third arg is the ban reason
+
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          if (args[0]) {
+            const foundPlayer = await this.server.playerManager.getPlayerFromLicense(args[0]);
+            if (foundPlayer) {
+              if (args[1]) {
+                const warnReason = concatArgs(1, args);
+                if (foundPlayer.Rank < Ranks.Management) {
+                  Inform("Offline Warn Command", `Warning: [${foundPlayer.Id}] - ${foundPlayer.GetName} | For: ${warnReason}`);
+                  const warn = new Warning(foundPlayer.Id, warnReason, foundPlayer.Id)
+                  warn.OfflineReceiver = foundPlayer;
+                  warn.OfflineWarning = true;
+                  warn.SystemWarning = true;
+                  
+                  const saved = await warn.save();
+                  if (saved) {
+                    await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've offline warned ^3${foundPlayer.GetName}^0, for ^3${warnReason}^0.`, SystemTypes.Admin));
+                  }
+                } else {
+                  Error("Offline Warn Command", "You can't warn management or above!");
+                }
+              } else {
+                Error("Offline Warn Command", "No warning reason provided!");
+              }
+            }
+          }
+        } else {
+          Error("Offline Warn Command", "There is no player with that game license!");
+        }
+      } else {
+        Error("Offline Warn Command", "Player license not entered!");
+      }
+    }, Ranks.Moderator);
   }
 
   private registerRCONCommands(): void {
@@ -119,21 +211,21 @@ export class StaffManager {
               if (args[2]) {
                 const banReason = concatArgs(2, args);
                 if (player.Rank < Ranks.Management) {
-                  Inform("Ban Command", `Banned: [${player.Id} | ${player.Handle}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
+                  Inform("Offline Ban Command", `Banned: [${player.Id} | ${player.Handle}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
                   const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id);
                   await ban.save();
                   ban.drop();
                 } else {
-                  Error("Ban Command", "You can't ban management or above!");
+                  Error("Offline Ban Command", "You can't ban management or above!");
                 }
               } else {
-                Error("Ban Command", "No ban reason provided | format (YY-MM-DD)!");
+                Error("Offline Ban Command", "No ban reason provided | format (YY-MM-DD)!");
               }
             } else {
-              Error("Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
+              Error("Offline Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
             }
           } else {
-            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+            Error("Offline Ban Command", "Ban date not entered | format (YY-MM-DD)!");
           }
         } else {
           Error("Ban Command", "There is no one in the server with that server ID!");
@@ -161,6 +253,8 @@ export class StaffManager {
                   Inform("Ban Command", `Banned: [${player.Id}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
                   const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id, date);
                   ban.OfflineBan = true;
+                  ban.OfflineReceiver = player;
+
                   await ban.save();
                 } else {
                   Error("Ban Command", "You can't ban management or above!");
