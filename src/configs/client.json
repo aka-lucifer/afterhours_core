@@ -8288,10 +8288,89 @@
               "To report a player use the /report command."
             ]
           }
+        },
+        "staff": {
+          "noclipping": {
+            "settings": {
+              "camera": {
+                "fov": 45.0
+              },
+              "mouse": {
+                "sensitivityX": 5,
+                "sensitivityY": 5
+              },
+              "movement": {
+                "slowMultiplier": 0.1,
+                "normalMultiplier": 1,
+                "fastMultiplier": 10
+              },
+              "easing": true,
+              "easingDuration": 1000
+            }
+          },
+          "playerNames": {
+            "distance": 10
+          }
         }
     },
     "spawnInfo": {
         "changelog": [
+          {
+            "version": "v1.0.2",
+            "additions": [
+              "Increased the max limit value for the 'mass vehicle spawn detection'. (Anticheat).",
+              "Increased the line height in the fixes and additions areas of the change log, in the spawn UI.",
+              "I’ve updated the LSPD ranks & veh permissions.",
+              "Implemented a kill option into the staff menu.",
+              "Loading UI for playing summoning.",
+              "Conditional statements in player summoning, so you can’t summon anyone who is already being summoned.",
+              "When entering a vehicle or equipping a weapon you don’t have access to, it now shows the required rank to use them on the notification.",
+              "Changes to the scoreboard UI to better handle page logic.",
+              "A massive amount of new spawn locations in the AOP spawner.",
+              "Updated the PD high command starting rank to Commander.",
+              "The /announce command for staff now has a UI on the player's screen, so they can’t miss a vital server announcement.",
+              "A /teleporter command for all LEO, to teleport to each of the police stations.",
+              "Support to use the /dv command outside a vehicle, instead of just the current vehicle you’re sitting inside.",
+              "Player joined & left chat messages.",
+              "Disabled talking and talking over the radio whilst dead.",
+              "Moderators can now use the gravity gun, godmode/vehicle godmode and a variety of staff commands (/afk, /freezechat, /clearchat, /vehclear).",
+              "When you’re on duty and you disconnect, quit or even crash, you going off duty is logged into LEO timesheets.",
+              "Spawn UI now rescales better for lower resolutions.",
+              "A /offline_warn RCON command for higher-up staff and two new commands for in-game staff (/offline_ban and /offline_warn).",
+              "Rewrote the logic behind the 3D /me text above players heads, now is extremely optimized and has fixed any errors with the old system.",
+              "New EUP for police departments (LSPD, SASP & BCSO)."
+            ],
+            "fixes": [
+              "Implemented catcher so punching isn’t detected in speed modifier detection (Anticheat)",
+              "'Awaiting scripts' stuck screen should now be patched.",
+              "Updated from 'GetPlayerFromId' to 'GetPlayer' in the server-sided staff menu controller.",
+              "Staff player blips now update the blips permission, as previously it would create the blips and then not update anything.",
+              "The gravity gun now actually functions (There may be some bug functionality, as it’s still in alpha).",
+              "'hasPermission' server export erroring out when a player is banned.",
+              "VOIP (no longer has broken directional audio | radio listing has now been fixed and shows the correct data).",
+              "Being unable to see other players inside of interiors, (interior proxies not loading correctly).",
+              "AI vehicle and ped traffic not being set to the correct value.",
+              "Middle Los Santos AOP spawn positions are not updated.",
+              "Rewrote how some of the loading screen logic is handled to hopefully fix the blank information bug.",
+              "The grenade launcher's label is no longer 'Gernade Launcher'.",
+              "The staff command /announce is now sent to every player on the server.",
+              "Staff menu no weapon recoil, causing rapid fire to semi-auto weapons inside a vehicle.",
+              "Removing player's masks via the F3 menu (Police -> Remove Mask).",
+              "The commender and commended information on commend logs has been correctly formatted.",
+              "Ultrawide monitors now have the minimap correctly placed.",
+              "Being able to bypass vehicle permissions, by spamming the F key.",
+              "Staff actions in the staff menu are now fully functioning such as (Bans, kicks, warnings & commends).",
+              "Ghost players not deleting for staff after the timeout.",
+              "When you are grabbing or carrying someone, and that player leaves, you are no longer left in that carry/grab animation.",
+              "The anticheat should no longer ban players for being invisible, when they are being carried or grabbed by staff, and that staff member starts noclipping."
+            ],
+            "removals": [
+              "The persistent wheel has been removed, whilst it receives some important rewrites & fixes.",
+              "Old unused bug test logs in the character & player-manager.",
+              "Disabled the speed zone & safe zone controllers, for now, to see which the server prefers.",
+              "Disabled the weapons on the back controller as the community voted for it."
+            ]
+          },
           {
             "version": "v1.0.1",
             "additions": [
@@ -8459,11 +8538,6 @@
     },
     "characters": {
         "meCommand": {
-            "distance": 10
-        }
-    },
-    "staff": {
-        "playerNames": {
             "distance": 10
         }
     }
