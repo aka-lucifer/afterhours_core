@@ -14,10 +14,12 @@ export class LogManager {
   private server: Server;
 
   // Admin Logs
+  private readonly playersURL: string = serverConfig.discordLogs.urls.playersURL;
   private readonly connectionsURL: string = serverConfig.discordLogs.urls.connectionsURL;
   private readonly killURL: string = serverConfig.discordLogs.urls.killURL;
   private readonly chatURL: string = serverConfig.discordLogs.urls.chatURL;
   private readonly actionURL: string = serverConfig.discordLogs.urls.actionURL;
+  private readonly staffURL: string = serverConfig.discordLogs.urls.staffURL;
   private readonly anticheatURL: string = serverConfig.discordLogs.urls.anticheatURL;
   private readonly commendURL: string = serverConfig.discordLogs.urls.commendURL;
   private readonly timesheetURL: string = serverConfig.discordLogs.urls.timesheetURL;
@@ -38,6 +40,9 @@ export class LogManager {
     let url;
 
     switch (type) {
+      case LogTypes.Players:
+        url = this.playersURL;
+        break;
       case LogTypes.Connection:
         url = this.connectionsURL;
         break;
@@ -49,6 +54,9 @@ export class LogManager {
         break;
       case LogTypes.Action:
         url = this.actionURL;
+        break;
+      case LogTypes.Staff:
+        url = this.staffURL;
         break;
       case LogTypes.Anticheat:
         url = this.anticheatURL;

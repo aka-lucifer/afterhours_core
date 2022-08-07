@@ -144,7 +144,7 @@ export class Warning {
           ban.drop();
         }
         
-        await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+        await server.logManager.Send(LogTypes.Staff, new WebhookMessage({
           username: "Warning Logs", embeds: [{
             color: EmbedColours.Red,
             title: "__Player Warning__",
@@ -188,7 +188,7 @@ export class Warning {
               ban.drop();
             }
               
-            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+            await server.logManager.Send(LogTypes.Staff, new WebhookMessage({
               username: "Warning Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Warning__",
@@ -202,7 +202,7 @@ export class Warning {
           } else {
             await this.send();
 
-            await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+            await server.logManager.Send(LogTypes.Staff, new WebhookMessage({
               username: "Warning Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Warning__",
@@ -239,7 +239,7 @@ export class Warning {
             ban.drop();
           }
           
-          await server.logManager.Send(LogTypes.Action, new WebhookMessage({
+          await server.logManager.Send(LogTypes.Staff, new WebhookMessage({
             username: "Warning Logs", embeds: [{
               color: EmbedColours.Red,
               title: "__Player Warning__",

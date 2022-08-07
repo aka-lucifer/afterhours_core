@@ -20,10 +20,12 @@
   },
   "discordLogs": {
         "urls": {
+            "playersURL": "https://discord.com/api/webhooks/1005811524377522206/LQ_FNoGb4hHOq5kx1Oblk8M8N5-Kxo5L4NsKHa6k0tSnmTpWD-pgDNfSTiF8_DxwchXI",
             "connectionsURL": "https://discord.com/api/webhooks/937103967710761061/RWauR_xJqBVydEOtb9ugIEZJonR3Lgn4pg90KKTfw5IYxXSMZwjkonBUb8iTCsZm7xmm",
             "killURL": "https://discord.com/api/webhooks/941462568348823573/1B9uY-Cx8q5v6B0oRtAXbL5Cuk8AgbqgWdtwBtk1L5z8DHi1BX9trWHBMIdYs6KHRHPr",
             "chatURL": "https://discord.com/api/webhooks/939578616189157397/z-YgoqeIdu_O0eOXLFi8MUloV9pNVe0F56_frsIYlFtgBsV9kwYD2CSDUOvE1AbDRT7m",
             "actionURL": "https://discord.com/api/webhooks/937429667567251526/Ea6B-cFiBAKr_W3lY1JDM184f7S8WbP_m6DMB30YchL8uKUzCbJc857hP8ztoNAzV2s0",
+            "staffURL": "https://discord.com/api/webhooks/1005803349884555415/EHFr53bGBj-jn-3G60uQXeCzXA8_wKjDYeW5AZE3ma0-UDl12Ux4bh7ZpftT3FAsJNJy",
             "anticheatURL": "https://discord.com/api/webhooks/938225013969002497/hdbFIDn-oqKNYyTCoWouEQpj-9apI-JavVUiO1jIfjd8gLa3xcpkxnxxIXeijxxqD97w",
             "commendURL": "https://discord.com/api/webhooks/944681275975954432/6jCSIW0hpgzPxXfebM0sQrAEoQwqWh5Al_qiJyU5faZ5UmRietUObSPIwQqsZA49chy7",
             "timesheetURL": "https://discord.com/api/webhooks/978326826831200257/c7D0STWbPP3J9EL0UnKtlpAruZtr9ykFV1H42C3mtbaUgFSiCUIfgU51EfvyQoNNp1Kl",

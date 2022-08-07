@@ -25,7 +25,7 @@ export class Kick {
   private readonly issuedById: number;
   private issuedBy: Player;
 
-  private logger: LogTypes = LogTypes.Action;
+  private logger: LogTypes = LogTypes.Staff;
   private url: string;
   private issuedOn: Date;
 

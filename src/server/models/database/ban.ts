@@ -38,7 +38,7 @@ export class Ban {
   private issuedOn: Date;
   private issuedUntil: Date;
 
-  private logger: LogTypes = LogTypes.Action;
+  private logger: LogTypes = LogTypes.Staff;
   private url: string;
   private offlineBan: boolean = false;
 

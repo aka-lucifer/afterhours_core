@@ -118,10 +118,11 @@ class Embed {
         return this.author;
     }
 
-    addField(name: string, value: string): EmbedField[] {
+    addField(name: string, value: string, inline?: boolean): EmbedField[] {
         this.fields.push({
             name,
-            value
+            value,
+            inline
         });
         return this.fields;
     }

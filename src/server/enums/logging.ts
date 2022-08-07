@@ -1,8 +1,10 @@
 export enum LogTypes {
+  Players,
   Connection,
   Kill,
   Chat,
   Action,
+  Staff,
   Anticheat,
   Commend,
   Timesheet,

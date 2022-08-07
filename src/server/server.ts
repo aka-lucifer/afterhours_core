@@ -282,24 +282,6 @@ export class Server {
     SetConvarReplicated("profile_gfxDistScale", "0");
 
     Inform(sharedConfig.serverName, "Successfully Loaded!");
-
-    RegisterCommand("join_test", async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          const playtime = await player.GetPlaytime.FormatTime();
-          const [trustscore, bans, kicks, warnings, commends] = await player.getTrustscore();
-          
-          emitNet(Events.sendSystemMessage, -1, new Message(`[^3${player.FormattedRank}^0] - ^3akaLucifer ^0has joined ^3${sharedConfig.serverName} ^0(^2${trustscore}% Trustscore ^0| 
-            ^1${bans} ${bans > 1 || bans < 1 ? "Bans" : "Ban"} ^0| 
-            ^4${kicks} ${kicks > 1 || kicks < 1 ? "Kicks" : "Kick"} ^0| 
-            ^3${warnings} ${warnings > 1 || warnings < 1 ? "Warnings" : "Warning"} ^0| 
-            ^5${commends} ${commends > 1 || commends < 1 ? "Commends" : "Commend"} ^0 | 
-            ^9Playtime - ${playtime}^0).`,
-          SystemTypes.Admin));
-        }
-      }
-    }, false);
   }
 
   private registerCommands(): void {
@@ -527,14 +509,15 @@ export class Server {
       ban.drop();
     });
 
-    global.exports("anticheatBan", async(playerId: number, hardwareId: string, reason: string, takeScreenshot: boolean, issuedBy?: number) => {
+    global.exports("anticheatBan", async(playerHandle: number, hardwareId: string, reason: string, takeScreenshot: boolean, issuedBy?: number) => {
       // console.log(playerId, hardwareId, reason, issuedBy);
 
-      const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
+      const player = await this.connectedPlayerManager.GetPlayer(playerHandle.toString());
       if (player) {
         this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.Handle, {}, async (cbData, passedData) => {
-          console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
-          const ban = new Ban(playerId, hardwareId, reason, issuedBy);
+          console.log("client -> sersver cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+          const ban = new Ban(playerHandle, hardwareId, reason, issuedBy);
+          ban.Receiver = player;
           ban.Logger = LogTypes.Anticheat;
 
           if (passedData.url) ban.URL = passedData.url;
