@@ -52,12 +52,22 @@ export class ServerStatus {
             await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
               username: "Server Status", embeds: [{
                 color: EmbedColours.Green,
-                // description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}\n**Kickers Discord**: ${kickersDiscord != "Unknown" ? `<@${kickersDiscord}>` : kickersDiscord}`,
                 author: {
                   name: "Astrid Network Server Status",
                   icon_url: serverConfig.discordLogs.footerLogo
                 },
+                description: "**Direct Connect** - https://cfx.re/join/588967",
                 fields: [
+                  {
+                    name: "Online Players",
+                    value: `${svPlayers.length}/${this.server.GetMaxPlayers}`,
+                    inline: false
+                  },
+                  {
+                    name: "\u200B",
+                    value: '\u200B',
+                    inline: false
+                  },
                   {
                     name: "Law Enforcement",
                     value: police.length > 0 ? police : "None",
@@ -80,8 +90,7 @@ export class ServerStatus {
                   }
                 ],
                 footer: {
-                  text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                  icon_url: sharedConfig.serverLogo
+                  text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
                 }
               }]
             }));
@@ -91,12 +100,11 @@ export class ServerStatus {
         await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
           username: "Server Status", embeds: [{
             color: EmbedColours.Red,
-            // description: `A player has been kicked from the server.\n\n**Kick ID**: #${this.id}\n**Username**: ${this.receiver.GetName}\n**Reason**: ${this.kickReason}\n**Kicked By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}\n**Kickers Discord**: ${kickersDiscord != "Unknown" ? `<@${kickersDiscord}>` : kickersDiscord}`,
             author: {
               name: "Astrid Network Server Status",
               icon_url: serverConfig.discordLogs.footerLogo
             },
-            description: "There are no players in the server.",
+            description: "**Direct Connect** - https://cfx.re/join/588967\n\nThere are no players in the server.",
             footer: {
               text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
             }
