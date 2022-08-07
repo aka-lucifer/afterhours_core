@@ -12,6 +12,7 @@ import { Playtime } from '../models/database/playtime';
 
 // Controllers
 import { JobBlips } from '../controllers/jobs/features/jobBlips';
+import { ServerStatus } from '../controllers/jobs/features/serverStatus';
 import { PoliceJob } from '../controllers/jobs/policeJob';
 
 import { JobEvents } from '../../shared/enums/events/jobs/jobEvents';
@@ -44,6 +45,7 @@ export class JobManager {
 
   // Controllers
   private jobBlips: JobBlips;
+  private serverStatus: ServerStatus;
 
   constructor(server: Server) {
     this.server = server;
@@ -125,6 +127,9 @@ export class JobManager {
     // Controllers
     this.jobBlips = new JobBlips(this.server);
     this.jobBlips.init();
+
+    this.serverStatus = new ServerStatus(this.server);
+    this.serverStatus.start();
   }
 
   // Callbacks
