@@ -137,6 +137,7 @@ export class AOPManager {
     // Get first AOP
     this.aopIndex = 1;
     this.currentAOP = this.aopLocations[this.aopIndex]; // Sandy Shores
+    SetConvarServerInfo("currentAOP", this.currentAOP.name);
 
     // Start cycling based on player count!
     this.startCycling();
@@ -290,6 +291,7 @@ export class AOPManager {
             }
 
             await player.TriggerEvent(Events.receiveServerCB, true, data);
+            SetConvarServerInfo("currentAOP", this.currentAOP.name);
 
             // console.log("updated AOP here!", this.currentAOP);
             // log who changed it here
@@ -324,6 +326,7 @@ export class AOPManager {
             for (let i = 0; i < svPlayers.length; i++) {
               if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncAOP, this.currentAOP, AOPStates.Automatic);
             }
+            SetConvarServerInfo("currentAOP", this.currentAOP.name);
 
             if (this.cycleInterval === undefined) {
               // console.log("create aop cycle interval!");

@@ -22,7 +22,8 @@ export class ServerStatus {
 
   // Methods
   public start(): void {
-    if (!this.server.Developing) this.interval = setInterval(async() => {
+    // if (!this.server.Developing) this.interval = setInterval(async() => {
+    this.interval = setInterval(async() => {
       const svPlayers = this.server.connectedPlayerManager.GetPlayers;
 
       if (svPlayers.length > 0) { // If there are any players in the server
@@ -37,80 +38,106 @@ export class ServerStatus {
             if (playerCharacter) {
               if (playerCharacter.isLeoJob() && playerCharacter.Job.Status) { // If LEO and on duty
                 const rank = await getRankFromValue(playerCharacter.Job.rank, playerCharacter.Job.name);
-                police = `${police}\n[${playerCharacter.Job.Callsign}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName} (${playerCharacter.Job.label} | ${rank})`;
+                if (police.length <= 0) {
+                  police = `[${playerCharacter.Job.Callsign}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName} (${playerCharacter.Job.label} | ${rank})`;
+                } else {
+                  police = `${police}\n[${playerCharacter.Job.Callsign}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName} (${playerCharacter.Job.label} | ${rank})`;
+                }
               } else if (playerCharacter.Job.name === Jobs.Community && playerCharacter.Job.Status) { // If community officer and on duty
-                cOfficers = `${cOfficers}\n[${svPlayers[i].Handle}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName}`;
+                if (cOfficers.length <= 0) {
+                  cOfficers = `[${svPlayers[i].Handle}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName}`;
+                } else {
+                  cOfficers = `${cOfficers}\n[${svPlayers[i].Handle}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName}`;
+                }
               } else {
-                civilians = `${civilians}\n[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`;
+                if (civilians.length <= 0) {
+                  civilians = `[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+                } else {
+                  civilians = `${civilians}\n[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+                }
               }
             }
           } else {
-            unspawned = `${unspawned}\n[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+            if (unspawned.length <= 0) {
+              unspawned = `[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+            } else {
+              unspawned = `${unspawned}\n[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+            }
           }
 
           if (i === (svPlayers.length - 1)) {
-            await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
-              username: "Server Status", embeds: [{
-                color: EmbedColours.Green,
-                author: {
-                  name: "Astrid Network Server Status",
-                  icon_url: serverConfig.discordLogs.footerLogo
-                },
-                description: "**Direct Connect** - https://cfx.re/join/588967",
-                fields: [
-                  {
-                    name: "Online Players",
-                    value: `${svPlayers.length}/${this.server.GetMaxPlayers}`,
-                    inline: false
-                  },
-                  {
-                    name: "\u200B",
-                    value: '\u200B',
-                    inline: false
-                  },
-                  {
-                    name: "Law Enforcement",
-                    value: police.length > 0 ? police : "None",
-                    inline: true
-                  },
-                  {
-                    name: "Community Officers",
-                    value: cOfficers.length > 0 ? cOfficers : "None",
-                    inline: false
-                  },
-                  {
-                    name: "Civilians",
-                    value: civilians.length > 0 ? civilians : "None",
-                    inline: false
-                  },
-                  {
-                    name: "Unspawned",
-                    value: unspawned.length > 0 ? unspawned : "None",
-                    inline: false
-                  }
-                ],
-                footer: {
-                  text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
-                }
-              }]
-            }));
+            SetConvarServerInfo("onlinePolice", police.length > 0 ? police : "None");
+            SetConvarServerInfo("onlineCommunity", cOfficers.length > 0 ? cOfficers : "None");
+            SetConvarServerInfo("onlineCivs", civilians.length > 0 ? civilians : "None");
+            SetConvarServerInfo("onlineUnspawned", unspawned.length > 0 ? unspawned : "None");
+            // await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
+            //   username: "Server Status", embeds: [{
+            //     color: EmbedColours.Green,
+            //     author: {
+            //       name: "Astrid Network Server Status",
+            //       icon_url: serverConfig.discordLogs.footerLogo
+            //     },
+            //     description: "**Direct Connect** - https://cfx.re/join/588967",
+            //     fields: [
+            //       {
+            //         name: "Online Players",
+            //         value: `${svPlayers.length}/${this.server.GetMaxPlayers}`,
+            //         inline: false
+            //       },
+            //       {
+            //         name: "\u200B",
+            //         value: '\u200B',
+            //         inline: false
+            //       },
+            //       {
+            //         name: "Law Enforcement",
+            //         value: police.length > 0 ? police : "None",
+            //         inline: true
+            //       },
+            //       {
+            //         name: "Community Officers",
+            //         value: cOfficers.length > 0 ? cOfficers : "None",
+            //         inline: false
+            //       },
+            //       {
+            //         name: "Civilians",
+            //         value: civilians.length > 0 ? civilians : "None",
+            //         inline: false
+            //       },
+            //       {
+            //         name: "Unspawned",
+            //         value: unspawned.length > 0 ? unspawned : "None",
+            //         inline: false
+            //       }
+            //     ],
+            //     footer: {
+            //       text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
+            //     }
+            //   }]
+            // }));
           }
         }
       } else {
-        await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
-          username: "Server Status", embeds: [{
-            color: EmbedColours.Red,
-            author: {
-              name: "Astrid Network Server Status",
-              icon_url: serverConfig.discordLogs.footerLogo
-            },
-            description: "**Direct Connect** - https://cfx.re/join/588967\n\nThere are no players in the server.",
-            footer: {
-              text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
-            }
-          }]
-        }));
+        SetConvarServerInfo("onlinePolice", "None");
+        SetConvarServerInfo("onlineCommunity", "None");
+        SetConvarServerInfo("onlineCivs", "None");
+        SetConvarServerInfo("onlineUnspawned", "None");
       }
-    }, 30000)
+      // else {
+      //   await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
+      //     username: "Server Status", embeds: [{
+      //       color: EmbedColours.Red,
+      //       author: {
+      //         name: "Astrid Network Server Status",
+      //         icon_url: serverConfig.discordLogs.footerLogo
+      //       },
+      //       description: "**Direct Connect** - https://cfx.re/join/588967\n\nThere are no players in the server.",
+      //       footer: {
+      //         text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
+      //       }
+      //     }]
+      //   }));
+      // }
+    }, 2000)
   }
 }
