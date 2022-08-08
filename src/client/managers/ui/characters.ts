@@ -106,8 +106,11 @@ export class Characters {
     if (this.calculatorTick == undefined) {
       this.calculatorTick = setTick(async() => {
         for (let i = 0; i < this.meMessages.length; i++) {
-          const player = GetPlayerFromServerId(Number(this.meMessages[i].netId));
-          const ped = new Ped(GetPlayerPed(player));
+          let player = GetPlayerFromServerId(Number(this.meMessages[i].netId));
+          let ped = new Ped(GetPlayerPed(player));
+          // console.log("my player info", Game.Player.Handle, Game.PlayerPed.Handle, player, ped.Handle, this.meMessages[i]);
+
+          console.log("player id", player, this.meMessages[i].content);
 
           if (ped) {
             const dist = ped.Position.distance(Game.PlayerPed.Position);
@@ -119,6 +122,8 @@ export class Characters {
 
               if (this.meMessages[i].tick == undefined) this.meMessages[i].tick = setTick(async() => {
                 if (this.meMessages[i] !== undefined) {
+                  let player = GetPlayerFromServerId(Number(this.meMessages[i].netId));
+                  let ped = new Ped(GetPlayerPed(player));
                   const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.2));
                   Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, true, 0.1, true);
                 }
