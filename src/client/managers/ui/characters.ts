@@ -108,9 +108,6 @@ export class Characters {
         for (let i = 0; i < this.meMessages.length; i++) {
           let player = GetPlayerFromServerId(Number(this.meMessages[i].netId));
           let ped = new Ped(GetPlayerPed(player));
-          // console.log("my player info", Game.Player.Handle, Game.PlayerPed.Handle, player, ped.Handle, this.meMessages[i]);
-
-          console.log("player id", player, this.meMessages[i].content);
 
           if (ped) {
             const dist = ped.Position.distance(Game.PlayerPed.Position);
