@@ -615,7 +615,7 @@ export class Server {
       const playtime = await player.GetPlaytime.FormatTime();
       const [trustscore, bans, kicks, warnings, commends] = await player.getTrustscore();
       
-      emitNet(Events.sendSystemMessage, -1, new Message(`[^3${player.FormattedRank}^0] - ^3akaLucifer ^0has joined ^3${sharedConfig.serverName} ^0(^2${trustscore}% Trustscore ^0| 
+      emitNet(Events.sendSystemMessage, -1, new Message(`[^3${player.FormattedRank}^0] - ^3${player.GetName} ^0has joined ^3${sharedConfig.serverName} ^0(^2${trustscore}% Trustscore ^0| 
         ^1${bans} ${bans > 1 || bans < 1 ? "Bans" : "Ban"} ^0| 
         ^4${kicks} ${kicks > 1 || kicks < 1 ? "Kicks" : "Kick"} ^0| 
         ^3${warnings} ${warnings > 1 || warnings < 1 ? "Warnings" : "Warning"} ^0| 

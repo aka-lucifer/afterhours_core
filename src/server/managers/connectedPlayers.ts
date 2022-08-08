@@ -170,7 +170,7 @@ export class ConnectedPlayerManager {
         this.server.characterManager.Disconnect(player);
         
         emitNet(Events.sendSystemMessage, -1,
-          new Message(`[^3${player.FormattedRank}^0] - ^3akaLucifer ^0has left ^3${sharedConfig.serverName} ^0(^1${disconnectReason}^0)`,
+          new Message(`[^3${player.FormattedRank}^0] - ^3${player.GetName} ^0has left ^3${sharedConfig.serverName} ^0(^1${disconnectReason}^0)`,
         SystemTypes.Admin));
         await player.Disconnect(disconnectReason);
       }
