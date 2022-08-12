@@ -133,26 +133,29 @@ export class StaffManager {
                       ban.OfflineReceiver = foundPlayer;
                       ban.IssuedBy = player;
 
-                      const saved = await ban.save();
-                      // if (saved) {
-                      //   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've offline banned ^3${foundPlayer.GetName}^0, until ^3${date.toUTCString()}^0, for ^3${banReason}^0.`, SystemTypes.Admin));
-                      // }
+                      await ban.save();
                     } else {
+                      await player.TriggerEvent(Events.sendSystemMessage, new Message("You can't ban management or above!", SystemTypes.Admin));
                       Error("Offline Ban Command", "You can't ban management or above!");
                     }
                   } else {
+                    await player.TriggerEvent(Events.sendSystemMessage, new Message("No ban reason provided!", SystemTypes.Admin));
                     Error("Offline Ban Command", "No ban reason provided!");
                   }
                 } else {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message("Entered date is invalid | format (YY-MM-DD)!", SystemTypes.Admin));
                   Error("Offline Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
                 }
               } else {
+                await player.TriggerEvent(Events.sendSystemMessage, new Message("Ban date not entered | format (YY-MM-DD)!", SystemTypes.Admin));
                 Error("Offline Ban Command", "Ban date not entered | format (YY-MM-DD)!");
               }
             } else {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message("There is no player with that game license!", SystemTypes.Admin));
               Error("Offline Ban Command", "There is no player with that game license!");
             }
           } else {
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("Player license not entered!", SystemTypes.Admin));
             Error("Offline Ban Command", "Player license not entered!");
           }
         }
@@ -184,17 +187,21 @@ export class StaffManager {
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've offline warned ^3${foundPlayer.GetName}^0, for ^3${warnReason}^0.`, SystemTypes.Admin));
                   }
                 } else {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message("You can't warn management or above!", SystemTypes.Admin));
                   Error("Offline Warn Command", "You can't warn management or above!");
                 }
               } else {
+                await player.TriggerEvent(Events.sendSystemMessage, new Message("No warning reason provided!", SystemTypes.Admin));
                 Error("Offline Warn Command", "No warning reason provided!");
               }
             }
           }
         } else {
+          await player.TriggerEvent(Events.sendSystemMessage, new Message("There is no player with that game license!", SystemTypes.Admin));
           Error("Offline Warn Command", "There is no player with that game license!");
         }
       } else {
+        await player.TriggerEvent(Events.sendSystemMessage, new Message("Player license not entered!", SystemTypes.Admin));
         Error("Offline Warn Command", "Player license not entered!");
       }
     }, Ranks.Moderator);

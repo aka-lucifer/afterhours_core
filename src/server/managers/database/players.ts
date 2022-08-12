@@ -1,3 +1,5 @@
+import { Ranks } from "../../../shared/enums/ranks";
+import { formatSQLDate } from "../../../shared/utils";
 import {DBPlayer} from "../../models/database/dbPlayer";
 import {Playtime} from "../../models/database/playtime";
 import {Server} from "../../server";
@@ -28,6 +30,22 @@ export class PlayerManager {
       }
       this.players.push(player)
     }
+  }
+
+  public Add(playerId: number, license: string, hardwareId: string, name: string, rank: Ranks, playtime: number, whitelisted: number, discord: string): void {
+    const player = new DBPlayer({
+      player_id: playerId,
+      identifier: license,
+      hardware_id: hardwareId,
+      name: name,
+      rank: rank,
+      playtime: playtime,
+      whitelisted: whitelisted,
+      discord: discord,
+      initial_connection: formatSQLDate(new Date())
+    });
+    
+    this.players.push(player);
   }
 
   public async getPlayerFromId(playerId: number): Promise<DBPlayer> {

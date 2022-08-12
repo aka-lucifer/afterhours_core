@@ -205,22 +205,29 @@ export class Player {
   }
 
   public async Insert(): Promise<boolean> {
-    console.log("info", this.name, await this.GetIdentifier)
+    const myLicense = await this.GetIdentifier("license");
+    const myDiscord = await this.GetIdentifier("discord");
+
     const inserted = await Database.SendQuery("INSERT INTO `players` (`name`, `identifier`, `hardware_id`, `steam_hex`, `xbl`, `live`, `discord`, `fivem`, `ip`) VALUES (:name, :identifier, :hardwareId, :steam_hex, :xbl, :live, :discord, :fivem, :ip)", {
       name: this.name,
-      identifier: await this.GetIdentifier("license"),
+      identifier: myLicense,
       hardwareId: this.hardwareId,
       steam_hex: await this.GetIdentifier("steam"),
       xbl: await this.GetIdentifier("xbl"),
       live: await this.GetIdentifier("live"),
-      discord: await this.GetIdentifier("discord"),
+      discord: myDiscord,
       fivem: await this.GetIdentifier("fivem"),
       ip: await this.GetIdentifier("ip"),
     });
 
-    console.log("insert data", inserted);
+    if (inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0) {
+      this.id = inserted.meta.insertId;
+      this.playtime = 0;
+      server.playerManager.Add(this.id, myLicense, this.hardwareId, this.name, this.rank, this.playtime, this.whitelisted ? 1 : 0, myDiscord);
+      return true;
+    }
 
-    return inserted.meta.affectedRows > 0 && inserted.meta.insertId > 0;
+    return false;
   }
 
   public async Update(): Promise<boolean> {
