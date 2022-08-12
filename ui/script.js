@@ -167,7 +167,7 @@ const HUD = new Vue({
 
     // [CHAT] - Chat Types
     chatTypes: [],
-    currentType: 0,
+    currentType: 1, // Global
 
     // [CHAT] - Chat Messages
     chatMessages: [],
@@ -712,7 +712,7 @@ const HUD = new Vue({
             // Slide into view and slide to bottom
             if (!$('#Chat-Messages').is(":visible")) {
               $("#Chat-Messages").css("display", "block");
-              $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
+            //   $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
             }
             $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight;
           }, 0);
@@ -723,15 +723,26 @@ const HUD = new Vue({
           
           console.log("OPEN CHAT STEP 7!");
           // Focus chat input
+          
           this.focusTimer = window.setInterval(() => {
-            if (this.$refs.input) {
+            if (this.$refs.input !== document.activeElement) {
               console.log("OPEN CHAT STEP 8!");
               this.$refs.input.focus();
             } else {
               console.log("OPEN CHAT STEP 9!");
               clearInterval(this.focusTimer);
             }
+
+            console.log("message data 1", this.chatMessages.length)
+            console.log("message data 1 - visible", $('#Chat-Messages').is(":visible"));
+            console.log("message data 1 - display", $('#Chat-Messages').css("display"));
+            console.log("message data 1 - margin-right", $('#Chat-Messages').css("margin-right"));
+            console.log("message data 1 - html", $('#Chat-Messages').html());
+            console.log("message data 1 - timeout", this.closeTimeout);
+            console.log("message data 1 - chatMessage", this.chatMessage);
+
             console.log("OPEN CHAT STEP 10!");
+
           }, 100);
         }
       }, 0);
@@ -750,7 +761,7 @@ const HUD = new Vue({
 
       this.closeTimeout = setTimeout(() => {
         if (!this.showInput) { // Double check if chat isn't toggled
-          $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
+          // $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
 
           clearTimeout(this.closeTimeout);
           this.closeTimeout = null;
@@ -823,7 +834,7 @@ const HUD = new Vue({
         // If not visible slide into view
         if (!$('#Chat-Messages').is(":visible")) {
           $("#Chat-Messages").css("display", "block");
-          $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
+          // $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
         } else {
           // console.log("is visible!");
           if (this.closeTimeout !== null) { // changed from "this.closeTimeout === undefined"
@@ -837,11 +848,13 @@ const HUD = new Vue({
           $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight; // Scroll to bottom of messages
         }, 10);
 
-        // console.log("closetimeout", this.closeTimeout);
+        console.log("message data 2", JSON.stringify(this.chatMessages), $('#Chat-Messages').is(":visible"), $('#Chat-Messages').css("display"), $('#Chat-Messages').css("margin-right"), $('#Chat-Messages').html(), this.closeTimeout, this.chatMessage);
+
+        console.log("closetimeout", this.closeTimeout);
         if (this.closeTimeout == undefined) {
           this.closeTimeout = setTimeout(() => {
             if (!this.showInput) { // Double check if chat isn't toggled
-              $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
+              // $('#Chat-Messages').animate({"margin-right": '-=' + "35%"}, 500);
 
               clearTimeout(this.closeTimeout);
               this.closeTimeout = null;
@@ -1390,7 +1403,7 @@ const HUD = new Vue({
       // Slide into view and slide to bottom
       if (!$('#Chat-Messages').is(":visible")) {
         $("#Chat-Messages").css("display", "block");
-        $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
+        // $('#Chat-Messages').animate({"margin-right": '+=' + "35%"}, 500);
       }
       $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight;
     });

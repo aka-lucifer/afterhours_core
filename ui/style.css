@@ -1102,9 +1102,6 @@ body {
   top: 56%;
   right: 1%;
   transform: translate(1%, -56%);
-
-  /* Sliding */
-  margin-right: -35%;
   
   width: 30%;
   /* max-height: 15%; */
