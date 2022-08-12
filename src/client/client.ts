@@ -221,6 +221,51 @@ export class Client {
     }, false);
 
     this.connected();
+
+    const pedComponents = {
+      ["FACE"]: 0,
+      ["HEAD"]: 1,
+      ["HAIR"]: 2,
+      ["ARMS"]: 3,
+      ["LEGS"]: 4,
+      ["BAGS"]: 5,
+      ["SHOES"]: 6,
+      ["NECK"]: 7,
+      ["ACCESSORIES"]: 8,
+      ["VESTS"]: 9,
+      ["OVERLAYS"]: 10,
+      ["JACKETS"]: 11
+    }
+    
+    const propComponents = {
+      ["HELMET"]: 0,
+      ["GLASSES"]: 1,
+      ["EAR"]: 2,
+      ["WATCHES"]: 6,
+      ["BRACELETS"]: 7
+    }
+    
+    RegisterCommand("get_outfit", () => {
+      const myPed = Game.PlayerPed.Handle;
+      console.log("CLOTHING:\n")
+      console.log(`Mask - Draw: ${GetPedDrawableVariation(myPed, pedComponents["HEAD"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["HEAD"]) + 1}`);
+      console.log(`Arms / Upper Body - Draw: ${GetPedDrawableVariation(myPed, pedComponents["ARMS"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["ARMS"]) + 1}`);
+      console.log(`Legs - Draw: ${GetPedDrawableVariation(myPed, pedComponents["LEGS"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["LEGS"]) + 1}`);
+      console.log(`Bags - Draw: ${GetPedDrawableVariation(myPed, pedComponents["BAGS"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["BAGS"]) + 1}`);
+      console.log(`Shoes - Draw: ${GetPedDrawableVariation(myPed, pedComponents["SHOES"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["SHOES"]) + 1}`);
+      console.log(`Neck - Draw: ${GetPedDrawableVariation(myPed, pedComponents["NECK"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["NECK"]) + 1}`);
+      console.log(`Shirt / Accessories - Draw: ${GetPedDrawableVariation(myPed, pedComponents["ACCESSORIES"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["ACCESSORIES"]) + 1}`);
+      console.log(`Vests / Body Armour - Draw: ${GetPedDrawableVariation(myPed, pedComponents["VESTS"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["VESTS"]) + 1}`);
+      console.log(`Badges / Overlays - Draw: ${GetPedDrawableVariation(myPed, pedComponents["OVERLAYS"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["OVERLAYS"]) + 1}`);
+      console.log(`Jackets - Draw: ${GetPedDrawableVariation(myPed, pedComponents["JACKETS"]) + 1} / Text: ${GetPedTextureVariation(myPed, pedComponents["JACKETS"]) + 1}`);
+      
+      console.log("\nPROPS:\n")
+      console.log(`Helmet - Draw: ${GetPedPropIndex(myPed, propComponents["HELMET"]) + 2} / Text: ${GetPedPropTextureIndex(myPed, propComponents["HELMET"]) + 2}`);
+      console.log(`Glasses - Draw: ${GetPedPropIndex(myPed, propComponents["GLASSES"]) + 2} / Text: ${GetPedPropTextureIndex(myPed, propComponents["HELMET"]) + 2}`);
+      console.log(`Ears - Draw: ${GetPedPropIndex(myPed, propComponents["EAR"]) + 2} / Text: ${GetPedPropTextureIndex(myPed, propComponents["HELMET"]) + 2}`);
+      console.log(`Watches - Draw: ${GetPedPropIndex(myPed, propComponents["WATCHES"]) + 2} / Text: ${GetPedPropTextureIndex(myPed, propComponents["HELMET"]) + 2}`);
+      console.log(`Bracelets - Draw: ${GetPedPropIndex(myPed, propComponents["BRACELETS"]) + 2} / Text: ${GetPedPropTextureIndex(myPed, propComponents["HELMET"]) + 2}`);
+    }, false);
   }
 
   // Getters & Setters 
