@@ -14,7 +14,6 @@ export class LogManager {
   private server: Server;
 
   // Admin Logs
-  private readonly playersURL: string = serverConfig.discordLogs.urls.playersURL;
   private readonly connectionsURL: string = serverConfig.discordLogs.urls.connectionsURL;
   private readonly killURL: string = serverConfig.discordLogs.urls.killURL;
   private readonly chatURL: string = serverConfig.discordLogs.urls.chatURL;
@@ -40,9 +39,6 @@ export class LogManager {
     let url;
 
     switch (type) {
-      case LogTypes.Players:
-        url = this.playersURL;
-        break;
       case LogTypes.Connection:
         url = this.connectionsURL;
         break;

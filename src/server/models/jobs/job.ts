@@ -17,6 +17,7 @@ export class Job {
     if (isBoss !== undefined) this.isBoss = isBoss;
     if (callsign !== undefined) this.callsign = callsign;
     if (status !== undefined) this.status = status;
+    this.status = false;
   }
 
   // Getters & Setters
