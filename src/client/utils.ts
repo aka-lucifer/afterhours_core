@@ -11,6 +11,7 @@ import { NotificationTypes } from '../shared/enums/ui/notifications/types';
 import { RightHandsideVehs } from '../shared/enums/vehicles';
 import { VehData } from '../shared/interfaces/vehicle';
 import { Weapon } from '../shared/interfaces/weapon';
+import { NumToVector3 } from '../shared/utils';
 
 import clientConfig from '../configs/client.json';
 
@@ -144,15 +145,6 @@ export function DisplayHelp(helpMessage: string, beepSound: boolean = false): vo
   BeginTextCommandDisplayHelp('STRING')
 	AddTextComponentScaleform(helpMessage)
 	EndTextCommandDisplayHelp(0, false, beepSound, -1)
-}
-
-/**
- * 
- * @param numberData The number array
- * @returns The number array data converted into a Vector3 format
- */
-export function NumToVector3(numberData: number[]): Vector3 {
-  return new Vector3(numberData[0], numberData[1], numberData[2])
 }
 
 // Animations
@@ -308,8 +300,6 @@ export async function keyboardInput(textEntry: string, maxStringLength: number):
 		return null
   }
 }
-
-
 
 export async function teleportToCoords(coords: Vector3, heading?: number): Promise<boolean> {
   let success = false;
@@ -759,6 +749,80 @@ export async function getClosestVehicle(ped: Ped): Promise<[number, Vehicle]> {
   }
 
   return weaps;
+}
+
+export function getOffsetFromEntityInWorldCoords(entity: number, offset: Vector3): Vector3 {
+  const position = NumToVector3(GetEntityCoords(entity, false));
+  const rotation = NumToVector3(GetEntityRotation(entity, 0));
+
+  const rX = degreesToRadians(rotation.x);
+  const rY = degreesToRadians(rotation.y);
+  const rZ = degreesToRadians(rotation.z);
+  const cosRx = Math.cos(rX);
+  const cosRy = Math.cos(rY);
+  const cosRz = Math.cos(rZ);
+  const sinRx = Math.sin(rX);
+  const sinRy = Math.sin(rY);
+  const sinRz = Math.sin(rZ);
+
+  const M11 = (cosRz * cosRy) - (sinRz * sinRx * sinRy);
+  const M12 = (cosRy * sinRz) + (cosRz * sinRx * sinRy);
+  const M13 = -cosRx * sinRy;
+
+  const M21 = -cosRx * sinRz;
+  const M22 = cosRz * cosRx;
+  const M23 = sinRx;
+
+  const M31 = (cosRz * sinRy) + (cosRy * sinRz * sinRx);
+  const M32 = (sinRz * sinRy) - (cosRz * cosRy * sinRx);
+  const M33 = cosRx * cosRy;
+
+  const matrix4 = new Vector3(position.x, position.y, position.z - 1.0);
+
+  return new Vector3(
+    (offset.x * M11) + (offset.y * M21) + (offset.z * M31) + matrix4.x,
+    (offset.x * M12) + (offset.y * M22) + (offset.z * M32) + matrix4.y,
+    (offset.x * M13) + (offset.y * M23) + (offset.z * M33) + matrix4.z
+  );
+}
+
+function degreesToRadians(degrees: number): number {
+  return degrees * (Math.PI / 180);
+}
+
+function radiansToDegrees(radians: number): number {
+  return radians * (180 / Math.PI);
+}
+
+export function clamp(x: number, min: number, max: number): number {
+  return Math.min(Math.max(x, min), max);
+}
+
+export function eulerToMatrix(rotation: Vector3): [Vector3, Vector3, Vector3] {
+  const radX = radiansToDegrees(rotation.x);
+  const radY = radiansToDegrees(rotation.y);
+  const radZ = radiansToDegrees(rotation.z);
+
+  const sinX = Math.sin(radX);
+  const sinY = Math.sin(radY);
+  const sinZ = Math.sin(radZ);
+  const cosX = Math.cos(radX);
+  const cosY = Math.cos(radY);
+  const cosZ = Math.cos(radZ);
+
+  const vecX = new Vector3(cosY * cosZ, cosY * sinZ, -sinY);
+  const vecY = new Vector3(
+    cosZ * sinX * sinY - cosX * sinZ,
+    cosX * cosZ - sinX * sinY * sinZ,
+    cosY * sinX
+  );
+  const vecZ = new Vector3(
+    -cosX * cosZ * sinY + sinX * sinZ,
+    -cosZ * sinX + cosX * sinY * sinZ,
+    cosX * cosY
+  );
+
+  return [vecX, vecY, vecZ];
 }
 
 // EVENTS
