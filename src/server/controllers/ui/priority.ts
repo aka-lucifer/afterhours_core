@@ -125,18 +125,24 @@ export class Priority {
     const activeUnits = this.ActiveUnits;
     const units = this.units.length;
     let newPriority = PriorityState.Available;
+    const fiftyPercent = (units / 100) * 50;
+    const twentyPercent = (units / 100) * 20;
+
+    console.log("sync priority | active units", activeUnits, "units", units, "fiftyPercent", fiftyPercent, "twentyPercent", twentyPercent);
 
     if (units > 0) {
-      if (activeUnits >= (units / 100) * 50) { // If there are more or 50% of active units, out of the total units
+      if (activeUnits >= fiftyPercent) { // If there are more or 50% of active units, out of the total units
         newPriority = PriorityState.Available;
-      } else if (activeUnits >= (units / 100) * 20 && activeUnits < (units / 100) * 50) { // If there are more or 20% of active units and there are less than 50%, out of the total units
+      } else if (activeUnits >= twentyPercent && activeUnits < fiftyPercent) { // If there are more or 20% of active units and there are less than 50%, out of the total units
         newPriority = PriorityState.Active;
-      } else if (activeUnits < (units / 100) * 20) { // If there are less than 20% of active units, out of the total units
+      } else if (activeUnits < twentyPercent) { // If there are less than 20% of active units, out of the total units
         newPriority = PriorityState.Unavailable;
       }
     } else {
       newPriority = PriorityState.Unavailable;
     }
+
+    console.log("sync units and priority", this.priority, newPriority);
 
     emitNet(Events.updateUnits, -1, activeUnits, units); // Update active & total units on all clients.
 
