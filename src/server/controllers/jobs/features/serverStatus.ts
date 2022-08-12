@@ -22,8 +22,8 @@ export class ServerStatus {
 
   // Methods
   public start(): void {
-    // if (!this.server.Developing) this.interval = setInterval(async() => {
-    this.interval = setInterval(async() => {
+    if (!this.server.Developing) this.interval = setInterval(async() => {
+    // this.interval = setInterval(async() => {
       const svPlayers = this.server.connectedPlayerManager.GetPlayers;
 
       if (svPlayers.length > 0) { // If there are any players in the server
@@ -33,35 +33,46 @@ export class ServerStatus {
         let unspawned = "";
 
         for (let i = 0; i < svPlayers.length; i++) {
+          const ping = svPlayers[i].RefreshPing();
+          let pingType = "";
+
+          if (ping <= 80) {
+            pingType = "LOW_PING";
+          } else if (ping < 150 && ping > 80) {
+            pingType = "MEDIUM_PING";
+          } else if (ping > 150) {
+            pingType = "HIGH_PING";
+          }
+
           if (svPlayers[i].Spawned) {
             const playerCharacter = await this.server.characterManager.Get(svPlayers[i]);
             if (playerCharacter) {
               if (playerCharacter.isLeoJob() && playerCharacter.Job.Status) { // If LEO and on duty
                 const rank = await getRankFromValue(playerCharacter.Job.rank, playerCharacter.Job.name);
                 if (police.length <= 0) {
-                  police = `[${playerCharacter.Job.Callsign}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName} (${playerCharacter.Job.label} | ${rank})`;
+                  police = pingType + " | `[" + playerCharacter.Job.Callsign + "] | " + formatFirstName(playerCharacter.firstName) + ". " + playerCharacter.lastName + "(" + playerCharacter.Job.label + " | " + rank + ")`";
                 } else {
-                  police = `${police}\n[${playerCharacter.Job.Callsign}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName} (${playerCharacter.Job.label} | ${rank})`;
+                  police = police + "\n" + pingType + " | `[" + playerCharacter.Job.Callsign + "] | " + formatFirstName(playerCharacter.firstName) + ". " + playerCharacter.lastName + "(" + playerCharacter.Job.label + " | " + rank + ")`";
                 }
               } else if (playerCharacter.Job.name === Jobs.Community && playerCharacter.Job.Status) { // If community officer and on duty
                 if (cOfficers.length <= 0) {
-                  cOfficers = `[${svPlayers[i].Handle}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName}`;
+                  cOfficers = pingType + " | `[" + svPlayers[i].Handle + "] | " + formatFirstName(playerCharacter.firstName) + ". " + playerCharacter.lastName + "`";
                 } else {
-                  cOfficers = `${cOfficers}\n[${svPlayers[i].Handle}] | ${formatFirstName(playerCharacter.firstName)}. ${playerCharacter.lastName}`;
+                  cOfficers = cOfficers + "\n" + pingType + " | `[" + svPlayers[i].Handle + "] | " + formatFirstName(playerCharacter.firstName) + ". " + playerCharacter.lastName + "`";
                 }
               } else {
                 if (civilians.length <= 0) {
-                  civilians = `[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+                  civilians = pingType + " | `[" + svPlayers[i].Handle + "] | " + svPlayers[i].GetName + "`";
                 } else {
-                  civilians = `${civilians}\n[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+                  civilians = civilians + "\n" + pingType + " | `[" + svPlayers[i].Handle + "] | " + svPlayers[i].GetName + "`";
                 }
               }
             }
           } else {
             if (unspawned.length <= 0) {
-              unspawned = `[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+              unspawned = pingType + " | `[" + svPlayers[i].Handle + "] | " + svPlayers[i].GetName + "`";
             } else {
-              unspawned = `${unspawned}\n[${svPlayers[i].Handle}] | ${svPlayers[i].GetName}`
+              unspawned = unspawned + "\n" + pingType + " | `[" + svPlayers[i].Handle + "] | " + svPlayers[i].GetName + "`";
             }
           }
 
@@ -70,51 +81,6 @@ export class ServerStatus {
             SetConvarServerInfo("onlineCommunity", cOfficers.length > 0 ? cOfficers : "None");
             SetConvarServerInfo("onlineCivs", civilians.length > 0 ? civilians : "None");
             SetConvarServerInfo("onlineUnspawned", unspawned.length > 0 ? unspawned : "None");
-            // await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
-            //   username: "Server Status", embeds: [{
-            //     color: EmbedColours.Green,
-            //     author: {
-            //       name: "Astrid Network Server Status",
-            //       icon_url: serverConfig.discordLogs.footerLogo
-            //     },
-            //     description: "**Direct Connect** - https://cfx.re/join/588967",
-            //     fields: [
-            //       {
-            //         name: "Online Players",
-            //         value: `${svPlayers.length}/${this.server.GetMaxPlayers}`,
-            //         inline: false
-            //       },
-            //       {
-            //         name: "\u200B",
-            //         value: '\u200B',
-            //         inline: false
-            //       },
-            //       {
-            //         name: "Law Enforcement",
-            //         value: police.length > 0 ? police : "None",
-            //         inline: true
-            //       },
-            //       {
-            //         name: "Community Officers",
-            //         value: cOfficers.length > 0 ? cOfficers : "None",
-            //         inline: false
-            //       },
-            //       {
-            //         name: "Civilians",
-            //         value: civilians.length > 0 ? civilians : "None",
-            //         inline: false
-            //       },
-            //       {
-            //         name: "Unspawned",
-            //         value: unspawned.length > 0 ? unspawned : "None",
-            //         inline: false
-            //       }
-            //     ],
-            //     footer: {
-            //       text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
-            //     }
-            //   }]
-            // }));
           }
         }
       } else {
@@ -123,21 +89,6 @@ export class ServerStatus {
         SetConvarServerInfo("onlineCivs", "None");
         SetConvarServerInfo("onlineUnspawned", "None");
       }
-      // else {
-      //   await this.server.logManager.Send(LogTypes.Players, new WebhookMessage({
-      //     username: "Server Status", embeds: [{
-      //       color: EmbedColours.Red,
-      //       author: {
-      //         name: "Astrid Network Server Status",
-      //         icon_url: serverConfig.discordLogs.footerLogo
-      //       },
-      //       description: "**Direct Connect** - https://cfx.re/join/588967\n\nThere are no players in the server.",
-      //       footer: {
-      //         text: `© ${sharedConfig.serverName} - ${new Date().getFullYear()}, All Rights Reserved`
-      //       }
-      //     }]
-      //   }));
-      // }
-    }, 2000)
+    }, 30000)
   }
 }
