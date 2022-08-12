@@ -77,7 +77,6 @@ export class ConnectionsManager {
             // await server.connectedPlayerManager.Remove(player.handle);
           }
         }
-        Log("Connection Manager", `${player.GetName} Connecting...`);
 
         deferrals.update(`[${sharedConfig.serverName}]: We're checking your name...`);
 
@@ -108,7 +107,7 @@ export class ConnectionsManager {
         const insertedData = await player.Insert();
         if (insertedData) {
           if (this.server.IsDebugging) {
-            Log("Connection Manager", `DB Player (${player.GetName}) Result Created!`);
+            Log("Connection Manager", `DB Player (${player.GetName}) Entry Created!`);
           }
         } else {
           deferrals.done(`[${sharedConfig.serverName}]: There was an error creating your information, make a support ticket, with the provided error code.\n\nError Code: ${ErrorCodes.NoInsert}.`)
@@ -116,6 +115,7 @@ export class ConnectionsManager {
           return;
         }
       }
+      Log("Connection Manager", `${player.GetName} Connecting...`);
 
       player.steamAvatar = await player.GetProfileAvatar(await player.GetIdentifier("steam"));
       console.log("Send over loading screen data", player.id, player.GetName, Ranks[player.Rank], player.FormattedRank, await player.GetPlaytime.FormatTime(), player.steamAvatar, this.server.Developing);
