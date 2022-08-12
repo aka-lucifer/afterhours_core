@@ -119,10 +119,12 @@ export class Characters {
 
               if (this.meMessages[i].tick == undefined) this.meMessages[i].tick = setTick(async() => {
                 if (this.meMessages[i] !== undefined) {
-                  let player = GetPlayerFromServerId(Number(this.meMessages[i].netId));
-                  let ped = new Ped(GetPlayerPed(player));
-                  const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.2));
-                  Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, true, 0.1, true);
+                  player = GetPlayerFromServerId(Number(this.meMessages[i].netId));
+                  if (player !== -1) {
+                    ped = new Ped(GetPlayerPed(player));
+                    const position = NumToVector3(GetOffsetFromEntityInWorldCoords(ped.Handle, 0.0, 0.0, 1.2));
+                    Draw3DText(position, {r: 170, g: 0, b: 255, a: 255}, this.meMessages[i].content, Font.ChaletLondon, true, 0.1, true);
+                  }
                 }
               });
             }
