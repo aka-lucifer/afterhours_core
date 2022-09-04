@@ -283,7 +283,7 @@ export class CharacterManager {
       const charData = data.data;
       
       // console.log("New Char Data", charData)
-      const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.backstory, charData.dob, charData.gender, charData.licenses, charData.mugshot);
+      const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.dob, charData.gender, charData.licenses, charData.mugshot);
       if (created) {
         player.characters.push(character);
         data.character = Object.assign({}, character);
@@ -320,7 +320,6 @@ export class CharacterManager {
             character.firstName = charData.firstName;
             character.lastName = charData.lastName;
             character.nationality = charData.nationality;
-            character.backstory = charData.backstory;
             if (charData.mugshot) character.Metadata.Mugshot = charData.mugshot;
             if (charData.licenses) character.Metadata.setLicenses(charData.licenses)
 
@@ -377,7 +376,6 @@ export class CharacterManager {
           firstName: character.firstName,
           lastName: character.lastName,
           nationality: character.nationality,
-          backstory: character.backstory,
           dob: character.DOB,
           age: character.Age,
           isFemale: character.Female,

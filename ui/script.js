@@ -46,7 +46,6 @@ const HUD = new Vue({
       firstName: "",
       lastName: "",
       nationality: "",
-      backstory: "",
       dob: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
       age: 0,
       isFemale: false,
@@ -77,11 +76,6 @@ const HUD = new Vue({
       (v) => !!v && v.length <= 50 || "Nationality must be 50 characters or less",
       (v) => !!v && RegExp("^[a-z A-Z]+$").test(v) || "Invalid Characters",
       (v) => !!v && v.length >= 3 || "Nationality must be 3 - 50 characters"
-    ],
-      
-    backstoryRules: [
-      (v) => !!v || "Backstory required",
-      (v) => !!v && v.length > 10 || "Backstory must be greater than 10 characters"
     ],
 
     dobRules: [
@@ -331,7 +325,6 @@ const HUD = new Vue({
             firstName: this.newCharacter.firstName,
             lastName: this.newCharacter.lastName,
             nationality: this.newCharacter.nationality,
-            backstory: this.newCharacter.backstory,
             dob: this.newCharacter.dob,
             gender: this.newCharacter.isFemale,
             licenses: this.newCharacter.licenseValues,
@@ -390,7 +383,6 @@ const HUD = new Vue({
           firstName: this.characters[this.selectedCharacter].firstName,
           lastName: this.characters[this.selectedCharacter].lastName,
           nationality: this.characters[this.selectedCharacter].nationality,
-          backstory: this.characters[this.selectedCharacter].backstory,
           mugshot: this.characters[this.selectedCharacter].mugshot,
           licenses: this.characters[this.selectedCharacter].licenseValues
         }, (charLicenses) => {

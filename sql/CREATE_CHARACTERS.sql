@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS `player_characters` (
   `first_name` VARCHAR(255) NOT NULL,
   `last_name` VARCHAR(255) NOT NULL,
   `nationality` VARCHAR(255) NOT NULL,
-  `backstory` LONGTEXT NOT NULL,
   `dob` VARCHAR(10) NOT NULL,
   `gender` tinyint(1) NOT NULL DEFAULT 0,
   `phone` VARCHAR(11) NOT NULL,

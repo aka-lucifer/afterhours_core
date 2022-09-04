@@ -6,7 +6,6 @@ export class Character {
   public firstName: string;
   public lastName: string;
   public nationality: string;
-  public backstory: string;
   public dob: string;
   public age: number;
   public isFemale: boolean;
@@ -21,7 +20,6 @@ export class Character {
     this.firstName = charData.firstName;
     this.lastName = charData.lastName;
     this.nationality = charData.nationality;
-    this.backstory = charData.backstory;
     this.dob = charData.dob;
     this.age = charData.age;
     this.isFemale = charData.isFemale;
@@ -65,7 +63,6 @@ interface SelectedCharacter {
   firstName: string,
   lastName: string,
   nationality: string,
-  backstory: string,
   dob: string,
   age: number,
   isFemale: boolean,

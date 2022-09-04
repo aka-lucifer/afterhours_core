@@ -14,7 +14,6 @@ export class Character {
   public firstName: string;
   public lastName: string;
   public nationality: string;
-  public backstory: string;
   private dob: string;
   private age: number;
   private isFemale: boolean;
@@ -112,7 +111,6 @@ export class Character {
       this.firstName = charData.data[0].first_name;
       this.lastName = charData.data[0].last_name;
       this.nationality = charData.data[0].nationality;
-      this.backstory = charData.data[0].backstory;
       this.dob = charData.data[0].dob;
       this.age = this.formatAge(this.dob);
       this.isFemale = (charData.data[0].gender == 1);
@@ -127,11 +125,10 @@ export class Character {
     }
   }
 
-  public async create(firstName: string, lastName: string, nationality: string, backstory: string, dob: string, gender: boolean, licenses?: string[], mugshot?: string): Promise<boolean> {
+  public async create(firstName: string, lastName: string, nationality: string, dob: string, gender: boolean, licenses?: string[], mugshot?: string): Promise<boolean> {
     this.firstName = firstName;
     this.lastName = lastName;
     this.nationality = nationality;
-    this.backstory = backstory;
     this.dob = dob;
     this.age = this.formatAge(this.dob);
     this.isFemale = gender;
@@ -140,12 +137,11 @@ export class Character {
     this.metadata = new Metadata(licenses, mugshot);
     await this.metadata.getMetadata();
     
-    const newChar = await Database.SendQuery("INSERT INTO `player_characters` (`player_id`, `first_name`, `last_name`, `nationality`, `backstory`, `dob`, `gender`, `phone`, `job`, `metadata`, `last_updated`) VALUES (:playerId, :firstName, :lastName, :nationality, :backstory, :dob, :gender, :phone, :job, :metadata, :editedTime)", {
+    const newChar = await Database.SendQuery("INSERT INTO `player_characters` (`player_id`, `first_name`, `last_name`, `nationality`, `dob`, `gender`, `phone`, `job`, `metadata`, `last_updated`) VALUES (:playerId, :firstName, :lastName, :nationality, :dob, :gender, :phone, :job, :metadata, :editedTime)", {
       playerId: this.playerId,
       firstName: this.firstName,
       lastName: this.lastName,
       nationality: this.nationality,
-      backstory: this.backstory,
       dob: this.dob,
       gender: this.isFemale ? 1 : 0,
       phone: this.phone,
@@ -165,13 +161,12 @@ export class Character {
   public async update(): Promise<boolean> {
     this.lastUpdated = new Date(await GetTimestamp());
     
-    const updatedChar = await Database.SendQuery("UPDATE `player_characters` SET `first_name` = :firstName, `last_name` = :lastName, `nationality` = :nationality, `backstory` = :backstory, `metadata` = :metadata, `last_updated` = :editedTime WHERE `id` = :id AND `player_id` = :playerId", {
+    const updatedChar = await Database.SendQuery("UPDATE `player_characters` SET `first_name` = :firstName, `last_name` = :lastName, `nationality` = :nationality, `metadata` = :metadata, `last_updated` = :editedTime WHERE `id` = :id AND `player_id` = :playerId", {
       id: this.id,
       playerId: this.playerId,
       firstName: this.firstName,
       lastName: this.lastName,
       nationality: this.nationality,
-      backstory: this.backstory,
       metadata: JSON.stringify(this.metadata),
       editedTime: this.lastUpdated
     });
@@ -210,7 +205,6 @@ export class Character {
     this.firstName = character?.firstName;
     this.lastName = character?.lastName;
     this.nationality = character?.nationality;
-    this.backstory = character?.backstory;
     this.dob = character?.dob;
     this.age = this.formatAge(character?.dob);
     this.isFemale = character?.isFemale;
@@ -472,7 +466,6 @@ interface Info {
   firstName: string;
   lastName: string;
   nationality: string;
-  backstory: string;
   dob: string;
   age?: number;
   isFemale: boolean;

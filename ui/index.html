@@ -122,7 +122,6 @@
               <span style="font-family: 'PT-Sans-Caption';" v-if="hoveredCharacter.jobName !== 'civilian' && hoveredCharacter.jobName !== 'cofficer'"><b>Job</b>: {{ hoveredCharacter.jobLabel }} ({{ hoveredCharacter.jobRank }})</span>
               <span style="font-family: 'PT-Sans-Caption';" v-else><b>Job</b>: {{ hoveredCharacter.jobLabel }}</span>
               <!-- <span style="font-family: 'PT-Sans-Caption';"><b>Phone</b>: {{ hoveredCharacter.phone }}</span><br> -->
-              <br><span style="font-family: 'PT-Sans-Caption';"><b>Backstory</b>: {{ hoveredCharacter.backstory }}</span>
             </v-card-text>
           </v-card>
 
@@ -141,7 +140,6 @@
                           <v-text-field v-model="newCharacter.firstName" :rules="nameRules" outlined label="First Name" append-icon="mdi-rename-box" required></v-text-field>
                           <v-text-field v-model="newCharacter.lastName" :rules="nameRules" outlined label="Surname" append-icon="mdi-rename-box" required></v-text-field>
                           <v-text-field v-model="newCharacter.nationality" :rules="nationalityRules" outlined label="Nationality" append-icon="mdi-map-marker" required></v-text-field>
-                          <v-textarea v-model="newCharacter.backstory" :rules="backstoryRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
                           
                           <v-menu ref="charCreatorMenu" v-model="charCreatorMenu" :close-on-content-click="false" transition="scale-transition" offset-y max-width="290px" min-width="auto">
                             <template v-slot:activator="{ on, attrs }">
@@ -192,7 +190,6 @@
                           <v-text-field v-model="characters[selectedCharacter].firstName" :rules="nameRules" outlined label="First Name" append-icon="mdi-rename-box" required></v-text-field>
                           <v-text-field v-model="characters[selectedCharacter].lastName" :rules="nameRules" outlined label="Surname" append-icon="mdi-rename-box" required></v-text-field>
                           <v-text-field v-model="characters[selectedCharacter].nationality" :rules="nationalityRules" outlined label="Nationality" append-icon="mdi-map-marker" required></v-text-field>
-                          <v-textarea v-model="characters[selectedCharacter].backstory" :rules="backstoryRules" outlined label="Backstory" append-outer-icon="mdi-book-open-page-variant" required></v-textarea>
                           <v-text-field v-model="characters[selectedCharacter].mugshot" outlined label="Mugshot Image Link" append-icon="mdi-camera"></v-text-field>
 
                           <v-select

@@ -8402,7 +8402,7 @@
             "version": "v1.0.0",
             "additions": [
               "Player manager controlling ranks, playtime, metadata, etc.",
-              "Character manager controlling all of your characters data (name, dob, phone, metadata, backstory, job)",
+              "Character manager controlling all of your characters data (name, dob, phone, metadata, job)",
               "Client & Server callbacks for instant data retreval on the opposite, instead of using events, slowing down server performance and response time.",
               "Connected player manager that controls automatic promoting to Honourable and high ping kicking and already connected logic.",
               "Adaptive card on connecting with correct ban information formatting.",
