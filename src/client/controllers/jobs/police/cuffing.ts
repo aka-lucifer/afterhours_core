@@ -231,7 +231,7 @@ export class Cuffing {
         if (!hasCuffEventOccurred && currentSceneTime >= this.sceneStopTime) {
           if (perpHandle > 0) {
             console.log("handcuff ped");
-            global.exports["xsound"].PlayUrlPos("handcuff", Sounds.Handcuff, 0.3, Game.PlayerPed.Position, false);
+            // global.exports["xsound"].PlayUrlPos("handcuff", Sounds.Handcuff, 0.3, Game.PlayerPed.Position, false);
           } else if (role == RoleEnum.Cop) {
             console.log("play handcuff sound 2!");
           } else {

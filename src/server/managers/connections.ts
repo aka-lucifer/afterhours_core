@@ -25,6 +25,10 @@ export class ConnectionsManager {
       deferrals.defer()
       const src = (global as any).source;
       deferrals.update(`[${sharedConfig.serverName}]: Obtaining Player Data...`);
+      deferrals.handover({
+        id: "test_1",
+        name: "test_1"
+      });
 
       const player = new Player(src);
       const playerExists = await player.Exists();
@@ -36,19 +40,22 @@ export class ConnectionsManager {
           return;
         }
       }
-
+      deferrals.handover({
+        id: "test_2",
+        name: "test_2"
+      });
       deferrals.update(`[${sharedConfig.serverName}]: Checking Player Data...`);
       await Delay(200);
 
       if (playerExists) { // If your DB entry exists
         const myLicense = await player.GetIdentifier("license");
-        if (player.Rank != Ranks.Developer && player.Rank < Ranks.Management && await this.server.connectedPlayerManager.Exists(myLicense)) {
+        if (player.Rank != Ranks.Developer && player.Rank < Ranks.Director && await this.server.connectedPlayerManager.Exists(myLicense)) {
           deferrals.done(`[${sharedConfig.serverName}]: There is already a player connected to the server, with this license key!`);
         }
 
         const [isBanned, banData] = await player.isBanned();
         if (isBanned) {
-          if (player.Rank < Ranks.Management && banData.State == BanStates.Active) {
+          if (player.Rank < Ranks.Director && banData.State == BanStates.Active) {
             if (banData.IssuedById !== player.Id) {
               const results = await Database.SendQuery("SELECT `name`, `rank` FROM `players` WHERE `player_id` = :playerId", {
                 playerId: banData.IssuedBy
@@ -78,9 +85,13 @@ export class ConnectionsManager {
           }
         }
 
+        deferrals.handover({
+          id: "test_3",
+          name: "test_3"
+        });
         deferrals.update(`[${sharedConfig.serverName}]: We're checking your name...`);
 
-        if (player.Rank < Ranks.Management && player.GetName.includes("<") || player.GetName.includes(">")) {
+        if (player.Rank < Ranks.Director && player.GetName.includes("<") || player.GetName.includes(">")) {
           const ban = new Ban(player.id, player.HardwareId, "We've detected you using the XSS exploit", player.id);
           await ban.save();
           deferrals.done(`[${sharedConfig.serverName}]: You've been permanently banned from ${sharedConfig.serverName}.\nBan Id: #${ban.Id}\nBy: System\nReason: ${ban.Reason}`);
@@ -88,6 +99,10 @@ export class ConnectionsManager {
           return;
         }
 
+        deferrals.handover({
+          id: "test_4",
+          name: "test_4"
+        });
         deferrals.update(`[${sharedConfig.serverName}]: Updating Player Data...`);
         await Delay(200);
 
@@ -101,6 +116,10 @@ export class ConnectionsManager {
         if (this.server.IsDebugging) {
           Error("Connection Manager", "No DB entry found, make one!")
         }
+        deferrals.handover({
+          id: "test_5",
+          name: "test_5"
+        });
         deferrals.update(`[${sharedConfig.serverName}]: Creating Player Data...`);
         await Delay(200);
 
@@ -115,6 +134,11 @@ export class ConnectionsManager {
           return;
         }
       }
+      
+      deferrals.handover({
+        id: "test_6",
+        name: "test_6"
+      });
       Log("Connection Manager", `${player.GetName} Connecting...`);
 
       player.steamAvatar = await player.GetProfileAvatar(await player.GetIdentifier("steam"));
@@ -157,7 +181,7 @@ export class ConnectionsManager {
         "body": [
           {
               "type":"Image",
-              "url": "https://i.imgur.com/ca5O3ag.png",
+              "url": "https://i.imgur.com/CHANGE_ME.png",
               "horizontalAlignment":"Center"
           },
           {
@@ -259,23 +283,6 @@ export class ConnectionsManager {
                       }
                     ],
                     "backgroundImage": {}
-                  },
-                  {
-                    "type": "Column",
-                    "width": "stretch",
-                    "items": [
-                      {
-                        "type": "ActionSet",
-                        "actions": [
-                          {
-                            "type": "Action.OpenUrl",
-                            "title": "Website",
-                            "style": "positive",
-                            "url": "https://astridnetwork.com/"
-                          }
-                        ]
-                      }
-                    ]
                   }
                 ],
                 "horizontalAlignment": "Center"

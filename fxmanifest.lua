@@ -39,3 +39,6 @@ server_scripts {
 	"server/security.lua",
 	"dist/server/main.js"
 }
+dependency '/assetpacks'
+dependency '/assetpacks'
+dependency '/assetpacks'

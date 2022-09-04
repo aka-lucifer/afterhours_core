@@ -298,7 +298,7 @@ export class JobManager {
             if (character.Job.Boss) {
               const tempPlayer = await this.server.playerManager.getPlayerFromId(data.unitsPlayerId);
               if (tempPlayer) {
-                if (player.Rank < Ranks.Management && tempPlayer.Rank >= Ranks.SeniorAdmin) {
+                if (player.Rank < Ranks.Director && tempPlayer.Rank >= Ranks.SeniorAdmin) {
                   await player.Notify("Command Menu", "You can't fire a Senior Admin or above!", NotificationTypes.Error);
                   return;
                 }

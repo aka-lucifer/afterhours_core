@@ -18,7 +18,7 @@ export class Rolling {
 
   // Methods
   private registerInteractions(): void {
-    emit("astrid_target:client:vehicle", {
+    emit("ah_target:client:vehicle", {
       options: [
         {
           event: Events.flipVehicle,

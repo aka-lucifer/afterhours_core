@@ -450,7 +450,7 @@ export class StaffMenu {
           const currVeh = myPed.CurrentVehicle;
           if (currVeh.Health < currVeh.MaxHealth) {
             currVeh.repair();
-            global.exports["astrid_deform"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
+            global.exports["ah_deform"].FixVehicleDeformation(currVeh.Handle); // Wait until the vehicle is repair, then fix the deformation
             currVeh.DirtLevel = 0.0;
             currVeh.IsEngineRunning = true;
 
@@ -465,7 +465,7 @@ export class StaffMenu {
         }
       });
 
-      if (this.client.player.Rank >= Ranks.Management) {
+      if (this.client.player.Rank >= Ranks.Director) {
         this.vehicleActionsMenu.BindButton("Thot Patrol", async() => {
           const myPed = Game.PlayerPed;
           if (IsPedInAnyVehicle(myPed.Handle, false)) {
@@ -1043,7 +1043,7 @@ export class StaffMenu {
     if (this.client.Player.Spawned && this.client.Player.Rank >= Ranks.Moderator) {
       console.log("passed players", players);
       
-      console.log("blips", this.playersBlips);
+      console.log("blips", this.playersBlips, this.createdBlips);
       if (this.playersBlips) {
         console.log("players length", players.length);
         for (let i = 0; i < players.length; i++) {
@@ -1125,11 +1125,19 @@ export class StaffMenu {
         }
       } else {
         if (this.createdBlips.length > 0) {
-          for (let i = 0; i < this.createdBlips.length; i++) {
-            const blip = new Blip(this.createdBlips[i].blip.Handle);
-            blip.delete();
-            this.createdBlips.splice(i, 1);
+          let tries = 0;
+          while (this.createdBlips.length > 0) {
+            for (let i = 0; i < this.createdBlips.length; i++) {
+              console.log("blip data", this.createdBlips[i]);
+              RemoveBlip(this.createdBlips[i].blip.Handle)
+              this.createdBlips.splice(i, 1);
+            }
+  
+            console.log("deleted data", this.playersBlips, players, this.createdBlips);
           }
+
+          tries = tries + 1;
+          await Delay(100);
         }
       }
     }

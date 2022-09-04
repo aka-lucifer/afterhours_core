@@ -671,26 +671,17 @@ export class Server {
   }
 
   private async EVENT_playerConnected(): Promise<void> {
-    console.log("CONNECTED EVENT!");
     const src = source.toString();
     let player: Player;
     let entryExists = false;
 
     if (await this.connectedPlayerManager.playerConnected(src)) { // If connected to server
-      console.log("FROM CONNECTING!")
       player = await this.connectedPlayerManager.GetPlayer(src);
-      console.log("CONNECTING 1!");
       entryExists = true;
-      console.log("CONNECTING 2!");
     } else { // If restarted resource
-      console.log("FROM RESTARTING!");
       player = new Player(src);
-      console.log("RESTARTING 1!");
       await player.Load();
-      console.log("RESTARTING 2!");
     }
-
-    console.log("loaded info", player, entryExists);
 
     if (player) {
       if (!entryExists) await this.connectedPlayerManager.Add(player); // If no entry found (add player data into the connected player manager | if restarted resource)

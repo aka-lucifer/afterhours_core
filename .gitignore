@@ -14,3 +14,21 @@ src/server/models/webhook/discord/dev_info.txt
 ui_ideas/*
 dist/client/main.js
 dist/server/main.js
+server_unencrypted/security.lua
+client_unencrypted/vehGodmode.lua
+dist/client/main.js
+src/configs/database22.json
+src/client/controllers/staff/noclip2.ts
+cache/files/_cfx_internal/resource.rpf
+cache/files/_cfx_internal/resource.rpf.db
+.idea/astrid_core.iml
+.gitignore
+core optimize notes.txt
+core to do list.txt
+core to do list.txt.bak
+.fxap
+src/shared/test
+server/security.lua
+client/vehGodmode.lua
+dist/client/main.js
+dist/server/main.js

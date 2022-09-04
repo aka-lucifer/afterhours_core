@@ -154,8 +154,6 @@ export class VehicleManager {
                 const vehModel = GetEntityModel(entity);
                 const vehData = serverConfig.vehicles.blacklister[vehModel];
 
-                console.log("veh files", vehModel, vehData);
-
                 if (vehData !== undefined) {
                   // console.log("spawning veh!", entity);
                   const discord = await player.GetIdentifier("discord");

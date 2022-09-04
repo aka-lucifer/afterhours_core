@@ -91,7 +91,7 @@ export class PoliceJob {
   }
 
   public createClockZones(): void {
-    emit("astrid_target:client:addBoxZone", "Sandy PD", new Vector3(1852.24, 3687.0, 34.27), 2.4, 1.4, {
+    emit("ah_target:client:addBoxZone", "Sandy PD", new Vector3(1852.24, 3687.0, 34.27), 2.4, 1.4, {
       name: "sandy_pd_options",
       heading: 301,
       debugPoly: false,
@@ -123,7 +123,7 @@ export class PoliceJob {
       distance: 1
     });
 
-    emit("astrid_target:client:addBoxZone", "Paleto PD", new Vector3(-448.55, 6013.48, 31.72), 4.5, 1.2, {
+    emit("ah_target:client:addBoxZone", "Paleto PD", new Vector3(-448.55, 6013.48, 31.72), 4.5, 1.2, {
       name: "paleto_pd_options",
       heading: 45,
       debugPoly: false,
@@ -155,7 +155,7 @@ export class PoliceJob {
       distance: 1
     });
 
-    emit("astrid_target:client:addBoxZone", "Mission Row PD", new Vector3(442.13, -981.87, 30.69), 2, 2, {
+    emit("ah_target:client:addBoxZone", "Mission Row PD", new Vector3(442.13, -981.87, 30.69), 2, 2, {
       name: "mrpd_options",
       heading: 0,
       debugPoly: false,
@@ -188,7 +188,7 @@ export class PoliceJob {
     });
 
 
-    emit("astrid_target:client:addBoxZone", "La Mesa PD", new Vector3(835.83, -1289.7, 28.24), 5.2, 1.2, {
+    emit("ah_target:client:addBoxZone", "La Mesa PD", new Vector3(835.83, -1289.7, 28.24), 5.2, 1.2, {
       name: "la_mesa_pd_options",
       heading: 0,
       debugPoly: false,
@@ -224,10 +224,10 @@ export class PoliceJob {
   }
 
   public deleteClockZones(): void {
-    emit("astrid_target:client:removeZone", "Sandy PD");
-    emit("astrid_target:client:removeZone", "Paleto PD");
-    emit("astrid_target:client:removeZone", "Mission Row PD");
-    emit("astrid_target:client:removeZone", "La Mesa PD");
+    emit("ah_target:client:removeZone", "Sandy PD");
+    emit("ah_target:client:removeZone", "Paleto PD");
+    emit("ah_target:client:removeZone", "Mission Row PD");
+    emit("ah_target:client:removeZone", "La Mesa PD");
   }
 
   public async init(): Promise<void> {

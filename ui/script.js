@@ -3,7 +3,7 @@ const HUD = new Vue({
   vuetify: new Vuetify(),
   data: {
     // Important 
-    resource: "astrid_core",
+    resource: "ah_core",
     ranks: {},
     myRank: 0,
 
@@ -202,7 +202,7 @@ const HUD = new Vue({
     // [COMMENDS] - Server Data
     issuedCommends: [],
 
-    // [ASTRID MENU]
+    // [MENU]
     menuVisible: false,
     menuPosition: "middle-right",
     menuName: "Default",
@@ -924,7 +924,7 @@ const HUD = new Vue({
       });
     },
 
-    // ASTRID MENU
+    // MENU
     OpenMenu(data) {
       this.menuPosition = data.position;
       this.menuName = data.name;
@@ -1440,7 +1440,7 @@ const HUD = new Vue({
     // Commend Events
     RegisterEvent("OPEN_COMMENDS", this.DisplayCommends);
 
-    // ASTRID MENU Events
+    // MENU Events
     RegisterEvent("OPEN_MENU", this.OpenMenu);
     RegisterEvent("CLOSE_MENU", this.CloseMenu);
     RegisterEvent("RENAME_MENU", this.RenameMenu);

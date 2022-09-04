@@ -79,7 +79,6 @@ export class ChatManager {
                     commands[a].callback(player.Handle, args);
                   }
                 } else {
-                  Error("Chat Manager", "Access Denied!");
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("Access Denied!", SystemTypes.Error));
                   emitNet(Events.receiveServerCB, src, false, data);
                 }
@@ -122,7 +121,6 @@ export class ChatManager {
                     jobCommands[a].callback(player.Handle, args);
                   }
                 } else {
-                  Error("Chat Manager", "Access Denied!");
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("Job Access Denied!", SystemTypes.Error));
                   emitNet(Events.receiveServerCB, src, false, data);
                 }

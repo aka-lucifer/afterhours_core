@@ -82,7 +82,7 @@ export class StaffManager {
       } else {
         Error("Ban Command", "Server ID not entered!");
       }
-    }, Ranks.Management);
+    }, Ranks.Director);
     
     new Command("announce", "Make an administration announcement to the entire server.", [{name: "content", help: "The announcement you are going to be broadcasting."}], true, async(source: string, args: any[]) => {
       if (args[0]) {
@@ -126,7 +126,7 @@ export class StaffManager {
                 if (isDateValid(date)) {
                   if (args[2]) {
                     const banReason = concatArgs(2, args);
-                    if (foundPlayer.Rank < Ranks.Management) {
+                    if (foundPlayer.Rank < Ranks.Director) {
                       Inform("Offline Ban Command", `Banned: [${foundPlayer.Id}] - ${foundPlayer.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
                       const ban = new Ban(foundPlayer.Id, foundPlayer.HardwareId, banReason, foundPlayer.Id, date);
                       ban.OfflineBan = true;
@@ -175,7 +175,7 @@ export class StaffManager {
             if (foundPlayer) {
               if (args[1]) {
                 const warnReason = concatArgs(1, args);
-                if (foundPlayer.Rank < Ranks.Management) {
+                if (foundPlayer.Rank < Ranks.Director) {
                   Inform("Offline Warn Command", `Warning: [${foundPlayer.Id}] - ${foundPlayer.GetName} | For: ${warnReason}`);
                   const warn = new Warning(foundPlayer.Id, warnReason, foundPlayer.Id)
                   warn.OfflineReceiver = foundPlayer;
@@ -217,7 +217,7 @@ export class StaffManager {
             if (isDateValid(date)) {
               if (args[2]) {
                 const banReason = concatArgs(2, args);
-                if (player.Rank < Ranks.Management) {
+                if (player.Rank < Ranks.Director) {
                   Inform("Offline Ban Command", `Banned: [${player.Id} | ${player.Handle}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
                   const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id);
                   await ban.save();
@@ -256,7 +256,7 @@ export class StaffManager {
             if (isDateValid(date)) {
               if (args[2]) {
                 const banReason = concatArgs(2, args);
-                if (player.Rank < Ranks.Management) {
+                if (player.Rank < Ranks.Director) {
                   Inform("Ban Command", `Banned: [${player.Id}] - ${player.GetName} | Until: ${date.toUTCString()} | For: ${banReason}`);
                   const ban = new Ban(player.Id, player.HardwareId, banReason, player.Id, date);
                   ban.OfflineBan = true;
@@ -316,7 +316,7 @@ export class StaffManager {
         if (player) {
           if (args[1]) {
             const warnReason = concatArgs(1, args);
-            if (player.Rank < Ranks.Management) {
+            if (player.Rank < Ranks.Director) {
               Inform("Offline Warn Command", `Warning: [${player.Id}] - ${player.GetName} | For: ${warnReason}`);
               const warn = new Warning(player.Id, warnReason, player.Id)
               warn.OfflineReceiver = player;

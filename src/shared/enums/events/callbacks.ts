@@ -1,44 +1,44 @@
 export enum Callbacks {
-  // Astrid Client -> Server Callbacks
-  takeScreenshot = "astrid:client:screenshot",
+  // AfterHours Client -> Server Callbacks
+  takeScreenshot = "afterhours:client:screenshot",
 
-  // Astrid Client -> Server Callbacks ([Controllers] | Staff] - Menu)
-  getVehicleFreeSeat = "astrid:client:controllers:staff:menu:getVehicleFreeSeat",
-  spectatePlayer = "astrid:client:controllers:staff:menu:spectatePlayer",
-  getSummoned = "astrid:client:controllers:staff:menu:getSummoned",
-  getKilled = "astrid:client:controllers:staff:menu:getKilled",
-  getSummonReturned = "astrid:client:controllers:staff:menu:getSummonReturned",
+  // AfterHours Client -> Server Callbacks ([Controllers] | Staff] - Menu)
+  getVehicleFreeSeat = "afterhours:client:controllers:staff:menu:getVehicleFreeSeat",
+  spectatePlayer = "afterhours:client:controllers:staff:menu:spectatePlayer",
+  getSummoned = "afterhours:client:controllers:staff:menu:getSummoned",
+  getKilled = "afterhours:client:controllers:staff:menu:getKilled",
+  getSummonReturned = "afterhours:client:controllers:staff:menu:getSummonReturned",
 
-  // Astrid Client -> Server Callbacks ([Managers] | Vehicle)
-  getVehicleLabel = "astrid:client:managers:vehicle:getVehicleLabel",
+  // AfterHours Client -> Server Callbacks ([Managers] | Vehicle)
+  getVehicleLabel = "afterhours:client:managers:vehicle:getVehicleLabel",
 
-  // Astrid Server -> Client Callbacks
+  // AfterHours Server -> Client Callbacks
 
   // Characters
-  createCharacter = "astrid:server:createCharacter",
-  editCharacter = "astrid:server:editCharacter",
-  selectCharacter = "astrid:server:selectCharacter",
-  deleteCharacter = "astrid:server:deleteCharacter",
+  createCharacter = "afterhours:server:createCharacter",
+  editCharacter = "afterhours:server:editCharacter",
+  selectCharacter = "afterhours:server:selectCharacter",
+  deleteCharacter = "afterhours:server:deleteCharacter",
 
   // Vehicles
-  createVehicle = "astrid:server:createVehicle",
-  editVehicle = "astrid:server:editVehicle",
-  deleteVehicle = "astrid:server:deleteVehicle",
+  createVehicle = "afterhours:server:createVehicle",
+  editVehicle = "afterhours:server:editVehicle",
+  deleteVehicle = "afterhours:server:deleteVehicle",
   
   // Chat
-  sendMessage = "astrid:server:sendMessage",
+  sendMessage = "afterhours:server:sendMessage",
 
   // AOP
-  setAOP = "astrid:server:managers:aop:setAOP",
+  setAOP = "afterhours:server:managers:aop:setAOP",
 
   // Bug Reporting
-  submitBug = "astrid:server:controllers:ui:submitBug",
+  submitBug = "afterhours:server:controllers:ui:submitBug",
   
-  // Astrid Server -> Client Callbacks ([Controllers] | UI] - Scoreboard)
-  getScoreboardData = "astrid:server:controllers:ui:scoreboard:getScoreboardData",
+  // AfterHours Server -> Client Callbacks ([Controllers] | UI] - Scoreboard)
+  getScoreboardData = "afterhours:server:controllers:ui:scoreboard:getScoreboardData",
   
-  // Astrid Server -> Client Callbacks ([Controllers] | Staff] - Menu),
-  getBans = "astrid:server:controllers:staff:menu:getBans",
-  togglePlayerBlips = "astrid:server:controllers:staff:menu:togglePlayerBlips",
-  updatePlayerJob = "astrid:server:controllers:staff:menu:updatePlayerJob"
+  // AfterHours Server -> Client Callbacks ([Controllers] | Staff] - Menu),
+  getBans = "afterhours:server:controllers:staff:menu:getBans",
+  togglePlayerBlips = "afterhours:server:controllers:staff:menu:togglePlayerBlips",
+  updatePlayerJob = "afterhours:server:controllers:staff:menu:updatePlayerJob"
 }

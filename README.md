@@ -1,5 +1,5 @@
 
-# Astrid Network (FiveM) v1.0.0 Change Log
+# AfterHours Network (FiveM) v1.0.0 Change Log
 
 ### Server Additions ###
 

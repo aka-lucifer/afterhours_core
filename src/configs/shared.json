@@ -1,6 +1,7 @@
 {
-  "serverName": "Astrid Network",
-  "serverLogo": "https://i.imgur.com/RYvyA1o.png",
+  "serverName": "AfterHours Network",
+  "serverDiscord": "discord.gg/B4FWXgtmZx",
+  "serverLogo": "https://i.imgur.com/CHANGE_ME.png",
   "permissions": {
     "Moderator": ["semiGodmode", "godmodeEulen", "godmode", "rapePlayer", "noclipping", "thermalVision", "nightVision", "antiRagdoll", "nuiDevTools"],
     "Admin": ["weaponMetaModifier", "semiGodmode", "godmodeEulen", "godmode", "rapePlayer", "noclipping", "thermalVision", "nightVision", "infiniteAmmo", "antiRagdoll", "manualVehSpeed", "invisiblePlayer", "infiniteStamina", "nuiDevTools", "resourceChanging", "blacklistedEntity", "explosion", "sayCommand", "chatMsg"],
@@ -58,6 +59,2108 @@
     "cycleInterval": 5000
   },
   "weapons": {
+    "-1569615261": {
+      "name": "weapon_unarmed", "label": "Unarmed", "reason": "beaten", "type": "melee"
+    },
+    "453432689": {
+      "name": "weapon_pistol", "label": "Berreta M9", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_PISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_PISTOL_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP_02"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_PISTOL_VARMOD_LUXE"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_pistol"
+      },
+
+      "DONATOR_WEAPON_EXAMPLE_BELOW": {
+        "rank": [4, 5],
+        "donatorAsset": true
+      }
+    },
+    "-1075685676": {
+      "name": "weapon_pistol_mk2", "label": "Pistol Mk II", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_PISTOL_MK2_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_PISTOL_MK2_CLIP_02"},
+        {"name": "tracer_rounds", "label": "Tracer Rounds", "hash": "COMPONENT_PISTOL_MK2_CLIP_TRACER"},
+        {"name": "incendiary_rounds", "label": "Incendiary Rounds", "hash": "COMPONENT_PISTOL_MK2_CLIP_INCENDIARY"},
+        {"name": "hollow_point_rounds", "label": "Hollow Point Rounds", "hash": "COMPONENT_PISTOL_MK2_CLIP_HOLLOWPOINT"},
+        {"name": "fmj_rounds", "label": "FMJ Rounds", "hash": "COMPONENT_PISTOL_MK2_CLIP_FMJ"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_PI_RAIL"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH_02"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP_02"},
+        {"name": "compensator", "label": "Compensator", "hash": "COMPONENT_AT_PI_COMP"},
+        {"name": "digital_camo", "label": "Digital Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO"},
+        {"name": "brushstroke_camo", "label": "Brushstroke Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_02"},
+        {"name": "woodland_camo", "label": "Woodland Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_03"},
+        {"name": "skull_camo", "label": "Skull Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_04"},
+        {"name": "sessanta_camo", "label": "Sessanta Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_05"},
+        {"name": "perseus_camo", "label": "Perseus Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_06"},
+        {"name": "leopard_camo", "label": "Leopard Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_07"},
+        {"name": "zebra_camo", "label": "Zebra Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_08"},
+        {"name": "geometric_camo", "label": "Geometric Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_09"},
+        {"name": "boom_camo", "label": "Boom Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_10"},
+        {"name": "patriotic_camo", "label": "Patriotic Camo", "hash": "COMPONENT_PISTOL_MK2_CAMO_IND_01"},
+        {"name": "slide_camo_1", "label": "Slide Camo 1", "hash": "COMPONENT_PISTOL_MK2_CAMO_SLIDE"},
+        {"name": "slide_camo_2", "label": "Slide Camo 2", "hash": "COMPONENT_PISTOL_MK2_CAMO_02_SLIDE"},
+        {"name": "slide_camo_3", "label": "Slide Camo 3", "hash": "COMPONENT_PISTOL_MK2_CAMO_03_SLIDE"},
+        {"name": "slide_camo_4", "label": "Slide Camo 4", "hash": "COMPONENT_PISTOL_MK2_CAMO_04_SLIDE"},
+        {"name": "slide_camo_5", "label": "Slide Camo 5", "hash": "COMPONENT_PISTOL_MK2_CAMO_05_SLIDE"},
+        {"name": "slide_camo_6", "label": "Slide Camo 6", "hash": "COMPONENT_PISTOL_MK2_CAMO_06_SLIDE"},
+        {"name": "slide_camo_7", "label": "Slide Camo 7", "hash": "COMPONENT_PISTOL_MK2_CAMO_07_SLIDE"},
+        {"name": "slide_camo_8", "label": "Slide Camo 8", "hash": "COMPONENT_PISTOL_MK2_CAMO_08_SLIDE"},
+        {"name": "slide_camo_9", "label": "Slide Camo 9", "hash": "COMPONENT_PISTOL_MK2_CAMO_09_SLIDE"},
+        {"name": "slide_camo_10", "label": "Slide Camo 10", "hash": "COMPONENT_PISTOL_MK2_CAMO_10_SLIDE"},
+        {"name": "slide_camo_11", "label": "Slide Camo 11", "hash": "COMPONENT_PISTOL_MK2_CAMO_IND_01_SLIDE"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_pistolmk2"
+      },
+      "test   rank": [4, 5],
+      "test   donatorAsset": true
+    },
+    "-1716589765": {
+      "name": "weapon_pistol50", "label": "Desert Eagle", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_PISTOL50_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_PISTOL50_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_PISTOL50_VARMOD_LUXE"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_pistol50"
+      },
+      "rank": 0
+    },
+    "1593441988": {
+      "name": "weapon_combatpistol", "label": "Glock 17", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_COMBATPISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_COMBATPISTOL_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP_02"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_COMBATPISTOL_VARMOD_LOWRIDER'"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_combatpistol"
+      }
+    },
+    "584646201": {
+      "name": "weapon_appistol", "label": "AP Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_APPISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "CCOMPONENT_APPISTOL_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP_02"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_APPISTOL_VARMOD_LUXE"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_appistol"
+      },
+      "rank": 0
+    },
+    "-1076751822": {
+      "name": "weapon_snspistol", "label": "SNS Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_SNSPISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "CCOMPONENT_SNSPISTOL_CLIP_02"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_SNSPISTOL_VARMOD_LOWRIDER"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_sns_pistol"
+      }
+    },
+    "-2009644972": {
+      "name": "weapon_snspistol_mk2", "label": "SNS Pistol Mk II", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_SNSPISTOL_MK2_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_SNSPISTOL_MK2_CLIP_02"},
+        {"name": "tracer_rounds", "label": "Tracer Rounds", "hash": "COMPONENT_SNSPISTOL_MK2_CLIP_TRACER"},
+        {"name": "incendiary_rounds", "label": "Incendiary Rounds", "hash": "COMPONENT_SNSPISTOL_MK2_CLIP_INCENDIARY"},
+        {"name": "hollow_point_rounds", "label": "Hollow Point Rounds", "hash": "COMPONENT_SNSPISTOL_MK2_CLIP_HOLLOWPOINT"},
+        {"name": "fmj_rounds", "label": "FMJ Rounds", "hash": "COMPONENT_SNSPISTOL_MK2_CLIP_FMJ"},
+        {"name": "scope", "label": "Mounted Scope", "hash": "COMPONENT_AT_PI_RAIL_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH_03"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP_02"},
+        {"name": "compensator", "label": "Compensator", "hash": "COMPONENT_AT_PI_COMP_02"},
+        {"name": "digital_camo", "label": "Digital Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO"},
+        {"name": "brushstroke_camo", "label": "Brushstroke Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_02"},
+        {"name": "woodland_camo", "label": "Woodland Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_03"},
+        {"name": "skull_camo", "label": "Skull Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_04"},
+        {"name": "sessanta_camo", "label": "Sessanta Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_05"},
+        {"name": "perseus_camo", "label": "Perseus Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_06"},
+        {"name": "leopard_camo", "label": "Leopard Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_07"},
+        {"name": "zebra_camo", "label": "Zebra Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_08"},
+        {"name": "geometric_camo", "label": "Geometric Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_09"},
+        {"name": "boom_camo", "label": "Boom Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_10"},
+        {"name": "patriotic_camo", "label": "Patriotic Camo", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_IND_01"},
+        {"name": "slide_camo_1", "label": "Slide Camo 1", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_SLIDE"},
+        {"name": "slide_camo_2", "label": "Slide Camo 2", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_02_SLIDE"},
+        {"name": "slide_camo_3", "label": "Slide Camo 3", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_03_SLIDE"},
+        {"name": "slide_camo_4", "label": "Slide Camo 4", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_04_SLIDE"},
+        {"name": "slide_camo_5", "label": "Slide Camo 5", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_05_SLIDE"},
+        {"name": "slide_camo_6", "label": "Slide Camo 6", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_06_SLIDE"},
+        {"name": "slide_camo_7", "label": "Slide Camo 7", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_07_SLIDE"},
+        {"name": "slide_camo_8", "label": "Slide Camo 8", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_08_SLIDE"},
+        {"name": "slide_camo_9", "label": "Slide Camo 9", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_09_SLIDE"},
+        {"name": "slide_camo_10", "label": "Slide Camo 10", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_10_SLIDE"},
+        {"name": "slide_camo_11", "label": "Slide Camo 11", "hash": "COMPONENT_SNSPISTOL_MK2_CAMO_IND_01_SLIDE"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_sns_pistolmk2"
+      }
+    },
+    "-771403250": {
+      "name": "weapon_heavypistol", "label": "M1911", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_HEAVYPISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_HEAVYPISTOL_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_HEAVYPISTOL_VARMOD_LUXE"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_heavypistol"
+      },
+      "rank": 0
+    },
+    "137902532": {
+      "name": "weapon_vintagepistol", "label": "Vintage Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_VINTAGEPISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_VINTAGEPISTOL_CLIP_02"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_vintage_pistol"
+      }
+    },
+    "-619010992": {
+      "name": "weapon_machinepistol", "label": "Machine Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MACHINEPISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MACHINEPISTOL_CLIP_02"},
+        {"name": "clip_drum", "lable": "Drum Magazine", "hash": "COMPONENT_MACHINEPISTOL_CLIP_03"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_compactsmg"
+      }
+    },
+    "-1045183535": {
+      "name": "weapon_revolver", "label": "King Cobra .357 Magnum", "ammoType": "AMMO_PISTOL",
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_revolver"
+      },
+      "rank": 0
+    },
+    "-879347409": {
+      "name": "weapon_revolver_mk2", "label": "Heavy Revolver Mk II", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_REVOLVER_MK2_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_REVOLVER_MK2_CLIP_02"},
+        {"name": "tracer_rounds", "label": "Tracer Rounds", "hash": "COMPONENT_REVOLVER_MK2_CLIP_TRACER"},
+        {"name": "incendiary_rounds", "label": "Incendiary Rounds", "hash": "COMPONENT_REVOLVER_MK2_CLIP_INCENDIARY"},
+        {"name": "hollow_point_rounds", "label": "Hollow Point Rounds", "hash": "COMPONENT_REVOLVER_MK2_CLIP_HOLLOWPOINT"},
+        {"name": "fmj_rounds", "label": "FMJ Rounds", "hash": "COMPONENT_REVOLVER_MK2_CLIP_FMJ"},
+        {"name": "holographic_sight", "label": "Holographic Sight", "hash": "COMPONENT_AT_SIGHTS"},
+        {"name": "small_scope", "label": "Small Scope", "hash": "COMPONENT_AT_SCOPE_MACRO_MK2"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_PI_FLSH"},
+        {"name": "compensator", "label": "Compensator", "hash": "COMPONENT_AT_PI_COMP_03"},
+        {"name": "digital_camo", "label": "Digital Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO"},
+        {"name": "brushstroke_camo", "label": "Brushstroke Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_02"},
+        {"name": "woodland_camo", "label": "Woodland Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_03"},
+        {"name": "skull_camo", "label": "Skull Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_04"},
+        {"name": "sessanta_camo", "label": "Sessanta Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_05"},
+        {"name": "perseus_camo", "label": "Perseus Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_06"},
+        {"name": "leopard_camo", "label": "Leopard Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_07"},
+        {"name": "zebra_camo", "label": "Zebra Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_08"},
+        {"name": "geometric_camo", "label": "Geometric Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_09"},
+        {"name": "boom_camo", "label": "Boom Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_10"},
+        {"name": "patriotic_camo", "label": "Patriotic Camo", "hash": "COMPONENT_REVOLVER_MK2_CAMO_IND_01"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_revolvermk2"
+      },
+      "rank": 0
+    },
+    "-1746263880": {
+      "name": "weapon_doubleaction", "label": "Double-Action Revolver", "ammoType": "AMMO_PISTOL",
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_wep1_gun"
+      },
+      "rank": 0
+    },
+    "-1853920116": {
+      "name": "weapon_navyrevolver", "label": "Navy Revolver", "ammoType": "AMMO_PISTOL",
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_wep2_gun"
+      },
+      "rank": 0
+    },
+    "1470379660": {
+      "name": "weapon_gadgetpistol", "label": "Perico Pistol", "ammoType": "AMMO_PISTOL",
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_singleshoth4"
+      },
+      "rank": 0
+    },
+    "-598887786": {
+      "name": "weapon_marksman", "label": "Marksman Pistol", "ammoType": "AMMO_PISTOL",
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_singleshot"
+      },
+      "rank": 0
+    },
+    "727643628": {
+      "name": "weapon_ceramicpistol", "label": "Ceramic Pistol", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_CERAMICPISTOL_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_CERAMICPISTOL_CLIP_02"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_CERAMICPISTOL_SUPP"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_ceramic_pistol"
+      }
+    },
+    "-1355376991": {
+      "name": "weapon_raypistol", "label": "Up-n-Atomizer", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "festive_tint", "label": "Festive Tint", "hash": "COMPONENT_RAYPISTOL_VARMOD_XMAS18"}
+      ],
+      "reason": "lasered",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_raygun"
+      },
+      "rank": 12
+    },
+    "949377494": {
+      "name": "WEAPON_G19", "label": "Glock 19 RMR", "ammoType": "AMMO_PISTOL",
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "W_PI_G19"
+      },
+      "rank": 0
+    },
+    "-724102563": {
+      "name": "WEAPON_G17", "label": "Glock 17", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Magazine", "hash": "COMPONENT_G17_CLIP_01"},
+        {"name": "clip_17rnd", "label": "17 Round Magazine", "hash": "COMPONENT_G17_CLIP_02"},
+        {"name": "clip_21rnd", "label": "21 Round Magazine", "hash": "COMPONENT_G17_CLIP_03"},
+        {"name": "clip_33rnd", "label": "33 Round Magazine", "hash": "COMPONENT_G17_CLIP_04"},
+        {"name": "clip_50rnd", "label": "50 Round Magazine", "hash": "COMPONENT_G17_CLIP_05"},
+        {"name": "frame_1", "label": "Black Frame", "hash": "COMPONENT_G17_FRAME_01"},
+        {"name": "frame_2", "label": "Tan Frame", "hash": "COMPONENT_G17_FRAME_02"},
+        {"name": "frame_3", "label": "Blue Frame", "hash": "COMPONENT_G17_FRAME_03"},
+        {"name": "frame_4", "label": "Frame W/ Stock", "hash": "COMPONENT_G17_FRAME_04"},
+        {"name": "frame_5", "label": "Frame W/ Stock", "hash": "COMPONENT_G17_FRAME_05"},
+        {"name": "barrel_1", "label": "Barrel 1", "hash": "COMPONENT_G17_BARREL_01"},
+        {"name": "barrel_2", "label": "Barrel 2", "hash": "COMPONENT_G17_BARREL_02"},
+        {"name": "barrel_3", "label": "Barrel 3", "hash": "COMPONENT_G17_BARREL_03"},
+        {"name": "barrel_4", "label": "Barrel 4", "hash": "COMPONENT_G17_BARREL_04"},
+        {"name": "barrel_5", "label": "Barrel 5", "hash": "COMPONENT_G17_BARREL_05"},
+        {"name": "barrel_6", "label": "Barrel 6", "hash": "COMPONENT_G17_BARREL_06"},
+        {"name": "barrel_7", "label": "Barrel 7", "hash": "COMPONENT_G17_BARREL_07"},
+        {"name": "slide_1", "label": "Slide 1", "hash": "COMPONENT_G17_SLIDE_01"},
+        {"name": "slide_2", "label": "Slide 2", "hash": "COMPONENT_G17_SLIDE_02"},
+        {"name": "slide_3", "label": "Slide 3", "hash": "COMPONENT_G17_SLIDE_03"},
+        {"name": "slide_4", "label": "Slide 4", "hash": "COMPONENT_G17_SLIDE_04"},
+        {"name": "slide_5", "label": "Slide 5", "hash": "COMPONENT_G17_SLIDE_05"},
+        {"name": "slide_6", "label": "Slide 6", "hash": "COMPONENT_G17_SLIDE_06"},
+        {"name": "slide_7", "label": "Slide 7", "hash": "COMPONENT_G17_SLIDE_07"},
+        {"name": "slide_8", "label": "Slide 8", "hash": "COMPONENT_G17_SLIDE_08"},
+        {"name": "slide_9", "label": "Slide 9", "hash": "COMPONENT_G17_SLIDE_09"},
+        {"name": "suppressor_1", "label": "Suppressor 1", "hash": "COMPONENT_G17_SUPPRESSOR_01"},
+        {"name": "suppressor_2", "label": "Suppressor 2", "hash": "COMPONENT_G17_SUPPRESSOR_02"},
+        {"name": "suppressor_3", "label": "Suppressor 3", "hash": "COMPONENT_G17_SUPPRESSOR_03"},
+        {"name": "suppressor_4", "label": "Suppressor 4", "hash": "COMPONENT_G17_SUPPRESSOR_04"},
+        {"name": "suppressor_5", "label": "Suppressor 5", "hash": "COMPONENT_G17_SUPPRESSOR_05"},
+        {"name": "suppressor_6", "label": "Suppressor 6", "hash": "COMPONENT_G17_SUPPRESSOR_06"},
+        {"name": "suppressor_7", "label": "Suppressor 7", "hash": "COMPONENT_G17_SUPPRESSOR_07"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_G17_FLASH_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_G17_FLASH_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_G17_FLASH_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_G17_FLASH_04"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "mm_g17"
+      },
+      "rank": 0
+    },
+    "-925345946": {
+      "name": "WEAPON_P226", "label": "P226", "ammoType": "AMMO_PISTOL", "attachments": [
+        {"name": "clip_default", "label": "Default Magazine", "hash": "COMPONENT_P226_CLIP_01"}
+      ],
+      "reason": "pistoled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_p226"
+      },
+      "rank": 0
+    },
+    "736523883": {
+      "name": "weapon_smg", "label": "MP5", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_SMG_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_SMG_CLIP_02"},
+        {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_SMG_CLIP_03"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MACRO_02"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_PI_SUPP"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_SMG_VARMOD_LUXE"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_smg"
+      },
+      "rank": 0
+    },
+    "2024373456": {
+      "name": "weapon_smg_mk2", "label": "SMG Mark II", "ammoType": "AMMO_SMG",
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_smgmk2"
+      },
+      "rank": 0,
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "-270015777": {
+      "name": "weapon_assaultsmg", "label": "AK-74U", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_ASSAULTSMG_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_ASSAULTSMG_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MACRO"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_ASSAULTSMG_VARMOD_LOWRIDER"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_assaultsmg"
+      }
+    },
+    "324215364": {
+      "name": "weapon_microsmg", "label": "Mac 11", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MICROSMG_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MICROSMG_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MACRO"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "luxary_finish", "label":  "Luxary Finish", "hash": "COMPONENT_MICROSMG_VARMOD_LUXE"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_microsmg"
+      }
+    },
+    "-1121678507": {
+      "name": "weapon_minismg", "label": "Skorpion vz. 61", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MINISMG_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MINISMG_CLIP_02"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_minismg"
+      }
+    },
+    "171789620": {
+      "name": "weapon_combatpdw", "label": "UMP45", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_COMBATPDW_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_COMBATPDW_CLIP_02"},
+        {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_COMBATPDW_CLIP_03"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_pdw"
+      },
+      "rank": 0
+    },
+    "1198256469": {
+      "name": "weapon_raycarbine", "label": "Unholy Hellbringer", "ammoType": "AMMO_SMG",
+      "reason": "lasered",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ar_srifle"
+      },
+      "rank": 12
+    },
+    "-634552258": {
+      "name": "WEAPON_MP5", "label": "MP5", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MP5_CLIP_01"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MP5"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_MP5_SUPP"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_MP5"
+      },
+      "rank": 0
+    },
+    "1704503360": {
+      "name": "WEAPON_MP9a", "label": "MP9", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MP9a_CLIP_02"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MP9A"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_MP9A_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_MP9A_SUPP_02"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_MP9a"
+      },
+      "rank": 0
+    },
+    "506038341": {
+      "name": "WEAPON_MPX", "label": "Sig Sauer MPX", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_1", "label": "20 Round Magazine", "hash": "COMPONENT_MPX_CLIP_01"},
+        {"name": "clip_2", "label": "41 Round Magazine", "hash": "COMPONENT_MPX_CLIP_02"},
+        {"name": "clip_3", "label": "50 Round Magazine", "hash": "COMPONENT_MPX_CLIP_03"},
+        {"name": "barrel_1", "label": "114mm Barrel", "hash": "COMPONENT_MPX_BARREL_01"},
+        {"name": "barrel_2", "label": "114mm ISBarrel", "hash": "COMPONENT_MPX_BARREL_02"},
+        {"name": "barrel_3", "label": "114mm SBarrel", "hash": "COMPONENT_MPX_BARREL_03"},
+        {"name": "barrel_4", "label": "165mm Barrel", "hash": "COMPONENT_MPX_BARREL_04"},
+        {"name": "barrel_5", "label": "165mm ISBarrel", "hash": "COMPONENT_MPX_BARREL_05"},
+        {"name": "barrel_6", "label": "165mm SBarrel", "hash": "COMPONENT_MPX_BARREL_06"},
+        {"name": "barrel_7", "label": "205mm Barrel", "hash": "COMPONENT_MPX_BARREL_07"},
+        {"name": "barrel_8", "label": "205mm SBarrel", "hash": "COMPONENT_MPX_BARREL_08"},
+        {"name": "barrel_9", "label": "265mm Barrel", "hash": "COMPONENT_MPX_BARREL_09"},
+        {"name": "barrel_10", "label": "265mm SBarrel", "hash": "COMPONENT_MPX_BARREL_10"},
+        {"name": "barrel_11", "label": "355mm Barrel", "hash": "COMPONENT_MPX_BARREL_11"},
+        {"name": "barrel_12", "label": "355mm SBarrel", "hash": "COMPONENT_MPX_BARREL_12"},
+        {"name": "handguard_1", "label": "Handguard 1", "hash": "COMPONENT_MPX_HANDGUARD_01"},
+        {"name": "handguard_2", "label": "Handguard 2", "hash": "COMPONENT_MPX_HANDGUARD_02"},
+        {"name": "handguard_3", "label": "Handguard 3", "hash": "COMPONENT_MPX_HANDGUARD_03"},
+        {"name": "handguard_4", "label": "Handguard 4", "hash": "COMPONENT_MPX_HANDGUARD_04"},
+        {"name": "handguard_5", "label": "Handguard 5", "hash": "COMPONENT_MPX_HANDGUARD_05"},
+        {"name": "handguard_6", "label": "Handguard 6", "hash": "COMPONENT_MPX_HANDGUARD_06"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_MPX_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_MPX_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_MPX_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_MPX_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_MPX_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_MPX_STOCK_06"},
+        {"name": "stock_7", "label": "Stock 7", "hash": "COMPONENT_MPX_STOCK_07"},
+        {"name": "stock_8", "label": "Stock 8", "hash": "COMPONENT_MPX_STOCK_08"},
+        {"name": "stock_9", "label": "Stock 9", "hash": "COMPONENT_MPX_STOCK_09"},
+        {"name": "stock_10", "label": "Stock 10", "hash": "COMPONENT_mk18_STOCK_10"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_MPX_FLSH_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_MPX_FLSH_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_MPX_FLSH_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_MPX_FLSH_04"},
+        {"name": "flashlight_5", "label": "Flashlight 5", "hash": "COMPONENT_MPX_FLSH_05"},
+        {"name": "flashlight_6", "label": "Flashlight 6", "hash": "COMPONENT_MPX_FLSH_06"},
+        {"name": "flashlight_7", "label": "Flashlight 7", "hash": "COMPONENT_MPX_FLSH_07"},
+        {"name": "flashlight_8", "label": "Flashlight 8", "hash": "COMPONENT_MPX_FLSH_08"},
+        {"name": "scope_default", "label": "Ironsights", "hash": "COMPONENT_MPX_SCOPE_01"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_MPX_SCOPE_02"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_MPX_SCOPE_03"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_MPX_SCOPE_04"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_MPX_SCOPE_05"},
+        {"name": "scope_5", "label": "Scope 5", "hash": "COMPONENT_MPX_SCOPE_06"},
+        {"name": "scope_6", "label": "Scope 6", "hash": "COMPONENT_MPX_SCOPE_07"},
+        {"name": "scope_7", "label": "Scope 7", "hash": "COMPONENT_MPX_SCOPE_08"},
+        {"name": "scope_8", "label": "Scope 8", "hash": "COMPONENT_MPX_SCOPE_09"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sb_MP9a"
+      },
+      "rank": 0
+    },
+    "-1034100737": {
+      "name": "WEAPON_PP19", "label": "PP19", "ammoType": "AMMO_SMG", "attachments": [
+        {"name": "clip_1", "label": "Default Magazine", "hash": "COMPONENT_PP19_CLIP_01"},
+        {"name": "clip_2", "label": "20 Round Black Magazine", "hash": "COMPONENT_PP19_CLIP_02"},
+        {"name": "clip_3", "label": "30 Round Black Magazine", "hash": "COMPONENT_PP19_CLIP_03"},
+        {"name": "clip_4", "label": "20 Round Blue Magazine", "hash": "COMPONENT_PP19_CLIP_04"},
+        {"name": "clip_5", "label": "30 Round Blue Magazine", "hash": "COMPONENT_PP19_CLIP_05"},
+        {"name": "clip_6", "label": "20 Round Yellow Magazine", "hash": "COMPONENT_PP19_CLIP_06"},
+        {"name": "clip_7", "label": "30 Round Yellow Magazine", "hash": "COMPONENT_PP19_CLIP_07"},
+        {"name": "handguard_1", "label": "Handguard 1", "hash": "COMPONENT_PP19_HANDGUARD_01"},
+        {"name": "handguard_2", "label": "Handguard 2", "hash": "COMPONENT_PP19_HANDGUARD_02"},
+        {"name": "handguard_3", "label": "Handguard 3", "hash": "COMPONENT_PP19_HANDGUARD_03"},
+        {"name": "handguard_4", "label": "Handguard 4", "hash": "COMPONENT_PP19_HANDGUARD_04"},
+        {"name": "handguard_5", "label": "Handguard 5", "hash": "COMPONENT_PP19_HANDGUARD_05"},
+        {"name": "handguard_6", "label": "Handguard 6", "hash": "COMPONENT_PP19_HANDGUARD_06"},
+        {"name": "handguard_7", "label": "Handguard 7", "hash": "COMPONENT_PP19_HANDGUARD_07"},
+        {"name": "handguard_8", "label": "Handguard 8", "hash": "COMPONENT_PP19_HANDGUARD_08"},
+        {"name": "handguard_9", "label": "Handguard 9", "hash": "COMPONENT_PP19_HANDGUARD_09"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_PP19_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_PP19_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_PP19_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_PP19_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_PP19_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_PP19_STOCK_06"},
+        {"name": "stock_7", "label": "Stock 7", "hash": "COMPONENT_PP19_STOCK_07"},
+        {"name": "stock_8", "label": "Stock 8", "hash": "COMPONENT_PP19_STOCK_08"},
+        {"name": "stock_9", "label": "Stock 9", "hash": "COMPONENT_PP19_STOCK_09"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_PP19_LASER_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_PP19_LASER_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_PP19_LASER_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_PP19_LASER_04"},
+        {"name": "flashlight_5", "label": "Flashlight 5", "hash": "COMPONENT_PP19_LASER_05"},
+        {"name": "flashlight_6", "label": "Flashlight 6", "hash": "COMPONENT_PP19_LASER_06"},
+        {"name": "flashlight_7", "label": "Flashlight 7", "hash": "COMPONENT_PP19_LASER_07"},
+        {"name": "scope_none", "label": "No Scope", "hash": "COMPONENT_PP19_SCOPE_01"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_PP19_SCOPE_02"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_PP19_SCOPE_03"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_PP19_SCOPE_04"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_PP19_SCOPE_05"},
+        {"name": "scope_5", "label": "Scope 5", "hash": "COMPONENT_PP19_SCOPE_06"},
+        {"name": "scope_6", "label": "Scope 6", "hash": "COMPONENT_PP19_SCOPE_07"},
+        {"name": "scope_7", "label": "Scope 7", "hash": "COMPONENT_PP19_SCOPE_08"},
+        {"name": "scope_8", "label": "Scope 8", "hash": "COMPONENT_PP19_SCOPE_09"},
+        {"name": "scope_9", "label": "Scope 9", "hash": "COMPONENT_PP19_SCOPE_10"},
+        {"name": "foregrip_1", "label": "Foregrip 1", "hash": "COMPONENT_PP19_GRIP_01"},
+        {"name": "foregrip_2", "label": "Foregrip 2", "hash": "COMPONENT_PP19_GRIP_02"},
+        {"name": "foregrip_3", "label": "Foregrip 3", "hash": "COMPONENT_PP19_GRIP_03"},
+        {"name": "foregrip_4", "label": "Foregrip 4", "hash": "COMPONENT_PP19_GRIP_04"},
+        {"name": "foregrip_5", "label": "Foregrip 5", "hash": "COMPONENT_PP19_GRIP_05"},
+        {"name": "foregrip_6", "label": "Foregrip 6", "hash": "COMPONENT_PP19_GRIP_06"},
+        {"name": "foregrip_7", "label": "Foregrip 7", "hash": "COMPONENT_PP19_GRIP_07"},
+        {"name": "foregrip_8", "label": "Foregrip 8", "hash": "COMPONENT_PP19_GRIP_08"},
+        {"name": "foregrip_9", "label": "Foregrip 9", "hash": "COMPONENT_PP19_GRIP_09"},
+        {"name": "muzzle_1", "label": "Muzzle 1", "hash": "COMPONENT_PP19_MUZZLE_01"},
+        {"name": "muzzle_2", "label": "Muzzle 2", "hash": "COMPONENT_PP19_MUZZLE_02"},
+        {"name": "muzzle_3", "label": "Muzzle 3", "hash": "COMPONENT_PP19_MUZZLE_03"},
+        {"name": "muzzle_4", "label": "Muzzle 4", "hash": "COMPONENT_PP19_MUZZLE_04"},
+        {"name": "muzzle_5", "label": "Muzzle 5", "hash": "COMPONENT_PP19_MUZZLE_05"},
+        {"name": "muzzle_6", "label": "Muzzle 6", "hash": "COMPONENT_PP19_MUZZLE_06"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "pp19"
+      },
+      "rank": 0
+    },
+    "487013001": {
+      "name": "weapon_pumpshotgun", "label": "Remington 870", "ammoType": "AMMO_SHOTGUN", "attachments": [
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_SR_SUPP"},
+        {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_PUMPSHOTGUN_VARMOD_LOWRIDER"}
+      ],
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.195,
+        "y": -0.15,
+        "z": -0.12,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 10.0,
+        "model": "w_sg_pumpshotgun"
+      }
+    },
+    "1432025498": {
+      "name": "weapon_pumpshotgun_mk2", "label": "Pump Shotgun Mark II", "ammoType": "AMMO_SHOTGUN",
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.195,
+        "y": -0.15,
+        "z": -0.12,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 10.0,
+        "model": "w_sg_pumpshotgunmk2"
+      },
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "2017895192": {
+      "name": "weapon_sawnoffshotgun", "label": "Serbu Super Shorty", "ammoType": "AMMO_SHOTGUN", "attachments": [
+        {"name": "luxary_finish", "label": "Drum Magazine", "hash": "COMPONENT_SAWNOFFSHOTGUN_VARMOD_LUXE"}
+      ],
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sg_sawnoff"
+      }
+    },
+    "-494615257": {
+      "name": "weapon_assaultshotgun", "label": "Haymaker 12", "ammoType": "AMMO_SHOTGUN", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_ASSAULTSHOTGUN_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_ASSAULTSHOTGUN_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"}
+      ],
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.195,
+        "y": -0.15,
+        "z": -0.12,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 10.0,
+        "model": "w_sg_assaultshotgun"
+      },
+      "rank": 0
+    },
+    "-1654528753": {
+      "name": "weapon_bullpupshotgun", "label": "Bullpup Shotgun", "ammoType": "AMMO_SHOTGUN", "attachments": [
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"}
+      ],
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.195,
+        "y": -0.15,
+        "z": -0.12,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 10.0,
+        "model": "w_sg_bullpupshotgun"
+      },
+      "rank": 0
+    },
+    "317205821": {
+      "name": "weapon_autoshotgun", "label": "Sweeper Shotgun", "ammoType": "AMMO_SHOTGUN",
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sg_sweeper"
+      },
+      "rank": 0
+    },
+    "984333226": {
+      "name": "weapon_heavyshotgun", "label": "Heavy Shotgun", "ammoType": "AMMO_SHOTGUN", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_HEAVYSHOTGUN_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_HEAVYSHOTGUN_CLIP_02"},
+        {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_HEAVYSHOTGUN_CLIP_03"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"}
+      ],
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.195,
+        "y": -0.15,
+        "z": -0.12,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 10.0,
+        "model": "w_sg_heavyshotgun"
+      },
+      "rank": 0
+    },
+    "-275439685": {
+      "name": "weapon_dbshotgun", "label": "Double Barrel Shotgun", "ammoType": "AMMO_SHOTGUN",
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_sg_doublebarrel"
+      },
+      "rank": 0
+    },
+    "94989220": {
+      "name": "weapon_combatshotgun", "label": "Combat Shotgun", "ammoType": "AMMO_SHOTGUN", "attachments": [
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP"}
+      ],
+      "reason": "shotgunned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.195,
+        "y": -0.15,
+        "z": -0.12,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 10.0,
+        "model": "w_sg_pumpshotgunh4"
+      }
+    },
+    "-1074790547": {
+      "name": "weapon_assaultrifle", "label": "AK-47", "ammoType": "AMMO_RIFLE","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_ASSAULTRIFLE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_ASSAULTRIFLE_CLIP_02"},
+        {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_ASSAULTRIFLE_CLIP_03"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MACRO"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_ASSAULTRIFLE_VARMOD_LUXE"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_assaultrifle"
+      }
+    },
+    "961495388": {
+      "name": "weapon_assaultrifle_mk2", "label": "Assault Rifle Mark II", "ammoType": "AMMO_RIFLE",
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_assaultriflemk2"
+      },
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "-2084633992": {
+      "name": "weapon_carbinerifle", "label": "AR-15", "ammoType": "AMMO_RIFLE","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_CARBINERIFLE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_CARBINERIFLE_CLIP_02"},
+        {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_CARBINERIFLE_CLIP_03"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MEDIUM"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_CARBINERIFLE_VARMOD_LUXE"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_carbinerifle"
+      }
+    },
+    "-86904375": {
+      "name": "weapon_carbinerifle_mk2", "label": "Carbine Rifle Mark II", "ammoType": "AMMO_RIFLE",
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_carbineriflemk2"
+      },
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "-1357824103": {
+      "name": "weapon_advancedrifle", "label": "Advanced Rifle", "ammoType": "AMMO_RIFLE","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_ADVANCEDRIFLE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_ADVANCEDRIFLE_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_ADVANCEDRIFLE_VARMOD_LUXE"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_advancedrifle"
+      }
+    },
+    "-1063057011": {
+      "name": "weapon_specialcarbine", "label": "SCAR H", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_SPECIALCARBINE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_SPECIALCARBINE_CLIP_02"},
+        {"name": "clip_drum", "label": "Drum Magazine", "hash": "COMPONENT_SPECIALCARBINE_CLIP_03"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MEDIUM"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_SPECIALCARBINE_VARMOD_LOWRIDER"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_specialcarbine"
+      },
+      "rank": 0
+    },
+    "-1768145561": {
+      "name": "weapon_specialcarbine_mk2", "label": "Special Rifle Mark II", "ammoType": "AMMO_RIFLE",
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_specialcarbinemk2"
+      },
+      "rank": 0,
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "2132975508": {
+      "name": "weapon_bullpuprifle", "label": "Type 25", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_BULLPUPRIFLE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_BULLPUPRIFLE_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_BULLPUPRIFLE_VARMOD_LOW"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_bullpuprifle"
+      },
+      "rank": 0
+    },
+    "-2066285827": {
+      "name": "weapon_bullpuprifle_mk2", "label": "Bullpup Rifle Mark II", "ammoType": "AMMO_RIFLE",
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_bullpupriflemk2"
+      },
+      "rank": 0,
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "1649403952": {
+      "name": "weapon_compactrifle", "label": "Compact Rifle", "ammoType": "AMMO_RIFLE","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_COMPACTRIFLE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_COMPACTRIFLE_CLIP_02"},
+        {"name": "clip_drum", "label": "Drum Clip", "hash": "COMPONENT_COMPACTRIFLE_CLIP_03"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ar_assaultrifle_smg"
+      }
+    },
+    "-1658906650": {
+      "name": "weapon_militaryrifle", "label": "Military Rifle", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MILITARYRIFLE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MILITARYRIFLE_CLIP_02"},
+        {"name": "iron_sights", "label": "Iron Sights", "hash": "COMPONENT_MILITARYRIFLE_SIGHT_01"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_bullpuprifleh4"
+      },
+      "rank": 0
+    },
+    "1837284246": {
+      "name": "WEAPON_HK416B", "label": "HK416", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_HK416B_CLIP_01"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_HK416B_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_HK416B"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_HK416B_SUPP"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_HK416B"
+      },
+      "rank": 0
+    },
+    "-319609691": {
+      "name": "WEAPON_MM4", "label": "M4", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MM4_CLIP_01"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_MM4"
+      },
+      "rank": 0
+    },
+    "2083584098": {
+      "name": "WEAPON_fbiarb", "label": "AR15", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_fbiarb_CLIP_01"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_fbiarb_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_fbiarb"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_fbiarb_AFGRIP"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_fbiarb"
+      },
+      "rank": 0
+    },
+    "-1949706116": {
+      "name": "WEAPON_MK18", "label": "MK18", "ammoType": "AMMO_RIFLE", "attachments": [
+        {"name": "frame_1", "label": "Frame 1", "hash": "COMPONENT_mk18_FRAME_01"},
+        {"name": "frame_2", "label": "Frame 2", "hash": "COMPONENT_mk18_FRAME_02"},
+        {"name": "frame_3", "label": "Frame 3", "hash": "COMPONENT_mk18_FRAME_03"},
+        {"name": "clip_1", "label": "Magazine 1", "hash": "COMPONENT_mk18_CLIP_01"},
+        {"name": "clip_2", "label": "Magazine 2", "hash": "COMPONENT_mk18_CLIP_02"},
+        {"name": "clip_3", "label": "Magazine 2 (Tan)", "hash": "COMPONENT_mk18_CLIP_03"},
+        {"name": "clip_4", "label": "Magazine 3", "hash": "COMPONENT_mk18_CLIP_04"},
+        {"name": "clip_5", "label": "Magazine 3 (Tan)", "hash": "COMPONENT_mk18_CLIP_05"},
+        {"name": "clip_6", "label": "Magazine 4", "hash": "COMPONENT_mk18_CLIP_06"},
+        {"name": "clip_7", "label": "Magazine 5", "hash": "COMPONENT_mk18_CLIP_07"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_mk18_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_mk18_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_mk18_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_mk18_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_mk18_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_mk18_STOCK_06"},
+        {"name": "stock_7", "label": "Stock 7", "hash": "COMPONENT_mk18_STOCK_07"},
+        {"name": "suppressor_1", "label": "Suppressor 1", "hash": "COMPONENT_mk18_SUPPRESSOR_01"},
+        {"name": "suppressor_2", "label": "Suppressor 2", "hash": "COMPONENT_mk18_SUPPRESSOR_02"},
+        {"name": "suppressor_3", "label": "Suppressor 3", "hash": "COMPONENT_mk18_SUPPRESSOR_03"},
+        {"name": "suppressor_4", "label": "Suppressor 4", "hash": "COMPONENT_mk18_SUPPRESSOR_04"},
+        {"name": "suppressor_5", "label": "Suppressor 5", "hash": "COMPONENT_mk18_SUPPRESSOR_05"},
+        {"name": "suppressor_6", "label": "Suppressor 6", "hash": "COMPONENT_mk18_SUPPRESSOR_06"},
+        {"name": "grip_1", "label": "Grip 1", "hash": "COMPONENT_mk18_GRIP_01"},
+        {"name": "grip_2", "label": "Grip 2", "hash": "COMPONENT_mk18_GRIP_02"},
+        {"name": "grip_3", "label": "Grip 3", "hash": "COMPONENT_mk18_GRIP_03"},
+        {"name": "grip_4", "label": "Grip 4", "hash": "COMPONENT_mk18_GRIP_04"},
+        {"name": "grip_5", "label": "Grip 5", "hash": "COMPONENT_mk18_GRIP_05"},
+        {"name": "flashlight_1", "label": "Flashlight 1", "hash": "COMPONENT_mk18_FLASH_01"},
+        {"name": "flashlight_2", "label": "Flashlight 2", "hash": "COMPONENT_mk18_FLASH_02"},
+        {"name": "flashlight_3", "label": "Flashlight 3", "hash": "COMPONENT_mk18_FLASH_03"},
+        {"name": "flashlight_4", "label": "Flashlight 4", "hash": "COMPONENT_mk18_FLASH_04"},
+        {"name": "flashlight_5", "label": "Flashlight 5", "hash": "COMPONENT_mk18_FLASH_05"},
+        {"name": "flashlight_6", "label": "Flashlight 6", "hash": "COMPONENT_mk18_FLASH_06"},
+        {"name": "flashlight_7", "label": "Flashlight 7", "hash": "COMPONENT_mk18_FLASH_07"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_mk18_SCOPE_01"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_mk18_SCOPE_02"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_mk18_SCOPE_03"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_mk18_SCOPE_04"},
+        {"name": "scope_5", "label": "Scope 5", "hash": "COMPONENT_mk18_SCOPE_05"},
+        {"name": "scope_6", "label": "Scope 6", "hash": "COMPONENT_mk18_SCOPE_06"},
+        {"name": "scope_7", "label": "Scope 7", "hash": "COMPONENT_mk18_SCOPE_07"},
+        {"name": "scope_8", "label": "Scope 8", "hash": "COMPONENT_mk18_SCOPE_08"},
+        {"name": "scope_9", "label": "Scope 9", "hash": "COMPONENT_mk18_SCOPE_09"}
+      ],
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_fbiarb"
+      },
+      "rank": 0
+    },
+    "-1466123874": {
+      "name": "weapon_musket", "label": "Musket", "ammoType": "AMMO_SHOTGUN",
+      "reason": "rifled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_musket"
+      },
+      "rank": 0
+    },
+    "1834241177": {
+      "name": "weapon_railgun", "label": "Rail Gun", "ammoType": "AMMO_RAILGUN",
+      "reason": "obliterated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ar_railgun"
+      },
+      "rank": 12
+    },
+    "-1660422300": {
+      "name": "weapon_mg", "label": "PKM", "ammoType": "AMMO_MG","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MG_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MG_CLIP_02"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_SMALL_02"},
+        {"name": "luxary_finish", "label": "Luxary Finsih", "hash": "COMPONENT_MG_VARMOD_LOWRIDER"}
+      ],
+      "reason": "mowed down",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_mg_mg"
+      },
+      "rank": 0
+    },
+    "2144741730": {
+      "name": "weapon_combatmg", "label": "M249E1", "ammoType": "AMMO_MG","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_COMBATMG_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_COMBATMG_CLIP_02"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_MEDIUM"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
+        {"name": "luxary_finish", "label": "Luxary Finsih", "hash": "COMPONENT_COMBATMG_VARMOD_LOWRIDER"}
+      ],
+      "reason": "mowed down",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_mg_combatmg"
+      },
+      "rank": 0
+    },
+    "-608341376": {
+      "name": "weapon_combatmg_mk2", "label": "Combat MG Mark II", "ammoType": "AMMO_MG",
+      "reason": "mowed down",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_mg_combatmgmk2"
+      },
+      "rank": 0,
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "1627465347": {
+      "name": "weapon_gusenberg", "label": "Thompson Tommy Gun 1921", "ammoType": "AMMO_MG","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_GUSENBERG_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_GUSENBERG_CLIP_02"}
+      ],
+      "reason": "riddled",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_sb_gusenberg"
+      },
+      "rank": 0
+    },
+    "100416529": {
+      "name": "weapon_sniperrifle", "label": "M70 Tundra", "ammoType": "AMMO_SNIPER","attachments": [
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_LARGE"},
+        {"name": "scope_advanced", "label": "Advanced Scope", "hash": "COMPONENT_AT_SCOPE_MAX"},
+        {"name": "suppressor", "label": "Supressor", "hash": "COMPONENT_AT_AR_SUPP_02"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_SNIPERRIFLE_VARMOD_LUXE"}
+      ],
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "w_sr_sniperrifle"
+      },
+      "rank": 0
+    },
+    "205991906": {
+      "name": "weapon_heavysniper", "label": "Barreta M82 Heavy Sniper", "ammoType": "AMMO_SNIPER","attachments": [
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_LARGE"},
+        {"name": "scope_advanced", "label": "Advanced Scope", "hash": "COMPONENT_AT_SCOPE_MAX"}
+      ],
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "w_sr_heavysniper"
+      },
+      "rank": 0
+    },
+    "177293209": {
+      "name": "weapon_heavysniper_mk2", "label": "Heavy Sniper Mark II", "ammoType": "AMMO_SNIPER",
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "w_sr_heavysnipermk2"
+      },
+      "rank": 0,
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "-952879014": {
+      "name": "weapon_marksmanrifle", "label": "SCAR H DMR", "ammoType": "AMMO_SNIPER","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_MARKSMANRIFLE_CLIP_01"},
+        {"name": "clip_extended", "label": "Extended Clip", "hash": "COMPONENT_MARKSMANRIFLE_CLIP_02"},
+        {"name": "flashlight", "label": "Flashlight", "hash": "COMPONENT_AT_AR_FLSH"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_LARGE_FIXED_ZOOM"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP"},
+        {"name": "grip", "label": "Grip", "hash": "COMPONENT_AT_AR_AFGRIP"},
+        {"name": "luxary_finish", "label": "Luxary Finish", "hash": "COMPONENT_MARKSMANRIFLE_VARMOD_LUXE"}
+      ],
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "w_sr_marksmanrifle"
+      },
+      "rank": 0
+    },
+    "1785463520": {
+      "name": "weapon_marksmanrifle_mk2", "label": "Marksman Rifle Mark II", "ammoType": "AMMO_SNIPER",
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "w_sr_marksmanriflemk2"
+      },
+      "rank": 0,
+      "note": "NEED_TO_ADD_ATTACHMENTS"
+    },
+    "-303773045": {
+      "name": "WEAPON_M700", "label": "M700", "ammoType": "AMMO_SNIPER","attachments": [
+        {"name": "clip_default", "label": "Default Clip", "hash": "COMPONENT_M700_CLIP_01"},
+        {"name": "scope", "label": "Scope", "hash": "COMPONENT_AT_SCOPE_M700"},
+        {"name": "suppressor", "label": "Suppressor", "hash": "COMPONENT_AT_AR_SUPP_M700"}
+      ],
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "w_sr_M700"
+      },
+      "rank": 0
+    },
+    "1994921561": {
+      "name": "WEAPON_M870", "label": "Remington M870", "ammoType": "AMMO_SNIPER","attachments": [
+        {"name": "clip_4rnd", "label": "4 Round Magazine", "hash": "COMPONENT_M870_CLIP_01"},
+        {"name": "clip_7rnd", "label": "7 Round Magazine", "hash": "COMPONENT_M870_CLIP_02"},
+        {"name": "clip_12rnd", "label": "12 Round Magazine", "hash": "COMPONENT_M870_CLIP_03"},
+        {"name": "barrel_1", "label": "Barrel 1", "hash": "COMPONENT_M870_BARREL_01"},
+        {"name": "barrel_2", "label": "Barrel 2", "hash": "COMPONENT_M870_BARREL_02"},
+        {"name": "barrel_3", "label": "Barrel 3", "hash": "COMPONENT_M870_BARREL_03"},
+        {"name": "barrel_4", "label": "Barrel 4", "hash": "COMPONENT_M870_BARREL_04"},
+        {"name": "barrel_5", "label": "Barrel 5", "hash": "COMPONENT_M870_BARREL_05"},
+        {"name": "barrel_6", "label": "Barrel 6", "hash": "COMPONENT_M870_BARREL_06"},
+        {"name": "barrel_7", "label": "Barrel 7", "hash": "COMPONENT_M870_BARREL_07"},
+        {"name": "handguard_1", "label": "Handguard 1", "hash": "COMPONENT_M870_HANDGUARD_01"},
+        {"name": "handguard_2", "label": "Handguard 2", "hash": "COMPONENT_M870_HANDGUARD_02"},
+        {"name": "handguard_3", "label": "Handguard 3", "hash": "COMPONENT_M870_HANDGUARD_03"},
+        {"name": "stock_1", "label": "Stock 1", "hash": "COMPONENT_M870_STOCK_01"},
+        {"name": "stock_2", "label": "Stock 2", "hash": "COMPONENT_M870_STOCK_02"},
+        {"name": "stock_3", "label": "Stock 3", "hash": "COMPONENT_M870_STOCK_03"},
+        {"name": "stock_4", "label": "Stock 4", "hash": "COMPONENT_M870_STOCK_04"},
+        {"name": "stock_5", "label": "Stock 5", "hash": "COMPONENT_M870_STOCK_05"},
+        {"name": "stock_6", "label": "Stock 6", "hash": "COMPONENT_M870_STOCK_06"},
+        {"name": "scope_1", "label": "Scope 1", "hash": "COMPONENT_M870_SCOPE_01"},
+        {"name": "scope_2", "label": "Scope 2", "hash": "COMPONENT_M870_SCOPE_02"},
+        {"name": "scope_3", "label": "Scope 3", "hash": "COMPONENT_M870_SCOPE_03"},
+        {"name": "scope_4", "label": "Scope 4", "hash": "COMPONENT_M870_SCOPE_04"}
+      ],
+      "reason": "sniped",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.095,
+        "y": -0.15,
+        "z": -0.01,
+        "xRotation": 0.0,
+        "yRotation": 180.0,
+        "zRotation": 0.0,
+        "model": "m870"
+      },
+      "rank": 0
+    },
+    "101631238": {
+      "name": "weapon_fireextinguisher", "label": "Fire Extinguisher ", "ammoType": "AMMO_FIREEXTINGUISHER",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "883325847": {
+      "name": "weapon_petrolcan", "label": "Gas Can", "ammoType": "AMMO_PETROL",
+      "reason": "burned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1119849093": {
+      "name": "weapon_minigun", "label": "Mini Gun", "ammoType": "AMMO_MINIGUN",
+      "reason": "shredded",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_mg_minigun"
+      },
+      "rank": 10
+    },
+    "-1238556825": {
+      "name": "weapon_rayminigun", "label": "Widowmaker", "ammoType": "AMMO_MINIGUN",
+      "reason": "shredded",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_mg_sminigun"
+      },
+      "rank": 12
+    },
+    "911657153": {
+      "name": "weapon_stungun", "label": "X26 Tazer",
+      "reason": "stunned to death",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_stungun"
+      }
+    },
+    "2138347493": {
+      "name": "weapon_firework", "label": "Firework Launcher", "ammoType": "AMMO_FIREWORK",
+      "reason": "obliterated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      },
+      "rank": 0
+    },
+    "-1312131151": {
+      "name": "weapon_rpg", "label": "RPG-7", "ammoType": "AMMO_RPG",
+      "reason": "obliterated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_lr_rpg"
+      },
+      "rank": 10
+    },
+    "1672152130": {
+      "name": "weapon_hominglauncher", "label": "Homing Launcher", "ammoType": "AMMO_HOMINGLAUNCHER",
+      "reason": "obliterated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_lr_homing_rocket"
+      },
+      "rank": 12
+    },
+    "-1568386805": {
+      "name": "weapon_grenadelauncher", "label": "Grenade Launcher", "ammoType": "AMMO_GERNADELAUNCHER",
+      "reason": "obliterated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_lr_grenadelauncher"
+      },
+      "rank": 10
+    },
+    "125959754": {
+      "name": "weapon_compactlauncher", "label": "Compact Launcher", "ammoType": "AMMO_GERNADELAUNCHER",
+      "reason": "obliterated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_lr_compactgl"
+      },
+      "rank": 10
+    },
+    "-72657034": {
+      "name": "gadget_parachute", "label": "Parachute",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-656458692": {
+      "name": "weapon_knuckle", "label": "Brass Knuckles",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_knuckle"
+      }
+    },
+    "-102973651": {
+      "name": "weapon_hatchet", "label": "Hatchet",
+      "reason": "slaughtered",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_hatchet"
+      }
+    },
+    "-581044007": {
+      "name": "weapon_machete", "label": "Machete",
+      "reason": "slaughtered and stabbed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_machette_lr"
+      }
+    },
+    "-538741184": {
+      "name": "weapon_switchblade", "label": "Switch Blade",
+      "reason": "stabbed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_switchblade"
+      }
+    },
+    "-262696221": {
+      "name": "weapon_shiv",
+      "label": "Shiv",
+      "reason": "stabbed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_shiv"
+      }
+    },
+    "-102323637": {
+      "name": "weapon_bottle", "label": "Glass Bottle",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_bottle "
+      }
+    },
+    "-1834847097": {
+      "name": "weapon_dagger", "label": "Dagger",
+      "reason": "stabbed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_dagger"
+      }
+    },
+    "-1810795771": {
+      "name": "weapon_poolcue", "label": "Pickaxe",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_poolcue"
+      }
+    },
+    "419712736": {
+      "name": "weapon_wrench", "label": "Wrench",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_wrench"
+      }
+    },
+    "-853065399": {
+      "name": "weapon_battleaxe", "label": "Battle Axe",
+      "reason": "slaughtered",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_battleaxe"
+      }
+    },
+    "-1716189206": {
+      "name": "weapon_knife", "label": "Knife",
+      "reason": "stabbed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_knife_01"
+      }
+    },
+    "1737195953": {
+      "name": "weapon_nightstick", "label": "Nightstick",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.55,
+        "y": -0.23,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -280.0,
+        "zRotation": 90.0,
+        "model": "w_me_nightstick"
+      }
+    },
+    "1317494643": {
+      "name": "weapon_hammer", "label": "Hammer",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_me_hammer"
+      }
+    },
+    "-1786099057": {
+      "name": "weapon_bat", "label": "Baseball Bat",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_bat"
+      }
+    },
+    "1141786504": {
+      "name": "weapon_golfclub", "label": "Fire Axe",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_gclub"
+      }
+    },
+    "-2067956739": {
+      "name": "weapon_crowbar", "label": "Crow Bar",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24816,
+        "x": 0.550,
+        "y": -0.18,
+        "z": 0.10,
+        "xRotation": 0.0,
+        "yRotation": -90.0,
+        "zRotation": 0.0,
+        "model": "w_me_crowbar"
+      }
+    },
+    "1064738331": {
+      "name": "weapon_brick",
+      "label": "Brick",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_brick"
+      }
+    },
+    "-828058162": {
+      "name": "weapon_shoe",
+      "label": "Shoe",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_shoe"
+      }
+    },
+    "571920712": {
+      "name": "weapon_cash",
+      "label": "Cash Pile",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_cash"
+      }
+    },
+    "-691061592": {
+      "name": "weapon_book",
+      "label": "Book",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_ex_book"
+      }
+    },
+    "-1813897027": {
+      "name": "weapon_grenade", "label": "Hand Grenade", "ammoType": "AMMO_GRENADE",
+      "reason": "bombed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      },
+      "rank": 0
+    },
+    "741814745": {
+      "name": "weapon_stickybomb", "label": "Sticky Bomb", "ammoType": "AMMO_STICKYBOMB",
+      "reason": "bombed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      },
+      "rank": 0
+    },
+    "-1169823560": {
+      "name": "weapon_pipebomb", "label": "Pipe Bomb", "ammoType": "AMMO_PIPEBOMB",
+      "reason": "bombed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      },
+      "rank": 0
+    },
+    "-37975472": {
+      "name": "weapon_smokegrenade", "label": "Smoke Grenade", "ammoType": "AMMO_SMOKEGRENADE",
+      "reason": "smoked out",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-1600701090": {
+      "name": "weapon_bzgas", "label": "Gas Grenade", "ammoType": "AMMO_BZGAS",
+      "reason": "gassed out"
+    },
+    "615608432": {
+      "name": "weapon_molotov", "label": "Molotov", "ammoType": "AMMO_MOLOTOV",
+      "reason": "burned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-1420407917": {
+      "name": "weapon_proxmine", "label": "Proximity Mine", "ammoType": "AMMO_PROXMINE",
+      "reason": "bombed",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      },
+      "rank": 0
+    },
+    "600439132": {
+      "name": "weapon_ball", "label": "Baseball", "ammoType": "AMMO_BALL",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "126349499": {
+      "name": "weapon_snowball", "label": "Snow Ball", "ammoType": "AMMO_SNOWBALL",
+      "reason": "beaten",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1233104067": {
+      "name": "weapon_flare", "label": "Flare", "ammoType": "AMMO_FLARE",
+      "reason": "burned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1198879012": {
+      "name": "weapon_flaregun", "label": "Flaregun", "ammoType": "AMMO_FLAREGUN",
+      "reason": "burned",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": "w_pi_flaregun"
+      }
+    },
+    "-335937730": {
+      "name": "vehicle_weapon_cannon_blazer", "label": "Cannon Blazer",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1566990507": {
+      "name": "vehicle_weapon_enemy_laser", "label": "Enemy Laser",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1097917585": {
+      "name": "vehicle_weapon_nose_turret_valkyrie", "label": "Valkyrie Nose Turret",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-821520672": {
+      "name": "vehicle_weapon_plane_rocket", "label": "Plane Rocket",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1259576109": {
+      "name": "vehicle_weapon_player_bullet", "label": "Player Bullet",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1186503822": {
+      "name": "vehicle_weapon_player_buzzard", "label": "Buzzard Mini Gun",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-1625648674": {
+      "name": "vehicle_weapon_player_hunter", "label": "Hunter",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-268631733": {
+      "name": "vehicle_weapon_player_laser", "label": "Laser",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-494786007": {
+      "name": "vehicle_weapon_player_lazer", "label": "Lazer",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1638077257": {
+      "name": "vehicle_weapon_player_salvage", "label": "Salvage",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-764006018": {
+      "name": "vehicle_weapon_radar", "label": "Radar",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-1323279794": {
+      "name": "vehicle_weapon_rotors", "label": "Rotor",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "50118905": {
+      "name": "vehicle_weapon_ruiner_bullet", "label": "Ruiner Bullet",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-844344963": {
+      "name": "vehicle_weapon_searchlight", "label": "Search Light",
+      "reason": "blinded",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-123497569": {
+      "name": "vehicle_weapon_space_rocket", "label": "Space Rocket",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1945616459": {
+      "name": "vehicle_weapon_tank", "label": "Tank",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-1253095144": {
+      "name": "vehicle_weapon_turret_boxville", "label": "Boxville Turret",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1155224728": {
+      "name": "vehicle_weapon_turret_insurgent", "label": "Insurgent Turret",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "729375873": {
+      "name": "vehicle_weapon_turret_limo", "label": "Limo Turret",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "2144528907": {
+      "name": "vehicle_weapon_turrent_technical", "label": "Technical Turret",
+      "reason": "obliterated",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "1741783703": {
+      "name": "vehicle_weapon_water_cannon", "label": "Water Cannon",
+      "reason": "knocked over",
+      "type": "veh_weapon",
+      "attaching": {
+        "canAttach": false,
+        "model": ""
+      }
+    },
+    "-1553120962": {
+      "name": "WEAPON_RUN_OVER_BY_CAR",
+      "label": "Car",
+      "type": "vehicle",
+      "reason": "flattened"
+    },
+    "148160082": {
+      "name": "WEAPON_COUGAR",
+      "label": "Cougar",
+      "type": "animal",
+      "reason": "mauled"
+    },
+    "1061211904": {
+      "name": "WEAPON_GRAVITY",
+      "label": "Gravity Gun",
+      "reason": "fucking disintegrated",
+      "type": "weapon",
+      "attaching": {
+        "canAttach": true,
+        "bone": 24818,
+        "x": 0.075,
+        "y": -0.15,
+        "z": -0.02,
+        "xRotation": 0.0,
+        "yRotation": 215.0,
+        "zRotation": 0.0,
+        "model": "w_ar_gravity"
+      },
+      "rank": 9
+    }
+  },
+  "oldWeapons": {
     "-1569615261": {
       "name": "weapon_unarmed", "label": "Unarmed", "reason": "beaten", "type": "melee"
     },

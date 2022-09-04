@@ -710,14 +710,14 @@ export class Client {
     if (this.character.Job.name === Jobs.Civilian) {
       emit(Events.sendSystemMessage,
         new Message(
-          `Welcome to Astrid Network!<br><br>Make sure to join our Discord at Discord.gg/astrid<br><br>Also if you wish to be a Community Officer, use the /community command.`,
+          `Welcome to ${sharedConfig.serverName}!<br><br>Make sure to join our Discord at ${sharedConfig.serverDiscord}<br><br>Also if you wish to be a Community Officer, use the /community command.`,
           SystemTypes.Announcement
         )
       );
     } else if (this.character.Job.name === Jobs.Community) {
       emit(Events.sendSystemMessage,
         new Message(
-          `Welcome to Astrid Network!<br><br>Make sure to join our Discord at Discord.gg/astrid<br><br>To go on duty as a community officer, press your keybind (Default - F11).`,
+          `Welcome to ${sharedConfig.serverName}!<br><br>Make sure to join our Discord at ${sharedConfig.serverDiscord}<br><br>To go on duty as a community officer, press your keybind (Default - F11).`,
           SystemTypes.Announcement
         )
       );
@@ -825,7 +825,7 @@ export class Client {
   private CALLBACK_screenshot(data): void { // Screenshot Client CB
     if (!takingScreenshot) {
       takingScreenshot = true;
-      global.exports['astrid_notify'].requestScreenshotUpload("https://api.imgur.com/3/image", 'imgur', {
+      global.exports['ah_notify'].requestScreenshotUpload("https://api.imgur.com/3/image", 'imgur', {
         headers: {
           ['authorization']: "Client-ID 4c75f07085cdf77",
           ['content-type']: 'multipart/form-data'

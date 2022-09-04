@@ -164,10 +164,10 @@ export async function HexadecimalToDec(hexadecimal: string): Promise<string> {
  */
 export async function logCommand(name: string, player: Player, args?: string): Promise<void> {
   const sendersDisc = await player.GetIdentifier("discord");
-  const staffLog = new StaffLog(player.id, StaffLogs.Chat, `Used a chat command (${name})`);
-  const savedLog = await staffLog.save();
-  if (savedLog) {
-    server.staffLogManager.Add(staffLog);
+  // const staffLog = new StaffLog(player.id, StaffLogs.Chat, `Used a chat command (${name})`);
+  // const savedLog = await staffLog.save();
+  // if (savedLog) {
+    // server.staffLogManager.Add(staffLog);
     if (args) {
       await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
         username: "Chat Logs", embeds: [{
@@ -177,16 +177,16 @@ export async function logCommand(name: string, player: Player, args?: string): P
           footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
         }]
       }));
-    } else {
-      await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
-        username: "Chat Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Chat Command__",
-          description: `A player has used a chat command.\n\n**Command**: ${name}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
-          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-        }]
-      }));
-    }
+    // } else {
+    //   await server.logManager.Send(LogTypes.Chat, new WebhookMessage({
+    //     username: "Chat Logs", embeds: [{
+    //       color: EmbedColours.Green,
+    //       title: "__Chat Command__",
+    //       description: `A player has used a chat command.\n\n**Command**: ${name}\n**Sent By**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Discord**: ${sendersDisc != "Unknown" ? `<@${sendersDisc}>` : sendersDisc}`,
+    //       footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+    //     }]
+    //   }));
+    // }
   }
 }
 

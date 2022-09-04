@@ -10,7 +10,7 @@
         "smallImage": {
             "display": true,
             "image": "small_image",
-            "text": "Apply at https://forum.astridnetwork.com/"
+            "text": "small image text"
         },
         "buttons": {
           "first": {
@@ -18,8 +18,8 @@
             "action": "https://discord.gg/TpYtmZBMYt"
           },
           "second": {
-            "label": "Website",
-            "action": "https://forum.astridnetwork.com"
+            "label": "Play",
+            "action": "join link here"
           }
         },
         "intervalTimer": 5000
@@ -8276,7 +8276,7 @@
         "ui": {
           "chatCycling": {
             "messages": [
-              "Join our Discord for assistance, signing up for departments/civ orgs, and to communicate with other players - discord.gg/astrid",
+              "Join our Discord for assistance, signing up for departments/civ orgs, and to communicate with other players - discord.gg/B4FWXgtmZx",
               "Make sure to use a snippet tool to create a mugshot of your character, and add it to your character by editing it, via (/characters).",
               "To register a new vehicle, use the /vehicles command.",
               "To become a community officer use the /community command.",
@@ -8514,7 +8514,7 @@
           {"title": "LTAP", "description": "Leaving To Avoid Punishment will not be tolerated. This is the act of quitting or disconnecting from the Server to avoid receiving punishment from the Staff Team."},
           {"title": "Combat Logging", "description": "The intentional leaving of the server to avoid roleplay consequences for your actions."},
           {"title": "NITRP (No Intent to Roleplay)", "description": "While being in the FiveM server, not conducting any roleplay scenarios - causing issues - and all around disruptiveness to others."},
-          {"title": "Staff Impersonation", "description": "Pretending to be an Astrid Network Staff Team member when actually not one. Anyone without staff tags in Discord is not a staff member."},
+          {"title": "Staff Impersonation", "description": "Pretending to be an AfterHours Network Staff Team member when actually not one. Anyone without staff tags in Discord is not a staff member."},
           {"title": "Repairing/Healing Yourself and Vehicles while in a Scenario", "description": "While in progression of a roleplay scene, repairing your vehicle and/or healing yourself in an unrealistic/not legit manner."},
           {"title": "Injecting into RP", "description": "Joining scenarios that are in-progress, that you were not explicitly originally involved in is against the rules."},
           {"title": "Player Death", "description": "Only YOU the player may decide if your character is DEAD in RP. Just because someone claims they have shot you in the head 20 times and therefore you must be dead does not mean you have to. The charge of murder can only be given when a characters actions have caused another player to decide it has killed their character. Players that decide their character has died MUST change from said character for their next RP scene/situation and should not use any information gathered on the day of their murder from the previous character's life span towards any future roleplay involving revenge."},

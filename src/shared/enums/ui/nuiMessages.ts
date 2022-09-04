@@ -35,7 +35,7 @@ export enum NuiMessages {
   // Commends
   OpenCommends = "OPEN_COMMENDS",
 
-  // Astrid Menu
+  // AfterHours Menu
   OpenMenu = "OPEN_MENU",
   CloseMenu = "CLOSE_MENU",
   RenameMenu = "RENAME_MENU",

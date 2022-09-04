@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    <title>Astrid UI</title>
+    <title>AfterHours UI</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -241,21 +241,11 @@
         </div>
       </div>
 
-      <!-- Compass (MAYBE) -->
-      <!-- <div id="compass_container"> -->
-        <!-- <div id="compass"></div>   -->
-        <!-- <div class="outline">
-          <div class="mapdirections"></div>
-          <div class="mapbordercircle"></div>
-        </div> -->
-      <!-- </div> -->
-
       <div id="Spawn_Container" v-show="spawnActive">
         <div id="Spawn_Header">
           <div id="ServerInfo">
             <div id="Card_Header">Server Info</div>
             <div id="Card_Body">
-              <!-- <h1>Lorem Ipsum</h1> -->
               <v-progress-circular class="playerCount" :rotate="-90" :size="120" :width="10" :value="players.percent" color="success">
                 <div id="progress-text">
                   <span style="display: block; text-align: center; color: white; font-size: 2em; font-family: 'PT-Sans-Bold';">
@@ -530,7 +520,7 @@
       <div id="scoreboard_container" v-show="displaying">
         <div id="scoreboard">
           <div id="scoreboard_header">
-            Astrid Network | {{ currentPlayers }}/{{ maxPlayers }} Players
+            AfterHours RP | {{ currentPlayers }}/{{ maxPlayers }} Players
             <!-- <br> -->
             <!-- [{{ connectedPlayers.length }} / {{ maxPlayers }}] Players -->
           </div>
@@ -597,8 +587,8 @@
             <div id="Chat-Message" class="successMsg" v-if="message.notificationType == 'success'">[System]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="dispatch" v-if="message.notificationType == 'dispatch'">[Dispatch]: <span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="gps" v-if="message.notificationType == 'gps'">[GPS]: <span style="color: white;" v-html="message.contents"></span></div>
-            <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[Astrid Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
-            <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[Astrid Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
+            <div id="Chat-Message" v-if="message.notificationType == 'announcement'"><span class="fault">[AfterHours Announcement]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
+            <div id="Chat-Message" v-if="message.notificationType == 'adminAction'"><span class="fault">[AfterHours Administration]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
             <div id="Chat-Message" class="advert" v-if="message.notificationType == 'advert'">(Ad - {{ message.sender}}): <span v-html="message.contents"></div>
             <div id="Chat-Message" class="me" v-if="message.notificationType == 'me'">*{{ message.sender}} <span v-html="message.contents"></span>*</div>
             <div id="Chat-Message" class="characterId" v-if="message.notificationType == 'id'">(ID): <span v-html="message.contents"></div>
@@ -743,27 +733,27 @@
         </div>
       </div>
 
-      <!-- Astrid Menu -->
-      <div id="astrid_menu" v-show="menuVisible">
-        <div id="astrid_menu_base" v-bind:class="{ 'top-left': menuPosition == 'top-left', 'top-right': menuPosition == 'top-right', 'middle-left': menuPosition == 'middle-left', 'middle-right': menuPosition == 'middle-right', 'bottom-left': menuPosition == 'bottom-left', 'bottom-right': menuPosition == 'bottom-right' }">
-          <div id="astrid_menu_header">{{ menuName }}</div>
-          <div id="astrid_menu_body">
+      <!-- AfterHours Menu -->
+      <div id="ah_menu" v-show="menuVisible">
+        <div id="ah_menu_base" v-bind:class="{ 'top-left': menuPosition == 'top-left', 'top-right': menuPosition == 'top-right', 'middle-left': menuPosition == 'middle-left', 'middle-right': menuPosition == 'middle-right', 'bottom-left': menuPosition == 'bottom-left', 'bottom-right': menuPosition == 'bottom-right' }">
+          <div id="ah_menu_header">{{ menuName }}</div>
+          <div id="ah_menu_body">
             <div v-for="(comp, compIndex) in menuComponents">
               <!-- List -->
-              <div :id="compIndex" v-if="comp.type === 'list'" class="astrid_menu_list" v-bind:class="{ 'astrid_menu_list_hovered': compIndex == menuOption }">
+              <div :id="compIndex" v-if="comp.type === 'list'" class="ah_menu_list" v-bind:class="{ 'ah_menu_list_hovered': compIndex == menuOption }">
                 <span><v-icon color="white" style="margin-bottom: 5px; margin-right: 50px;">mdi-arrow-left</v-icon> {{ comp.list[comp.listIndex] }} <v-icon color="white"  style="margin-bottom: 5px; margin-left: 50px;">mdi-arrow-right</v-icon></span>
               </div>
   
               <!-- Checkbox -->
-              <div :id="compIndex" v-else-if="comp.type == 'checkbox'" class="astrid_menu_checkbox" v-bind:class="{ 'astrid_menu_checkbox_hovered': compIndex == menuOption, 'menu_checkbox_icon_hovered': compIndex == menuOption }">
+              <div :id="compIndex" v-else-if="comp.type == 'checkbox'" class="ah_menu_checkbox" v-bind:class="{ 'ah_menu_checkbox_hovered': compIndex == menuOption, 'menu_checkbox_icon_hovered': compIndex == menuOption }">
                 <div style="margin-top: 0.2vh;">{{ comp.name }}</div>
-                <v-icon color="black" class="astrid_menu_checkbox_icon" v-if="comp.state">mdi-check</v-icon>
-                <v-icon color="black" class="astrid_menu_checkbox_icon" v-else>mdi-close</v-icon>
+                <v-icon color="black" class="ah_menu_checkbox_icon" v-if="comp.state">mdi-check</v-icon>
+                <v-icon color="black" class="ah_menu_checkbox_icon" v-else>mdi-close</v-icon>
               </div>
   
               <!-- Button -->
-              <div :id="compIndex" v-else class="astrid_menu_button" v-bind:class="{ 'astrid_menu_button_hovered': compIndex == menuOption }">
-                <div class="astrid_menu_button_text">{{ comp.name }}</div>
+              <div :id="compIndex" v-else class="ah_menu_button" v-bind:class="{ 'ah_menu_button_hovered': compIndex == menuOption }">
+                <div class="ah_menu_button_text">{{ comp.name }}</div>
               </div>
             </div>
           </div>

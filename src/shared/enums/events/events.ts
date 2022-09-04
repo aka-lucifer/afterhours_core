@@ -28,233 +28,233 @@ export enum Events {
   enteredVehicle = "baseevents:enteredVehicle",
   leftVehicle = "baseevents:leftVehicle",
 
-  // Astrid Server Events
-  playerConnected = "astrid:server:playerConnected",
-  getPlayer = "astrid:server:getPlayer",
-  receiveClientCB = "astrid:server:receiveClientCB",
-  logDeath = "astrid:server:logDeath",
+  // AfterHours Server Events
+  playerConnected = "afterhours:server:playerConnected",
+  getPlayer = "afterhours:server:getPlayer",
+  receiveClientCB = "afterhours:server:receiveClientCB",
+  logDeath = "afterhours:server:logDeath",
   
-  // Astrid Server (Gravity Gun)
-  gravityPlayer = "astrid:server:gravityPlayer",
-  ungravityPlayer = "astrid:server:ungravityPlayer",
-  shootEntity = "astrid:shootEntity:shootEntity",
+  // AfterHours Server (Gravity Gun)
+  gravityPlayer = "afterhours:server:gravityPlayer",
+  ungravityPlayer = "afterhours:server:ungravityPlayer",
+  shootEntity = "afterhours:shootEntity:shootEntity",
 
-  // Astrid Server ([AOP] - Syncers)
-  setAOP = "astrid:server:setAOP",
-  setCycling = "astrid:server:setCycling",
+  // AfterHours Server ([AOP] - Syncers)
+  setAOP = "afterhours:server:setAOP",
+  setCycling = "afterhours:server:setCycling",
 
-  // Astrid Server ([Controllers | Vehicle] - GPS)
-  syncGPS = "astrid:server:syncGPS",
+  // AfterHours Server ([Controllers | Vehicle] - GPS)
+  syncGPS = "afterhours:server:syncGPS",
 
-  // Astrid Server ([Controllers | Vehicle] - Seatbelt)
-  ejectPassengers = "astrid:server:ejectPassengers",
-  harmPassengers = "astrid:server:harmPassengers",
+  // AfterHours Server ([Controllers | Vehicle] - Seatbelt)
+  ejectPassengers = "afterhours:server:ejectPassengers",
+  harmPassengers = "afterhours:server:harmPassengers",
 
-  // Astrid Server ([Controllers] | Staff) - Menu
-  logAdminAction = "astrid:server:controllers:staff:menu:logAdminAction",
+  // AfterHours Server ([Controllers] | Staff) - Menu
+  logAdminAction = "afterhours:server:controllers:staff:menu:logAdminAction",
   
-  // Astrid Server ([Controllers] | Staff] - Menu | [Connected Players])
-  banPlayer = "astrid:server:controllers:staff:menu:banPlayer",
-  kickPlayer = "astrid:server:controllers:staff:menu:kickPlayer",
-  warnPlayer = "astrid:server:controllers:staff:menu:warnPlayer",
-  commendPlayer = "astrid:server:controllers:staff:menu:commendPlayer",
-  updatePlayerRank = "astrid:server:controllers:staff:menu:controllers:updatePlayerRank",
-  killPlayer = "astrid:server:controllers:staff:menu:controllers:killPlayer",
-  freezePlayer = "astrid:server:controllers:staff:menu:freezePlayer",
-  tpToPlayer = "astrid:server:controllers:staff:menu:tpToPlayer",
-  tpToVehicle = "astrid:server:controllers:staff:menu:tpToVehicle",
-  summonPlayer = "astrid:server:controllers:staff:menu:summonPlayer",
-  returnSummonedPlayer = "astrid:server:controllers:staff:menu:returnSummonedPlayer",
-  spectatePlayer = "astrid:server:controllers:staff:menu:spectatePlayer",
-  unbanPlayer = "astrid:server:controllers:staff:menu:unbanPlayer",
+  // AfterHours Server ([Controllers] | Staff] - Menu | [Connected Players])
+  banPlayer = "afterhours:server:controllers:staff:menu:banPlayer",
+  kickPlayer = "afterhours:server:controllers:staff:menu:kickPlayer",
+  warnPlayer = "afterhours:server:controllers:staff:menu:warnPlayer",
+  commendPlayer = "afterhours:server:controllers:staff:menu:commendPlayer",
+  updatePlayerRank = "afterhours:server:controllers:staff:menu:controllers:updatePlayerRank",
+  killPlayer = "afterhours:server:controllers:staff:menu:controllers:killPlayer",
+  freezePlayer = "afterhours:server:controllers:staff:menu:freezePlayer",
+  tpToPlayer = "afterhours:server:controllers:staff:menu:tpToPlayer",
+  tpToVehicle = "afterhours:server:controllers:staff:menu:tpToVehicle",
+  summonPlayer = "afterhours:server:controllers:staff:menu:summonPlayer",
+  returnSummonedPlayer = "afterhours:server:controllers:staff:menu:returnSummonedPlayer",
+  spectatePlayer = "afterhours:server:controllers:staff:menu:spectatePlayer",
+  unbanPlayer = "afterhours:server:controllers:staff:menu:unbanPlayer",
 
-  // Astrid Server ([Controllers] | Staff] - Menu | [Server Management])
-  changeWeather = "astrid:server:changeWeather",
-  changeTime = "astrid:server:changeTime",
-  bringAll = "astrid:server:bringAll",
-  freezeAll = "astrid:server:freezeAll",
+  // AfterHours Server ([Controllers] | Staff] - Menu | [Server Management])
+  changeWeather = "afterhours:server:changeWeather",
+  changeTime = "afterhours:server:changeTime",
+  bringAll = "afterhours:server:bringAll",
+  freezeAll = "afterhours:server:freezeAll",
 
-  // Astrid Server ([Controllers] | Vehicle] - Seating)
-  seatPlayer = "astrid:server:controllers:vehicle:seatPlayer",
-  unseatPlayer = "astrid:server:controllers:vehicle:unseatPlayer",
+  // AfterHours Server ([Controllers] | Vehicle] - Seating)
+  seatPlayer = "afterhours:server:controllers:vehicle:seatPlayer",
+  unseatPlayer = "afterhours:server:controllers:vehicle:unseatPlayer",
 
-  // Astrid Server ([Controllers] | Civilian] - Kidnapping)
-  tryKidnapping = "astrid:server:controllers:civilian:tryKidnapping",
+  // AfterHours Server ([Controllers] | Civilian] - Kidnapping)
+  tryKidnapping = "afterhours:server:controllers:civilian:tryKidnapping",
 
-  // Astrid Server ([Controllers] | Civilian] - Carrying)
-  tryCarrying = "astrid:server:controllers:civilian:tryCarrying",
+  // AfterHours Server ([Controllers] | Civilian] - Carrying)
+  tryCarrying = "afterhours:server:controllers:civilian:tryCarrying",
 
-  // Astrid Server ([Controllers] | Civilian] - Gagging)
-  tryGagging = "astrid:server:controllers:civilian:tryGagging",
+  // AfterHours Server ([Controllers] | Civilian] - Gagging)
+  tryGagging = "afterhours:server:controllers:civilian:tryGagging",
 
-  // Astrid Server ([Controllers] | Civilian] - Model Blacklist)
-  changedPed = "astrid:server:controllers:civilian:changedPed",
+  // AfterHours Server ([Controllers] | Civilian] - Model Blacklist)
+  changedPed = "afterhours:server:controllers:civilian:changedPed",
 
-  // Astrid Server (Weapons)
-  checkWeapon = "astrid:server:checkWeapon",
+  // AfterHours Server (Weapons)
+  checkWeapon = "afterhours:server:checkWeapon",
 
   // (Scoreboard Server)
-  requestPlayers = "astrid:server:requestPlayers",
+  requestPlayers = "afterhours:server:requestPlayers",
 
   // (Chat Server)
-  sendMessage = "astrid:server:sendMessage",
-  createCommand = "astrid:createCommand:createCommand",
+  sendMessage = "afterhours:server:sendMessage",
+  createCommand = "afterhours:createCommand:createCommand",
 
   // (Warnings Server)
-  requestWarnings = "astrid:server:requestWarnings",
+  requestWarnings = "afterhours:server:requestWarnings",
 
   // (Commends Server)
-  requestCommends = "astrid:server:requestCommends",
+  requestCommends = "afterhours:server:requestCommends",
 
-  // Astrid Client Events
-  exportsReady = "astrid:client:exportsReady",
-  serverStarted = "astrid:client:serverStarted",
-  playerLoaded = "astrid:client:playerLoaded",
-  playerReady = "astrid:client:playerReady",
-  setCharacter = "astrid:client:setCharacter",
-  updateCharacter = "astrid:client:updateCharacter",
-  characterSpawned = "astrid:client:characterSpawned",
-  receiveServerCB = "astrid:client:recieveServerCB",
-  changeDevMode = "astrid:client:changeDevMode",
-  syncPlayers = "astrid:client:syncPlayers",
-  teleporting = "astrid:client:teleporting",
-  chatBugFix = "astrid:client:chatBugFix",
+  // AfterHours Client Events
+  exportsReady = "afterhours:client:exportsReady",
+  serverStarted = "afterhours:client:serverStarted",
+  playerLoaded = "afterhours:client:playerLoaded",
+  playerReady = "afterhours:client:playerReady",
+  setCharacter = "afterhours:client:setCharacter",
+  updateCharacter = "afterhours:client:updateCharacter",
+  characterSpawned = "afterhours:client:characterSpawned",
+  receiveServerCB = "afterhours:client:recieveServerCB",
+  changeDevMode = "afterhours:client:changeDevMode",
+  syncPlayers = "afterhours:client:syncPlayers",
+  teleporting = "afterhours:client:teleporting",
+  chatBugFix = "afterhours:client:chatBugFix",
 
-  // Astrid Client (Utils)
-  soundFrontEnd = "astrid:client:utils:soundFrontEnd",
-  showLoading = "astrid:client:utils:showLoading",
-  stopLoading = "astrid:client:utils:stopLoading",
+  // AfterHours Client (Utils)
+  soundFrontEnd = "afterhours:client:utils:soundFrontEnd",
+  showLoading = "afterhours:client:utils:showLoading",
+  stopLoading = "afterhours:client:utils:stopLoading",
 
-  // Astrid Client ([Staff])
-  rankUpdated = "astrid:client:staffManager:rankUpdated",
+  // AfterHours Client ([Staff])
+  rankUpdated = "afterhours:client:staffManager:rankUpdated",
 
-  // Astrid Client ([Staff] - AFK)
-  setAFK = "astrid:client:setAFK",
+  // AfterHours Client ([Staff] - AFK)
+  setAFK = "afterhours:client:setAFK",
 
-  // Astrid Client ([Staff] - Commands)
-  clearWorldVehs = "astrid:client:clearWorldVehs",
-  showRank = "astrid:client:showRank",
-  showAnnouncement = "astrid:client:managers:staff:showAnnouncement",
+  // AfterHours Client ([Staff] - Commands)
+  clearWorldVehs = "afterhours:client:clearWorldVehs",
+  showRank = "afterhours:client:showRank",
+  showAnnouncement = "afterhours:client:managers:staff:showAnnouncement",
   
-  // Astrid Client ([Staff] - Gravity Gun)
-  adminGun = "astrid:client:adminGun",
-  setHeldEntity = "astrid:client:setHeldEntity",
-  unsetHeldEntity = "astrid:unsetHeldEntity:unsetHeldEntity",
-  holdPlayer = "astrid:client:holdPlayer",
-  releasePlayer = "astrid:client:releasePlayer",
-  getGravitied = "astrid:client:getGravitied",
+  // AfterHours Client ([Staff] - Gravity Gun)
+  adminGun = "afterhours:client:adminGun",
+  setHeldEntity = "afterhours:client:setHeldEntity",
+  unsetHeldEntity = "afterhours:unsetHeldEntity:unsetHeldEntity",
+  holdPlayer = "afterhours:client:holdPlayer",
+  releasePlayer = "afterhours:client:releasePlayer",
+  getGravitied = "afterhours:client:getGravitied",
   
-  // Astrid Client ([Controllers] | Staff] - Menu)
-  teleportToMarker = "astrid:client:teleportToMarker",
-  teleportBack = "astrid:client:teleportBack",
-  updatePlayerBlips = "astrid:client:controllers:staff:menu:updatePlayerBlips",
-  deleteLeftPlayer = "astrid:client:controllers:staff:menu:deleteLeftPlayer",
-  receiveWarning = "astrid:client:receiveWarning",
-  goToPlayer = "astrid:client:goToPlayer",
-  startSpectating = "astrid:client:startSpectating",
-  vehGodmode = "astrid:client:controllers:staff:menu:vehGodmode",
+  // AfterHours Client ([Controllers] | Staff] - Menu)
+  teleportToMarker = "afterhours:client:teleportToMarker",
+  teleportBack = "afterhours:client:teleportBack",
+  updatePlayerBlips = "afterhours:client:controllers:staff:menu:updatePlayerBlips",
+  deleteLeftPlayer = "afterhours:client:controllers:staff:menu:deleteLeftPlayer",
+  receiveWarning = "afterhours:client:receiveWarning",
+  goToPlayer = "afterhours:client:goToPlayer",
+  startSpectating = "afterhours:client:startSpectating",
+  vehGodmode = "afterhours:client:controllers:staff:menu:vehGodmode",
   
-  // Astrid Client ([Controllers] | Staff] - Ghost Players)
-  createGhostPlayer = "astrid:client:controllers:staff:ghostPlayers:createGhostPlayer",
-  deleteGhostPlayer = "astrid:client:controllers:staff:ghostPlayers:deleteGhostPlayer",
+  // AfterHours Client ([Controllers] | Staff] - Ghost Players)
+  createGhostPlayer = "afterhours:client:controllers:staff:ghostPlayers:createGhostPlayer",
+  deleteGhostPlayer = "afterhours:client:controllers:staff:ghostPlayers:deleteGhostPlayer",
 
-  // Astrid Client (Syncers)
-  syncTime = "astrid:client:syncTime",
-  freezeTime = "astrid:client:freezeTime",
-  syncWeather = "astrid:client:syncWeather",
+  // AfterHours Client (Syncers)
+  syncTime = "afterhours:client:syncTime",
+  freezeTime = "afterhours:client:freezeTime",
+  syncWeather = "afterhours:client:syncWeather",
 
-  // Astrid Client ([AOP] - Syncers)
-  syncAOP = "astrid:client:syncAOP",
-  syncAOPCycling = "astrid:client:syncAOPCycling",
-  updateCycling = "astrid:client:updateCycling",
-  aopMenu = "astrid:client:aopMenu",
+  // AfterHours Client ([AOP] - Syncers)
+  syncAOP = "afterhours:client:syncAOP",
+  syncAOPCycling = "afterhours:client:syncAOPCycling",
+  updateCycling = "afterhours:client:updateCycling",
+  aopMenu = "afterhours:client:aopMenu",
 
-  // Astrid Client ([Vehicle] - GPS)
-  setGPS = "astrid:client:setGPS",
-  listStreets = "astrid:client:listStreets",
-  clearGPS = "astrid:client:clearGPS",
-  updateGPS = "astrid:client:updateGPS",
+  // AfterHours Client ([Vehicle] - GPS)
+  setGPS = "afterhours:client:setGPS",
+  listStreets = "afterhours:client:listStreets",
+  clearGPS = "afterhours:client:clearGPS",
+  updateGPS = "afterhours:client:updateGPS",
 
-  // Astrid Client ([Vehicle] - Flip Vehicle)
-  flipVehicle = "astrid:client:flipVehicle",
+  // AfterHours Client ([Vehicle] - Flip Vehicle)
+  flipVehicle = "afterhours:client:flipVehicle",
 
-  // Astrid Client ([Vehicle] - Seatbelt)
-  ejectFromVeh = "astrid:client:ejectFromVeh",
-  harmPassenger = "astrid:client:harmPassenger",
+  // AfterHours Client ([Vehicle] - Seatbelt)
+  ejectFromVeh = "afterhours:client:ejectFromVeh",
+  harmPassenger = "afterhours:client:harmPassenger",
 
-  // Astrid Client ([Controllers] | Vehicle - Seating)
-  trySeating = "astrid:client:controllers:vehicle:seating:trySeating",
-  seatCuffAnim = "astrid:client:controllers:vehicle:seating:seatCuffAnim",
+  // AfterHours Client ([Controllers] | Vehicle - Seating)
+  trySeating = "afterhours:client:controllers:vehicle:seating:trySeating",
+  seatCuffAnim = "afterhours:client:controllers:vehicle:seating:seatCuffAnim",
 
-  // Astrid Client ([Controllers] | Vehicle - Shuffling)
-  shuffleSeats = "astrid:client:controllers:vehicle:shuffling:shuffleSeats",
+  // AfterHours Client ([Controllers] | Vehicle - Shuffling)
+  shuffleSeats = "afterhours:client:controllers:vehicle:shuffling:shuffleSeats",
 
-  // Astrid Client ([Controllers | UI] - Bug Reporting)
-  startReporting = "astrid:client:controllers:ui:startBugReporting",
+  // AfterHours Client ([Controllers | UI] - Bug Reporting)
+  startReporting = "afterhours:client:controllers:ui:startBugReporting",
 
-  // Astrid Client ([Controllers | UI] - Hud)
-  updateUnits = "astrid:client:controllers:hud:updateUnits",
-  updatePriority = "astrid:client:controllers:hud:updatePriority",
+  // AfterHours Client ([Controllers | UI] - Hud)
+  updateUnits = "afterhours:client:controllers:hud:updateUnits",
+  updatePriority = "afterhours:client:controllers:hud:updatePriority",
 
-  // Astrid Client ([Controllers] | Civilian] - Kidnapping)
-  kidnapPlayer = "astrid:client:controllers:civilian:kidnapPlayer",
+  // AfterHours Client ([Controllers] | Civilian] - Kidnapping)
+  kidnapPlayer = "afterhours:client:controllers:civilian:kidnapPlayer",
 
-  // Astrid Client ([Controllers] | Civilian] - Carrying)
-  carryPlayer = "astrid:client:controllers:civilian:carryPlayer",
-  startCarrying = "astrid:client:controllers:civilian:startCarrying",
-  stopCarrying = "astrid:client:controllers:civilian:stopCarrying",
+  // AfterHours Client ([Controllers] | Civilian] - Carrying)
+  carryPlayer = "afterhours:client:controllers:civilian:carryPlayer",
+  startCarrying = "afterhours:client:controllers:civilian:startCarrying",
+  stopCarrying = "afterhours:client:controllers:civilian:stopCarrying",
 
-  // Astrid Client ([Controllers] | Civilian] - Surrending)
-  toggleHands = "astrid:client:controllers:civilian:toggleHands",
-  startKneeling = "astrid:client:controllers:civilianstartKneeling",
+  // AfterHours Client ([Controllers] | Civilian] - Surrending)
+  toggleHands = "afterhours:client:controllers:civilian:toggleHands",
+  startKneeling = "afterhours:client:controllers:civilianstartKneeling",
 
-  // Astrid Server ([Controllers] | Civilian] - Gagging)
-  gagPlayer = "astrid:server:controllers:civilian:gagPlayer",
+  // AfterHours Server ([Controllers] | Civilian] - Gagging)
+  gagPlayer = "afterhours:server:controllers:civilian:gagPlayer",
 
-  // Astrid Client (Notifications)
-  notify = "astrid:client:notify",
+  // AfterHours Client (Notifications)
+  notify = "afterhours:client:notify",
 
-  // Astrid Client (Spawner)
-  setupSpawner = "astrid:client:setupSpawner",
+  // AfterHours Client (Spawner)
+  setupSpawner = "afterhours:client:setupSpawner",
 
-  // Astrid Client (Characters)
-  receiveCharacters = "astrid:client:receiveCharacters",
-  // setupCharacters = "astrid:client:setupCharacters",
-  displayCharacters = "astrid:client:displayCharacters",
-  addMeMessage = "astrid:client:characters:meMessages:add",
-  removeMeMessage = "astrid:client:characters:meMessages:remove",
+  // AfterHours Client (Characters)
+  receiveCharacters = "afterhours:client:receiveCharacters",
+  // setupCharacters = "afterhours:client:setupCharacters",
+  displayCharacters = "afterhours:client:displayCharacters",
+  addMeMessage = "afterhours:client:characters:meMessages:add",
+  removeMeMessage = "afterhours:client:characters:meMessages:remove",
 
-  // Astrid Client (Vehicles)
-  setupVehicles = "astrid:client:setupVehicles",
-  displayVehicles = "astrid:client:displayVehicles",
+  // AfterHours Client (Vehicles)
+  setupVehicles = "afterhours:client:setupVehicles",
+  displayVehicles = "afterhours:client:displayVehicles",
 
-  // Astrid Client (Scoreboard)
-  receivePlayers = "astrid:client:receivePlayers",
+  // AfterHours Client (Scoreboard)
+  receivePlayers = "afterhours:client:receivePlayers",
 
-  // Astrid Client (Chat)
-  sendClientMessage = "astrid:client:sendClientMessage",
-  sendSystemMessage = "astrid:client:sendSystemMessage",
-  setTypes = "astrid:setTypes:setTypes",
-  addSuggestion = "astrid:client:addSuggestion",
-  updateSuggestions = "astrid:client:updateSuggestions",
-  removeSuggestions = "astrid:client:removeSuggestions",
-  clearChat = "astrid:client:clearChat",
-  freezeChat = "astrid:client:freezeChat",
+  // AfterHours Client (Chat)
+  sendClientMessage = "afterhours:client:sendClientMessage",
+  sendSystemMessage = "afterhours:client:sendSystemMessage",
+  setTypes = "afterhours:setTypes:setTypes",
+  addSuggestion = "afterhours:client:addSuggestion",
+  updateSuggestions = "afterhours:client:updateSuggestions",
+  removeSuggestions = "afterhours:client:removeSuggestions",
+  clearChat = "afterhours:client:clearChat",
+  freezeChat = "afterhours:client:freezeChat",
 
-  // Astrid Client (Warnings)
-  receiveWarnings = "astrid:client:receiveWarnings",
+  // AfterHours Client (Warnings)
+  receiveWarnings = "afterhours:client:receiveWarnings",
 
-  // Astrid Client (Commends)
-  receiveCommends = "astrid:client:receiveCommends",
+  // AfterHours Client (Commends)
+  receiveCommends = "afterhours:client:receiveCommends",
 
-  // Astrid Client ([Hex Menu] - Civilian)
-  dropWeapon = "astrid:client:hexMenu:dropWeapon",
+  // AfterHours Client ([Hex Menu] - Civilian)
+  dropWeapon = "afterhours:client:hexMenu:dropWeapon",
 
-  // Astrid Client (Death)
-  playerDead = "astrid:client:death:playerDead",
-  revive = "astrid:client:death:revive",
+  // AfterHours Client (Death)
+  playerDead = "afterhours:client:death:playerDead",
+  revive = "afterhours:client:death:revive",
 
-  // Astrid Server (Death)
-  playersDeath = "astrid:server:death:playersDeath",
-  revivePlayer = "astrid:server:death:revivePlayer"
+  // AfterHours Server (Death)
+  playersDeath = "afterhours:server:death:playersDeath",
+  revivePlayer = "afterhours:server:death:revivePlayer"
 }
