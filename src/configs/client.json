@@ -316,7 +316,11 @@
                 ]
             },
             "spamPreventor": {
-                "holdCount": 40
+                "holdCount": 40,
+                "weaponWhitelist": [
+                  "WEAPON_APPISTOL",
+                  "WEAPON_MACHINEPISTOL"
+                ]
             },
             "recoil": {
                 "baseRecoil": 0.5,
