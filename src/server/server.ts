@@ -718,7 +718,7 @@ export class Server {
     const player = await this.connectedPlayerManager.GetPlayer(source.toString());
 
     if (data.attacker != -1) {
-      if (data.attacker !== player.Handle) {
+      if (data.attacker !== parseInt(player.Handle)) {
         const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
         const weaponData: Weapon = sharedConfig.weapons[data.weapon];
 
