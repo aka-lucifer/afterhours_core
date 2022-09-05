@@ -60,7 +60,7 @@ export class WeaponRemovers {
         }
 
         if (this.changedWeapon) {
-          console.log("mandem changed his weapon init bruv!", this.currentWeapon, GetSelectedPedWeapon(myPed.Handle));
+          // console.log("mandem changed his weapon init bruv!", this.currentWeapon, GetSelectedPedWeapon(myPed.Handle));
           emitNet(Events.checkWeapon, this.currentWeapon);
           this.changedWeapon = false;
           
