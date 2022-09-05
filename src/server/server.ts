@@ -430,23 +430,16 @@ export class Server {
       }
     }, Ranks.Developer);
 
-    new Command("chat_slide", "Slide the chat (bug possible fix to find cause).", [], false, async(source: string) => {
+    new Command("discord", "See the servers Discord URL", [], false, async(source: string) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
       if (player) {
-        if (player.Spawned) {
-          await player.TriggerEvent(Events.chatBugFix);
+        if (player.Rank >= Ranks.Moderator) {
+          await emitNet(Events.sendSystemMessage, -1, new Message(`Make sure to join our Discord - ^3${sharedConfig.serverDiscord}^0.`, SystemTypes.Admin));
+        } else {
+          await player.TriggerEvent(Events.sendSystemMessage, new Message(`Make sure to join our Discord - ^3${sharedConfig.serverDiscord}^0.`, SystemTypes.Admin));
         }
       }
     }, Ranks.User);
-
-    RegisterCommand("chat_slide", async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          await player.TriggerEvent(Events.chatBugFix);
-        }
-      }
-    }, false);
   }
 
   private registerRCONCommands(): void {
