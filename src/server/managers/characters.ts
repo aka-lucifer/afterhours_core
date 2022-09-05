@@ -116,7 +116,7 @@ export class CharacterManager {
             const character = await this.Get(player);
             
             if (character) {
-              await player.TriggerEvent(Events.sendSystemMessage, new Message(messageContents, SystemTypes.Advert), character.Name);
+              await emitNet(Events.sendSystemMessage, -1, new Message(messageContents, SystemTypes.Advert), character.Name);
               await logCommand("/ad", player, messageContents);
             }
           }
