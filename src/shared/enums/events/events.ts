@@ -153,6 +153,7 @@ export enum Events {
   goToPlayer = "afterhours:client:goToPlayer",
   startSpectating = "afterhours:client:startSpectating",
   vehGodmode = "afterhours:client:controllers:staff:menu:vehGodmode",
+  setStaffDuty = "afterhours:client:controllers:staff:menu:setStaffDuty",
   
   // AfterHours Client ([Controllers] | Staff] - Ghost Players)
   createGhostPlayer = "afterhours:client:controllers:staff:ghostPlayers:createGhostPlayer",

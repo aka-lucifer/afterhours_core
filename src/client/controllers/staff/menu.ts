@@ -153,6 +153,9 @@ export class StaffMenu {
       onNet(Events.updatePlayerBlips, this.EVENT_updatePlayerBlips.bind(this));
       onNet(Events.deleteLeftPlayer, this.EVENT_deleteLeftPlayer.bind(this));
       onNet(Events.goToPlayer, this.EVENT_goToPlayer.bind(this));
+      onNet(Events.setStaffDuty, (state: boolean) => {
+        this.Duty = state;
+      });
 
       // Callbacks
       onNet(Callbacks.spectatePlayer, this.CALLBACK_spectatePlayer.bind(this));
