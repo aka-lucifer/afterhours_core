@@ -192,7 +192,7 @@ export class CharVehicleManager {
             await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
               color: EmbedColours.Green,
               title: "__Vehicle Registered__",
-              description: `A player has registered a new vehicle.\n\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Nationality**: ${character.Nationality}\n**Character Age**: ${character.Age}\n**Character Gender**: ${character.Gender}\n**Name**: ${newVehicle.Label}\n**Model**: ${newVehicle.Model}\n**Type**: ${newVehicle.Type}\n**Colour**: ${newVehicle.Colour}\n**Plate**: ${newVehicle.Plate}\n**Registered On**: ${new Date(newVehicle.Registered).toUTCString()}`,
+              description: `A player has registered a new vehicle.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Nationality**: ${character.Nationality}\n**Character Age**: ${character.Age}\n**Character Gender**: ${character.Gender}\n**Name**: ${newVehicle.Label}\n**Model**: ${newVehicle.Model}\n**Type**: ${newVehicle.Type}\n**Colour**: ${newVehicle.Colour}\n**Plate**: ${newVehicle.Plate}\n**Registered On**: ${new Date(newVehicle.Registered).toUTCString()}`,
               footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]}));
           }
@@ -222,7 +222,7 @@ export class CharVehicleManager {
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
                   color: EmbedColours.Green,
                   title: "__Vehicle Edited__",
-                  description: `A player has edited one of their vehicles.\n\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Old Plate**: ${vehData.oldPlate}\n**New Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
+                  description: `A player has edited one of their vehicles.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Old Plate**: ${vehData.oldPlate}\n**New Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
                   footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
                 }]}));
               }
@@ -235,7 +235,7 @@ export class CharVehicleManager {
               await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicle Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Attempted Vehicle Edit__",
-                description: `A player has tried to edit someone else's vehicle.\n\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                description: `A player has tried to edit someone else's vehicle.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]}));
             }
@@ -265,7 +265,7 @@ export class CharVehicleManager {
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
                   color: EmbedColours.Red,
                   title: "__Vehicle Deleted__",
-                  description: `A player has deleted one of their vehicles.\n\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
+                  description: `A player has deleted one of their vehicles.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
                   footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
                 }]}));
               }
@@ -278,7 +278,7 @@ export class CharVehicleManager {
               await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicle Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Attempted Vehicle Deletion__",
-                description: `A player has tried to delete someone else's vehicle.\n\n**Player Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                description: `A player has tried to delete someone else's vehicle.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]}));
             }
