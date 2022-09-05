@@ -1,25 +1,25 @@
-import { Server } from "../server";
+import {Server} from "../server";
 import {Dist, Inform, Log, logCommand} from "../utils";
 
-import { Player } from "../models/database/player";
-import { Character } from "../models/database/character";
+import {Player} from "../models/database/player";
+import {Character} from "../models/database/character";
 import WebhookMessage from "../models/webhook/discord/webhookMessage";
-import { Command } from "../models/ui/chat/command";
-import { Ban } from "../models/database/ban";
+import {Command} from "../models/ui/chat/command";
+import {Ban} from "../models/database/ban";
 
-import { LogTypes } from "../enums/logging";
+import {LogTypes} from "../enums/logging";
 
 import * as Database from "../managers/database/database"
 
-import { Callbacks } from "../../shared/enums/events/callbacks";
-import { Events } from "../../shared/enums/events/events";
-import { NotificationTypes } from "../../shared/enums/ui/notifications/types";
-import { EmbedColours } from "../../shared/enums/logging/embedColours";
-import { Message } from "../../shared/models/ui/chat/message";
-import { SystemTypes } from "../../shared/enums/ui/chat/types";
-import { Ranks } from "../../shared/enums/ranks";
-import { JobEvents } from "../../shared/enums/events/jobs/jobEvents";
-import { NumToVector3 } from "../../shared/utils";
+import {Callbacks} from "../../shared/enums/events/callbacks";
+import {Events} from "../../shared/enums/events/events";
+import {NotificationTypes} from "../../shared/enums/ui/notifications/types";
+import {EmbedColours} from "../../shared/enums/logging/embedColours";
+import {Message} from "../../shared/models/ui/chat/message";
+import {SystemTypes} from "../../shared/enums/ui/chat/types";
+import {Ranks} from "../../shared/enums/ranks";
+import {JobEvents} from "../../shared/enums/events/jobs/jobEvents";
+import {NumToVector3} from "../../shared/utils";
 
 import sharedConfig from "../../configs/shared.json";
 import serverConfig from "../../configs/server.json";
@@ -61,11 +61,24 @@ export class CharacterManager {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
       if (player) {
         if (player.Spawned) {
-          player.Spawned = false;
-          await player.TriggerEvent(Events.characterSpawned, false);
-          emitNet(JobEvents.deleteOffDutyUnit, -1, player.Handle); // Remove this players on duty blip to all on duty players
-          await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you
-          await player.TriggerEvent(Events.displayCharacters, true);
+          const character = await this.server.characterManager.Get(player);
+          if (character) {
+            player.Spawned = false;
+            await player.TriggerEvent(Events.characterSpawned, false);
+            if (player.Rank >= Ranks.Admin) await player.TriggerEvent(Events.setStaffDuty, false); // Sets admin menu on duty to false
+
+            emitNet(JobEvents.deleteOffDutyUnit, -1, player.Handle); // Remove this players on duty blip to all on duty players
+            await player.TriggerEvent(JobEvents.dutyStateChange); // Delete all job based blips such as garages, interactions, etc
+            await player.TriggerEvent(JobEvents.deleteJobBlips); // Delete all on duty player blips for you
+
+            if (character.isLeoJob()) {
+              if (await this.server.priority.Exists(player)) { // If you're already inside the units array
+                await this.server.priority.Remove(player); // Remove your entry from the active units array
+              }
+            }
+
+            await player.TriggerEvent(Events.displayCharacters, true);
+          }
         }
       }
     }, Ranks.User);
