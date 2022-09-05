@@ -685,21 +685,26 @@ const HUD = new Vue({
       // console.log("Push suggestion data", JSON.stringify(data.suggestions));
       this.suggestions = data.suggestions;
     },
+
+    FocusChat() {
+      this.focusTimer = window.setInterval(() => {
+        if (this.$refs.input !== document.activeElement) {
+          this.$refs.input.focus();
+        } else {
+          clearInterval(this.focusTimer);
+        }
+      }, 100);
+    },
     
     OpenChat(data) {
-      console.log("OPEN CHAT STEP 1!");
       setTimeout(() => {
-        console.log("OPEN CHAT STEP 2!");
         if (data.toggle) {
-          console.log("OPEN CHAT STEP 3!");
           // Clear close timeout if exists
           if (this.closeTimeout) {
-            console.log("OPEN CHAT STEP 4!");
             clearTimeout(this.closeTimeout);
             this.closeTimeout = null;
           }
 
-          console.log("OPEN CHAT STEP 5!");
           setTimeout(() => {
             // Slide into view and slide to bottom
             if (!$('#Chat-Messages').is(":visible")) {
@@ -708,34 +713,12 @@ const HUD = new Vue({
             }
             $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight;
           }, 0);
-          
-          console.log("OPEN CHAT STEP 6!");
+
           // Enable Elements (Messages & Input)
           this.showInput = true;
-          
-          console.log("OPEN CHAT STEP 7!");
+
           // Focus chat input
-          
-          this.focusTimer = window.setInterval(() => {
-            if (this.$refs.input !== document.activeElement) {
-              console.log("OPEN CHAT STEP 8!");
-              this.$refs.input.focus();
-            } else {
-              console.log("OPEN CHAT STEP 9!");
-              clearInterval(this.focusTimer);
-            }
-
-            console.log("message data 1", this.chatMessages.length)
-            console.log("message data 1 - visible", $('#Chat-Messages').is(":visible"));
-            console.log("message data 1 - display", $('#Chat-Messages').css("display"));
-            console.log("message data 1 - margin-right", $('#Chat-Messages').css("margin-right"));
-            console.log("message data 1 - html", $('#Chat-Messages').html());
-            console.log("message data 1 - timeout", this.closeTimeout);
-            console.log("message data 1 - chatMessage", this.chatMessage);
-
-            console.log("OPEN CHAT STEP 10!");
-
-          }, 100);
+          this.FocusChat();
         }
       }, 0);
     },
@@ -1535,16 +1518,19 @@ const HUD = new Vue({
 
         case "Tab":
           if ($("#Chat-Input").is(":visible") && HUD.$refs.input === document.activeElement) {
-            for (let i = 0; i < HUD.suggestions.length; i++) {
-              if (HUD.suggestions[i].name.startsWith(HUD.chatMessage)) {
-                const suggestionSplitted = HUD.suggestions[i].name.split(" ");
-                const messageSplitted = HUD.chatMessage.split(" ");
+            HUD.FocusChat();
+            if (HUD.chatMessage.length > 0) {
+              for (let i = 0; i < HUD.suggestions.length; i++) {
+                if (HUD.suggestions[i].name.startsWith(HUD.chatMessage)) {
+                  const suggestionSplitted = HUD.suggestions[i].name.split(" ");
+                  const messageSplitted = HUD.chatMessage.split(" ");
 
-                if (!HUD.usedAutofill) {
-                  HUD.usedAutofill = true;
-                  HUD.chatMessage = HUD.suggestions[i].name;
-                  HUD.usedAutofill = false;
-                  break;
+                  if (!HUD.usedAutofill) {
+                    HUD.usedAutofill = true;
+                    HUD.chatMessage = HUD.suggestions[i].name;
+                    HUD.usedAutofill = false;
+                    break;
+                  }
                 }
               }
             }
