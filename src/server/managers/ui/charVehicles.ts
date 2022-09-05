@@ -84,15 +84,33 @@ export class CharVehicleManager {
   }
 
   public async getVehFromPlate(player: Player, plate: string, firstName: string, lastName: string): Promise<Vehicle> {
-    const vehIndex = this.vehicles.findIndex(vehicle => vehicle.Plate == plate);
-    if (vehIndex !== -1) {
-      console.log("got index!");
-      const owner = new Character(player.Id);
-      const loadedChar = await owner.load(this.vehicles[vehIndex].Owner);
-      if (loadedChar) {
-        console.log("got veh!");
-        if (owner.Name == `${firstName} ${lastName}`) {
-          return this.vehicles[vehIndex];
+    console.log("get veh plate", player.Handle, plate, firstName, lastName, this.vehicles);
+    const results: Vehicle[] = [];
+
+    // Loop through all the vehicles
+    for (let i = 0; i < this.vehicles.length; i++) {
+      // Obtain all the vehicles with the passed vehicle plate
+      if (this.vehicles[i].Plate === plate) {
+        const player = await this.server.playerManager.getPlayerFromId(this.vehicles[i].Owner);
+
+        // If the owners of all the vehicles exist
+        if (player) {
+          const foundCharacter = await Database.SendQuery("SELECT `first_name`, `last_name` FROM `player_characters` WHERE `player_id` = :playerId", {
+            playerId: player.Id
+          });
+
+          // If the owners character exists in the database
+          if (foundCharacter.data.length > 0) {
+            console.log(JSON.stringify(foundCharacter.data[0], null, 4), firstName, lastName);
+
+            // If the first & last name matches
+            if (foundCharacter.data[0].first_name === firstName && foundCharacter.data[0].last_name === lastName) {
+              // Return the vehicles data
+              return this.vehicles[i];
+            }
+          }
+        } else {
+          console.log("player info not found in DB wtf !");
         }
       }
     }
