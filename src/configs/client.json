@@ -8112,7 +8112,7 @@
                 "x":1847.8638916015626,
                 "y":3685.482666015625,
                 "z":38.07131958007812,
-                "rank": "county",
+                "rank": "state",
                 "label": "Sandy Shores Sheriff Station"
               },
               {
@@ -8133,7 +8133,7 @@
                 "x": 461.39,
                 "y": -989.21,
                 "z": 30.69,
-                "rank": "police",
+                "rank": "state",
                 "label": "Mission Row Police Station"
               }
             ],
@@ -8156,7 +8156,7 @@
                 "x": 1870.18,
                 "y": 3692.55,
                 "z": 33.62,
-                "rank": "county",
+                "rank": "state",
                 "label": "Sandy Shores Sheriff Station",
                 "spawnLocations": [
                   {"x": 1853.69, "y": 3676.00, "z":33.39, "h": 209.33},
@@ -8196,7 +8196,7 @@
                 "x": 450.92,
                 "y": -1014.91,
                 "z": 28.48,
-                "rank": "police",
+                "rank": "state",
                 "label": "Mission Row Police Station",
                 "spawnLocations": [
                   {"x": 446.26, "y": -1026.28, "z": 28.41, "h": 4.85},
