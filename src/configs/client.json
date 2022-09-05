@@ -1,7 +1,7 @@
 {
     "debug": true,
     "richPresence": {
-        "appId": "976173038540320828",
+        "appId": "1014615706492489778",
         "largeImage": {
             "display": true,
             "image": "large_image",
@@ -8503,7 +8503,8 @@
             {"name": "shuffle", "description": "Shuffle to the driver seat in a vehicle."},
             {"name": "me", "description": "Send an action in chat."},
             {"name": "ad", "description": "Send an advert in chat."},
-            {"name": "showid", "description": "Show your ID to the closest players."}
+            {"name": "showid", "description": "Show your ID to the closest players."},
+            {"name":  "e", "description": "Plays the provided emote."}
         ],
         "rules": [
           {"title": "Age Requirement", "description": "Players must be 13 years of age to play in order to comply with Discord ToS."},

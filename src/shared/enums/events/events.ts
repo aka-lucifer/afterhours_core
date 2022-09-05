@@ -119,6 +119,7 @@ export enum Events {
   syncPlayers = "afterhours:client:syncPlayers",
   teleporting = "afterhours:client:teleporting",
   chatBugFix = "afterhours:client:chatBugFix",
+  playEmote = "DPEmotes:client:emote:emoteCommand",
 
   // AfterHours Client (Utils)
   soundFrontEnd = "afterhours:client:utils:soundFrontEnd",

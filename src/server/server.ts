@@ -1,80 +1,80 @@
-import { Player } from './models/database/player';
-import { Ban } from './models/database/ban';
-import { Kick } from './models/database/kick';
+import {Player} from './models/database/player';
+import {Ban} from './models/database/ban';
+import {Kick} from './models/database/kick';
 import WebhookMessage from './models/webhook/discord/webhookMessage';
-import { ClientCallback } from './models/clientCallback';
-import { Command } from './models/ui/chat/command';
+import {ClientCallback} from './models/clientCallback';
+import {Command} from './models/ui/chat/command';
 
 // [Managers] Server Data
-import { StaffManager } from './managers/staff';
+import {StaffManager} from './managers/staff';
 
 // [Managers] Player Control
-import { BanManager } from './managers/database/bans';
-import { KickManager } from './managers/database/kicks';
-import { WarnManager } from './managers/database/warnings';
-import { CommendManager } from './managers/database/commends';
-import { ConnectedPlayerManager } from './managers/connectedPlayers';
-import { ConnectionsManager } from './managers/connections';
+import {BanManager} from './managers/database/bans';
+import {KickManager} from './managers/database/kicks';
+import {WarnManager} from './managers/database/warnings';
+import {CommendManager} from './managers/database/commends';
+import {ConnectedPlayerManager} from './managers/connectedPlayers';
+import {ConnectionsManager} from './managers/connections';
 
 // [Managers] UI
-import { CharacterManager } from './managers/characters';
-import { CharVehicleManager } from './managers/ui/charVehicles';
-import { ChatManager } from './managers/ui/chat';
-import { CommandManager } from './managers/ui/command';
+import {CharacterManager} from './managers/characters';
+import {CharVehicleManager} from './managers/ui/charVehicles';
+import {ChatManager} from './managers/ui/chat';
+import {CommandManager} from './managers/ui/command';
 
 // [Managers] Jobs
-import { JobManager } from './managers/job';
+import {JobManager} from './managers/job';
 
 // [Managers] Vehicle Control
-import { VehicleManager } from './managers/vehicles';
+import {VehicleManager} from './managers/vehicles';
 
 // [Managers] Weapon Control
-import { WeaponsManager } from './managers/weapons';
+import {WeaponsManager} from './managers/weapons';
 
 // [Managers] Syncing
-import { TimeManager } from './managers/sync/time';
-import { WeatherManager } from './managers/sync/weather';
-import { AOPManager, AOPStates } from './managers/sync/aop';
+import {TimeManager} from './managers/sync/time';
+import {WeatherManager} from './managers/sync/weather';
+import {AOPManager, AOPStates} from './managers/sync/aop';
 
 // [Managers] Client Callbacks
-import { ClientCallbackManager } from './managers/clientCallbacks';
+import {ClientCallbackManager} from './managers/clientCallbacks';
 import * as Database from './managers/database/database';
 
 // [Managers] Logging
-import { StaffLogManager } from './managers/database/staffLogs';
-import { LogManager } from './managers/logging';
+import {StaffLogManager} from './managers/database/staffLogs';
+import {LogManager} from './managers/logging';
 
 // [Controllers] UI
-import { BugReporting } from './controllers/ui/bugReporting';
-import { Priority } from './controllers/ui/priority';
-import { Scoreboard } from './controllers/ui/scoreboard';
+import {BugReporting} from './controllers/ui/bugReporting';
+import {Priority} from './controllers/ui/priority';
+import {Scoreboard} from './controllers/ui/scoreboard';
 
 // [Controllers] Civilian
-import { Kidnapping } from './controllers/civilian/kidnapping';
-import { Carrying } from './controllers/civilian/carrying';
-import { Gagging } from './controllers/civilian/gagging';
-import { ModelBlacklist } from './controllers/civilian/modelBlacklist';
+import {Kidnapping} from './controllers/civilian/kidnapping';
+import {Carrying} from './controllers/civilian/carrying';
+import {Gagging} from './controllers/civilian/gagging';
+import {ModelBlacklist} from './controllers/civilian/modelBlacklist';
 
 // [Controllers] Normal
-import { Death } from './controllers/death';
+import {Death} from './controllers/death';
 
-import { LogTypes } from './enums/logging';
-import { Capitalize, Delay, Dist, Error, getClosestVehicle, GetHash, Inform, Log, logCommand } from './utils';
+import {LogTypes} from './enums/logging';
+import {Capitalize, Delay, Dist, Error, getClosestVehicle, GetHash, Inform, Log, logCommand} from './utils';
 
 import serverConfig from '../configs/server.json';
 import sharedConfig from '../configs/shared.json';
 
-import { Events } from '../shared/enums/events/events';
-import { Ranks } from '../shared/enums/ranks';
-import { EmbedColours } from '../shared/enums/logging/embedColours';
-import { Callbacks } from '../shared/enums/events/callbacks';
-import { Message } from '../shared/models/ui/chat/message';
-import { SystemTypes } from '../shared/enums/ui/chat/types';
-import { PlayerManager } from './managers/database/players';
-import { ErrorCodes } from '../shared/enums/logging/errors';
-import { Weapon } from '../shared/interfaces/weapon';
-import { concatArgs } from '../shared/utils';
-import { NotificationTypes } from '../shared/enums/ui/notifications/types';
+import {Events} from '../shared/enums/events/events';
+import {Ranks} from '../shared/enums/ranks';
+import {EmbedColours} from '../shared/enums/logging/embedColours';
+import {Callbacks} from '../shared/enums/events/callbacks';
+import {Message} from '../shared/models/ui/chat/message';
+import {SystemTypes} from '../shared/enums/ui/chat/types';
+import {PlayerManager} from './managers/database/players';
+import {ErrorCodes} from '../shared/enums/logging/errors';
+import {Weapon} from '../shared/interfaces/weapon';
+import {concatArgs} from '../shared/utils';
+import {NotificationTypes} from '../shared/enums/ui/notifications/types';
 
 export class Server {
   // Debug Data
@@ -438,6 +438,13 @@ export class Server {
         } else {
           await player.TriggerEvent(Events.sendSystemMessage, new Message(`Make sure to join our Discord - ^3${sharedConfig.serverDiscord}^0.`, SystemTypes.Admin));
         }
+      }
+    }, Ranks.User);
+
+    new Command("e", "Play an emote", [{name: "emote_name", help: "The name of the emote you want to play"}], true, async(source: string, args: any[]) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        await player.TriggerEvent(Events.playEmote, args);
       }
     }, Ranks.User);
   }
