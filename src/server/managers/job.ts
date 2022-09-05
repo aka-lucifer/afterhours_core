@@ -166,6 +166,7 @@ export class JobManager {
           emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.connectedPlayers));
 
           if (character.isLeoJob()) {
+            console.log("char job is leo", character.isLeoJob(), character.Job);
             // Logs your clock in/out time to the discord channel
             const discord = await player.GetIdentifier("discord");
             if (data.state) {
