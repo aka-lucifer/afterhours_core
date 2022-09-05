@@ -129,7 +129,7 @@ export class StaffMenu {
         }
       }
 
-      await Delay(3000);
+      await Delay(1500);
     });
   }
 
