@@ -974,7 +974,7 @@ export class StaffMenu {
 
   // Events
   public async EVENT_tpm(): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       const myPed = Game.PlayerPed;
 
       if (!IsWaypointActive()) {
@@ -1013,7 +1013,7 @@ export class StaffMenu {
   }
 
   private async EVENT_teleportBack(): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       if (this.lastLocation !== undefined) {
         const teleported = await teleportToCoords(this.lastLocation);
         if (teleported) {
@@ -1187,7 +1187,7 @@ export class StaffMenu {
   }
 
   private async EVENT_goToPlayer(player: svPlayer, playerPos: Vector3): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       const foundPlayer = new svPlayer(player);
       if (foundPlayer) {
         this.lastLocation = Game.PlayerPed.Position;
@@ -1271,7 +1271,7 @@ export class StaffMenu {
   }
 
   private async CALLBACK_getSummoned(data: any): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       const foundPlayer = new svPlayer(data.player);
       if (foundPlayer) {
         const newPos = new Vector3(data.playerPos.x, data.playerPos.y, data.playerPos.z);
@@ -1302,7 +1302,7 @@ export class StaffMenu {
   }
   
   private async CALLBACK_getSummonReturned(data: any): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       const foundPlayer = new svPlayer(data.player);
       if (foundPlayer) {
         if (this.summonLastLocation !== undefined) {
