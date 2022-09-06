@@ -38,7 +38,7 @@ export class StaffManager {
           await player.TriggerEvent(Events.teleportToMarker);
         }
       }
-    }, Ranks.Admin);
+    }, Ranks.Moderator);
     
     new Command("goback", "Go back to your previous location, before you teleported.", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
@@ -47,7 +47,7 @@ export class StaffManager {
           await player.TriggerEvent(Events.teleportBack);
         }
       }
-    }, Ranks.Admin);
+    }, Ranks.Moderator);
 
     new Command("showrank", "Show your rank in your name", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
