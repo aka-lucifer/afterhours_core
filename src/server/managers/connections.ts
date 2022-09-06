@@ -258,7 +258,7 @@ export class ConnectionsManager {
                           {
                             "type": "Action.OpenUrl",
                             "title": "Discord",
-                            "url": "https://discord.com/invite/JQPM99rs37",
+                            "url": "https://discord.com/invite/93ZeS3S4ZS",
                             "style": "positive",
                             "iconUrl": ""
                           }
