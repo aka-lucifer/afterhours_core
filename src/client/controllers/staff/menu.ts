@@ -1230,7 +1230,7 @@ export class StaffMenu {
   }
 
   private async CALLBACK_spectatePlayer(data: any): Promise<void> {
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       const myPed = Game.PlayerPed;
       const player = new svPlayer(data.player);
       const netId = Number(player.NetworkId);
