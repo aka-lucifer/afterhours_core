@@ -429,7 +429,7 @@ export class ChatManager {
     }, Ranks.User);
   }
 
-  public async generateTypes(player: Player): Promise<void> {
+  public async generateTypes(player: Player, UIUpdate: boolean = false): Promise<void> {
     const chatTypes: string[] = [];
     
     Object.keys(ChatTypes).forEach(type => {
@@ -446,6 +446,6 @@ export class ChatManager {
       chatTypes.push("admin");
     }
 
-    await player.TriggerEvent(Events.setTypes, chatTypes);
+    await player.TriggerEvent(Events.setTypes, chatTypes, UIUpdate);
   }
 }

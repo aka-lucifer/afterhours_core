@@ -79,15 +79,6 @@ export class StaffMenu {
     onNet(Callbacks.getBans, this.CALLBACK_getBans.bind(this));
     onNet(Callbacks.updatePlayerJob, this.CALLBACK_updatePlayerJob.bind(this));
     onNet(Callbacks.togglePlayerBlips, this.CALLBACK_togglePlayerBlips.bind(this));
-
-    RegisterCommand("set_to_staff", async(source: string) => {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source);
-      if (player) {
-        if (player.Spawned) {
-          await this.updateRank(player, player, Ranks.Admin);
-        }
-      }
-    }, false);
   }
 
   // Methods
@@ -146,9 +137,14 @@ export class StaffMenu {
       await otherPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3[${formattedRankLabel}] ^0- ^3${myPlayer.GetName}^0 has updated your rank to ^3${formattedNewRankLabel}^0.`, SystemTypes.Admin));
 
       // Update perms on client and refresh chat suggestions
-      await this.server.commandManager.deleteChatSuggestions(otherPlayer);
-      this.server.commandManager.createChatSuggestions(otherPlayer);
-      await otherPlayer.TriggerEvent(Events.rankUpdated, newRank);
+      if (otherPlayer.Rank >= Ranks.Admin) { // If their new rank is admin or above, give them access to admin chat
+        console.log("gimme admin chat");
+        await this.server.chatManager.generateTypes(otherPlayer, true); // Get the new chat types
+      }
+
+      await this.server.commandManager.deleteChatSuggestions(otherPlayer); // Remove all old chat suggestions
+      this.server.commandManager.createChatSuggestions(otherPlayer); // Recreate the chat suggestions, so they have access to all staff command ands suggestions.
+      await otherPlayer.TriggerEvent(Events.rankUpdated, newRank); // Handles loading the staff controllers
 
       const updatersDiscord = await myPlayer.GetIdentifier("discord");
       await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -441,7 +437,7 @@ export class StaffMenu {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
           } else {
-            await player.Notify("Commend", "You can't commend yourself!", NotificationTypes.Error);
+            await player.Notify("Commend", "You can't promote yourself!", NotificationTypes.Error);
           }
         }
       }

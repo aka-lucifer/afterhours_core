@@ -170,9 +170,18 @@ export class ChatManager {
   }
 
   // Events
-  private EVENT_setTypes(types: string[]): void {
+  private EVENT_setTypes(types: string[], UIUpdate: boolean): void {
     // console.log("Set Chat Types", types);
     this.chatTypes = types;
+
+    if (UIUpdate) {
+      SendNuiMessage(JSON.stringify({
+        event: NuiMessages.SetupChat,
+        data: {
+          types: this.chatTypes
+        }
+      }))
+    }
   }
 
   private EVENT_addSuggestion(suggestion: Suggestion): void {
