@@ -312,9 +312,11 @@ export class StaffMenu {
           toggled: !this.visible
         });
       });
+    }
 
+    if (this.client.player.Rank >= Ranks.Developer) {
       this.onDutyCheckbox = this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, { state: newState }, async (cbData) => {
+        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async (cbData) => {
           if (cbData) {
             this.client.Character.Job.status = newState;
           }
