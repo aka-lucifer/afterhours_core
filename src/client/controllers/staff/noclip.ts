@@ -66,7 +66,7 @@ export class NoClip {
       this.noClipTarget.IsInvincible = false;
       this.noClipTarget.IsPositionFrozen = false;
       this.noClipTarget.IsCollisionEnabled = true;
-      this.noClipTarget.IsVisible = true;
+      this.noClipTarget.IsVisible = this.client.staffManager.staffMenu.Visible;
 
       if (this.noClipTarget.Handle !== Game.PlayerPed.Handle) {
         Game.PlayerPed.IsVisible = true;

@@ -171,6 +171,10 @@ export class StaffMenu {
   }
 
   // Getters & Setters
+  public get Visible(): boolean {
+    return this.visible;
+  }
+
   public get WeaponActive(): boolean {
     return this.weaponTick !== undefined;
   }
