@@ -1,4 +1,5 @@
 import { Control, Game, InputMode, VehicleClass } from "fivem-js";
+import {client} from "../../client";
 
 import { Delay, Inform } from "../../utils";
 
@@ -22,12 +23,13 @@ export class LeaveDoorOpen {
         const currVeh = myPed.CurrentVehicle;
         if (currVeh.Model.IsCar) {
           if (currVeh.ClassType == VehicleClass.Emergency) {
-            if (Game.isControlPressed(InputMode.MouseAndKeyboard, Control.Enter)) {
-              currVeh.IsEngineRunning = true;
-              TaskLeaveVehicle(myPed.Handle, currVeh.Handle, 256);
+            if (Game.isControlPressed(InputMode.GamePad, Control.VehicleExit) && client.death.Alive) {
+              await Delay(150);
+              if (Game.isControlPressed(InputMode.GamePad, Control.VehicleExit) && client.death.Alive) {
+                currVeh.IsEngineRunning = true;
+                TaskLeaveVehicle(myPed.Handle, currVeh.Handle, 256);
+              }
             }
-          } else {
-            await Delay(500);
           }
         } else {
           await Delay(500);
