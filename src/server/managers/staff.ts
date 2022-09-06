@@ -105,7 +105,7 @@ export class StaffManager {
       } else {
         Error("Ban Command", "Server ID not entered!");
       }
-    }, Ranks.Admin);
+    }, Ranks.Moderator);
 
     
 
