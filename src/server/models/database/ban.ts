@@ -51,7 +51,9 @@ export class Ban {
       this.issuedUntil = new Date();
       this.issuedUntil.setFullYear(2099, 12, 31);
     } else {
+      const currDate = new Date();
       this.issuedUntil = issuedUntil;
+      this.issuedUntil.setHours(currDate.getHours(), currDate.getMinutes(), currDate.getSeconds());
     }
 
     // Inform("Ban Class", `Defined Ban Class Data: ${JSON.stringify((this))}`);
@@ -205,8 +207,6 @@ export class Ban {
         if (this.offlineReceiver.Rank > Ranks.User && this.offlineReceiver.Rank < Ranks.Moderator) { // If they have a higher rank than user and aren't, staff, reset them back to user.
           await this.offlineReceiver.UpdateRank(Ranks.User);
         }
-
-        console.log("offling ban data", this.offlineBan, this.offlineReceiver, this.issuedBy);
 
         if (this.issuedBy !== undefined) { // If offline banned by staff in game
           if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
