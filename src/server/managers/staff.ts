@@ -1,5 +1,5 @@
 import {Server} from "../server";
-import { Inform, Error, logCommand } from "../utils";
+import {Inform, Error, logCommand, getClosestVehicle} from "../utils";
 
 import { Command } from "../models/ui/chat/command";
 import { Ban } from "../models/database/ban";
@@ -16,6 +16,8 @@ import { Events } from "../../shared/enums/events/events";
 import { concatArgs, isDateValid } from "../../shared/utils";
 import { Message } from "../../shared/models/ui/chat/message";
 import { ChatTypes, SystemTypes } from "../../shared/enums/ui/chat/types";
+import {NotificationTypes} from "../../shared/enums/ui/notifications/types";
+import {AdminActions} from "../../shared/enums/adminActions";
 
 export class StaffManager {
   private readonly server: Server;
@@ -107,7 +109,34 @@ export class StaffManager {
       }
     }, Ranks.Moderator);
 
-    
+    new Command("fix", "Repair your vehicle.", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        if (player.Spawned) {
+          const myPed = GetPlayerPed(source);
+          const currVeh = GetVehiclePedIsIn(myPed, false);
+
+          if (currVeh > 0) {
+            SetVehicleBodyHealth(currVeh, 1000.0);
+            emit("VehicleDeformation:fix_sv", NetworkGetNetworkIdFromEntity(currVeh));
+            SetVehicleDirtLevel(currVeh, 0.0000000001);
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("Current vehicle repaired.", SystemTypes.Success));
+          } else {
+            const [closestVeh, vehDistance] = await getClosestVehicle(player);
+            console.log("closest vehicle data", closestVeh, vehDistance, closestVeh.Position);
+
+            if (vehDistance <= 5.0) {
+              SetVehicleBodyHealth(closestVeh.Handle, 1000.0);
+              emit("VehicleDeformation:fix_sv", NetworkGetNetworkIdFromEntity(closestVeh.NetworkId));
+              SetVehicleDirtLevel(closestVeh.Handle, 0.0000000001);
+              await player.TriggerEvent(Events.sendSystemMessage, new Message("Closest vehicle repaired.", SystemTypes.Success));
+            } else {
+              await player.Notify("Vehicle Deleter", "No vehicle found!", NotificationTypes.Error);
+            }
+          }
+        }
+      }
+    }, Ranks.Moderator);
 
     new Command("offline_ban", "Bans a player that has disconnected from the server", [{name: "player_license", help: "The game license of the player you're banning"}, {name: "banned_until", help: "The date the player is banned until - FORMAT (YYYY-MM-DD)"}, {name: "ban_reason", help: "The reason you're banning this player."}], true, async(source: string, args: any[]) => {
       // NOTES
