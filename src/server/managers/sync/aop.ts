@@ -47,7 +47,7 @@ export class AOPManager {
     onNet(Events.setCycling, this.EVENT_setCycling.bind(this));
 
     // Callbacks
-    onNet(Callbacks.setAOP, this.CALLBACK_setAOP.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.setAOP, this.CALLBACK_setAOP.bind(this));
 
     // RegisterCommand("players_add", () => {
     //   this.playerCount = 17;
@@ -268,12 +268,11 @@ export class AOPManager {
   }
 
   // Events
-  public async CALLBACK_setAOP(data: Record<string, any>): Promise<void> {
+  public async CALLBACK_setAOP(newAOP: AOPLayout, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         if (player.Rank >= Ranks.Admin) {
-          const newAOP: AOPLayout = data.newAOP;
           if (newAOP.name != this.currentAOP.name) {
             this.aopCycling = false; // Disable AOP cycling
             // console.log("disabled aop cycling bool", this.aopCycling);
@@ -290,14 +289,14 @@ export class AOPManager {
               if (svPlayers[i].Spawned) await svPlayers[i].TriggerEvent(Events.syncAOP, this.currentAOP, AOPStates.Automatic);
             }
 
-            await player.TriggerEvent(Events.receiveServerCB, true, data);
+            cb(true);
             SetConvarServerInfo("currentAOP", this.currentAOP.name);
 
             // console.log("updated AOP here!", this.currentAOP);
             // log who changed it here
           } else {
             await player.Notify("AOP", "You can't change the AOP to the same AOP!", NotificationTypes.Error);
-            await player.TriggerEvent(Events.receiveServerCB, false, data);
+            cb(false);
           }
         }
       }

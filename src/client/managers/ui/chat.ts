@@ -3,7 +3,6 @@ import { Game } from "fivem-js";
 import {Client} from "../../client";
 import {RegisterNuiCallback} from "../../utils";
 
-import {ServerCallback} from "../../models/serverCallback";
 import { Notification } from "../../models/ui/notification";
 
 import {ChatStates} from "../../enums/ui/chat/chatStates";
@@ -58,7 +57,7 @@ export class ChatManager {
     
     RegisterNuiCallback(NuiCallbacks.SendMessage, (data, cb) => {
       SetNuiFocus(false, false);
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.sendMessage, {message: data.message, type: data.type}, (cbData) => {
+      this.client.cbManager.TriggerServerCallback(Callbacks.sendMessage, (returnedData: any) => {
         // console.log("RETURNED MSG CB", cbData);
         // SetNuiFocus(!cbData, !cbData);
 
@@ -67,9 +66,9 @@ export class ChatManager {
         player.state.set("chatOpen", false, true);
         console.log("Typing set to", player.state.chatOpen);
 
-        cb(cbData)
-        if (!cbData) this.chatState = ChatStates.Closed;
-      }));
+        cb(returnedData)
+        if (!returnedData) this.chatState = ChatStates.Closed;
+      }, {message: data.message, type: data.type});
     });
   }
 

@@ -18,7 +18,7 @@ import {WeatherManager} from "./managers/sync/weather";
 import { AOPManager } from "./managers/sync/aop";
 
 // [Managers] Callbacks
-import {ServerCallbackManager} from "./managers/serverCallbacks";
+import {CallbackManager} from "./managers/callbacks";
 
 // [Managers] UI
 import {Spawner} from "./managers/ui/spawner";
@@ -111,6 +111,7 @@ export class Client {
   private characterSpawned: boolean = false;
 
   // [Managers]
+  public cbManager: CallbackManager;
   public richPresence: RichPresence;
   public staffManager: StaffManager;
 
@@ -122,9 +123,6 @@ export class Client {
   public timeManager: TimeManager;
   private weatherManager: WeatherManager;
   public aopManager: AOPManager;
-
-  // [Managers] Callbacks
-  public serverCallbackManager: ServerCallbackManager;
 
   // [Managers] UI
   private spawner: Spawner;
@@ -201,9 +199,6 @@ export class Client {
     // (General Event Listeners)
     onNet(Events.gameEventTriggered, this.EVENT_gameEvent.bind(this));
     onNet(Events.notify, this.EVENT_notify.bind(this));
-
-    // Callbacks
-    onNet(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
 
     RegisterCommand("hash", () => {
       if (this.developmentMode) {
@@ -358,6 +353,9 @@ export class Client {
 
   public async initialize(): Promise<void> {
     // [Managers] Server Data
+    this.cbManager = new CallbackManager(client);
+    this.cbManager.RegisterCallback(Callbacks.takeScreenshot, this.CALLBACK_screenshot.bind(this));
+
     this.richPresence = new RichPresence(client);
     this.richPresence.init();
     
@@ -372,9 +370,6 @@ export class Client {
     this.timeManager = new TimeManager(client);
     this.weatherManager = new WeatherManager(client);
     this.aopManager = new AOPManager(client);
-
-    // [Managers] Callbacks
-    this.serverCallbackManager = new ServerCallbackManager(client);
 
     // [Managers] UI
     this.spawner = new Spawner(client);
@@ -822,7 +817,7 @@ export class Client {
   }
 
   // Callbacks
-  private CALLBACK_screenshot(data): void { // Screenshot Client CB
+  private CALLBACK_screenshot(data: Record<string, any>, cb: CallableFunction): void { // Screenshot Client CB
     if (!takingScreenshot) {
       takingScreenshot = true;
       global.exports['ah_notify'].requestScreenshotUpload("https://api.imgur.com/3/image", 'imgur', {
@@ -831,10 +826,9 @@ export class Client {
           ['content-type']: 'multipart/form-data'
         }
       }, (results) => {
-        console.log(results)
-        data.url = JSON.parse(results).data.link;
+        const url = JSON.parse(results).data.link;
         takingScreenshot = false
-        emitNet(Events.receiveClientCB, false, data);
+        cb(url);
       });
     }
   }

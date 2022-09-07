@@ -3,7 +3,6 @@ import { Client } from "../../client";
 import { Delay, Draw3DText, RegisterNuiCallback } from "../../utils";
 
 import { Character } from "../../models/character"
-import { ServerCallback } from "../../models/serverCallback";
 
 import { Events } from "../../../shared/enums/events/events";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
@@ -49,34 +48,34 @@ export class Characters {
   // Methods
   private registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.CreateCharacter, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.createCharacter, {data}, (cbData, passedData) => {
-        cb(passedData.character)
-      }));
+      this.client.cbManager.TriggerServerCallback(Callbacks.createCharacter, (newCharacter: any) => {
+        cb(newCharacter)
+      }, data);
     });
 
     RegisterNuiCallback(NuiCallbacks.EditCharacter, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editCharacter, {data}, (cbData) => {
-        if (cbData.status) {
-          cb(cbData.licenses)
+      this.client.cbManager.TriggerServerCallback(Callbacks.editCharacter, (returnedData: any) => {
+        if (returnedData.status) {
+          cb(returnedData.licenses)
         }
-      }));
+      }, data);
     });
 
     RegisterNuiCallback(NuiCallbacks.SelectCharacter, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.selectCharacter, {characterId: data.characterId}, (cbData) => {
-        if (cbData) {
+      this.client.cbManager.TriggerServerCallback(Callbacks.selectCharacter, (returnedData: any) => {
+        if (returnedData) {
           this.client.player.Spawned = true;
         }
-        
-        SetNuiFocus(!cbData, !cbData);
-        cb(cbData);
-      }));
+
+        SetNuiFocus(!returnedData, !returnedData);
+        cb(returnedData);
+      }, data.characterId);
     });
     
     RegisterNuiCallback(NuiCallbacks.DeleteCharacter, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteCharacter, {characterId: data.characterId}, (cbData) => {
-        cb(cbData)
-      }));
+      this.client.cbManager.TriggerServerCallback(Callbacks.deleteCharacter, (returnedData: boolean) => {
+        cb(returnedData)
+      }, data.characterId);
     });
   }
 

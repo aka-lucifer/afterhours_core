@@ -8,7 +8,6 @@ import { MenuPositions } from '../../../shared/enums/ui/menu/positions';
 import { JobEvents } from '../../../shared/enums/events/jobs/jobEvents';
 import { Jobs } from '../../../shared/enums/jobs/jobs';
 import { Events } from '../../../shared/enums/events/events';
-import { ServerCallback } from '../../models/serverCallback';
 import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
 
 export class CommunityJob {
@@ -50,8 +49,8 @@ export class CommunityJob {
   public createMenu(): void {
     if (this.client.Character.job.name === Jobs.Community) {
       this.menu.BindCheckbox("On Duty", this.client.Character.job.status, (newState: boolean) => {
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async(cbData) => {
-          if (cbData) {
+        this.client.cbManager.TriggerServerCallback(JobCallbacks.setDuty, async(returnedState: boolean) => {
+          if (returnedState) {
             this.client.Character.job.status = newState;
 
             if (newState) {
@@ -83,7 +82,7 @@ export class CommunityJob {
               global.exports["pma-voice"].setRadioChannel(0);
             }
           }
-        }));
+        }, newState);
       })
 
       this.menu.BindButton("Cuff Player", () => {

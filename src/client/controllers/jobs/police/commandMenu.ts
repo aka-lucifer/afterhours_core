@@ -13,7 +13,6 @@ import { Client } from '../../../client';
 import { Delay, Inform } from '../../../utils';
 
 import { Menu } from '../../../models/ui/menu/menu';
-import { ServerCallback } from '../../../models/serverCallback';
 import { Submenu } from '../../../models/ui/menu/submenu';
 import { Notification } from '../../../models/ui/notification';
 
@@ -166,7 +165,7 @@ export class CommandMenu {
                             this.client.menuManager.emptyMenu(this.recruitment.handle);
 
                             // Units Menu
-                            this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.getUnits, { type: this.menuLocations[a].type }, async (receievedUnits) => {
+                            this.client.cbManager.TriggerServerCallback(JobCallbacks.getUnits, async (receievedUnits: any[]) => {
 
                               // Get dept rank
                               let ranks;
@@ -190,13 +189,7 @@ export class CommandMenu {
                                     const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
 
                                     promoteMenu.BindButton(rankLabel, () => {
-                                      this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.promoteUnit, {
-                                        unitsId: receievedUnits[b].id,
-                                        unitsPlayerId: receievedUnits[b].playerId,
-                                        job: this.menuLocations[a].type,
-                                        newRank: c,
-                                        callsign: receievedUnits[b].callsign
-                                      }, async (promotedUnit) => {
+                                      this.client.cbManager.TriggerServerCallback(JobCallbacks.promoteUnit, async (promotedUnit: boolean) => {
                                         if (promotedUnit) {
                                           await this.client.menuManager.CloseMenu();
 
@@ -206,16 +199,19 @@ export class CommandMenu {
                                           const notify = new Notification("Unit Management", `Unsuccessful in promoting unit, make a support ticket!`, NotificationTypes.Error);
                                           await notify.send();
                                         }
-                                      }));
+                                      }, {
+                                        unitsId: receievedUnits[b].id,
+                                        unitsPlayerId: receievedUnits[b].playerId,
+                                        job: this.menuLocations[a].type,
+                                        newRank: c,
+                                        callsign: receievedUnits[b].callsign
+                                      });
                                     });
                                   }
                                 }
 
                                 submenu.BindButton("Fire Unit", () => {
-                                  this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.fireUnit, {
-                                    unitsId: receievedUnits[b].id,
-                                    unitsPlayerId: receievedUnits[b].playerId
-                                  }, async (firedUnit) => {
+                                  this.client.cbManager.TriggerServerCallback(JobCallbacks.fireUnit, async (firedUnit: boolean) => {
                                     if (firedUnit) {
                                       await this.client.menuManager.deleteMenu(submenu.handle);
 
@@ -225,7 +221,10 @@ export class CommandMenu {
                                       const notify = new Notification("Unit Management", `Unsuccessful in firing unit, make a support ticket!`, NotificationTypes.Error);
                                       await notify.send();
                                     }
-                                  }));
+                                  }, {
+                                    unitsId: receievedUnits[b].id,
+                                    unitsPlayerId: receievedUnits[b].playerId
+                                  });
                                 });
                               }
 
@@ -243,12 +242,7 @@ export class CommandMenu {
                                           const rankLabel = await getRankFromValue(c, this.menuLocations[a].type);
                                           playerMenu.BindButton(rankLabel, () => {
 
-                                            this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.recruitPlayer, {
-                                              unitsNet: svPlayers[b].NetworkId,
-                                              jobName: this.menuLocations[a].type,
-                                              jobRank: c,
-                                              jobLabel: rankLabel
-                                            }, async (recruitedUnit) => {
+                                            this.client.cbManager.TriggerServerCallback(JobCallbacks.recruitPlayer, async (recruitedUnit: boolean) => {
                                               if (recruitedUnit) {
                                                 await this.client.menuManager.CloseMenu();
 
@@ -258,7 +252,12 @@ export class CommandMenu {
                                                 const notify = new Notification("Unit Management", "Unsuccessful in recruitign unit, make a support ticket!", NotificationTypes.Error);
                                                 await notify.send();
                                               }
-                                            }));
+                                            }, {
+                                              unitsNet: svPlayers[b].NetworkId,
+                                              jobName: this.menuLocations[a].type,
+                                              jobRank: c,
+                                              jobLabel: rankLabel
+                                            });
                                           });
                                         }
                                       }
@@ -271,7 +270,7 @@ export class CommandMenu {
                               // Open the menu
                               await this.menu.Open();
                               this.usingMenu = true;
-                            }));
+                            }, this.menuLocations[a].type);
                           }
                         }
                       }

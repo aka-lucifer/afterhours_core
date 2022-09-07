@@ -51,12 +51,12 @@ export class JobManager {
     this.server = server;
     
     // Callbacks
-    onNet(JobCallbacks.setDuty, this.CALLBACK_setDuty.bind(this));
-    onNet(JobCallbacks.updateCallsign, this.CALLBACK_updateCallsign.bind(this));
-    onNet(JobCallbacks.getUnits, this.CALLBACK_getUnits.bind(this));
-    onNet(JobCallbacks.fireUnit, this.CALLBACK_fireUnit.bind(this));
-    onNet(JobCallbacks.promoteUnit, this.CALLBACK_promoteUnit.bind(this));
-    onNet(JobCallbacks.recruitPlayer, this.CALLBACK_recruitPlayer.bind(this));
+    this.server.cbManager.RegisterCallback(JobCallbacks.setDuty, this.CALLBACK_setDuty.bind(this));
+    this.server.cbManager.RegisterCallback(JobCallbacks.updateCallsign, this.CALLBACK_updateCallsign.bind(this));
+    this.server.cbManager.RegisterCallback(JobCallbacks.getUnits, this.CALLBACK_getUnits.bind(this));
+    this.server.cbManager.RegisterCallback(JobCallbacks.fireUnit, this.CALLBACK_fireUnit.bind(this));
+    this.server.cbManager.RegisterCallback(JobCallbacks.promoteUnit, this.CALLBACK_promoteUnit.bind(this));
+    this.server.cbManager.RegisterCallback(JobCallbacks.recruitPlayer, this.CALLBACK_recruitPlayer.bind(this));
   }
 
   // Methods
@@ -132,15 +132,15 @@ export class JobManager {
   }
 
   // Callbacks
-  private async CALLBACK_setDuty(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_setDuty(newState: boolean, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
         if (character) {
-          character.Job.Status = data.state;
+          character.Job.Status = newState;
 
-          if (data.state) {
+          if (newState) {
             console.log(`Set [${player.Handle}] - ${player.GetName} | [${character.Id}] - ${character.Name} On Duty`);
             await player.Notify("Job", `You've gone on duty`, NotificationTypes.Success);
 
@@ -159,17 +159,16 @@ export class JobManager {
             }
           }
 
-          await player.TriggerEvent(JobEvents.dutyStateChange, data.state); // Handles toggling job on/off duty controllers & helpers
-          await player.TriggerEvent(Events.receiveServerCB, true, data); // Return that they are on duty
+          await player.TriggerEvent(JobEvents.dutyStateChange, character.Job.status); // Handles toggling job on/off duty controllers & helpers
+          cb(character.Job.status); // Return that they are on duty
 
           // Resync all players & selected characters to all clients, as your on duty status has changed
           emitNet(Events.syncPlayers, -1, Object.assign({}, this.server.connectedPlayerManager.connectedPlayers));
 
           if (character.isLeoJob()) {
-            console.log("char job is leo", character.isLeoJob(), character.Job);
             // Logs your clock in/out time to the discord channel
             const discord = await player.GetIdentifier("discord");
-            if (data.state) {
+            if (character.Job.status) {
               character.Job.statusTime = await GetTimestamp();
 
               await this.server.logManager.Send(LogTypes.Timesheet, new WebhookMessage({
@@ -206,7 +205,7 @@ export class JobManager {
                   username: "Timesheet Logging", embeds: [{
                     color: EmbedColours.Red,
                     title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
-                    description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: Less than zero sort this shit bby!\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                    description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: Less than zero sort this shit bby 1 ${currTime.getMilliseconds()} | ${new Date(character.Job.statusTime).getMilliseconds()}!\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
                     footer: {
                       text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                       icon_url: sharedConfig.serverLogo
@@ -221,7 +220,7 @@ export class JobManager {
     }
   }
 
-  private async CALLBACK_updateCallsign(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_updateCallsign(newCallsign: string, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -229,15 +228,15 @@ export class JobManager {
         if (character) {
           if (character.isLeoJob() || character.isSAFREMSJob() || character.Job.name == "cofficer") {
             const oldCallsign = character.Job.Callsign;
-            const updatedCallsign = await character.updateTypes("callsign", data.callsign);
-            await player.TriggerEvent(Events.receiveServerCB, updatedCallsign, data); // Update the callsign in the DB and return it back to the client
+            const updatedCallsign = await character.updateTypes("callsign", newCallsign);
+            cb(updatedCallsign); // Update the callsign in the DB and return it back to the client
 
             const discord = await player.GetIdentifier("discord");
             await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
               username: "Callsign Logging", embeds: [{
                 color: EmbedColours.Green,
                 title: `__Unit Changed Callsign | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
-                description: `A player has changed their callsign.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Old Callsign**: ${oldCallsign}\n**New Callsign**: ${data.callsign}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                description: `A player has changed their callsign.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Old Callsign**: ${oldCallsign}\n**New Callsign**: ${newCallsign}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
@@ -247,7 +246,7 @@ export class JobManager {
     }
   }
 
-  private async CALLBACK_getUnits(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_getUnits(jobType: string, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -264,7 +263,7 @@ export class JobManager {
                     const jobData = JSON.parse(results.data[i].job);
                     const job = new Job(jobData.name, jobData.label, jobData.rank, jobData.isBoss, jobData.callsign, jobData.status);
 
-                    if (job.name == data.type) {
+                    if (job.name === jobType) {
                       if (job.rank < character.Job.rank) { // If the characters job rank is less than yours
                         units.push({
                           id: results.data[i].id,
@@ -280,7 +279,7 @@ export class JobManager {
                 }
               }
 
-              await player.TriggerEvent(Events.receiveServerCB, units, data); // Send back all of the passed depts units
+              cb(units); // Send back all of the passed depts units
             }
           }
         }
@@ -288,7 +287,7 @@ export class JobManager {
     }
   }
 
-  private async CALLBACK_fireUnit(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_fireUnit(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -352,7 +351,7 @@ export class JobManager {
                 }
               }
 
-              await player.TriggerEvent(Events.receiveServerCB, updatedJob.meta.affectedRows > 0, data); // Returns true or false, if it sucessfully updated players job (fired them)
+              cb(updatedJob.meta.affectedRows > 0); // Returns true or false, if it sucessfully updated players job (fired them)
             }
           }
         }
@@ -360,7 +359,7 @@ export class JobManager {
     }
   }
 
-  private async CALLBACK_promoteUnit(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_promoteUnit(data: Record<string, any>, source: string, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -426,7 +425,7 @@ export class JobManager {
                 }
               }
 
-              await player.TriggerEvent(Events.receiveServerCB, updatedJob.meta.affectedRows > 0, data); // Returns true or false, if it sucessfully updated players job (fired them)
+              cb(updatedJob.meta.affectedRows > 0); // Returns true or false, if it sucessfully updated players job (fired them)
             }
           }
         }
@@ -533,7 +532,7 @@ export class JobManager {
                   username: "Timesheet Logging", embeds: [{
                     color: EmbedColours.Red,
                     title: `__Unit Off Duty | [${character.Job.Callsign}] - ${formatFirstName(character.firstName)}. ${character.lastName}__`,
-                    description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: Less than zero sort this shit bby!\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                    description: `A player has clocked off duty.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Time On Duty**: Less than zero sort this shit bby 2 ${currTime.getMilliseconds()} | ${new Date(character.Job.statusTime).getMilliseconds()}!\n**Timestamp**: ${currTime.toUTCString()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
                     footer: {
                       text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                       icon_url: sharedConfig.serverLogo

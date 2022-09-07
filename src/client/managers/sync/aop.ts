@@ -12,7 +12,6 @@ import { Events } from "../../../shared/enums/events/events";
 
 import { Ranks } from "../../../shared/enums/ranks";
 import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
-import { ServerCallback } from '../../models/serverCallback';
 import { Callbacks } from '../../../shared/enums/events/callbacks';
 
 import sharedConfig from "../../../configs/shared.json";
@@ -71,12 +70,12 @@ export class AOPManager {
 
     for (let i = 0; i < sharedConfig.aop.locations.length; i++) {
       this.aopChangerMenu.BindButton(sharedConfig.aop.locations[i].name, () => {
-        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.setAOP, {newAOP: sharedConfig.aop.locations[i]}, async(cbData) => {
-          if (cbData) {
+        this.client.cbManager.TriggerServerCallback(Callbacks.setAOP, (returnedData: any) => {
+          if (returnedData) {
             this.aopCycling = false;
             this.client.menuManager.UpdateState(this.aopCyclingCheckbox, false);
           }
-        }));
+        }, sharedConfig.aop.locations[i]);
       })
     }
 

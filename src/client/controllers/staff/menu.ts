@@ -7,7 +7,6 @@ import { Menu } from "../../models/ui/menu/menu";
 import { Submenu } from "../../models/ui/menu/submenu";
 import { Notification } from "../../models/ui/notification";
 import { svPlayer } from "../../models/player";
-import { ServerCallback } from '../../models/serverCallback';
 
 import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
 import { Events } from "../../../shared/enums/events/events";
@@ -143,7 +142,7 @@ export class StaffMenu {
     onNet(Events.receiveWarning, this.EVENT_receiveWarning.bind(this));
 
     // Callbacks
-    onNet(Callbacks.getVehicleFreeSeat, this.CALLBACK_getVehicleFreeSeat.bind(this));
+    this.client.cbManager.RegisterCallback(Callbacks.getVehicleFreeSeat, this.CALLBACK_getVehicleFreeSeat.bind(this));
 
     if (this.client.player.Rank >= Ranks.Moderator) {
 
@@ -158,10 +157,10 @@ export class StaffMenu {
       });
 
       // Callbacks
-      onNet(Callbacks.spectatePlayer, this.CALLBACK_spectatePlayer.bind(this));
-      onNet(Callbacks.getSummoned, this.CALLBACK_getSummoned.bind(this));
-      onNet(Callbacks.getSummonReturned, this.CALLBACK_getSummonReturned.bind(this));
-      onNet(Callbacks.getKilled, this.CALLBACK_getKilled.bind(this));
+      this.client.cbManager.RegisterCallback(Callbacks.spectatePlayer, this.CALLBACK_spectatePlayer.bind(this));
+      this.client.cbManager.RegisterCallback(Callbacks.getSummoned, this.CALLBACK_getSummoned.bind(this));
+      this.client.cbManager.RegisterCallback(Callbacks.getSummonReturned, this.CALLBACK_getSummonReturned.bind(this));
+      this.client.cbManager.RegisterCallback(Callbacks.getKilled, StaffMenu.CALLBACK_getKilled.bind(this));
 
       // Key Mapped Commands
       RegisterCommand("+toggle_menu", this.toggleMenu.bind(this), false);
@@ -290,8 +289,8 @@ export class StaffMenu {
 
       this.playerBlipCheckbox = this.playerActionsMenu.BindCheckbox("Player Blips", this.playersBlips, async (newState: boolean) => {
         this.playersBlips = newState;
-        this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.togglePlayerBlips, {newState: this.playersBlips}, async(cbData) => {
-          if (cbData) {
+        this.client.cbManager.TriggerServerCallback(Callbacks.togglePlayerBlips, async(returnedData: any) => {
+          if (returnedData) {
             this.client.menuManager.UpdateState(this.playerBlipCheckbox, this.playersBlips);
             if (this.playersBlips) {
               const notify = new Notification("Staff Menu", "Player blips enabled", NotificationTypes.Info);
@@ -301,7 +300,7 @@ export class StaffMenu {
               await notify.send();
             }
           }
-        }));
+        }, this.playersBlips);
       });
     }
 
@@ -320,11 +319,11 @@ export class StaffMenu {
 
     if (this.client.player.Rank >= Ranks.Developer) {
       this.onDutyCheckbox = this.playerActionsMenu.BindCheckbox("On Duty", this.onDuty, (newState: boolean) => {
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: newState}, async (cbData) => {
-          if (cbData) {
+        this.client.cbManager.TriggerServerCallback(JobCallbacks.setDuty, (returnedData: any) => {
+          if (returnedData) {
             this.client.Character.Job.status = newState;
           }
-        }));
+        }, newState);
       });
     }
 
@@ -728,13 +727,7 @@ export class StaffMenu {
               const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
               jobTypeMenu.BindButton(formattedRankLabel, () => {
-                this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                  unitsNet: playerData.NetworkId,
-                  jobName: job,
-                  jobLabel: jobLabel,
-                  jobRank: c,
-                  jobRankLabel: formattedRankLabel
-                }, async (recruitedUnit) => {
+                this.client.cbManager.TriggerServerCallback(Callbacks.updatePlayerJob, async (recruitedUnit: boolean) => {
                   if (recruitedUnit) {
                     const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
                     await notify.send();
@@ -742,7 +735,13 @@ export class StaffMenu {
                     const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
                     await notify.send();
                   }
-                }));
+                }, {
+                  unitsNet: playerData.NetworkId,
+                  jobName: job,
+                  jobLabel: jobLabel,
+                  jobRank: c,
+                  jobRankLabel: formattedRankLabel
+                });
               });
             }
           } else if (job == Jobs.County) {
@@ -755,13 +754,7 @@ export class StaffMenu {
               const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
               jobTypeMenu.BindButton(formattedRankLabel, () => {
-                this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                  unitsNet: playerData.NetworkId,
-                  jobName: job,
-                  jobLabel: jobLabel,
-                  jobRank: c,
-                  jobRankLabel: formattedRankLabel
-                }, async (recruitedUnit) => {
+                this.client.cbManager.TriggerServerCallback(Callbacks.updatePlayerJob, async (recruitedUnit: boolean) => {
                   if (recruitedUnit) {
                     const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
                     await notify.send();
@@ -769,7 +762,13 @@ export class StaffMenu {
                     const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
                     await notify.send();
                   }
-                }));
+                }, {
+                  unitsNet: playerData.NetworkId,
+                  jobName: job,
+                  jobLabel: jobLabel,
+                  jobRank: c,
+                  jobRankLabel: formattedRankLabel
+                });
               });
             }
           } else if (job == Jobs.State) {
@@ -782,13 +781,7 @@ export class StaffMenu {
               const formattedRankLabel = formatSplitCapitalString(rankLabelSplit);
 
               jobTypeMenu.BindButton(formattedRankLabel, () => {
-                this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                  unitsNet: playerData.NetworkId,
-                  jobName: job,
-                  jobLabel: jobLabel,
-                  jobRank: c,
-                  jobRankLabel: formattedRankLabel
-                }, async (recruitedUnit) => {
+                this.client.cbManager.TriggerServerCallback(Callbacks.updatePlayerJob, async (recruitedUnit: boolean) => {
                   if (recruitedUnit) {
                     const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to [${jobLabel}] - ${formattedRankLabel}.`, NotificationTypes.Info);
                     await notify.send();
@@ -796,17 +789,19 @@ export class StaffMenu {
                     const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
                     await notify.send();
                   }
-                }));
+                }, {
+                  unitsNet: playerData.NetworkId,
+                  jobName: job,
+                  jobLabel: jobLabel,
+                  jobRank: c,
+                  jobRankLabel: formattedRankLabel
+                });
               });
             }
           } else if (job == Jobs.Community) {
             const jobLabel = JobLabels.Community;
             jobMenu.BindButton(jobLabel, () => {
-              this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                unitsNet: playerData.NetworkId,
-                jobName: job,
-                jobLabel: jobLabel
-              }, async (recruitedUnit) => {
+              this.client.cbManager.TriggerServerCallback(Callbacks.updatePlayerJob, async (recruitedUnit: boolean) => {
                 if (recruitedUnit) {
                   const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to ${jobLabel}.`, NotificationTypes.Info);
                   await notify.send();
@@ -814,16 +809,16 @@ export class StaffMenu {
                   const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
                   await notify.send();
                 }
-              }));
+              }, {
+                unitsNet: playerData.NetworkId,
+                jobName: job,
+                jobLabel: jobLabel
+              });
             });
           } else if (job == Jobs.Civilian) {
             const jobLabel = JobLabels.Civilian;
             jobMenu.BindButton(jobLabel, () => {
-              this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.updatePlayerJob, {
-                unitsNet: playerData.NetworkId,
-                jobName: job,
-                jobLabel: jobLabel
-              }, async (recruitedUnit) => {
+              this.client.cbManager.TriggerServerCallback(Callbacks.updatePlayerJob, async (recruitedUnit: boolean) => {
                 if (recruitedUnit) {
                   const notify = new Notification("Unit Management", `Set ${playerData.Name}'s job to ${jobLabel}.`, NotificationTypes.Info);
                   await notify.send();
@@ -831,7 +826,11 @@ export class StaffMenu {
                   const notify = new Notification("Unit Management", "Unsuccessful in changing players job!", NotificationTypes.Error);
                   await notify.send();
                 }
-              }));
+              }, {
+                unitsNet: playerData.NetworkId,
+                jobName: job,
+                jobLabel: jobLabel
+              });
             });
           }
         }
@@ -927,11 +926,11 @@ export class StaffMenu {
       if (!await this.client.menuManager.IsMenuOpen(this.menu.handle)) {
 
         if (this.client.player.Rank >= Ranks.Admin) {
-          this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.getBans, {}, async(cbData) => {
+          this.client.cbManager.TriggerServerCallback(Callbacks.getBans, async(returnedData: any) => {
             this.refreshPlayers();
-            this.sortBans(cbData);
+            this.sortBans(returnedData);
             await this.menu.Open();
-          }));
+          }, {});
         } else if (this.client.player.Rank === Ranks.Moderator) {
           this.refreshPlayers();
   
@@ -1196,7 +1195,7 @@ export class StaffMenu {
       if (foundPlayer) {
         this.lastLocation = Game.PlayerPed.Position;
 
-        const teleported = await teleportToCoords(playerPos);
+        const teleported = await teleportToCoords(playerPos, false);
         if (teleported) {
           emit(Events.sendSystemMessage, new Message(`You've teleported to ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
 
@@ -1207,8 +1206,8 @@ export class StaffMenu {
     }
   }
 
-  private CALLBACK_getVehicleFreeSeat(data: any): void {
-    const vehicleHandle = NetworkGetEntityFromNetworkId(data.netId);
+  private CALLBACK_getVehicleFreeSeat(netId: number, cb: CallableFunction): void {
+    const vehicleHandle = NetworkGetEntityFromNetworkId(netId);
 
     if (vehicleHandle > 0) {
       const vehicle = new Vehicle(vehicleHandle);
@@ -1223,17 +1222,19 @@ export class StaffMenu {
       }
 
       if (freeSeat !== undefined) {
-        data.freeSeat = freeSeat;
-        emitNet(Events.receiveClientCB, "SEATS_FREE", data);
+        cb({
+          state: "SEATS_FREE",
+          freeSeat: freeSeat
+        });
       } else {
-        emitNet(Events.receiveClientCB, "NO_SEATS_FOUND", data);
+        cb({state: "NO_SEATS_FOUND"});
       }
     } else {
-      emitNet(Events.receiveClientCB, "ERROR", data);
+      cb({state: "ERROR"});
     }
   }
 
-  private async CALLBACK_spectatePlayer(data: any): Promise<void> {
+  private async CALLBACK_spectatePlayer(data: any, cb: CallableFunction): Promise<void> {
     if (this.client.player.Rank >= Ranks.Moderator) {
       const myPed = Game.PlayerPed;
       const player = new svPlayer(data.player);
@@ -1247,91 +1248,91 @@ export class StaffMenu {
           this.spectateLastPos = myPed.Position;
           myPed.IsVisible = false;
           
-          const teleported = await teleportToCoords(data.playerPos);
+          const teleported = await teleportToCoords(data.playerPos, false);
           if (teleported) {
             NetworkSetInSpectatorMode(true, spectatePed.Handle);
-            emitNet(Events.receiveClientCB, "STARTED", data);
+            cb("STARTED");
 
             await Delay(3000);
             this.client.Teleporting = false;
           } else {
-            emitNet(Events.receiveClientCB, "ERROR_TPING", data);
+            cb("ERROR_TPING");
           }
         } else {
-          const teleported = await teleportToCoords(this.spectateLastPos);
+          const teleported = await teleportToCoords(this.spectateLastPos, false);
           if (teleported) {
             myPed.IsVisible = true;
             NetworkSetInSpectatorMode(false, spectatePed.Handle);
-            emitNet(Events.receiveClientCB, "STOPPED", data);
+            cb("STOPPED");
 
             await Delay(3000);
             this.client.Teleporting = false;
           } else {
-            emitNet(Events.receiveClientCB, "ERROR_TPING", data);
+            cb("ERROR_TPING");
           }
         }
       }
     }
   }
 
-  private async CALLBACK_getSummoned(data: any): Promise<void> {
+  private async CALLBACK_getSummoned(data: any, cb: CallableFunction): Promise<void> {
     if (this.client.player.Rank >= Ranks.Moderator) {
       const foundPlayer = new svPlayer(data.player);
+
       if (foundPlayer) {
-        const newPos = new Vector3(data.playerPos.x, data.playerPos.y, data.playerPos.z);
+        // const newPos = new Vector3(data.playerPos.x, data.playerPos.y, data.playerPos.z);
         if (this.summonLastLocation === undefined) this.summonLastLocation = Game.PlayerPed.Position;
 
-        this.client.Teleporting = true;
-        SetEntityCoords(Game.PlayerPed.Handle, newPos.x, newPos.y, newPos.z, false, false, false, false);
+        // this.client.Teleporting = true;
+        // SetEntityCoords(Game.PlayerPed.Handle, newPos.x, newPos.y, newPos.z, false, false, false, false);
+        //
+        // emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+        // cb("SUCCESS"); // CB true to the staff summoning you
+        //
+        // await Delay(3000);
+        // this.client.Teleporting = false;
 
-        emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
-        emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff summoning you
+        const teleported = await teleportToCoords(data.playerPos, false);
+        if (teleported) {
+          emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
+          cb("SUCCESS"); // CB true to the staff summoning you
 
-        await Delay(3000);
-        this.client.Teleporting = false;
-        
-
-        // const teleported = await teleportToCoords(data.playerPos);
-        // if (teleported) {
-        //   emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
-        //   emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff summoning you
-
-        //   await Delay(3000);
-        //   this.client.Teleporting = false;
-        // } else {
-        //   emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff summoning you
-        // }
+          await Delay(3000);
+          this.client.Teleporting = false;
+        } else {
+          cb("ERROR_TPING"); // CB false to the staff summoning you
+        }
       }
     }
   }
   
-  private async CALLBACK_getSummonReturned(data: any): Promise<void> {
+  private async CALLBACK_getSummonReturned(data: any, cb: CallableFunction): Promise<void> {
     if (this.client.player.Rank >= Ranks.Moderator) {
       const foundPlayer = new svPlayer(data.player);
       if (foundPlayer) {
         if (this.summonLastLocation !== undefined) {
-          const teleported = await teleportToCoords(this.summonLastLocation);
+          const teleported = await teleportToCoords(this.summonLastLocation, false);
           if (teleported) {
             this.summonLastLocation = undefined; // Set our previous summon location to null
 
             emit(Events.sendSystemMessage, new Message(`You've been returned to your previous location, by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
-            emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff returning you
+            cb("SUCCESS"); // CB true to the staff returning you
 
             await Delay(3000);
             this.client.Teleporting = false;
           } else {
-            emitNet(Events.receiveClientCB, "ERROR_TPING", data); // CB false to the staff returning you
+            cb("ERROR_TPING"); // CB false to the staff returning you
           }
         } else {
-          emitNet(Events.receiveClientCB, "NO_SUMMON_LAST_LOCATION", data); // CB false to the staff returning you
+          cb("NO_SUMMON_LAST_LOCATION"); // CB false to the staff returning you
         }
       }
     }
   }
 
-  private CALLBACK_getKilled(data: any): void {
+  private static CALLBACK_getKilled(data: any, cb: CallableFunction): void {
     console.log("YO BITCH ASS GOT SLAYED PUSSIO!");
     Game.PlayerPed.kill();
-    emitNet(Events.receiveClientCB, "SUCCESS", data); // CB true to the staff who killed yo bitch ass
+    cb("SUCCESS"); // CB true to the staff who killed yo bitch ass
   }
 }

@@ -1,8 +1,6 @@
 import { Inform, RegisterNuiCallback } from '../../utils';
 import { Client } from '../../client';
 
-import { ServerCallback } from '../../models/serverCallback';
-
 import { Events } from '../../../shared/enums/events/events';
 import { NuiCallbacks } from '../../../shared/enums/ui/nuiCallbacks';
 import { NuiMessages } from '../../../shared/enums/ui/nuiMessages';
@@ -28,15 +26,15 @@ export class BugReporting {
     });
 
     RegisterNuiCallback(NuiCallbacks.SubmitBug, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.submitBug, {
+      this.client.cbManager.TriggerServerCallback(Callbacks.submitBug, (returnedData: any) => {
+        SetNuiFocus(!returnedData, !returnedData);
+        cb(returnedData)
+      }, {
         type: data.type,
         description: data.description,
         reproduction: data.reproduction,
         evidence: data.evidence
-      }, (cbData) => {
-        SetNuiFocus(!cbData, !cbData);
-        cb(cbData)
-      }));
+      });
     });
   }
 

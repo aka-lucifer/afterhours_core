@@ -1,10 +1,9 @@
 import { Game, VehicleClass, VehicleColor } from "fivem-js";
 
 import { Client } from "../../client";
-import { insideVeh, RegisterNuiCallback } from "../../utils";
+import {Delay, insideVeh, RegisterNuiCallback} from "../../utils";
 
 import { Vehicle } from "../../models/ui/vehicle"
-import { ServerCallback } from "../../models/serverCallback";
 
 import { Events } from "../../../shared/enums/events/events";
 import { NuiMessages } from "../../../shared/enums/ui/nuiMessages";
@@ -41,25 +40,23 @@ export class Vehicles {
     });
 
     RegisterNuiCallback(NuiCallbacks.CreateVehicle, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.createVehicle, {data}, (cbData) => {
-        cb(cbData)
-      }));
+      this.client.cbManager.TriggerServerCallback(Callbacks.createVehicle, (returnedData: any) => {
+        cb(returnedData)
+      }, data);
     });
 
     RegisterNuiCallback(NuiCallbacks.EditVehicle, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.editVehicle, {data}, (cbData) => {
-        cb(cbData)
-      }));
+      this.client.cbManager.TriggerServerCallback(Callbacks.editVehicle, (returnedData: any) => {
+        cb(returnedData)
+      }, data);
     });
 
-    RegisterNuiCallback(NuiCallbacks.DeleteVehicle, async(data, cb) => {
-      this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.deleteVehicle, {data}, (cbData) => {
-        cb(cbData)
-      }));
+    RegisterNuiCallback(NuiCallbacks.DeleteVehicle, async(data, nuiCallback) => {
+      this.client.cbManager.TriggerServerCallback(Callbacks.deleteVehicle, async(returnedData: boolean) => {
+        nuiCallback(returnedData)
+      }, data);
     });
   }
-
-  // Methods
 
   // Events
   private EVENT_setupVehicles(vehicles: Vehicle[]): void {

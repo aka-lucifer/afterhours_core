@@ -19,7 +19,7 @@ export class BugReporting {
     this.server = server;
 
     // Callbacks
-    onNet(Callbacks.submitBug, this.CALLBACK_submitBug.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.submitBug, this.CALLBACK_submitBug.bind(this));
   }
 
   // Methods
@@ -39,7 +39,7 @@ export class BugReporting {
   }
 
   // Callbacks
-  private async CALLBACK_submitBug(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_submitBug(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
@@ -61,7 +61,7 @@ export class BugReporting {
             break;
         }
 
-        await player.TriggerEvent(Events.receiveServerCB, true, data);
+        cb(true);
 
         await this.server.logManager.Send(logType, new WebhookMessage({username: "Bug Reporting", embeds: [{
             color: EmbedColours.Green,

@@ -301,7 +301,7 @@ export async function keyboardInput(textEntry: string, maxStringLength: number):
   }
 }
 
-export async function teleportToCoords(coords: Vector3, heading?: number): Promise<boolean> {
+export async function teleportToCoords(coords: Vector3, fade: boolean = true, heading?: number): Promise<boolean> {
   let success = false;
   client.Teleporting = true;
 
@@ -314,21 +314,22 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
   if (inside) {
     currVeh.IsPositionFrozen = true;
     if (currVeh.IsVisible) {
-      NetworkFadeOutEntity(currVeh.Handle, true, false);
+      if (fade) NetworkFadeOutEntity(currVeh.Handle, true, false);
     }
   } else {
     ClearPedTasksImmediately(Game.PlayerPed.Handle);
     Game.PlayerPed.IsPositionFrozen = true;
     if (Game.PlayerPed.IsVisible) {
-      NetworkFadeOutEntity(Game.PlayerPed.Handle, true, false);
+      if (fade) NetworkFadeOutEntity(Game.PlayerPed.Handle, true, false);
     }
   }
 
   // Fade out the screen and wait for it to be faded out completely.
-  DoScreenFadeOut(500);
-  while (!IsScreenFadedOut())
-  {
-    await Delay(0);
+  if (fade) {
+    DoScreenFadeOut(500);
+    while (!IsScreenFadedOut()) {
+      await Delay(0);
+    }
   }
 
   // This will be used to get the return value from the groundz native.
@@ -451,7 +452,7 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
 
   // Once the teleporting is done, unfreeze vehicle or player and fade them back in.
   if (inside) {
-    if (restoreVehVisibility)
+    if (restoreVehVisibility && fade)
     {
       NetworkFadeInEntity(currVeh.Handle, true);
       if (!restorePedVisibility)
@@ -462,7 +463,7 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
     currVeh.IsPositionFrozen = false;
   }
   else {
-    if (restorePedVisibility)
+    if (restorePedVisibility && fade)
     {
       NetworkFadeInEntity(Game.PlayerPed.Handle, true);
     }
@@ -473,7 +474,7 @@ export async function teleportToCoords(coords: Vector3, heading?: number): Promi
   if (heading !== undefined) Game.PlayerPed.Heading = heading;
 
   // Fade screen in and reset the camera angle.
-  DoScreenFadeIn(500);
+  if (fade) DoScreenFadeIn(500);
   SetGameplayCamRelativePitch(0.0, 1.0);
   return success;
 }

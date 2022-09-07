@@ -4,13 +4,11 @@ import { Server } from '../../server';
 import { Delay } from '../../utils';
 
 import { LogTypes } from '../../enums/logging';
-import { BanStates } from '../../enums/database/bans';
 
 import { Kick } from '../../models/database/kick';
 import { Warning } from '../../models/database/warning';
 import { Commend } from '../../models/database/commend';
 import { Ban } from '../../models/database/ban';
-import { ClientCallback } from '../../models/clientCallback';
 import WebhookMessage from '../../models/webhook/discord/webhookMessage';
 
 import { Events } from '../../../shared/enums/events/events';
@@ -76,9 +74,9 @@ export class StaffMenu {
     onNet(Events.freezeAll, this.EVENT_freezeAll.bind(this));
 
     // Callbacks
-    onNet(Callbacks.getBans, this.CALLBACK_getBans.bind(this));
-    onNet(Callbacks.updatePlayerJob, this.CALLBACK_updatePlayerJob.bind(this));
-    onNet(Callbacks.togglePlayerBlips, this.CALLBACK_togglePlayerBlips.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.getBans, this.CALLBACK_getBans.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.updatePlayerJob, this.CALLBACK_updatePlayerJob.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.togglePlayerBlips, this.CALLBACK_togglePlayerBlips.bind(this));
   }
 
   // Methods
@@ -453,12 +451,14 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
         if (havePerm) {
-          if (player.Handle !== netId.toString()) {
+          // if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getKilled, foundPlayer.Handle, {}, async (cbState) => {
-                if (cbState == "SUCCESS") {
+              await player.TriggerEvent(Events.showLoading, "Killing Player...");
+              this.server.cbManager.TriggerClientCallback(Callbacks.getKilled, async(returnedData: any) => {
+                await player.TriggerEvent(Events.stopLoading);
+                if (returnedData == "SUCCESS") {
                   await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been killed by ^3${player.GetName}^0.`, SystemTypes.Admin));
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've killed ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
 
@@ -474,12 +474,12 @@ export class StaffMenu {
                       }
                     }]
                   }));
-                } else if (cbState == "ERROR_KILLING") {
+                } else if (returnedData == "ERROR_KILLING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to kill ^3${foundPlayer.GetName}^0!`, SystemTypes.Error));
                 }
-              }));
+              }, {}, parseInt(foundPlayer.Handle));
             }
-          }
+          // }
         }
       }
     }
@@ -566,7 +566,9 @@ export class StaffMenu {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
+              await player.TriggerEvent(Events.showLoading, "Teleporting To Player...");
               await player.TriggerEvent(Events.goToPlayer, Object.assign({}, foundPlayer), foundPlayer.Position);
+              await player.TriggerEvent(Events.stopLoading);
 
               const playersDiscord = await player.GetIdentifier("discord");
               await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -606,11 +608,12 @@ export class StaffMenu {
               const foundPed = GetPlayerPed(foundPlayer.Handle);
 
               if (foundPed > 0) {
+                await player.TriggerEvent(Events.showLoading, "Teleporting Inside Vehicle...");
                 let tpVehicle = GetVehiclePedIsIn(foundPed, false);
 
                 if (tpVehicle > 0) {
-                  this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getVehicleFreeSeat, foundPlayer.Handle, {netId: NetworkGetNetworkIdFromEntity(tpVehicle)}, async (cbState, passedData) => {
-                    if (cbState == "SEATS_FREE") {
+                  this.server.cbManager.TriggerClientCallback(Callbacks.getVehicleFreeSeat, async(returnedData: any) => {
+                    if (returnedData.state == "SEATS_FREE") {
                       const foundPosition = foundPlayer.Position;
 
                       // TP to their location
@@ -623,7 +626,8 @@ export class StaffMenu {
                       tpVehicle = GetVehiclePedIsIn(foundPed, false); // Redefine the vehicle
                       
                       // TP into the vehicle
-                      SetPedIntoVehicle(myPed, tpVehicle, passedData.freeSeat); // See if this places u into other seats, if that seat is full
+                      SetPedIntoVehicle(myPed, tpVehicle, returnedData.freeSeat); // See if this places u into other seats, if that seat is full
+                      await player.TriggerEvent(Events.stopLoading);
 
                       await Delay(3000);
                       await player.TriggerEvent(Events.teleporting, false);
@@ -640,12 +644,12 @@ export class StaffMenu {
                           }
                         }]
                       }));
-                    } else if (cbState == "NO_SEATS_FOUND") {
+                    } else if (returnedData.state == "NO_SEATS_FOUND") {
                       await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to find an available seat inside ^3${foundPlayer.GetName}^0's vehicle!`, SystemTypes.Error));
-                    } else if (cbState == "ERROR") {
+                    } else if (returnedData.state == "ERROR") {
                       console.log("TP VEH ERROR TINGS!");
                     }
-                  }));
+                  }, NetworkGetNetworkIdFromEntity(tpVehicle), parseInt(foundPlayer.Handle));
                 } else {
                   await player.Notify("Staff Menu", "This player isn't inside a vehicle!", NotificationTypes.Error);
                 }
@@ -668,7 +672,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Handle !== netId.toString()) {
+          // if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
@@ -681,12 +685,12 @@ export class StaffMenu {
                 
                 await player.TriggerEvent(Events.showLoading, "Summoning Player...");
                 foundStates.state.beingSummoned = true;
-                
-                this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummoned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: myCoords}, async (cbState) => {
+
+                this.server.cbManager.TriggerClientCallback(Callbacks.getSummoned, async(returnedData: any) => {
                   await player.TriggerEvent(Events.stopLoading);
                   foundStates.state.beingSummoned = false;
 
-                  if (cbState == "SUCCESS") {
+                  if (returnedData == "SUCCESS") {
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
 
                     const playersDiscord = await player.GetIdentifier("discord");
@@ -701,19 +705,19 @@ export class StaffMenu {
                         }
                       }]
                     }));
-                  } else if (cbState == "ERROR_TPING") {
+                  } else if (returnedData == "ERROR_TPING") {
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to summon ^3${foundPlayer.GetName} ^0to your location!`, SystemTypes.Error));
                   }
-                }));
+                }, {player: Object.assign({}, player), playerPos: myCoords}, parseInt(foundPlayer.Handle));
               } else {
                 await player.TriggerEvent(Events.sendSystemMessage, new Message("This player is already being summoned!", SystemTypes.Error));
               }
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't summon yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't summon yourself!", NotificationTypes.Error);
+          // }
         }
       }
     }
@@ -726,12 +730,14 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Handle !== netId.toString()) {
+          // if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.getSummonReturned, foundPlayer.Handle, {player: Object.assign({}, player), playerPos: player.Position}, async (cbState) => {
-                if (cbState == "SUCCESS") {
+              await player.TriggerEvent(Events.showLoading, "Returning Player...");
+              this.server.cbManager.TriggerClientCallback(Callbacks.getSummonReturned, async(returnedData: any) => {
+                await player.TriggerEvent(Events.stopLoading);
+                if (returnedData == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've returned ^3${foundPlayer.GetName}^0 to their original position.`, SystemTypes.Admin));
 
                   const playersDiscord = await player.GetIdentifier("discord");
@@ -746,18 +752,18 @@ export class StaffMenu {
                       }
                     }]
                   }));
-                } else if (cbState == "ERROR_TPING") {
+                } else if (returnedData == "ERROR_TPING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("Unable to teleport them to their previous location!", SystemTypes.Error));
-                } else if (cbState == "NO_SUMMON_LAST_LOCATION") {
+                } else if (returnedData == "NO_SUMMON_LAST_LOCATION") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("This player hasn't been summoned!", SystemTypes.Error));
                 }
-              }));
+              }, {player: Object.assign({}, player), playerPos: player.Position}, parseInt(foundPlayer.Handle));
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't return yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't return yourself!", NotificationTypes.Error);
+          // }
         }
       }
     }
@@ -770,12 +776,14 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Handle !== netId.toString()) {
+          // if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
-              this.server.clientCallbackManager.Add(new ClientCallback(Callbacks.spectatePlayer, player.Handle, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, async (cbState) => {
-                if (cbState == "STARTED") {
+              await player.TriggerEvent(Events.showLoading, "Spectating Player...");
+              this.server.cbManager.TriggerClientCallback(Callbacks.spectatePlayer, async(returnedData: any) => {
+                await player.TriggerEvent(Events.stopLoading);
+                if (returnedData == "STARTED") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
                   
                   const playersDiscord = await player.GetIdentifier("discord");
@@ -790,7 +798,7 @@ export class StaffMenu {
                       }
                     }]
                   }));
-                } else if (cbState == "STOPPED") {
+                } else if (returnedData == "STOPPED") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've stopped spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
                   
                   const playersDiscord = await player.GetIdentifier("discord");
@@ -805,18 +813,18 @@ export class StaffMenu {
                       }
                     }]
                   }));
-                } else if (cbState == "ERROR_TPING") {
+                } else if (returnedData == "ERROR_TPING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to spectate ^3${foundPlayer.GetName} ^0!`, SystemTypes.Error));
                 }
-              }));
+              }, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, parseInt(player.Handle));
 
               await player.TriggerEvent(Events.startSpectating, Object.assign({}, foundPlayer), foundPlayer.Position);
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          } else {
-            await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
-          }
+          // } else {
+          //   await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
+          // }
         }
       }
     } else {
@@ -886,6 +894,7 @@ export class StaffMenu {
       const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
       if (havePerm) {
+        await player.TriggerEvent(Events.showLoading, "Bringing All Players...");
         const myPos = player.Position;
         const svPlayers = this.server.connectedPlayerManager.GetPlayers;
 
@@ -906,6 +915,7 @@ export class StaffMenu {
           }
         }
 
+        await player.TriggerEvent(Events.stopLoading);
         await player.TriggerEvent(Events.sendSystemMessage, new Message("You've brought all players to you.", SystemTypes.Admin));
 
         const playersDiscord = await player.GetIdentifier("discord");
@@ -930,6 +940,7 @@ export class StaffMenu {
       const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
       if (havePerm) {
+        await player.TriggerEvent(Events.showLoading, "Freezing All Players...");
         const svPlayers = this.server.connectedPlayerManager.GetPlayers;
 
         for (let i = 0; i < svPlayers.length; i++) {
@@ -955,6 +966,7 @@ export class StaffMenu {
           }
         }
 
+        await player.TriggerEvent(Events.stopLoading);
         await player.TriggerEvent(Events.sendSystemMessage, new Message("You've froze/unfroze all players.", SystemTypes.Admin));
         
         const playersDiscord = await player.GetIdentifier("discord");
@@ -1282,7 +1294,7 @@ export class StaffMenu {
   }
 
   // Callbacks
-  private async CALLBACK_getBans(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_getBans(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -1290,13 +1302,13 @@ export class StaffMenu {
 
         if (havePerm) {
           const bans = await this.sortBans(this.server.banManager.GetBans);
-          await player.TriggerEvent(Events.receiveServerCB, Object.assign({}, bans), data); // Returns true or false, if it sucessfully updated players job (fired them)
+          cb(Object.assign({}, bans));
         }
       }
     }
   }
 
-  private async CALLBACK_updatePlayerJob(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_updatePlayerJob(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -1350,7 +1362,7 @@ export class StaffMenu {
                       await foundPlayer.Notify("Character", `${player.GetName} has set your job to [${data.jobLabel}] - ${data.jobRankLabel}.`, NotificationTypes.Info);
                     }
 
-                    await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                    cb(updatedJob); // Returns true or false, if it sucessfully updated players job (fired them)
 
                     const updatersDiscord = await player.GetIdentifier("discord");
                     await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -1399,7 +1411,7 @@ export class StaffMenu {
                       await foundPlayer.Notify("Character", `${player.GetName} has set your job to ${data.jobLabel}.`, NotificationTypes.Info);
                     }
 
-                    await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                    cb(updatedJob); // Returns true or false, if it sucessfully updated players job (fired them)
 
                     const updatersDiscord = await player.GetIdentifier("discord");
                     await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -1415,13 +1427,14 @@ export class StaffMenu {
                     }));
                   }
                 } else {
-                  await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                  cb(false); // Returns true or false, if it sucessfully updated players job (fired them)
                 }
               } else {
-                await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+
+                cb(false); // Returns true or false, if it sucessfully updated players job (fired them)
               }
             } else {
-              await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+              cb(false); // Returns true or false, if it sucessfully updated players job (fired them)
             }
           }
         }
@@ -1429,7 +1442,7 @@ export class StaffMenu {
     }
   }
 
-  private async CALLBACK_togglePlayerBlips(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_togglePlayerBlips(toggled: boolean, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -1437,11 +1450,11 @@ export class StaffMenu {
 
         if (havePerm) {
           const states = Player(player.Handle);
-          states.state.playerBlips = data.newState;
+          states.state.playerBlips = toggled;
 
-          if (data.newState) {
+          if (toggled) {
             await player.TriggerEvent(Events.updatePlayerBlips, this.playerBlips); // Send over the blips here first, as the server sends them over in a 3 second interval.
-            await player.TriggerEvent(Events.receiveServerCB, true, data);
+            cb(true);
 
             const updatersDiscord = await player.GetIdentifier("discord");
             await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -1457,7 +1470,7 @@ export class StaffMenu {
             }));
           } else {
             await player.TriggerEvent(Events.updatePlayerBlips, []); // Send over nothing here (deletes the blip), as the server sends them over in a 3 second interval.
-            await player.TriggerEvent(Events.receiveServerCB, true, data);
+            cb(true);
 
             const updatersDiscord = await player.GetIdentifier("discord");
             await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
@@ -1476,6 +1489,4 @@ export class StaffMenu {
       }
     }
   }
-
-
 }

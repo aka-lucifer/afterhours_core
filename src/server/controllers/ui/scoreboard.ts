@@ -1,6 +1,5 @@
 import { Server } from '../../server';
 
-
 import { formatSplitCapitalString, splitCapitalsString } from '../../../shared/utils';
 
 import { Callbacks } from '../../../shared/enums/events/callbacks';
@@ -21,11 +20,11 @@ export class Scoreboard {
     this.server = server;
 
     // Callbacks
-    onNet(Callbacks.getScoreboardData, this.CALLBACK_getScoreboardData.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.getScoreboardData, this.CALLBACK_getScoreboardData.bind(this));
   }
 
   // Callbacks
-  private async CALLBACK_getScoreboardData(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_getScoreboardData(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
@@ -45,10 +44,10 @@ export class Scoreboard {
           })
         }
 
-        await player.TriggerEvent(Events.receiveServerCB, {
+        cb({
           maxPlayers: this.server.GetMaxPlayers,
           recievedPlayers: players
-        }, data);
+        });
       }
     }
   }

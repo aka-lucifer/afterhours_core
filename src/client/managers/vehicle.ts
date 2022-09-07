@@ -56,7 +56,7 @@ export class VehicleManager {
     onNet(LXEvents.LeftVeh_Cl, this.EVENT_leftVeh.bind(this));
 
     // Callbacks
-    onNet(Callbacks.getVehicleLabel, this.CALLBACK_getVehicleLabel.bind(this));
+    this.client.cbManager.RegisterCallback(Callbacks.getVehicleLabel, this.CALLBACK_getVehicleLabel.bind(this));
   }
 
   // Methods
@@ -130,12 +130,12 @@ export class VehicleManager {
     if (this.client.hud.VehStarted) this.client.hud.stopVeh(); // Hide the vehicle HUD (If showing)
   }
 
-  private CALLBACK_getVehicleLabel(data: Record<string, any>): void {
+  private CALLBACK_getVehicleLabel(data: any, cb: CallableFunction): void {
     const vehHandle = NetworkGetEntityFromNetworkId(data.netId);
     if (vehHandle > 0) {
       const vehModel = GetEntityModel(vehHandle);
       const displayText = GetDisplayNameFromVehicleModel(vehModel);
-      emitNet(Events.receiveClientCB, GetLabelText(displayText), data);
+      cb(GetLabelText(displayText));
     }
   }
 }

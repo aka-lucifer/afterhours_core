@@ -4,7 +4,6 @@ import { Capitalize, keyboardInput } from '../utils';
 import { Client } from '../client';
 
 import { Notification } from '../models/ui/notification';
-import { ServerCallback } from '../models/serverCallback';
 
 // Jobs
 import { PoliceJob } from '../controllers/jobs/policeJob';
@@ -71,8 +70,8 @@ export class JobManager {
     if (this.client.Character.Job.callsign !== "NOT_SET") {
       if (this.client.Character.Job.status != data.state) {
 
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.setDuty, {state: data.state}, async(cbData) => {
-          if (cbData) {
+        this.client.cbManager.TriggerServerCallback(JobCallbacks.setDuty, async(returnedState: boolean) => {
+          if (returnedState) {
             this.client.Character.Job.status = data.state;
 
             if (this.client.staffManager.staffMenu !== undefined) {
@@ -130,7 +129,7 @@ export class JobManager {
               }
             }
           }
-        }));
+        }, data.state);
       } else {
         if (data.state) {
           const notify = new Notification("Job", `You are already on duty`, NotificationTypes.Error);
@@ -150,9 +149,8 @@ export class JobManager {
     const callsign = await keyboardInput("Callsign", 5);
     if (callsign !== undefined && callsign !== null) {
       if (callsign.length > 0) {
-        this.client.serverCallbackManager.Add(new ServerCallback(JobCallbacks.updateCallsign, {callsign: callsign}, async(cbData) => {
-
-          if (cbData) {
+        this.client.cbManager.TriggerServerCallback(JobCallbacks.updateCallsign, async(returnedState: boolean) => {
+          if (returnedState) {
             this.client.Character.Job.callsign = callsign;
             const notify = new Notification("Job", `You've set your callsign to (${callsign})`, NotificationTypes.Success);
             await notify.send();
@@ -160,7 +158,7 @@ export class JobManager {
             const notify = new Notification("Job", `There was an error updating your callsign!`, NotificationTypes.Error);
             await notify.send();
           }
-        }));
+        }, callsign);
       } else {
         const notify = new Notification("Job", `You haven't entered a callsign!`, NotificationTypes.Error);
         await notify.send();

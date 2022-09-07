@@ -330,6 +330,7 @@ const HUD = new Vue({
             licenses: this.newCharacter.licenseValues,
             mugshot: this.newCharacter.mugshot
           }, (charData) => {
+            console.log("cb data", JSON.stringify(charData), JSON.stringify(charData.job));
             if (Object.keys(charData).length > 0) {
               charData.jobName = charData.job.name;
               charData.jobLabel = charData.job.label;
@@ -796,8 +797,8 @@ const HUD = new Vue({
             this.sentMessages.push(this.chatMessage);
             this.cycledMessage = this.sentMessages.length;
           }
-          this.chatMessage = "";
         });
+        this.chatMessage = "";
       }
     },
 
@@ -823,9 +824,9 @@ const HUD = new Vue({
           $("#Chat-Messages").get(0).scrollTop = $("#Chat-Messages").get(0).scrollHeight; // Scroll to bottom of messages
         }, 10);
 
-        console.log("message data 2", JSON.stringify(this.chatMessages), $('#Chat-Messages').is(":visible"), $('#Chat-Messages').css("display"), $('#Chat-Messages').css("margin-right"), $('#Chat-Messages').html(), this.closeTimeout, this.chatMessage);
+        // console.log("message data 2", JSON.stringify(this.chatMessages), $('#Chat-Messages').is(":visible"), $('#Chat-Messages').css("display"), $('#Chat-Messages').css("margin-right"), $('#Chat-Messages').html(), this.closeTimeout, this.chatMessage);
 
-        console.log("closetimeout", this.closeTimeout);
+        // console.log("closetimeout", this.closeTimeout);
         if (this.closeTimeout == undefined) {
           this.closeTimeout = setTimeout(() => {
             if (!this.showInput) { // Double check if chat isn't toggled

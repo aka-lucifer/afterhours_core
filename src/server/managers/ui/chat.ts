@@ -36,7 +36,7 @@ export class ChatManager {
     this.server = server;
 
     // Callbacks
-    onNet(Callbacks.sendMessage, async(data: Record<string, any>) => {
+    this.server.cbManager.RegisterCallback(Callbacks.sendMessage, async(data: Record<string, any>, source: number, cb: CallableFunction) => {
       const src = source.toString();
       const player = await this.server.connectedPlayerManager.GetPlayer(src);
       if (player.Spawned) {
@@ -61,26 +61,26 @@ export class ChatManager {
                       // Make sure the entered args aren't empty strings
                       for (let b = 0; b < args.length; b++) {
                         if (args[b].length <= 0) {
-                          emitNet(Events.receiveServerCB, src, false, data);
+                          cb(false);
                           return await player.TriggerEvent(Events.sendSystemMessage, new Message("All command arguments must be entered!", SystemTypes.Error));
                         }
                       }
 
                       // Run the command
                       commands[a].callback(player.Handle, args);
-                      emitNet(Events.receiveServerCB, src, true, data);
+                      cb(true);
                     } else {
                       Error("Chat Manager", "All command arguments must be entered!");
                       await player.TriggerEvent(Events.sendSystemMessage, new Message("All command arguments must be entered!", SystemTypes.Error));
-                      emitNet(Events.receiveServerCB, src, false, data);
+                      cb(false);
                     }
                   } else {
-                    emitNet(Events.receiveServerCB, src, true, data);
+                    cb(true);
                     commands[a].callback(player.Handle, args);
                   }
                 } else {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("Access Denied!", SystemTypes.Error));
-                  emitNet(Events.receiveServerCB, src, false, data);
+                  cb(false);
                 }
               }
             }
@@ -110,26 +110,26 @@ export class ChatManager {
                   if (jobCommands[a].argsRequired) {
                     if (Object.keys(jobCommands[a].args).length > 0 && args.length >= Object.keys(jobCommands[a].args).length) {
                       jobCommands[a].callback(player.Handle, args);
-                      emitNet(Events.receiveServerCB, src, true, data);
+                      cb(true);
                     } else {
                       Error("Chat Manager", "All command arguments must be entered!");
                       await player.TriggerEvent(Events.sendSystemMessage, new Message("All command arguments must be entered!", SystemTypes.Error));
-                      emitNet(Events.receiveServerCB, src, false, data);
+                      cb(false);
                     }
                   } else {
-                    emitNet(Events.receiveServerCB, src, true, data);
+                    cb(true);
                     jobCommands[a].callback(player.Handle, args);
                   }
                 } else {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("Job Access Denied!", SystemTypes.Error));
-                  emitNet(Events.receiveServerCB, src, false, data);
+                  cb(false);
                 }
               }
             }
           } else {
             Error("Chat Manager", `Command (/${command}) doesn't exist!`)
             await player.TriggerEvent(Events.sendSystemMessage, new Message(`Command (/${command}) doesn't exist!`, SystemTypes.Error));
-            emitNet(Events.receiveServerCB, src, false, data);
+            cb(false);
             return;
           }
         } else {
@@ -164,7 +164,7 @@ export class ChatManager {
               // console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
 
               // Allow chat input
-              emitNet(Events.receiveServerCB, src, true, data);
+              cb(true);
 
               // Warning Processor
               if (this.playerWarnings[player.Id] >= 3) {
@@ -209,7 +209,7 @@ export class ChatManager {
               // console.log(`Your warnings are now(${this.playerWarnings[player.Id]})`);
 
               // Allow chat input
-              emitNet(Events.receiveServerCB, src, true, data);
+              cb(true);
 
               // Warning Processor
               if (this.playerWarnings[player.Id] >= 3) {
@@ -258,20 +258,21 @@ export class ChatManager {
                 }
               }
             }
-            emitNet(Events.receiveServerCB, src, true, data);
+
+            cb(true);
           } else if (message.type == ChatTypes.Local) { // Normal Local Chat
             const character = await this.server.characterManager.Get(player);
 
             if (character) {
               const sent = await this.server.characterManager.proximityMessage(ProximityTypes.Local, message, character);
-              emitNet(Events.receiveServerCB, src, sent, data);
+              cb(sent);
             }
           } else if (message.type == ChatTypes.Global) { // Global Chat
             const character = await this.server.characterManager.Get(player);
 
             if (character) {
               emitNet(Events.sendClientMessage, -1, message, `${player.GetName} | ${character.Name}`);
-              emitNet(Events.receiveServerCB, src, true, data);
+              cb(true);
             }
           }
 

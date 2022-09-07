@@ -2,11 +2,11 @@ import {Player} from './models/database/player';
 import {Ban} from './models/database/ban';
 import {Kick} from './models/database/kick';
 import WebhookMessage from './models/webhook/discord/webhookMessage';
-import {ClientCallback} from './models/clientCallback';
 import {Command} from './models/ui/chat/command';
 
 // [Managers] Server Data
 import {StaffManager} from './managers/staff';
+import {CallbackManager} from "./managers/callbacks";
 
 // [Managers] Player Control
 import {BanManager} from './managers/database/bans';
@@ -36,8 +36,6 @@ import {TimeManager} from './managers/sync/time';
 import {WeatherManager} from './managers/sync/weather';
 import {AOPManager, AOPStates} from './managers/sync/aop';
 
-// [Managers] Client Callbacks
-import {ClientCallbackManager} from './managers/clientCallbacks';
 import * as Database from './managers/database/database';
 
 // [Managers] Logging
@@ -85,6 +83,7 @@ export class Server {
 
   // [Managers] Server Data
   public staffManager: StaffManager;
+  public cbManager: CallbackManager;
 
   // [Managers] Player Control
   public banManager: BanManager;
@@ -114,9 +113,6 @@ export class Server {
   public timeManager: TimeManager;
   public weatherManager: WeatherManager;
   private aopManager: AOPManager;
-
-  // [Managers] Client Callbacks
-  public clientCallbackManager: ClientCallbackManager;
 
   // [Managers] Logging
   public staffLogManager: StaffLogManager;
@@ -183,6 +179,7 @@ export class Server {
 
     // [Managers] Server Data
     this.staffManager = new StaffManager(server);
+    this.cbManager = new CallbackManager(server);
 
     // [Managers] Player Controller
     this.banManager = new BanManager(server);
@@ -212,9 +209,6 @@ export class Server {
     this.timeManager = new TimeManager(server);
     this.weatherManager = new WeatherManager(server);
     this.aopManager = new AOPManager(server);
-
-    // [Managers] Client Callbacks
-    this.clientCallbackManager = new ClientCallbackManager(server);
 
     // [Managers] Logging
     this.staffLogManager = new StaffLogManager(server);
@@ -514,20 +508,20 @@ export class Server {
 
       const player = await this.connectedPlayerManager.GetPlayer(playerHandle.toString());
       if (player) {
-        this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.Handle, {}, async (cbData, passedData) => {
-          console.log("client -> sersver cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+        this.cbManager.TriggerClientCallback(Callbacks.takeScreenshot, async(imageURL: string) => {
+          console.log("server -> client -> server (SCREENSHOT)", `(${JSON.stringify(imageURL)})`);
           const ban = new Ban(playerHandle, hardwareId, reason, issuedBy);
           ban.Receiver = player;
           ban.Logger = LogTypes.Anticheat;
 
-          if (passedData.url) ban.URL = passedData.url;
+          if (imageURL) ban.URL = imageURL;
           if (issuedBy != undefined) {
             ban.IssuedBy = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
           }
 
           await ban.save();
           ban.drop();
-        }));
+        }, {}, parseInt(player.Handle));
       }
     });
 
@@ -536,13 +530,13 @@ export class Server {
       if (anticheatKick) {
         const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
         if (player) {
-          this.clientCallbackManager.Add(new ClientCallback(Callbacks.takeScreenshot, player.Handle, {}, async (cbData, passedData) => {
-            console.log("client -> server cb", `(data: ${cbData} | ${JSON.stringify(passedData)})`);
+          this.cbManager.TriggerClientCallback(Callbacks.takeScreenshot, async(imageURL: string) => {
+            console.log("server -> client -> server (SCREENSHOT)", `(${JSON.stringify(imageURL)})`);
             const kick = new Kick(playerId, reason, issuedBy);
 
             kick.Logger = LogTypes.Anticheat;
 
-            if (passedData.url) kick.URL = passedData.url;
+            if (imageURL) kick.URL = imageURL;
             if (issuedBy != undefined) {
               kick.IssuedBy = await this.connectedPlayerManager.GetPlayerFromId(issuedBy);
             }
@@ -551,7 +545,7 @@ export class Server {
 
             await kick.save();
             // kick.drop();
-          }));
+          }, {}, parseInt(player.Handle));
         }
       } else {
         const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);

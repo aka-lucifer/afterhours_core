@@ -39,11 +39,10 @@ export class CharacterManager {
     this.server = server;
 
     // Callbacks
-    onNet(Callbacks.createCharacter, this.CALLBACK_createCharacter.bind(this));
-    onNet(Callbacks.editCharacter, this.CALLBACK_editCharacter.bind(this));
-    onNet(Callbacks.selectCharacter, this.CALLBACK_selectCharacter.bind(this));
-    onNet(Callbacks.deleteCharacter, this.CALLBACK_deleteCharacter.bind(this));
-    
+    this.server.cbManager.RegisterCallback(Callbacks.createCharacter, this.CALLBACK_createCharacter.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.selectCharacter, this.CALLBACK_selectCharacter.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.editCharacter, this.CALLBACK_editCharacter.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.deleteCharacter, this.CALLBACK_deleteCharacter.bind(this));
   }
 
   // Get Requests
@@ -231,7 +230,7 @@ export class CharacterManager {
       playerId: owner.Id
     });
 
-    return charData.data.length > 0;
+    return charData.meta.affectedRows > 0;
   }
 
   public async Remove(owner: Player): Promise<void> {
@@ -288,19 +287,18 @@ export class CharacterManager {
   }
 
   // Callbacks
-  private async CALLBACK_createCharacter(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_createCharacter(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
     if (player) {
       const character = new Character(player.Id);
-      const charData = data.data;
       
       // console.log("New Char Data", charData)
-      const created = await character.create(charData.firstName, charData.lastName, charData.nationality, charData.dob, charData.gender, charData.licenses, charData.mugshot);
+      const created = await character.create(data.firstName, data.lastName, data.nationality, data.dob, data.gender, data.licenses, data.mugshot);
       if (created) {
         player.characters.push(character);
         data.character = Object.assign({}, character);
-        await player.TriggerEvent(Events.receiveServerCB, true, data);
+        cb(data.character);
 
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
           color: EmbedColours.Green,
@@ -314,36 +312,35 @@ export class CharacterManager {
     }
   }
 
-  private async CALLBACK_editCharacter(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_editCharacter(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
-      const charData = data.data;
 
-      if (charData.characterId !== undefined && charData.characterId > 0) {
-        const yourCharacter = await this.Yours(charData.characterId, player);
+      if (data.characterId !== undefined && data.characterId > 0) {
+        const yourCharacter = await this.Yours(data.characterId, player);
 
         const character = new Character(player.Id);
         await character.load(data.characterId);
 
         if (yourCharacter) {
           const character = new Character(player.Id);
-          const loadedCharacter = await character.load(charData.characterId)
+          const loadedCharacter = await character.load(data.characterId)
 
           if (loadedCharacter) {
-            character.firstName = charData.firstName;
-            character.lastName = charData.lastName;
-            character.nationality = charData.nationality;
-            if (charData.mugshot) character.Metadata.Mugshot = charData.mugshot;
-            if (charData.licenses) character.Metadata.setLicenses(charData.licenses)
+            character.firstName = data.firstName;
+            character.lastName = data.lastName;
+            character.nationality = data.nationality;
+            if (data.mugshot) character.Metadata.Mugshot = data.mugshot;
+            if (data.licenses) character.Metadata.setLicenses(data.licenses)
 
-            const cb = {
+            const cbData = {
               status: true,
               licenses: character.Metadata.Licenses
             }
 
             const updatedData = await character.update();
             if (updatedData) {
-              await player.TriggerEvent(Events.receiveServerCB, cb, data); // Update the UI to close and disable NUI focus
+              cb(cbData); // Update the mugshot and licenses in the UI form
               await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
                 color: EmbedColours.Green,
                 title: "__Character Edited__",
@@ -369,12 +366,12 @@ export class CharacterManager {
     }
   }
 
-  private async CALLBACK_selectCharacter(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_selectCharacter(characterId: number, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
 
-    if (data.characterId !== undefined && data.characterId > 0) {
+    if (characterId !== undefined && characterId > 0) {
       const character = new Character(player.Id);
-      const loadedCharacter = await character.load(data.characterId)
+      const loadedCharacter = await character.load(characterId)
 
       if (loadedCharacter) {
         character.Owner = player; // Make the character owned by you
@@ -426,7 +423,8 @@ export class CharacterManager {
         if (charVehicles) {
           await player.TriggerEvent(Events.setupVehicles, charVehicles);
         }
-        await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+
+        cb(true);
 
         // Log it to discord
         await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
@@ -439,7 +437,7 @@ export class CharacterManager {
         console.log("UNABLE TO LOAD!");
       }
     } else {
-      await player.TriggerEvent(Events.receiveServerCB, false, data);
+      cb(false);
       await player.Notify(
         "Characters", 
         "Character not found, make a support ticket on the website with your characters full name and DOB, and a developer will get back to you ASAP!",
@@ -449,27 +447,30 @@ export class CharacterManager {
   }
 
   // Events
-  private async CALLBACK_deleteCharacter(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_deleteCharacter(characterId: number, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
-      if (data.characterId !== undefined && data.characterId > 0) {
-        const yourCharacter = await this.Yours(data.characterId, player);
+      if (characterId !== undefined && characterId > 0) {
+        const yourCharacter = await this.Yours(characterId, player);
 
         const character = new Character(player.Id);
-        await character.load(data.characterId);
+        await character.load(characterId);
 
         if (yourCharacter) {
+          const deleted = await this.Delete(characterId, player);
+          if (deleted) {
+            cb(true);
 
-          await player.TriggerEvent(Events.receiveServerCB, true, data);
-          await this.Delete(data.characterId, player);
-          
-          const discord = await player.GetIdentifier("discord");
-          await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
-            color: EmbedColours.Red,
-            title: "__Character Deleted__",
-            description: `A player has deleted one of their characters.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Job**: ${JSON.stringify(character.Job, null, 4)}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
-            footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-          }]}));
+            const discord = await player.GetIdentifier("discord");
+            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Character Logs", embeds: [{
+                color: EmbedColours.Red,
+                title: "__Character Deleted__",
+                description: `A player has deleted one of their characters.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Player Rank**: ${Ranks[player.Rank]}\n**Character ID**: ${character.Id}\n**Character Name**: ${character.Name}\n**Character Job**: ${JSON.stringify(character.Job, null, 4)}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
+            }]}));
+          } else {
+            cb(false);
+          }
         } else {
           const ban = new Ban(player.Id, player.HardwareId, "Trying to delete someone else's character (Lua Executor)", player.Id);
           await ban.save();
@@ -484,10 +485,10 @@ export class CharacterManager {
           }]}));
         }
       } else {
-        await player.TriggerEvent(Events.receiveServerCB, false, data);
+        cb(false);
       }
     } else {
-      await player.TriggerEvent(Events.receiveServerCB, false, data);
+      cb(false);
     }
   }
 }

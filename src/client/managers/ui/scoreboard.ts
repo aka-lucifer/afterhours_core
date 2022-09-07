@@ -3,9 +3,6 @@ import { Vector3, Font } from "fivem-js";
 import {Client} from "../../client";
 import {Draw3DText} from "../../utils";
 
-import { ServerCallback } from "../../models/serverCallback";
-
-import {Events} from "../../../shared/enums/events/events";
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import { Callbacks } from "../../../shared/enums/events/callbacks";
 
@@ -32,17 +29,17 @@ export class Scoreboard {
   // Key Mappings
   private OpenScoreboard(): void {
     if (this.tickHandle != -1) { clearTick(this.tickHandle); }
-    this.client.serverCallbackManager.Add(new ServerCallback(Callbacks.getScoreboardData, {}, (cbData) => {
+    this.client.cbManager.TriggerServerCallback(Callbacks.getScoreboardData, (returnedData: any) => {
       SendNuiMessage(JSON.stringify({
         event: NuiMessages.OpenScoreboard,
         data: {
-          maxPlayers: cbData.maxPlayers,
-          players: cbData.recievedPlayers
+          maxPlayers: returnedData.maxPlayers,
+          players: returnedData.recievedPlayers
         }
       }));
-      
+
       this.tickHandle = setTick(this.TICK_DisplayId);
-    }));
+    }, {});
   }
 
   private CloseScoreboard(): void {

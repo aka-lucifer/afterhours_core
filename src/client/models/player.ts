@@ -12,7 +12,6 @@ export class svPlayer {
   public character: Character;
 
   constructor(playerData: Record<string, any>) {
-    // console.log("ply data", playerData)
     this.id = playerData.id;
     this.netId = Number(playerData.handle);
     this.name = playerData.name;

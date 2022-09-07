@@ -28,9 +28,9 @@ export class CharVehicleManager {
     this.server = server;
 
     // Callbacks
-    onNet(Callbacks.createVehicle, this.CALLBACK_createVehicle.bind(this));
-    onNet(Callbacks.editVehicle, this.CALLBACK_editVehicle.bind(this));
-    onNet(Callbacks.deleteVehicle, this.CALLBACK_deleteVehicle.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.createVehicle, this.CALLBACK_createVehicle.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.editVehicle, this.CALLBACK_editVehicle.bind(this));
+    this.server.cbManager.RegisterCallback(Callbacks.deleteVehicle, this.CALLBACK_deleteVehicle.bind(this));
   }
 
   // Get Requests
@@ -169,25 +169,24 @@ export class CharVehicleManager {
   }
 
   // Callbacks
-  private async CALLBACK_createVehicle(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_createVehicle(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
         if (character) {
-          const vehData = data.data;
-          const newVehicle = new Vehicle(character.Id, vehData.label, vehData.model, vehData.type, vehData.colour, vehData.plate)
+          const newVehicle = new Vehicle(character.Id, data.label, data.model, data.type, data.colour, data.plate)
           const [insertId, inserted] = await this.create(character, newVehicle.Label, newVehicle.Model, newVehicle.Type, newVehicle.Colour, newVehicle.Plate);
 
           if (inserted) {
-            vehData.id = insertId;
-            vehData.registeredOn = await GetTimestamp();
+            data.id = insertId;
+            data.registeredOn = await GetTimestamp();
 
             newVehicle.Id = insertId;
-            newVehicle.Registered = vehData.registeredOn;
+            newVehicle.Registered = data.registeredOn;
             this.vehicles.push(newVehicle);
 
-            await player.TriggerEvent(Events.receiveServerCB, vehData, data); // Update the UI to close and disable NUI focus
+            cb(data);
 
             await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
               color: EmbedColours.Green,
@@ -201,28 +200,27 @@ export class CharVehicleManager {
     }
   }
 
-  private async CALLBACK_editVehicle(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_editVehicle(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
         if (character) {
-          const vehData = data.data;
 
-          if (vehData.id !== undefined && vehData.id > 0) {
-            const vehicle = await this.getVehFromId(vehData.id);
+          if (data.id !== undefined && data.id > 0) {
+            const vehicle = await this.getVehFromId(data.id);
             const yourVeh = await this.yourVehicle(vehicle.Id, character);
 
             if (yourVeh) {
-              const updatedVeh = await this.edit(vehData.id, vehData.plate, character);
+              const updatedVeh = await this.edit(data.id, data.plate, character);
               if (updatedVeh) {
-                vehicle.Plate = vehData.plate;
-                await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+                vehicle.Plate = data.plate;
+                cb(true);
 
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
                   color: EmbedColours.Green,
                   title: "__Vehicle Edited__",
-                  description: `A player has edited one of their vehicles.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Old Plate**: ${vehData.oldPlate}\n**New Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
+                  description: `A player has edited one of their vehicles.\n\n**Players Id**: ${player.Id}\n**Players Name**: ${player.GetName}\n**Name**: ${vehicle.Label}\n**Model**: ${vehicle.Model}\n**Type**: ${vehicle.Type}\n**Colour**: ${vehicle.Colour}\n**Old Plate**: ${data.oldPlate}\n**New Plate**: ${vehicle.Plate}\n**Registered On**: ${new Date(vehicle.Registered).toUTCString()}`,
                   footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
                 }]}));
               }
@@ -245,22 +243,21 @@ export class CharVehicleManager {
     }
   }
 
-  private async CALLBACK_deleteVehicle(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_deleteVehicle(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
         const character = await this.server.characterManager.Get(player);
         if (character) {
-          const vehData = data.data;
 
-          if (vehData.id !== undefined && vehData.id > 0) {
-            const vehicle = await this.getVehFromId(vehData.id);
+          if (data.id !== undefined && data.id > 0) {
+            const vehicle = await this.getVehFromId(data.id);
             const yourVeh = await this.yourVehicle(vehicle.Id, character);
 
             if (yourVeh) {
-              const deletedVeh = await this.deleted(vehData.id, character);
+              const deletedVeh = await this.deleted(data.id, character);
               if (deletedVeh) {
-                await player.TriggerEvent(Events.receiveServerCB, true, data); // Update the UI to close and disable NUI focus
+                cb(true);
 
                 await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({username: "Vehicles Logs", embeds: [{
                   color: EmbedColours.Red,

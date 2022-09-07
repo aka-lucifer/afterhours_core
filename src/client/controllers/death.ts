@@ -195,7 +195,7 @@ export class Death {
         await this.respawnMenu.Close();
         const myPed = Game.PlayerPed;
 
-        const teleported = await teleportToCoords(new Vector3(positions[i].x, positions[i].y, positions[i].z), positions[i].heading);
+        const teleported = await teleportToCoords(new Vector3(positions[i].x, positions[i].y, positions[i].z), true, positions[i].heading);
         if (teleported) {
           NetworkResurrectLocalPlayer(positions[i].x, positions[i].y, positions[i].z, positions[i].heading, true, false);
           myPed.clearBloodDamage();
