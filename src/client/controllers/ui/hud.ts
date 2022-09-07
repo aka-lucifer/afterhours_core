@@ -140,15 +140,24 @@ export class Hud {
         const ped = Game.PlayerPed;
         if (IsPedInAnyVehicle(ped.Handle, false)) {
           const currVeh = ped.CurrentVehicle;
+          let gear = "";
+
+          if (currVeh.IsStopped) {
+            gear = "P";
+          } else if (currVeh.CurrentGear === 0) {
+            gear = "R";
+          } else {
+            gear = currVeh.CurrentGear.toString();
+          }
 
           SendNuiMessage(JSON.stringify({
             event: NuiMessages.UpdateVeh,
             data: {
               visible: true,
-              mph: speedToMph(currVeh.Speed),
-              rpm: currVeh.CurrentRPM,
+              speed: speedToMph(currVeh.Speed),
               fuel: Math.floor(currVeh.FuelLevel),
-              seatbelt: this.client.vehicleManager.seatbelt.Toggled
+              gear: gear,
+              seatbelt: this.client.vehicleManager.seatbelt.Toggled ? "ON" : "OFF"
             }
           }));
         } else {

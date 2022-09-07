@@ -808,7 +808,7 @@
         </div>
       </div>
 
-      <div id="Hud_Container">
+      <div id="Hud_Container" v-show="hudVisible">
         <div id="Location_Hud" v-show='locationData.visible'>
           <span class="clock dropShadow">{{ locationData.time }} <v-icon style="font-size: 1.3vw; margin-top: -0.3vw" color="white">mdi-clock</v-icon></span>
           <div class="street dropShadow">{{ locationData.street }}</div>
@@ -818,86 +818,43 @@
         </div>
 
         <div id="Vehicle_Hud">
-          <div id="Speedometer_Container">
-            <div id="Speedometer_Dial_Container">
-              <svg id="speedometerDial">
-                <circle id="atess"
-                        r="120"
-                        cx="50%"
-                        cy="50%"
-                        stroke="white"
-                        stroke-width="11"
-                        stroke-dasharray="0, 943"
-                        fill="none">
-                </circle>
-                <circle id="atess2" r="120" cx="50%" cy="50%"
-                        stroke="white" stroke-width="13"
-                        stroke-dasharray="0, 943" fill="none">
-                </circle>
-              </svg>
-            </div>
-
-            <div id="Speedometer_Fill_Container">
-              <svg id="speedometerFill">
-                <circle id="siyah"
-                        r="120"
-                        cx="50%"
-                        cy="50%"
-                        stroke="rgba(0, 0, 0, 0.864)"
-                        stroke-width="13"
-                        stroke-dasharray="500, 943"
-                        fill="none">
-                </circle>
-              </svg>
-            </div>
-
-            <div id="rpmContainer">
-              <svg id="rpmMeter">
-                <circle id="icibre" r="105" cx="40%" cy="49%" stroke="#ffce00" stroke-width="5" stroke-dasharray="480, 943" fill="none">
-                </circle>
-              </svg>
-            </div>
-
-            <svg height="0" width="0">
-              <filter id='prupl' color-interpolation-filters="sRGB" >
-                <feDropShadow dx="3" dy="3" stdDeviation="9" flood-opacity="0.5" flood-color="#ffce00"/>
-              </filter>
-            </svg>
-
-            <svg height="0" width="0">
-              <filter id='shadow' color-interpolation-filters="sRGB" >
-                <feDropShadow dx="3" dy="3" stdDeviation="9" flood-opacity="0.5" />
-              </filter>
-            </svg>
-
-            <!-- Speedometer -->
-            <div class="speedoContainer">
-              <div class="rpm" id="rpmText">{{ vehicleData.rpm }} mi</div>
-              <div v-if='vehicleData.mph >= 100' id="mph">{{ vehicleData.mph }}</div>
-              <div v-else-if='vehicleData.mph < 10' id="mph">00{{ vehicleData.mph }}</div>
-              <div v-else id="mph">0{{ vehicleData.mph }}</div>
-              <div class="mphText">MPH</div>
-            </div>
-
-            <div class="iconContainer">
-              &nbsp;
-              <i class="fas fa-gas-pump" style ="color:white;"></i>&nbsp;&nbsp;&nbsp;
-              <i class="fas fa-gas-pump" id="fuelFull" style="display: none; color: #ffce00; position: absolute; left: 18px; top: 11.5px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);"></i>
-              <i class="fas fa-gas-pump" id="fuelHalf" style="display: none; color: #f45a04; position: absolute; left: 18px; top: 11.5px; clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);"></i>
-              <i class="fas fa-gas-pump" id="fuelLow" style="display: none; color: rgb(207, 32, 32); position: absolute; left: 18px; top: 11.5px; clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);"></i>
-
-              <i class="fa-brands fa-accessible-icon" id="seatbelt" style='color: rgb(207, 32, 32);'></i>
+          <div id="Vehicle_Container" v-show="vehicleData.visible">
+            <div class="vehInfoContainer dropShadow">
+              <span class="vehFuel">FUEL:</span>
+              <span class="fuelPercent"
+                    v-bind:class="{
+                      'fullFuel': vehicleData.fuel > 80,
+                      'fuelUsed': vehicleData.fuel <= 80 && vehicleData.fuel > 50,
+                      'fuelHalf': vehicleData.fuel <= 50 && vehicleData.fuel > 20,
+                      'fuelLow': vehicleData.fuel <= 20
+                    }"
+              > {{ vehicleData.fuel }}%</span> |
+              <span>MPH:</span> <span class="fuelFull">{{ vehicleData.speed }}</span> |
+              <span>GEAR:</span> <span
+                    v-bind:class="{
+                      'fullFuel': vehicleData.gear !== 'P' && vehicleData.gear !== 'R',
+                      'fuelUsed': vehicleData.gear === 'P',
+                      'fuelLow': vehicleData.gear === 'R'
+                    }"
+              > {{ vehicleData.gear }}</span> |
+              <span class="vehSeatbelt">SEATBELT <span class="seatbeltOn"
+                    v-bind:class="{
+                      'fullFuel': vehicleData.seatbelt === 'ON',
+                      'fuelLow': vehicleData.seatbelt === 'OFF'
+                    }"
+              >{{ vehicleData.seatbelt }}</span></span>
             </div>
           </div>
 
           <div id="Priority_Container">
-            <div class='aop dropShadow'>AOP: <span class="currentAOP dropShadow" style="color: #ffce00;"> {{ currentAOP }}</span></div>
-            <span class="priority dropShadow">Priority: </span>
-            <span v-if='priorityState == 0' class="priorityState dropShadow" style="color: #15b122;">Available</span>
-            <span v-if='priorityState == 1' class="priorityState dropShadow" style="color: #ffce00;">Active</span>
-            <span v-if='priorityState == 2'class="priorityState dropShadow" style="color: rgb(207, 32, 32);">Unavailable</span>
+            <div class='aop dropShadow'>AOP: <span class="currentAOP dropShadow" style="color: #ffce00;"> Sandy Shores</span><span class="priority dropShadow"> | Priority: </span><span v-if='priorityState == 0' class="priorityState dropShadow" style="color: #15b122;">Available</span><span v-if='priorityState == 1' class="priorityState dropShadow" style="color: #ffce00;">Active</span><span v-if='priorityState == 2'class="priorityState dropShadow" style="color: rgb(207, 32, 32);">Unavailable</span></div>
             <div class="units dropShadow">Units Available: {{ activeUnits }}/{{ totalUnits }}</div>
           </div>
+
+<!--          <div id="Priority_Container">-->
+<!--            <div class='aop dropShadow'>AOP: <span class="currentAOP dropShadow" style="color: #ffce00;"> {{ currentAOP }}</span><span class="priority dropShadow"> | Priority: </span><span v-if='priorityState == 0' class="priorityState dropShadow" style="color: #15b122;">Available</span><span v-if='priorityState == 1' class="priorityState dropShadow" style="color: #ffce00;">Active</span><span v-if='priorityState == 2'class="priorityState dropShadow" style="color: rgb(207, 32, 32);">Unavailable</span></div>-->
+<!--            <div class="units dropShadow">Units Available: {{ activeUnits }}/{{ totalUnits }}</div>-->
+<!--          </div>-->
         </div>
       </div>
       
