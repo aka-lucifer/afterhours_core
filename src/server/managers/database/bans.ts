@@ -37,7 +37,7 @@ export class BanManager {
   public processBans(): void {
     setInterval(() => { // Check bans every 5 seconds
       this.bannedPlayers.forEach(async(bannedData: Ban, index) => {
-        if (bannedData.State == BanStates.Active) {
+        if (bannedData.State === BanStates.Active) {
           if (new Date() > new Date(bannedData.IssuedUntil)) { // Ban Over Now
             const removedBan = await bannedData.remove();
             if (removedBan) {

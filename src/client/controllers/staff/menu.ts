@@ -1,30 +1,41 @@
-import { Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, VehicleSeat, World } from "fivem-js";
+import {Audio, Blip, BlipSprite, Game, Ped, Scaleform, Vector3, Vehicle, VehicleSeat, World} from "fivem-js";
 
-import { Client } from "../../client";
-import { teleportToCoords, Delay, keyboardInput, Inform, sortWeapons, getLocation, getZone, createVeh } from "../../utils";
+import {Client} from "../../client";
+import {
+  createVeh,
+  Delay,
+  getLocation,
+  getZone,
+  Inform,
+  keyboardInput,
+  sortWeapons,
+  teleportToCoords
+} from "../../utils";
 
-import { Menu } from "../../models/ui/menu/menu";
-import { Submenu } from "../../models/ui/menu/submenu";
-import { Notification } from "../../models/ui/notification";
-import { svPlayer } from "../../models/player";
+import {Menu} from "../../models/ui/menu/menu";
+import {Submenu} from "../../models/ui/menu/submenu";
+import {Notification} from "../../models/ui/notification";
+import {svPlayer} from "../../models/player";
 
-import { MenuPositions } from "../../../shared/enums/ui/menu/positions";
-import { Events } from "../../../shared/enums/events/events";
-import { Callbacks } from "../../../shared/enums/events/callbacks";
-import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
-import { AddonWeapons, Weapons } from '../../../shared/enums/weapons';
-import { Ranks } from "../../../shared/enums/ranks";
-import { Weathers, WinterWeathers } from "../../../shared/enums/sync/weather";
-import { Message } from "../../../shared/models/ui/chat/message";
-import { SystemTypes } from "../../../shared/enums/ui/chat/types";
-import { JobCallbacks } from '../../../shared/enums/events/jobs/jobCallbacks';
-import { formatSplitCapitalString, NumToVector3, splitCapitalsString } from "../../../shared/utils";
-import { JobLabels, Jobs } from "../../../shared/enums/jobs/jobs";
-import { CountyRanks, PoliceRanks, StateRanks } from "../../../shared/enums/jobs/ranks";
-import { AdminActions } from "../../../shared/enums/adminActions";
-import { PlayerBan } from "../../../shared/interfaces/ban";
+import {MenuPositions} from "../../../shared/enums/ui/menu/positions";
+import {Events} from "../../../shared/enums/events/events";
+import {Callbacks} from "../../../shared/enums/events/callbacks";
+import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
+import {AddonWeapons, Weapons} from '../../../shared/enums/weapons';
+import {Ranks} from "../../../shared/enums/ranks";
+import {Weathers, WinterWeathers} from "../../../shared/enums/sync/weather";
+import {Message} from "../../../shared/models/ui/chat/message";
+import {SystemTypes} from "../../../shared/enums/ui/chat/types";
+import {JobCallbacks} from '../../../shared/enums/events/jobs/jobCallbacks';
+import {formatSplitCapitalString, NumToVector3, splitCapitalsString} from "../../../shared/utils";
+import {JobLabels, Jobs} from "../../../shared/enums/jobs/jobs";
+import {CountyRanks, PoliceRanks, StateRanks} from "../../../shared/enums/jobs/ranks";
+import {AdminActions} from "../../../shared/enums/adminActions";
+import {PlayerBan} from "../../../shared/interfaces/ban";
 
 import sharedConfig from "../../../configs/shared.json";
+import {BanStates} from "../../../server/enums/database/bans";
+import {Ban} from "../../../server/models/database/ban";
 
 interface PlayerMenu {
   netId: number,
@@ -541,14 +552,29 @@ export class StaffMenu {
         issuedOn: bans[i].issuedOn,
         issuedUntil: bans[i].issuedUntil
       }
-      
-      const playerSubmenu = this.playerBans.BindSubmenu(`#${ban.id} | ${ban.playerName} - ${ban.reason}`);
-      // playerSubmenu.BindButton("End Ban", () => {});
-      playerSubmenu.BindButton("Delete Ban", async() => {
-        emitNet(Events.unbanPlayer, ban);
-        await this.menu.Close();
-        this.client.menuManager.emptyMenu(this.playerBans.handle);
-      });
+
+      console.log("ban data", ban.banState, BanStates.Anticheat);
+      if (ban.banState === BanStates.Anticheat) { // If an anticheat ban
+        if (this.client.player.Rank >= Ranks.SeniorAdmin) { // Run this so only Sr. Admins can remove anticheat bans
+          const playerSubmenu = this.playerBans.BindSubmenu(`(Anticheat) #${ban.id} | ${ban.playerName} - ${ban.reason}`);
+          // playerSubmenu.BindButton("End Ban", () => {});
+          playerSubmenu.BindButton("Delete Ban", async () => {
+            emitNet(Events.unbanPlayer, ban);
+            await this.menu.Close();
+            this.client.menuManager.emptyMenu(this.playerBans.handle);
+          });
+        }
+      } else {
+        if (this.client.player.Rank >= Ranks.Admin) {
+          const playerSubmenu = this.playerBans.BindSubmenu(`#${ban.id} | ${ban.playerName} - ${ban.reason}`);
+          // playerSubmenu.BindButton("End Ban", () => {});
+          playerSubmenu.BindButton("Delete Ban", async () => {
+            emitNet(Events.unbanPlayer, ban);
+            await this.menu.Close();
+            this.client.menuManager.emptyMenu(this.playerBans.handle);
+          });
+        }
+      }
     }
   }
 

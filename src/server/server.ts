@@ -73,6 +73,7 @@ import {ErrorCodes} from '../shared/enums/logging/errors';
 import {Weapon} from '../shared/interfaces/weapon';
 import {concatArgs} from '../shared/utils';
 import {NotificationTypes} from '../shared/enums/ui/notifications/types';
+import {BanStates} from "./enums/database/bans";
 
 export class Server {
   // Debug Data
@@ -513,6 +514,7 @@ export class Server {
           const ban = new Ban(playerHandle, hardwareId, reason, issuedBy);
           ban.Receiver = player;
           ban.Logger = LogTypes.Anticheat;
+          ban.State = BanStates.Anticheat;
 
           if (imageURL) ban.URL = imageURL;
           if (issuedBy != undefined) {
