@@ -451,7 +451,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
         if (havePerm) {
-          // if (player.Handle !== netId.toString()) {
+          if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
@@ -479,7 +479,9 @@ export class StaffMenu {
                 }
               }, {}, parseInt(foundPlayer.Handle));
             }
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't kill yourself!", NotificationTypes.Error);
+          }
         }
       }
     }
@@ -672,7 +674,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          // if (player.Handle !== netId.toString()) {
+          if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
@@ -715,9 +717,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't summon yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't summon yourself!", NotificationTypes.Error);
+          }
         }
       }
     }
@@ -730,7 +732,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          // if (player.Handle !== netId.toString()) {
+          if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
@@ -761,9 +763,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't return yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't return yourself!", NotificationTypes.Error);
+          }
         }
       }
     }
@@ -776,7 +778,7 @@ export class StaffMenu {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          // if (player.Handle !== netId.toString()) {
+          if (player.Handle !== netId.toString()) {
             const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
@@ -822,9 +824,9 @@ export class StaffMenu {
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
-          // } else {
-          //   await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
-          // }
+          } else {
+            await player.Notify("Staff Menu", "You can't spectate yourself!", NotificationTypes.Error);
+          }
         }
       }
     } else {
