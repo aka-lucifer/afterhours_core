@@ -70,8 +70,12 @@ export class Death {
                 await foundPlayer.TriggerEvent(Events.revive); // Revive player
                 
                 // Send revived chat messages
-                await player.TriggerEvent(Events.sendSystemMessage, new Message(`You have revived ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
-                await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You have been revived by ^3${player.GetName}^0.`, SystemTypes.Admin));
+                if (foundPlayer.Handle !== player.Handle) {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've revived ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
+                  await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been revived by ^3${player.GetName}^0.`, SystemTypes.Admin));
+                } else {
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've revived yourself.`, SystemTypes.Admin));
+                }
 
                 // Log revive here
                 const updatersDiscord = await player.GetIdentifier("discord");
