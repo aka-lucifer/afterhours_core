@@ -258,5 +258,6 @@ export enum Events {
 
   // AfterHours Server (Death)
   playersDeath = "afterhours:server:death:playersDeath",
-  revivePlayer = "afterhours:server:death:revivePlayer"
+  revivePlayer = "afterhours:server:death:revivePlayer",
+  syncRevive = "afterhours:server:death:syncRevive"
 }

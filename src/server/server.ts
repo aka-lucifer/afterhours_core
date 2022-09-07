@@ -719,56 +719,60 @@ export class Server {
 
   private async EVENT_playerKilled(data: Record<string, any>): Promise<void> {
     const player = await this.connectedPlayerManager.GetPlayer(source.toString());
+    if (player) {
+      const playerDead = await this.death.PlayerDead(player.Handle);
+      if (!playerDead) {
+        if (data.attacker != -1) {
+          if (data.attacker !== parseInt(player.Handle)) {
+            const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
+            const weaponData: Weapon = sharedConfig.weapons[data.weapon];
 
-    if (data.attacker != -1) {
-      if (data.attacker !== parseInt(player.Handle)) {
-        const killer = await this.connectedPlayerManager.GetPlayer(data.attacker);
-        const weaponData: Weapon = sharedConfig.weapons[data.weapon];
+            if (weaponData !== undefined) {
+              if (!data.inVeh && weaponData.type == "weapon" || weaponData.type == "veh_weapon") {
+                const killDistance = Dist(player.Position, killer.Position, false);
+                emitNet(Events.sendSystemMessage, -1, new Message(`${killer.GetName} killed ${player.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+              }
 
-        if (weaponData !== undefined) {
-          if (!data.inVeh && weaponData.type == "weapon" || weaponData.type == "veh_weapon") {
-            const killDistance = Dist(player.Position, killer.Position, false);
-            emitNet(Events.sendSystemMessage, -1, new Message(`${killer.GetName} killed ${player.GetName} with ${weaponData.label}, from ${killDistance.toFixed(1)}m`, SystemTypes.Kill));
+              const victimsDisc = await player.GetIdentifier("discord");
+              const killersDisc = await killer.GetIdentifier("discord");
+              await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                username: "Kill Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Player Killed__",
+                  description: `A player has been killed.\n\n**Victim**: ${player.GetName}\n**Killer**: ${killer.GetName}\n**Weapon**: ${weaponData.label}\n**Cause**: ${Capitalize(weaponData.reason)}\n**Victims Discord**: ${victimsDisc != "Unknown" ? `<@${victimsDisc}>` : victimsDisc}\n**Killers Discord**: ${killersDisc != "Unknown" ? `<@${killersDisc}>` : killersDisc}`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+            } else {
+              await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
+                username: "Kill Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Player Killed__",
+                  description: `Weapon not found (${JSON.stringify(data, null, 4)}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+            }
           }
-
-          const victimsDisc = await player.GetIdentifier("discord");
-          const killersDisc = await killer.GetIdentifier("discord");
-          await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
-            username: "Kill Logs", embeds: [{
-              color: EmbedColours.Green,
-              title: "__Player Killed__",
-              description: `A player has been killed.\n\n**Victim**: ${player.GetName}\n**Killer**: ${killer.GetName}\n**Weapon**: ${weaponData.label}\n**Cause**: ${Capitalize(weaponData.reason)}\n**Victims Discord**: ${victimsDisc != "Unknown" ? `<@${victimsDisc}>` : victimsDisc}\n**Killers Discord**: ${killersDisc != "Unknown" ? `<@${killersDisc}>` : killersDisc}`,
-              footer: {
-                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                icon_url: sharedConfig.serverLogo
-              }
-            }]
-          }));
         } else {
+          const playersDisc = await player.GetIdentifier("discord");
+
           await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
-            username: "Kill Logs", embeds: [{
+            username: "Death Logs", embeds: [{
               color: EmbedColours.Green,
-              title: "__Player Killed__",
-              description: `Weapon not found (${JSON.stringify(data, null, 4)}) | Error Code: ${ErrorCodes.WeaponNotFound}\n\n**If you see this, contact <@276069255559118859>!**`,
-              footer: {
-                text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                icon_url: sharedConfig.serverLogo
-              }
+              title: "__Player Died__",
+              description: `A player has died.\n\n**Player**: ${player.GetName}\n**Discord**: ${playersDisc != "Unknown" ? `<@${playersDisc}>` : playersDisc}`,
+              footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
             }]
           }));
         }
       }
-    } else {
-      const playersDisc = await player.GetIdentifier("discord");
-
-      await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
-        username: "Death Logs", embeds: [{
-          color: EmbedColours.Green,
-          title: "__Player Died__",
-          description: `A player has died.\n\n**Player**: ${player.GetName}\n**Discord**: ${playersDisc != "Unknown" ? `<@${playersDisc}>` : playersDisc}`,
-          footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-        }]
-      }));
     }
   }
 }

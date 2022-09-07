@@ -19,6 +19,7 @@ import sharedConfig from "../../configs/shared.json";
 
 export class Death {
   private server: Server;
+  private deadPlayers: Record<string, any> = {};
 
   constructor(server: Server) {
     this.server = server;
@@ -26,6 +27,13 @@ export class Death {
     // Events
     onNet(Events.playersDeath, this.EVENT_playersDeath.bind(this));
     onNet(Events.revivePlayer, this.EVENT_revivePlayer.bind(this));
+    onNet(Events.syncRevive, this.EVENT_syncRespawn.bind(this));
+  }
+
+  // Methods
+  public async PlayerDead(handle: string): Promise<boolean> {
+    const deathState = Player(handle);
+    return deathState.state.deathState === DeathStates.Dead;
   }
 
   // Events
@@ -37,6 +45,7 @@ export class Death {
         const playerStates = Player(player.Handle);
 
         if (playerStates.state.deathState === DeathStates.Alive) {
+          this.deadPlayers[player.Handle] = DeathStates.Dead;
           playerStates.state.deathState = DeathStates.Dead;
           await player.TriggerEvent(Events.playerDead, insideVeh, seat);
         }
@@ -56,6 +65,7 @@ export class Death {
               const playerStates = Player(foundPlayer.Handle);
 
               if (playerStates.state.deathState == DeathStates.Dead) {
+                this.deadPlayers[foundPlayer.Handle] = DeathStates.Alive;
                 playerStates.state.deathState = DeathStates.Alive;
                 await foundPlayer.TriggerEvent(Events.revive); // Revive player
                 
@@ -92,6 +102,17 @@ export class Death {
     }
   }
 
+  private async EVENT_syncRespawn(): Promise<void> {
+    const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+    if (player) {
+      const playerDead = await this.PlayerDead(player.Handle);
+      if (playerDead) {
+        const deathState = Player(player.Handle);
+        deathState.state.deathState = DeathStates.Alive;
+      }
+    }
+  }
+
   // Methods
   private registerCommands(): void {
     new Command("revive", "Revive a player.", [{name: "server_id", help: "The server ID of the player you're reviving."}], false, async(source: string, args: any[]) => {
@@ -109,6 +130,7 @@ export class Death {
                   const playerStates = Player(reviving.Handle);
 
                   if (playerStates.state.deathState == DeathStates.Dead) {
+                    this.deadPlayers[reviving.Handle] = DeathStates.Alive;
                     playerStates.state.deathState = DeathStates.Alive;
                     await reviving.TriggerEvent(Events.revive); // Revive player
 
@@ -144,6 +166,7 @@ export class Death {
             const playerStates = Player(reviving.Handle);
 
             if (playerStates.state.deathState == DeathStates.Dead) {
+              this.deadPlayers[reviving.Handle] = DeathStates.Alive;
               playerStates.state.deathState = DeathStates.Alive;
               await reviving.TriggerEvent(Events.revive); // Revive player
 

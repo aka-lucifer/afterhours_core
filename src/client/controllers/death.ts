@@ -201,6 +201,7 @@ export class Death {
           myPed.clearBloodDamage();
 
           this.myState = DeathStates.Alive;
+          emitNet(Events.syncRevive);
           // this.client.staffManager.staffMenu.toggleGodmode(false);
           // const detachedWeapons = await this.client.weaponManager.onBack.clearWeapons(); // Remove all weapons from your player
           // if (detachedWeapons) {
