@@ -76,7 +76,7 @@ export class StaffManager {
             
             await logCommand("/sudo", player);
           } else {
-            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+            Error("Ban Command", "Ban date not entered | format (YYYY-MM-DD)!");
           }
         } else {
           Error("Ban Command", "There is no one in the server with that server ID!");
@@ -172,12 +172,12 @@ export class StaffManager {
                     Error("Offline Ban Command", "No ban reason provided!");
                   }
                 } else {
-                  await player.TriggerEvent(Events.sendSystemMessage, new Message("Entered date is invalid | format (YY-MM-DD)!", SystemTypes.Admin));
-                  Error("Offline Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
+                  await player.TriggerEvent(Events.sendSystemMessage, new Message("Entered date is invalid | format (YYYY-MM-DD)!", SystemTypes.Admin));
+                  Error("Offline Ban Command", "Entered date is invalid | format (YYYY-MM-DD)!");
                 }
               } else {
-                await player.TriggerEvent(Events.sendSystemMessage, new Message("Ban date not entered | format (YY-MM-DD)!", SystemTypes.Admin));
-                Error("Offline Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+                await player.TriggerEvent(Events.sendSystemMessage, new Message("Ban date not entered | format (YYYY-MM-DD)!", SystemTypes.Admin));
+                Error("Offline Ban Command", "Ban date not entered | format (YYYY-MM-DD)!");
               }
             } else {
               await player.TriggerEvent(Events.sendSystemMessage, new Message("There is no player with that game license!", SystemTypes.Admin));
@@ -255,13 +255,13 @@ export class StaffManager {
                   Error("Offline Ban Command", "You can't ban management or above!");
                 }
               } else {
-                Error("Offline Ban Command", "No ban reason provided | format (YY-MM-DD)!");
+                Error("Offline Ban Command", "No ban reason provided | format (YYYY-MM-DD)!");
               }
             } else {
-              Error("Offline Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
+              Error("Offline Ban Command", "Entered date is invalid | format (YYYY-MM-DD)!");
             }
           } else {
-            Error("Offline Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+            Error("Offline Ban Command", "Ban date not entered | format (YYYY-MM-DD)!");
           }
         } else {
           Error("Ban Command", "There is no one in the server with that server ID!");
@@ -299,10 +299,10 @@ export class StaffManager {
                 Error("Ban Command", "No ban reason provided!");
               }
             } else {
-              Error("Ban Command", "Entered date is invalid | format (YY-MM-DD)!");
+              Error("Ban Command", "Entered date is invalid | format (YYYY-MM-DD)!");
             }
           } else {
-            Error("Ban Command", "Ban date not entered | format (YY-MM-DD)!");
+            Error("Ban Command", "Ban date not entered | format (YYYY-MM-DD)!");
           }
         } else {
           Error("Ban Command", "There is no player with that game license!");

@@ -212,22 +212,24 @@ export class Ban {
           if (this.issuedUntil.getFullYear() < 2099) { // Non perm ban
             emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.offlineReceiver.GetName} ^0has been offline banned from ^3${sharedConfig.serverName}^0, by [^3${Ranks[this.issuedBy.Rank]}^0] - ^3${this.issuedBy.GetName} ^0for ^3${this.banReason}^0, until ^3${this.issuedUntil.toUTCString()}^0!`, SystemTypes.Admin));
 
+            const bannersDiscord = await this.issuedBy.GetIdentifier("discord");
             await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Offline Banned__",
-                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Banned By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}`,
+                description: `A player has been temporarily banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Unban Date**: ${this.issuedUntil.toUTCString()}\n**Banned By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));
           } else { // Perm ban
             emitNet(Events.sendSystemMessage, -1, new Message(`^3${this.offlineReceiver.GetName} ^0has been permanently banned from ^3${sharedConfig.serverName}^0, by [^3${Ranks[this.issuedBy.Rank]}^0] - ^3${this.issuedBy.GetName} ^0for ^3${this.banReason}^0!`, SystemTypes.Admin));
 
+            const bannersDiscord = await this.issuedBy.GetIdentifier("discord");
             await server.logManager.Send(this.logger, new WebhookMessage({
               username: "Ban Logs", embeds: [{
                 color: EmbedColours.Red,
                 title: "__Player Offline Banned__",
-                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}`,
+                description: `A player has been permanently banned from the server.\n\n**Ban ID**: #${this.id}\n**Username**: ${this.offlineReceiver.GetName}\n**Reason**: ${this.banReason}\n**Banned By**: [${Ranks[this.issuedBy.Rank]}] - ${this.issuedBy.GetName}\n**Banners Discord**: ${bannersDiscord != "Unknown" ? `<@${bannersDiscord}>` : bannersDiscord}`,
                 footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
               }]
             }));

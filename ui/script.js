@@ -798,6 +798,8 @@ const HUD = new Vue({
             this.cycledMessage = this.sentMessages.length;
           }
         });
+        this.sentMessages.push(this.chatMessage);
+        this.cycledMessage = this.sentMessages.length;
         this.chatMessage = "";
       }
     },
