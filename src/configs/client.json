@@ -10,7 +10,7 @@
         "smallImage": {
             "display": true,
             "image": "small_image",
-            "text": "small image text"
+            "text": "Join us at https://discord.gg/TpYtmZBMYt"
         },
         "buttons": {
           "first": {
@@ -19,7 +19,7 @@
           },
           "second": {
             "label": "Play",
-            "action": "join link here"
+            "action": "https://google.com"
           }
         },
         "intervalTimer": 5000
@@ -8267,7 +8267,7 @@
             86,
             249
           ],
-          "defaultCountdownTimer": 60,
+          "defaultCountdownTimer": 5,
           "defaultRespawnCount": 5,
           "respawnPositions": [
             {"label": "Sandy Shores", "x": 1817.57, "y": 3680.57, "z": 34.27, "heading": 17.80},
