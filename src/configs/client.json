@@ -8320,6 +8320,65 @@
     "spawnInfo": {
         "changelog": [
           {
+            "version": "1.0.4",
+            "additions": [
+              "The server status no longer sends a bunch of embeds, it simply edits the old one and updates it with the new information.",
+              "Player information on character & vehicle logs for better tracking.",
+              "When you revive yourself it now says “You’ve revived yourself”, not “You’ve revived PLAYER_NAME”.",
+              "Changed player blip tick from running every 3000ms to every 1500ms.",
+              "A “/discord” command for members to use and for staff to send to all members.",
+              "A “/e” command to play emotes with a command, instead of using the menu.",
+              "Moderators now have access to use the “/announce” command.",
+              "Only developers & directors can now access the “on duty” checkbox in the staff menu.",
+              "Moderators can now use “/tpm”, “/goback”, teleport, summon, return and spectate options in the staff menu.",
+              "Changed the button icon in the vehicle registering UI, from a pencil to a + symbol.",
+              "If you were invisible when you toggled noclip, you are invisible once you come out of noclip.",
+              "Rewrote the (SV->CL->SV) & (CL->SV->CL) callbacks as the previous one had a mass amount of bugs and vulnerabilities.",
+              "A “/fix” vehicle command for mods and above, so they don’t have to use the F5 menu.",
+              "It now shows the banners discord in the offline ban logs.",
+              "When someone is banned and it isn’t permanent, it now uses the current hour, minute, and second, instead of “00:00:00”.",
+              "Only senior admins and above can now remove anti-cheat bans, and admins can remove standard bans.",
+              "Wrote a new vehicle HUD as the old one caused UI lags for lower-end PCs.",
+              "Added all the vehicles from “Los Santos Tuners”, “The Contract” & “The Criminal Enterprises” updates into vMenu, as they’re not in the menu by default.",
+              "New gradients colour schemes in server UI."
+            ],
+            "fixes": [
+              "Command autofill running when you haven’t entered anything inside the chat.",
+              "Command autofill removing focus from the chat input, so you would be required to click in the chat input to send the command.",
+              "Vehicle weapon props showing assault rifles, shotguns, explosives, etc, now only shows pistols and SMGs.",
+              "Disabled manual weapon reloading and unjamming inside a vehicle, it is now done automatically.",
+              "Spam preventor affecting the AP pistol and the machine pistol.",
+              "The “/runplate” command does not always return the correct data.",
+              "When you’re a staff member and you change characters, it now resets the on-duty checkbox to unchecked.",
+              "When you change character your old character's job blips are now deleted and the 'Units Available', counter is correctly updated.",
+              "When you accidentally blow yourself up, it no longer logs in the chat kill logs.",
+              "Taser cartridge reloading running inside a vehicle now runs automatically.",
+              "The “/ad” command is only sent to you and not every player on the server.",
+              "Emergency vehicle engines always being on, regardless of holding F to keep the engine running or not.",
+              "New staff members have to leave and rejoin the server in order to get access to the admin chat.",
+              "On/off duty timesheet logging for non-LEO characters when they F8 quit or disconnect.",
+              "When someone who is already dead is shot in the head, it no longer logs it in the kill logs.",
+              "Death UI bug fixes when you die a second time, without being revived with the “/revive” command, which requires the player to respawn at a hospital and then die again.",
+              "Devs being the only players able to use the “/report” command.",
+              "Callsigns not always setting correctly, causing errors.",
+              "Moderators can now go invisible."
+            ],
+            "removals": []
+          },
+          {
+            "version": "v1.0.3",
+            "additions": [
+              "The server status no longer sends a bunch of embeds, it simply edits the old one and updates it with the new information."
+            ],
+            "fixes": [
+              "The /me 3D dupe glitch has been fully patched.",
+              "The /me 3D should no longer glitch out if they are in your LOS and suddenly disappear.",
+              "Players not being inside the player-manager when they join the server for the first time, breaking the /offline_ban & the /offline_warn commands.",
+              "Chat should no longer break (no display any messages)."
+            ],
+            "removals": []
+          },
+          {
             "version": "v1.0.2",
             "additions": [
               "Increased the max limit value for the 'mass vehicle spawn detection'. (Anticheat).",
