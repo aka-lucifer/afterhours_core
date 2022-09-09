@@ -22,6 +22,8 @@ import { SystemTypes } from '../../shared/enums/ui/chat/types';
 import { Weapons } from '../../shared/enums/weapons';
 import { Ranks } from '../../shared/enums/ranks';
 
+let newCallsign;
+
 export class JobManager {
   private readonly client: Client;
 
@@ -68,64 +70,63 @@ export class JobManager {
   // Events
   public async EVENT_toggleDuty(data: Record<string, any>): Promise<void> {
     if (this.client.Character.Job.callsign !== "NOT_SET") {
-      if (this.client.Character.Job.status != data.state) {
+      console.log("tog duty", this.client.Character.Job.status, data.state, JSON.stringify(data));
+      if (this.client.Character.Job.status !== data.state) {
 
         this.client.cbManager.TriggerServerCallback(JobCallbacks.setDuty, async(returnedState: boolean) => {
+          this.client.Character.Job.status = returnedState;
+
+          if (this.client.staffManager.staffMenu !== undefined) {
+            if (this.client.player.Rank >= Ranks.Admin) this.client.staffManager.staffMenu.Duty = returnedState;
+          }
+
+          console.log("Set Duty", Capitalize(this.client.Character.Job.status.toString()));
+
           if (returnedState) {
-            this.client.Character.Job.status = data.state;
+            if (this.client.Character.isLeoJob()) {
+              const myPed = Game.PlayerPed;
 
-            if (this.client.staffManager.staffMenu !== undefined) {
-              if (this.client.player.Rank >= Ranks.Admin) this.client.staffManager.staffMenu.Duty = data.state;
-            }
+              global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
+              global.exports["pma-voice"].setRadioChannel(245.1, "LEO (Main RTO)");
 
-            console.log("Set Duty", Capitalize(this.client.Character.Job.status.toString()));
-            
-            if (data.state) {
-              if (this.client.Character.isLeoJob()) {
-                const myPed = Game.PlayerPed;
-
-                global.exports["pma-voice"].setVoiceProperty("radioEnabled", true);
-                global.exports["pma-voice"].setRadioChannel(245.1, "LEO (Main RTO)");
-
-                // // Apply Weapons & Armour
-                if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
-                  const [_1, arAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
-                  myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
-                }
-
-                if (!HasPedGotWeapon(myPed.Handle, Weapons.Glock17, false)) {
-                  const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
-                  myPed.giveWeapon(Weapons.Glock17, pistolAmmo, false, false);
-                }
-
-                if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
-                  myPed.giveWeapon(Weapons.Nightstick, 0, false, false);
-                }
-
-                SetPedArmour(myPed.Handle, 100);
+              // // Apply Weapons & Armour
+              if (!HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                const [_1, arAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
+                myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
               }
-            } else {
-              if (this.client.Character.isLeoJob()) {
-                const myPed = Game.PlayerPed;
 
-                global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
-                global.exports["pma-voice"].setRadioChannel(0);
+              if (!HasPedGotWeapon(myPed.Handle, Weapons.Glock17, false)) {
+                const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
+                myPed.giveWeapon(Weapons.Glock17, pistolAmmo, false, false);
+              }
 
-                if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
-                  myPed.removeWeapon(Weapons.AR15);
-                }
+              if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                myPed.giveWeapon(Weapons.Nightstick, 0, false, false);
+              }
 
-                if (HasPedGotWeapon(myPed.Handle, Weapons.Glock17, false)) {
-                  myPed.removeWeapon(Weapons.Glock17);
-                }
+              SetPedArmour(myPed.Handle, 100);
+            }
+          } else {
+            if (this.client.Character.isLeoJob()) {
+              const myPed = Game.PlayerPed;
 
-                if (HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
-                  myPed.removeWeapon(Weapons.Nightstick);
-                }
+              global.exports["pma-voice"].setVoiceProperty("radioEnabled", false);
+              global.exports["pma-voice"].setRadioChannel(0);
 
-                if (GetPedArmour(myPed.Handle) > 0) {
-                  SetPedArmour(myPed.Handle, 100);
-                }
+              if (HasPedGotWeapon(myPed.Handle, Weapons.AR15, false)) {
+                myPed.removeWeapon(Weapons.AR15);
+              }
+
+              if (HasPedGotWeapon(myPed.Handle, Weapons.Glock17, false)) {
+                myPed.removeWeapon(Weapons.Glock17);
+              }
+
+              if (HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
+                myPed.removeWeapon(Weapons.Nightstick);
+              }
+
+              if (GetPedArmour(myPed.Handle) > 0) {
+                SetPedArmour(myPed.Handle, 100);
               }
             }
           }
@@ -146,19 +147,20 @@ export class JobManager {
   }
 
   public async EVENT_setCallsign(): Promise<void> {
-    const callsign = await keyboardInput("Callsign", 5);
-    if (callsign !== undefined && callsign !== null) {
-      if (callsign.length > 0) {
+    newCallsign = await keyboardInput("Callsign", 5);
+    if (newCallsign !== undefined && newCallsign !== null) {
+      if (newCallsign.length > 0) {
+        const tempCallsign = newCallsign;
         this.client.cbManager.TriggerServerCallback(JobCallbacks.updateCallsign, async(returnedState: boolean) => {
           if (returnedState) {
-            this.client.Character.Job.callsign = callsign;
-            const notify = new Notification("Job", `You've set your callsign to (${callsign})`, NotificationTypes.Success);
+            this.client.Character.Job.callsign = newCallsign;
+            const notify = new Notification("Job", `You've set your callsign to (${newCallsign})`, NotificationTypes.Success);
             await notify.send();
           } else {
             const notify = new Notification("Job", `There was an error updating your callsign!`, NotificationTypes.Error);
             await notify.send();
           }
-        }, callsign);
+        }, newCallsign);
       } else {
         const notify = new Notification("Job", `You haven't entered a callsign!`, NotificationTypes.Error);
         await notify.send();
