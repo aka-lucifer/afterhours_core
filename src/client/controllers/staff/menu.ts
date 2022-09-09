@@ -314,7 +314,7 @@ export class StaffMenu {
       });
     }
 
-    if (this.client.player.Rank >= Ranks.Admin) {
+    if (this.client.player.Rank >= Ranks.Moderator) {
       this.playerActionsMenu.BindCheckbox("Invisible", !this.visible, (newState: boolean) => {
         this.visible = !newState;
 
