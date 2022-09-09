@@ -49,33 +49,61 @@ export class Characters {
   private registerCallbacks(): void {
     RegisterNuiCallback(NuiCallbacks.CreateCharacter, async(data, cb) => {
       this.client.cbManager.TriggerServerCallback(Callbacks.createCharacter, (newCharacter: any) => {
-        cb(newCharacter)
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.UpdateUI,
+          data: {
+            type: "CREATE_CHAR",
+            newChar: newCharacter
+          }
+        }));
       }, data);
+      cb("ok");
     });
 
     RegisterNuiCallback(NuiCallbacks.EditCharacter, async(data, cb) => {
       this.client.cbManager.TriggerServerCallback(Callbacks.editCharacter, (returnedData: any) => {
         if (returnedData.status) {
-          cb(returnedData.licenses)
+          SendNuiMessage(JSON.stringify({
+            event: NuiMessages.UpdateUI,
+            data: {
+              type: "EDIT_CHAR",
+              licenses: returnedData.licenses
+            }
+          }));
         }
       }, data);
+      cb("ok");
     });
 
     RegisterNuiCallback(NuiCallbacks.SelectCharacter, async(data, cb) => {
-      this.client.cbManager.TriggerServerCallback(Callbacks.selectCharacter, (returnedData: any) => {
+      this.client.cbManager.TriggerServerCallback(Callbacks.selectCharacter, async(returnedData: boolean) => {
         if (returnedData) {
           this.client.player.Spawned = true;
         }
 
         SetNuiFocus(!returnedData, !returnedData);
-        cb(returnedData);
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.UpdateUI,
+          data: {
+            type: "SELECT_CHAR",
+            visible: !returnedData
+          }
+        }));
       }, data.characterId);
+      cb("ok");
     });
     
     RegisterNuiCallback(NuiCallbacks.DeleteCharacter, async(data, cb) => {
-      this.client.cbManager.TriggerServerCallback(Callbacks.deleteCharacter, (returnedData: boolean) => {
-        cb(returnedData)
+      this.client.cbManager.TriggerServerCallback(Callbacks.deleteCharacter, (deletedChar: boolean) => {
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.UpdateUI,
+          data: {
+            type: "DELETE_CHAR",
+            deletedChar: deletedChar
+          }
+        }));
       }, data.characterId);
+      cb("ok");
     });
   }
 

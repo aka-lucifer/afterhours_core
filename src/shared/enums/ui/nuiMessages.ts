@@ -77,5 +77,8 @@ export enum NuiMessages {
   UpdateVeh = "UPDATE_VEH",
 
   // Kidnapping
-  KidnapPlayer = "KIDNAP_PLAYER"
+  KidnapPlayer = "KIDNAP_PLAYER",
+
+  // General
+  UpdateUI = "UPDATE_UI"
 }

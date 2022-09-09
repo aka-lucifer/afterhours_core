@@ -329,22 +329,7 @@ const HUD = new Vue({
             gender: this.newCharacter.isFemale,
             licenses: this.newCharacter.licenseValues,
             mugshot: this.newCharacter.mugshot
-          }, (charData) => {
-            console.log("cb data", JSON.stringify(charData), JSON.stringify(charData.job));
-            if (Object.keys(charData).length > 0) {
-              charData.jobName = charData.job.name;
-              charData.jobLabel = charData.job.label;
-
-              // If chars empty (quick fix)
-              if (this.characters === undefined) {
-                this.characters = [];
-              }
-
-              this.characters.push(charData);
-              this.creatingCharacter = false;
-              this.resetCharCreation();
-            }
-          });
+          }, (charData) => {});
         } else {
           this.incorrectDOB = true;
           
@@ -386,12 +371,7 @@ const HUD = new Vue({
           nationality: this.characters[this.selectedCharacter].nationality,
           mugshot: this.characters[this.selectedCharacter].mugshot,
           licenses: this.characters[this.selectedCharacter].licenseValues
-        }, (charLicenses) => {
-          if (Object.keys(charLicenses).length > 0) {
-            this.characters[this.selectedCharacter].metadata.licenses = charLicenses;
-            this.editingCharacter = false;
-          }
-        });
+        }, (charLicenses) => {});
       }
     },
 
@@ -410,39 +390,12 @@ const HUD = new Vue({
 
     deleteCharacter() {
       if (this.selectedCharacter !== undefined) {
-        this.Post("DELETE_CHARACTER", {characterId: this.characters[this.selectedCharacter].id}, (callbackData) => {
-          if (callbackData) {
-            this.characters.splice(this.selectedCharacter, 1);
-            this.selectedCharacter = undefined;
-            this.showCharacterDelete = false;
-            this.deletedCharacter = true;
-
-            if (this.deleteTimeout !== undefined) {
-              this.deleteTimeout = setTimeout(() => {
-                this.deleteTimeout = undefined;
-                clearTimeout(this.deleteTimeout);
-                this.deletedCharacter = false;
-              }, 2000);
-            } else {
-              this.deleteTimeout = undefined;
-              clearTimeout(this.deleteTimeout);
-              
-              this.deleteTimeout = setTimeout(() => {
-                this.deletedCharacter = false;
-              }, 2000);
-            }
-          }
-        });
+        this.Post("DELETE_CHARACTER", {characterId: this.characters[this.selectedCharacter].id}, (callbackData) => {});
       }
     },
 
     spawnCharacter() {
-      this.Post("SELECT_CHARACTER", {characterId: this.characters[this.selectedCharacter].id}, (callbackData) => {
-        // console.log("NUI CB", JSON.stringify(callbackData));
-        if (callbackData) {
-          this.showCharacters = false;
-        }
-      });
+      this.Post("SELECT_CHARACTER", {characterId: this.characters[this.selectedCharacter].id}, (callbackData) => {});
     },
 
     resetCharacters() {
@@ -519,27 +472,6 @@ const HUD = new Vue({
         type: this.createVehData.type,
         colour: this.createVehData.colour,
         plate: this.createVehData.plate.toUpperCase()
-      }, (vehData) => {
-        if (vehData.id > 0) {
-          vehData.displayDate = new Date(vehData.registeredOn).toUTCString();
-          this.registeredVehicles.push(vehData);
-
-          this.Notification({
-            title: "Vehicles",
-            text: "Vehicle Registered!",
-            status: "success",
-            effect: "slide",
-            speed: 300,
-            autoclose: true,
-            autotimeout: 3000,
-            type: 2,
-            position: "top left",
-            progress: false,
-            showCloseButton: false
-          });
-
-          this.creatingVehicle = false;
-        }
       });
     },
 
@@ -566,28 +498,6 @@ const HUD = new Vue({
         colour: this.editedVehData.colour,
         oldPlate: this.registeredVehicles[this.editVehIndex].plate,
         plate: this.editedVehData.plate
-      }, (charLicenses) => {
-        if (charLicenses) {
-          if (this.registeredVehicles[this.editVehIndex].plate != this.editedVehData.plate) {
-            this.registeredVehicles[this.editVehIndex].plate = this.editedVehData.plate;
-          }
-
-          this.Notification({
-            title: "Vehicles",
-            text: "Vehicle Edited!",
-            status: "info",
-            effect: "slide",
-            speed: 300,
-            autoclose: true,
-            autotimeout: 3000,
-            type: 2,
-            position: "top left",
-            progress: false,
-            showCloseButton: false
-          });
-
-          this.editingVehicle = false;
-        }
       });
     },
 
@@ -603,26 +513,6 @@ const HUD = new Vue({
     deleteVehicle() {
       this.Post("DELETE_VEHICLE", {
         id: this.editedVehData.id
-      }, (deletedVeh) => {
-        if (deletedVeh) {
-          this.registeredVehicles.splice(this.editVehIndex, 1);
-
-          this.Notification({
-            title: "Vehicles",
-            text: "Vehicle Deleted!",
-            status: "error",
-            effect: "slide",
-            speed: 300,
-            autoclose: true,
-            autotimeout: 3000,
-            type: 2,
-            position: "top left",
-            progress: false,
-            showCloseButton: false
-          });
-
-          this.showVehicleDelete = false;
-        }
       });
     },
 
@@ -789,15 +679,7 @@ const HUD = new Vue({
     SendMessage() {
       if (this.chatMessage.length > 0 && this.chatMessage[0] !== " ") { // If chat message has content and isn't a space
         this.CloseChat();
-        this.Post("SEND_MESSAGE", {message: this.chatMessage, type: this.currentType}, (callbackData) => {
-          // this.sentMessages.push(this.chatMessage);
-          // this.cycledMessage = this.sentMessages.length;
-          // console.log("cb", callbackData)
-          if (callbackData) {
-            this.sentMessages.push(this.chatMessage);
-            this.cycledMessage = this.sentMessages.length;
-          }
-        });
+        this.Post("SEND_MESSAGE", {message: this.chatMessage, type: this.currentType});
         this.sentMessages.push(this.chatMessage);
         this.cycledMessage = this.sentMessages.length;
         this.chatMessage = "";
@@ -1225,6 +1107,121 @@ const HUD = new Vue({
           this.vehicleData.seatbelt = "OFF";
         }
       }
+    },
+
+    UpdateUI(data) {
+      console.log("UPDATE UI", JSON.stringify(data));
+      if (data.type === "SELECT_CHAR") {
+        this.showCharacters = data.visible;
+      } else if (data.type === "CREATE_CHAR") {
+        const charData = data.newChar;
+        if (Object.keys(charData).length > 0) {
+          charData.jobName = charData.job.name;
+          charData.jobLabel = charData.job.label;
+
+          // If chars empty (quick fix)
+          if (this.characters === undefined) {
+            this.characters = [];
+          }
+
+          this.characters.push(charData);
+          this.creatingCharacter = false;
+          this.resetCharCreation();
+        }
+      } else if (data.type === "EDIT_CHAR") {
+        const charLicenses = data.licenses;
+        if (Object.keys(charLicenses).length > 0) {
+          this.characters[this.selectedCharacter].metadata.licenses = charLicenses;
+          this.editingCharacter = false;
+        }
+      } else if (data.type === "DELETE_CHAR") {
+        if (data.deletedChar) {
+          this.characters.splice(this.selectedCharacter, 1);
+          this.selectedCharacter = undefined;
+          this.showCharacterDelete = false;
+          this.deletedCharacter = true;
+
+          if (this.deleteTimeout !== undefined) {
+            this.deleteTimeout = setTimeout(() => {
+              this.deleteTimeout = undefined;
+              clearTimeout(this.deleteTimeout);
+              this.deletedCharacter = false;
+            }, 2000);
+          } else {
+            this.deleteTimeout = undefined;
+            clearTimeout(this.deleteTimeout);
+
+            this.deleteTimeout = setTimeout(() => {
+              this.deletedCharacter = false;
+            }, 2000);
+          }
+        }
+      } else if (data.type === "CREATE_VEH") {
+        const vehData = data.vehicleData;
+        if (vehData.id > 0) {
+          vehData.displayDate = new Date(vehData.registeredOn).toUTCString();
+          this.registeredVehicles.push(vehData);
+
+          this.Notification({
+            title: "Vehicles",
+            text: "Vehicle Registered!",
+            status: "success",
+            effect: "slide",
+            speed: 300,
+            autoclose: true,
+            autotimeout: 3000,
+            type: 2,
+            position: "top left",
+            progress: false,
+            showCloseButton: false
+          });
+
+          this.creatingVehicle = false;
+        }
+      } else if (data.type === "EDIT_VEH") {
+        const charLicenses = data.licenses;
+        if (charLicenses) {
+          if (this.registeredVehicles[this.editVehIndex].plate != this.editedVehData.plate) {
+            this.registeredVehicles[this.editVehIndex].plate = this.editedVehData.plate;
+          }
+
+          this.Notification({
+            title: "Vehicles",
+            text: "Vehicle Edited!",
+            status: "info",
+            effect: "slide",
+            speed: 300,
+            autoclose: true,
+            autotimeout: 3000,
+            type: 2,
+            position: "top left",
+            progress: false,
+            showCloseButton: false
+          });
+
+          this.editingVehicle = false;
+        }
+      } else if (data.type === "DELETE_VEH") {
+        if (data.deletedVeh) {
+          this.registeredVehicles.splice(this.editVehIndex, 1);
+
+          this.Notification({
+            title: "Vehicles",
+            text: "Vehicle Deleted!",
+            status: "error",
+            effect: "slide",
+            speed: 300,
+            autoclose: true,
+            autotimeout: 3000,
+            type: 2,
+            position: "top left",
+            progress: false,
+            showCloseButton: false
+          });
+
+          this.showVehicleDelete = false;
+        }
+      }
     }
   },
 
@@ -1404,6 +1401,9 @@ const HUD = new Vue({
     RegisterEvent("UPDATE_PRIORITY", this.UpdatePriority);
     RegisterEvent("UPDATE_LOCATION", this.UpdateLocation);
     RegisterEvent("UPDATE_VEH", this.UpdateVeh);
+
+    // General
+    RegisterEvent("UPDATE_UI", this.UpdateUI);
 
     // Kidnap Blindfold
     RegisterEvent("KIDNAP_PLAYER", (data) => {

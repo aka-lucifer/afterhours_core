@@ -40,21 +40,42 @@ export class Vehicles {
     });
 
     RegisterNuiCallback(NuiCallbacks.CreateVehicle, async(data, cb) => {
-      this.client.cbManager.TriggerServerCallback(Callbacks.createVehicle, (returnedData: any) => {
-        cb(returnedData)
+      this.client.cbManager.TriggerServerCallback(Callbacks.createVehicle, (newVehicle: any) => {
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.UpdateUI,
+          data: {
+            type: "CREATE_VEH",
+            vehicleData: newVehicle
+          }
+        }));
       }, data);
+      cb("ok");
     });
 
     RegisterNuiCallback(NuiCallbacks.EditVehicle, async(data, cb) => {
-      this.client.cbManager.TriggerServerCallback(Callbacks.editVehicle, (returnedData: any) => {
-        cb(returnedData)
+      this.client.cbManager.TriggerServerCallback(Callbacks.editVehicle, (editedInfo: any) => {
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.UpdateUI,
+          data: {
+            type: "EDIT_VEH",
+            licenses: editedInfo
+          }
+        }));
       }, data);
+      cb("ok");
     });
 
-    RegisterNuiCallback(NuiCallbacks.DeleteVehicle, async(data, nuiCallback) => {
+    RegisterNuiCallback(NuiCallbacks.DeleteVehicle, async(data, cb) => {
       this.client.cbManager.TriggerServerCallback(Callbacks.deleteVehicle, async(returnedData: boolean) => {
-        nuiCallback(returnedData)
+        SendNuiMessage(JSON.stringify({
+          event: NuiMessages.UpdateUI,
+          data: {
+            type: "DELETE_VEH",
+            deletedVeh: returnedData
+          }
+        }));
       }, data);
+      cb("ok");
     });
   }
 
