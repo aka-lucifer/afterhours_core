@@ -44,8 +44,10 @@
 
   /* Colours */
   --white: white;
-  --logoGradient: linear-gradient(90deg, rgba(74,10,124,1) 39%, rgba(56,167,244,1) 88%);
-  --cardGradient: linear-gradient(45deg, rgba(74,10,124,1) 39%, rgba(56,167,244,1) 88%);
+  --logoGradient2: linear-gradient(90deg, rgba(74,10,124,1) 39%, rgba(56,167,244,1) 88%);
+  --logoGradient: linear-gradient(90deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  --cardGradient2: linear-gradient(45deg, rgba(74,10,124,1) 39%, rgba(56,167,244,1) 88%);
+  --cardGradient: linear-gradient(45deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
   --notificationBG: rgba(17, 17, 17, 0.8);
   --darkBlueBG: #101727;
   --googleGray: rgb(241, 243, 244);
