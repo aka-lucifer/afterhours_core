@@ -8267,7 +8267,7 @@
             86,
             249
           ],
-          "defaultCountdownTimer": 5,
+          "defaultCountdownTimer": 60,
           "defaultRespawnCount": 5,
           "respawnPositions": [
             {"label": "Sandy Shores", "x": 1817.57, "y": 3680.57, "z": 34.27, "heading": 17.80},
