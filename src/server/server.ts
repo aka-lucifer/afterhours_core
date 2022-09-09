@@ -73,7 +73,7 @@ import {ErrorCodes} from '../shared/enums/logging/errors';
 import {Weapon} from '../shared/interfaces/weapon';
 import {concatArgs} from '../shared/utils';
 import {NotificationTypes} from '../shared/enums/ui/notifications/types';
-import {BanStates} from "./enums/database/bans";
+import {BanStates} from "../shared/enums/bans";
 
 export class Server {
   // Debug Data
@@ -423,7 +423,7 @@ export class Server {
           }
         }
       }
-    }, Ranks.Developer);
+    }, Ranks.User);
 
     new Command("discord", "See the servers Discord URL", [], false, async(source: string) => {
       const player = await this.connectedPlayerManager.GetPlayer(source);
