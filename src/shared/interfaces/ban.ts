@@ -1,4 +1,4 @@
-import { BanStates } from "../../server/enums/database/bans";
+import { BanStates } from "../enums/bans";
 
 export interface PlayerBan {
   id: number,

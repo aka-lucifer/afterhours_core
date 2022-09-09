@@ -4,7 +4,7 @@ import * as Database from "./database";
 import {Server} from "../../server"
 import {Log} from "../../utils"
 
-import {BanStates} from "../../enums/database/bans";
+import {BanStates} from "../../../shared/enums/bans";
 
 import {Player} from "../../models/database/player";
 import { DBPlayer } from "../../models/database/dbPlayer";
