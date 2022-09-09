@@ -8,7 +8,8 @@ export enum LogTypes {
   Anticheat,
   Commend,
   Timesheet,
-  Report
+  Report,
+  Job
 }
 
 export enum Bugs {

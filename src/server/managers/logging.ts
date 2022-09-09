@@ -23,6 +23,7 @@ export class LogManager {
   private readonly commendURL: string = serverConfig.discordLogs.urls.commendURL;
   private readonly timesheetURL: string = serverConfig.discordLogs.urls.timesheetURL;
   private readonly reportURL: string = serverConfig.discordLogs.urls.reportURL;
+  private readonly jobURL: string = serverConfig.discordLogs.urls.jobURL;
 
   // Bugs
   private readonly scriptBugs: string = serverConfig.discordLogs.bugs.script;
@@ -65,6 +66,9 @@ export class LogManager {
         break;
       case LogTypes.Report:
         url = this.reportURL;
+        break;
+      case LogTypes.Job:
+        url = this.jobURL;
         break;
       case Bugs.Script:
         url = this.scriptBugs;

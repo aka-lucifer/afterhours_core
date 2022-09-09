@@ -28,7 +28,8 @@
             "anticheatURL": "https://discord.com/api/webhooks/1016080007208116274/PJKIjBnfBOFZ2-dN-YRs38I9-J1zE0Ac3LyODZC-FoGzTZbB6qNClplsCo7oNHHw9Lf-",
             "reportURL": "https://discord.com/api/webhooks/1016080114154491944/gMmtFK8jjztpdmvTZdt3FdDQufuv_nwSs2pabrXAyCXoTPEfQ2-Cc2DPPnpDA5LG9rP_",
             "killURL": "https://discord.com/api/webhooks/1016080176976765048/2NyVOeFn-KzKadGVfIf33ER3w0AxVz88MGVolDlZDOsagf48IYlDG7RexixI3kdv7Vue",
-            "chatURL": "https://discord.com/api/webhooks/1016080237865484349/ONQzTtwyBUtgKO6PXfP5GRpV03EvtheAQZKT1IgpLjRvf49c-i_1sZ_W7bv1AimaI8f3"
+            "chatURL": "https://discord.com/api/webhooks/1016080237865484349/ONQzTtwyBUtgKO6PXfP5GRpV03EvtheAQZKT1IgpLjRvf49c-i_1sZ_W7bv1AimaI8f3",
+            "jobURL": "https://discord.com/api/webhooks/1017897365958557816/uMMIG7TvtAyw5Qmjiny5CyG8oW-A01kggDvWPen-taWKrnB1BmgE4KaB4RlDqliuR_8h"
         },
         "bugs": {
           "script": "https://discord.com/api/webhooks/983386759406686229/mTglNGLBPbc5MT93OChO9D0zUo_czj4iKBuWWLUIs1B7THPi2Lt2qZIcbj7wJF0yGtFE",

@@ -310,6 +310,7 @@ export class JobManager {
                 newJob: JSON.stringify(newJob)
               });
 
+              cb(updatedJob.meta.affectedRows > 0); // Returns true or false, if it sucessfully updated players job (fired them)
               if (updatedJob.meta.affectedRows > 0) {
                 const playerConnected = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsPlayerId);
                 if (playerConnected) { // If in the server
@@ -349,9 +350,22 @@ export class JobManager {
                     }
                   }
                 }
-              }
 
-              cb(updatedJob.meta.affectedRows > 0); // Returns true or false, if it sucessfully updated players job (fired them)
+                const myRank = await getRankFromValue(character.Job.rank, character.Job.name);
+                const discord = await player.GetIdentifier("discord");
+
+                await this.server.logManager.Send(LogTypes.Job, new WebhookMessage({
+                  username: "Jobs Logging", embeds: [{
+                    color: EmbedColours.Red,
+                    title: `__Unit Fired__`,
+                    description: `A player has been fired.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**Fired By**: ${character.Job.label} (${myRank}) - [${character.Job.callsign}] | ${formatFirstName(character.firstName)}. ${character.lastName}\n**Firer's Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
             }
           }
         }
@@ -384,6 +398,7 @@ export class JobManager {
                 newJob: JSON.stringify(newJob)
               });
 
+              cb(updatedJob.meta.affectedRows > 0); // Returns true or false, if it sucessfully updated players job (fired them)
               if (updatedJob.meta.affectedRows > 0) {
                 const playerConnected = await this.server.connectedPlayerManager.GetPlayerFromId(data.unitsPlayerId);
                 if (playerConnected) { // If in the server
@@ -423,9 +438,23 @@ export class JobManager {
                     }
                   }
                 }
-              }
 
-              cb(updatedJob.meta.affectedRows > 0); // Returns true or false, if it sucessfully updated players job (fired them)
+                const playersNewRank = await getRankFromValue(newJob.rank, newJob.name);
+                const myRank = await getRankFromValue(character.Job.rank, character.Job.name);
+                const discord = await player.GetIdentifier("discord");
+
+                await this.server.logManager.Send(LogTypes.Job, new WebhookMessage({
+                  username: "Jobs Logging", embeds: [{
+                    color: EmbedColours.Green,
+                    title: `__Unit Promoted__`,
+                    description: `A player has been promoted.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**New Rank**: ${playersNewRank}\n**Promoted By**: ${character.Job.label} (${myRank}) - [${character.Job.callsign}] | ${formatFirstName(character.firstName)}. ${character.lastName}\n**Firer's Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                    footer: {
+                      text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                      icon_url: sharedConfig.serverLogo
+                    }
+                  }]
+                }));
+              }
             }
           }
         }
@@ -433,7 +462,7 @@ export class JobManager {
     }
   }
 
-  private async CALLBACK_recruitPlayer(data: Record<string, any>): Promise<void> {
+  private async CALLBACK_recruitPlayer(data: Record<string, any>, source: number, cb: CallableFunction): Promise<void> {
     const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (player) {
       if (player.Spawned) {
@@ -483,15 +512,31 @@ export class JobManager {
                       await foundPlayer.Notify("Character", `You've have been set to [${data.jobLabel}] - ${data.jobLabel}`, NotificationTypes.Info);
                     }
 
-                    await player.TriggerEvent(Events.receiveServerCB, updatedJob, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                    cb(updatedJob); // Returns true or false, if it sucessfully updated players job (promoted them)
+
+                    const playersRank = await getRankFromValue(data.jobRank, data.jobName);
+                    const myRank = await getRankFromValue(character.Job.rank, character.Job.name);
+                    const discord = await player.GetIdentifier("discord");
+
+                    await this.server.logManager.Send(LogTypes.Job, new WebhookMessage({
+                      username: "Jobs Logging", embeds: [{
+                        color: EmbedColours.Green,
+                        title: `__Unit Recruited__`,
+                        description: `A player has been recruited.\n\n**Username**: ${player.GetName}\n**Character Id**: ${character.Id}\n**Character Name**: ${character.Name}\n**New Job**: ${data.jobLabel} (${playersRank})\n**Recruited By**: ${character.Job.label} (${myRank}) - [${character.Job.callsign}] | ${formatFirstName(character.firstName)}. ${character.lastName}\n**Firer's Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}`,
+                        footer: {
+                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                          icon_url: sharedConfig.serverLogo
+                        }
+                      }]
+                    }));
                   } else {
-                    await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                    cb(false); // Returns true or false, if it sucessfully updated players job (promoted them)
                   }
                 } else {
-                  await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                  cb(false); // Returns true or false, if it sucessfully updated players job (promoted them)
                 }
               } else {
-                await player.TriggerEvent(Events.receiveServerCB, false, data); // Returns true or false, if it sucessfully updated players job (fired them)
+                cb(false); // Returns true or false, if it sucessfully updated players job (promoted them)
               }
             }
           }
