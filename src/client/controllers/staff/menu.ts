@@ -34,8 +34,7 @@ import {AdminActions} from "../../../shared/enums/adminActions";
 import {PlayerBan} from "../../../shared/interfaces/ban";
 
 import sharedConfig from "../../../configs/shared.json";
-import {BanStates} from "../../../server/enums/database/bans";
-import {Ban} from "../../../server/models/database/ban";
+import {BanStates} from "../../../shared/enums/bans";
 
 interface PlayerMenu {
   netId: number,
@@ -553,7 +552,6 @@ export class StaffMenu {
         issuedUntil: bans[i].issuedUntil
       }
 
-      console.log("ban data", ban.banState, BanStates.Anticheat);
       if (ban.banState === BanStates.Anticheat) { // If an anticheat ban
         if (this.client.player.Rank >= Ranks.SeniorAdmin) { // Run this so only Sr. Admins can remove anticheat bans
           const playerSubmenu = this.playerBans.BindSubmenu(`(Anticheat) #${ban.id} | ${ban.playerName} - ${ban.reason}`);

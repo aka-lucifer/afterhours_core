@@ -5,7 +5,7 @@ import { Log, Error, Inform, Delay } from "../utils";
 
 import { Player  } from "../models/database/player";
 import {Ban} from "../models/database/ban";
-import {BanStates} from "../enums/database/bans";
+import {BanStates} from "../../shared/enums/bans";
 
 import { Events } from "../../shared/enums/events/events";
 import {ErrorCodes} from "../../shared/enums/logging/errors";
