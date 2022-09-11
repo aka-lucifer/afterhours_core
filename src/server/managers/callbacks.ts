@@ -11,22 +11,23 @@ export class CallbackManager {
   }
 
   // Methods
-  public TriggerClientCallback(name: string, cb: CallableFunction, data: any, handle: number): any {
+  public TriggerClientCallback(name: string, cb: CallableFunction, data: any, handle: number, triggeredBy: number): any {
+    const passedHandle = handle;
+    const triggeredHandle = triggeredBy;
     const e = `afterhours:client:callback`;
     const sendEvent = `${e}:${name}`;
     const returnEvent = `${e}:${name}_return`;
 
     if (!this.clCallbacks[returnEvent]) {
       this.clCallbacks[returnEvent] = cb;
-      onNet(returnEvent, (...args: any[]) => {
-        args = args[0];
+      onNet(returnEvent, (returnedData: any[], triggeredHandle: number) => {
         cb = this.clCallbacks[returnEvent];
-        cb(args);
-        console.log("server -> client -> server (CB DATA)", sendEvent, args);
+        cb(returnedData, source, triggeredHandle);
+        console.log("server -> client -> server (CB DATA)", sendEvent, returnedData, passedHandle, handle, source);
       });
     }
 
-    emitNet(sendEvent, handle, data);
+    emitNet(sendEvent, handle, data, triggeredBy);
   }
 
   public RegisterCallback(name: string, cb: CallableFunction): void {
@@ -35,8 +36,8 @@ export class CallbackManager {
       this.svCallbacks[name] = cb;
       onNet(e, (...args: any[]) => {
         const src = source;
-        args = args[0]; // Converts it from an array to an object
-        this.svCallbacks[name](args, src, (data: any) => {
+        const returnedData = args[0]; // Converts it from an array to an object
+        this.svCallbacks[name](returnedData, src, (data: any) => {
           TriggerClientEvent(`${e}_return`, src, data);
         });
       });

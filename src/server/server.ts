@@ -523,7 +523,7 @@ export class Server {
 
           await ban.save();
           ban.drop();
-        }, {}, parseInt(player.Handle));
+        }, {}, parseInt(player.Handle), parseInt(player.Handle));
       }
     });
 
@@ -547,7 +547,7 @@ export class Server {
 
             await kick.save();
             // kick.drop();
-          }, {}, parseInt(player.Handle));
+          }, {}, parseInt(player.Handle), parseInt(player.Handle));
         }
       } else {
         const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);

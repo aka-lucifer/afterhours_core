@@ -18,10 +18,10 @@ export class CallbackManager {
     if (!this.svCallbacks[returnEvent]) {
       this.svCallbacks[returnEvent] = cb;
       onNet(returnEvent, (...args: any[]) => {
-        args = args[0];
+        const returnedData = args[0];
         cb = this.svCallbacks[returnEvent];
-        console.log("client -> server -> client (CB DATA)", sendEvent, args);
-        cb(args);
+        console.log("client -> server -> client (CB DATA)", sendEvent, returnedData);
+        cb(returnedData);
       });
     }
 
@@ -32,10 +32,9 @@ export class CallbackManager {
     if (!this.clCallbacks[name]) { // If no callback made/found!
       const e = `afterhours:client:callback:${name}`;
       this.clCallbacks[name] = cb;
-      onNet(e, (...args: any[]) => {
-        args = args[0]; // Converts it from an array to an object
-        this.clCallbacks[name](args, (data: any) => {
-          TriggerServerEvent(`${e}_return`, data);
+      onNet(e, (passedData: any, triggeredHandle: number) => {
+        this.clCallbacks[name](passedData, (data: any) => {
+          TriggerServerEvent(`${e}_return`, data, triggeredHandle);
         });
       });
     }

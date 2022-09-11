@@ -446,17 +446,21 @@ export class StaffMenu {
 
   private async EVENT_killPlayer(netId: number): Promise<void> {
     if (netId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+      let player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Admin);
 
         if (havePerm) {
           if (player.Handle !== netId.toString()) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
+            let foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               await player.TriggerEvent(Events.showLoading, "Killing Player...");
-              this.server.cbManager.TriggerClientCallback(Callbacks.getKilled, async(returnedData: any) => {
+              this.server.cbManager.TriggerClientCallback(Callbacks.getKilled, async(returnedData: any, clientHandle: number, triggeredBy: number) => {
+                // Redefine them as the callback doesn't understand them in memory for some reason
+                player = await this.server.connectedPlayerManager.GetPlayer(triggeredBy.toString());
+                foundPlayer = await this.server.connectedPlayerManager.GetPlayer(clientHandle.toString());
+
                 await player.TriggerEvent(Events.stopLoading);
                 if (returnedData == "SUCCESS") {
                   await foundPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`You've been killed by ^3${player.GetName}^0.`, SystemTypes.Admin));
@@ -477,7 +481,7 @@ export class StaffMenu {
                 } else if (returnedData == "ERROR_KILLING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to kill ^3${foundPlayer.GetName}^0!`, SystemTypes.Error));
                 }
-              }, {}, parseInt(foundPlayer.Handle));
+              }, {}, parseInt(foundPlayer.Handle), parseInt(player.Handle));
             }
           } else {
             await player.Notify("Staff Menu", "You can't kill yourself!", NotificationTypes.Error);
@@ -599,12 +603,12 @@ export class StaffMenu {
 
   private async EVENT_tpToVehicle(netId: number): Promise<void> {
     if (netId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+      let player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
         if (havePerm) {
           if (player.Handle !== netId.toString()) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
+            let foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               const foundPed = GetPlayerPed(foundPlayer.Handle);
@@ -614,7 +618,11 @@ export class StaffMenu {
                 let tpVehicle = GetVehiclePedIsIn(foundPed, false);
 
                 if (tpVehicle > 0) {
-                  this.server.cbManager.TriggerClientCallback(Callbacks.getVehicleFreeSeat, async(returnedData: any) => {
+                  this.server.cbManager.TriggerClientCallback(Callbacks.getVehicleFreeSeat, async(returnedData: any, clientHandle: number, triggeredBy: number) => {
+                    // Redefine them as the callback doesn't understand them in memory for some reason
+                    player = await this.server.connectedPlayerManager.GetPlayer(triggeredBy.toString());
+                    foundPlayer = await this.server.connectedPlayerManager.GetPlayer(clientHandle.toString());
+
                     if (returnedData.state == "SEATS_FREE") {
                       const foundPosition = foundPlayer.Position;
 
@@ -651,7 +659,7 @@ export class StaffMenu {
                     } else if (returnedData.state == "ERROR") {
                       console.log("TP VEH ERROR TINGS!");
                     }
-                  }, NetworkGetNetworkIdFromEntity(tpVehicle), parseInt(foundPlayer.Handle));
+                  }, NetworkGetNetworkIdFromEntity(tpVehicle), parseInt(foundPlayer.Handle), parseInt(player.Handle));
                 } else {
                   await player.Notify("Staff Menu", "This player isn't inside a vehicle!", NotificationTypes.Error);
                 }
@@ -669,13 +677,16 @@ export class StaffMenu {
   
   private async EVENT_summonPlayer(netId: number): Promise<void> {
     if (netId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+      const src = source.toString();
+      const bringId = netId.toString();
+
+      let player = await this.server.connectedPlayerManager.GetPlayer(src);
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
-          if (player.Handle !== netId.toString()) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
+          if (player.Handle !== bringId) {
+            let foundPlayer = await this.server.connectedPlayerManager.GetPlayer(bringId);
 
             if (foundPlayer) {
               const foundStates = Player(foundPlayer.Handle);
@@ -688,11 +699,20 @@ export class StaffMenu {
                 await player.TriggerEvent(Events.showLoading, "Summoning Player...");
                 foundStates.state.beingSummoned = true;
 
-                this.server.cbManager.TriggerClientCallback(Callbacks.getSummoned, async(returnedData: any) => {
+                this.server.cbManager.TriggerClientCallback(Callbacks.getSummoned, async(returnedData: string, clientHandle: number, triggeredBy: number) => {
+                  // Redefine them as the callback doesn't understand them in memory for some reason
+                  player = await this.server.connectedPlayerManager.GetPlayer(triggeredBy.toString());
+                  foundPlayer = await this.server.connectedPlayerManager.GetPlayer(clientHandle.toString());
+                  
+                  const foundStates = Player(foundPlayer.Handle);
+                  
+                  console.log("Check final", triggeredBy, player.Handle, player.GetName, clientHandle, foundPlayer.Handle, foundPlayer.GetName);
+
                   await player.TriggerEvent(Events.stopLoading);
                   foundStates.state.beingSummoned = false;
 
-                  if (returnedData == "SUCCESS") {
+                  if (returnedData === "SUCCESS") {
+                    // console.log("summon success!", player.Handle, player.GetName, foundPlayer.Handle, foundPlayer.GetName);
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've summoned ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
 
                     const playersDiscord = await player.GetIdentifier("discord");
@@ -707,10 +727,10 @@ export class StaffMenu {
                         }
                       }]
                     }));
-                  } else if (returnedData == "ERROR_TPING") {
+                  } else if (returnedData === "ERROR_TPING") {
                     await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to summon ^3${foundPlayer.GetName} ^0to your location!`, SystemTypes.Error));
                   }
-                }, {player: Object.assign({}, player), playerPos: myCoords}, parseInt(foundPlayer.Handle));
+                }, {player: Object.assign({}, player), playerPos: myCoords}, parseInt(foundPlayer.Handle), parseInt(src));
               } else {
                 await player.TriggerEvent(Events.sendSystemMessage, new Message("This player is already being summoned!", SystemTypes.Error));
               }
@@ -727,17 +747,21 @@ export class StaffMenu {
   
   private async EVENT_returnSummonedPlayer(netId: number): Promise<void> {
     if (netId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+      let player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
           if (player.Handle !== netId.toString()) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
+            let foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               await player.TriggerEvent(Events.showLoading, "Returning Player...");
-              this.server.cbManager.TriggerClientCallback(Callbacks.getSummonReturned, async(returnedData: any) => {
+              this.server.cbManager.TriggerClientCallback(Callbacks.getSummonReturned, async(returnedData: any, clientHandle: number, triggeredBy: number) => {
+                // Redefine them as the callback doesn't understand them in memory for some reason
+                player = await this.server.connectedPlayerManager.GetPlayer(triggeredBy.toString());
+                foundPlayer = await this.server.connectedPlayerManager.GetPlayer(clientHandle.toString());
+                
                 await player.TriggerEvent(Events.stopLoading);
                 if (returnedData == "SUCCESS") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've returned ^3${foundPlayer.GetName}^0 to their original position.`, SystemTypes.Admin));
@@ -759,7 +783,7 @@ export class StaffMenu {
                 } else if (returnedData == "NO_SUMMON_LAST_LOCATION") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message("This player hasn't been summoned!", SystemTypes.Error));
                 }
-              }, {player: Object.assign({}, player), playerPos: player.Position}, parseInt(foundPlayer.Handle));
+              }, {player: Object.assign({}, player), playerPos: player.Position}, parseInt(foundPlayer.Handle), parseInt(player.Handle));
             } else {
               await player.Notify("Staff Menu", "Player not found!", NotificationTypes.Error);
             }
@@ -773,17 +797,21 @@ export class StaffMenu {
 
   private async EVENT_spectatePlayer(netId: number): Promise<void> {
     if (netId > 0) {
-      const player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
+      let player = await this.server.connectedPlayerManager.GetPlayer(source.toString());
       if (player) {
         const havePerm = this.havePermission(player.Rank, Ranks.Moderator);
 
         if (havePerm) {
           if (player.Handle !== netId.toString()) {
-            const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
+            let foundPlayer = await this.server.connectedPlayerManager.GetPlayer(netId.toString());
 
             if (foundPlayer) {
               await player.TriggerEvent(Events.showLoading, "Spectating Player...");
-              this.server.cbManager.TriggerClientCallback(Callbacks.spectatePlayer, async(returnedData: any) => {
+              this.server.cbManager.TriggerClientCallback(Callbacks.spectatePlayer, async(returnedData: any, clientHandle: number, triggeredBy: number) => {
+                // Redefine them as the callback doesn't understand them in memory for some reason
+                player = await this.server.connectedPlayerManager.GetPlayer(triggeredBy.toString());
+                foundPlayer = await this.server.connectedPlayerManager.GetPlayer(clientHandle.toString());
+
                 await player.TriggerEvent(Events.stopLoading);
                 if (returnedData == "STARTED") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`You've started spectating ^3${foundPlayer.GetName}^0.`, SystemTypes.Admin));
@@ -818,7 +846,7 @@ export class StaffMenu {
                 } else if (returnedData == "ERROR_TPING") {
                   await player.TriggerEvent(Events.sendSystemMessage, new Message(`Unable to spectate ^3${foundPlayer.GetName} ^0!`, SystemTypes.Error));
                 }
-              }, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, parseInt(player.Handle));
+              }, {player: Object.assign({}, foundPlayer), playerPos: foundPlayer.Position}, parseInt(player.Handle), parseInt(player.Handle));
 
               await player.TriggerEvent(Events.startSpectating, Object.assign({}, foundPlayer), foundPlayer.Position);
             } else {
