@@ -1,7 +1,7 @@
 import { Control, Game, InputMode, Ped, Vector3, Vehicle, VehicleSeat } from 'fivem-js';
 
 import { Client } from '../client';
-import { Delay, Inform, LoadAnim, teleportToCoords } from '../utils';
+import { Delay, getPedsVehSeat, Inform, LoadAnim, teleportToCoords } from '../utils';
 
 import { LXEvents } from '../../shared/enums/events/lxEvents';
 import { DeathStates } from '../../shared/enums/deathStates';
@@ -84,7 +84,7 @@ export class Death {
         const isFatal = eventArgs[5];
         if (isFatal) {
           if (IsPedInAnyVehicle(damagedEntity, false)) {
-            const vehSeat = this.getPedsVehSeat(damagedPed);
+            const vehSeat = getPedsVehSeat(damagedPed);
             emitNet(Events.playersDeath, true, vehSeat);
           } else {
             emitNet(Events.playersDeath, false);
@@ -168,20 +168,6 @@ export class Death {
     global.exports("isDead", () => {
       return this.myState !== DeathStates.Alive; 
     });
-  }
-
-  private getPedsVehSeat(ped: Ped): VehicleSeat {
-    if (IsPedInAnyVehicle(ped.Handle, false)) {
-      const currVeh = ped.CurrentVehicle;
-      const maxPassengers = GetVehicleMaxNumberOfPassengers(currVeh.Handle);
-      for (let i = -2; i < maxPassengers; i++) {
-        if (currVeh.getPedOnSeat(i).Handle == ped.Handle) {
-          return i;
-        }
-      }
-    }
-
-    return VehicleSeat.None;
   }
   
   public async init(): Promise<void> {

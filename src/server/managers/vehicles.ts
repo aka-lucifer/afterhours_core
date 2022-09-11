@@ -33,6 +33,7 @@ import sharedConfig from '../../configs/shared.json';
 export class VehicleManager {
   public server: Server;
   private worldVehicles: number[] = [];
+  private notifiesSent: Record<string, any> = {};
 
   // Controllers
   private gps: GPS;
@@ -237,8 +238,13 @@ export class VehicleManager {
                       // Delete the entity, incase cancelling the event, hasn't prevented the entity from being spawned
                       DeleteEntity(entity);
 
-                      const requiredRank = formatRank(Ranks[rank]);
-                      await player.Notify("Vehicles", `You aren't the correct rank to spawn this vehicle! (${requiredRank})`, NotificationTypes.Error, 4000);
+                      if (this.notifiesSent[player.Handle] === undefined) {
+                        this.notifiesSent[player.Handle] = true;
+                        const requiredRank = formatRank(Ranks[rank]);
+                        await player.Notify("Vehicles", `You aren't the correct rank to spawn this vehicle! (${requiredRank})`, NotificationTypes.Error, 4000);
+                        await Delay(500);
+                        this.notifiesSent[player.Handle] = undefined;
+                      }
 
                       await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                         username: "Vehicle Logs", embeds: [{
@@ -314,31 +320,60 @@ export class VehicleManager {
               if (vehData.type == "emergency") {
                 const character = await this.server.characterManager.Get(player);
                 if (character) {
-                  const jobPerm = typeof vehData.job === "object" ? vehData.job.includes(character.Job.name) : vehData.job === character.Job.name || vehData.job === Jobs.Civilian;
+                  const jobPerm = typeof vehData.job === "object" ? vehData.job.includes(character.Job.name) : vehData.job === character.Job.name;
                   if (jobPerm || player.Rank >= Ranks.Admin) {
                     const hasPerm = await this.hasJobPermission(character, vehData.rank);
                     if (hasPerm) {
                       // console.log("spawn police vehicle!");
                       this.worldVehicles.push(NetworkGetNetworkIdFromEntity(vehicle));
                     } else {
+                      if (vehSeat === VehicleSeat.Driver) {
+                        // Make you leave the vehicle (since you aren't in the vehicle, basically just clears the task)
+                        ClearPedTasksImmediately(ped);
+
+                        // Notify the player of the error
+                        if (vehData.job == Jobs.State) {
+                          await player.Notify("State Police", "Your rank isn't high enough to drive this vehicle!", NotificationTypes.Error, 4000);
+                        } else if (vehData.job == Jobs.County) {
+                          await player.Notify("Sheriffs Office", "Your rank isn't high enough to drive this vehicle!", NotificationTypes.Error, 4000);
+                        } else if (vehData.job == Jobs.Police) {
+                          await player.Notify("Police Department", "Your rank isn't high enough to drive this vehicle!", NotificationTypes.Error, 4000);
+                        }
+
+                        // Log it via a webhook
+                        await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                          username: "Vehicle Logs", embeds: [{
+                            color: EmbedColours.Green,
+                            title: "__Entering Vehicle__",
+                            description: `A player has tried to enter a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                            footer: {
+                              text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                              icon_url: sharedConfig.serverLogo
+                            }
+                          }]
+                        }));
+                      }
+                    }
+                  } else {
+                    if (vehSeat === VehicleSeat.Driver) {
                       // Make you leave the vehicle (since you aren't in the vehicle, basically just clears the task)
-                      ClearPedTasksImmediately(ped);
+                      TaskLeaveVehicle(ped, vehicle, 0);
 
                       // Notify the player of the error
                       if (vehData.job == Jobs.State) {
-                        await player.Notify("State Police", "Your rank isn't high enough to drive this vehicle!", NotificationTypes.Error, 4000);
+                        await player.Notify("State Police", "You don't have permission to drive this vehicle!", NotificationTypes.Error, 4000);
                       } else if (vehData.job == Jobs.County) {
-                        await player.Notify("Sheriffs Office", "Your rank isn't high enough to drive this vehicle!", NotificationTypes.Error, 4000);
+                        await player.Notify("Sheriffs Office", "You don't have permission to drive this vehicle!", NotificationTypes.Error, 4000);
                       } else if (vehData.job == Jobs.Police) {
-                        await player.Notify("Police Department", "Your rank isn't high enough to drive this vehicle!", NotificationTypes.Error, 4000);
+                        await player.Notify("Police Department", "You don't have permission to drive this vehicle!!", NotificationTypes.Error, 4000);
                       }
 
                       // Log it via a webhook
                       await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                         username: "Vehicle Logs", embeds: [{
                           color: EmbedColours.Green,
-                          title: "__Entering Vehicle__",
-                          description: `A player has tried to enter a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
+                          title: "__Created Vehicle__",
+                          description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
                           footer: {
                             text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
                             icon_url: sharedConfig.serverLogo
@@ -346,31 +381,6 @@ export class VehicleManager {
                         }]
                       }));
                     }
-                  } else {
-                    // Make you leave the vehicle (since you aren't in the vehicle, basically just clears the task)
-                    TaskLeaveVehicle(ped, vehicle, 0);
-
-                    // Notify the player of the error
-                    if (vehData.job == Jobs.State) {
-                      await player.Notify("State Police", "You don't have permission to drive this vehicle!", NotificationTypes.Error, 4000);
-                    } else if (vehData.job == Jobs.County) {
-                      await player.Notify("Sheriffs Office", "You don't have permission to drive this vehicle!", NotificationTypes.Error, 4000);
-                    } else if (vehData.job == Jobs.Police) {
-                      await player.Notify("Police Department", "You don't have permission to drive this vehicle!!", NotificationTypes.Error, 4000);
-                    }
-
-                    // Log it via a webhook
-                    await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-                      username: "Vehicle Logs", embeds: [{
-                        color: EmbedColours.Green,
-                        title: "__Created Vehicle__",
-                        description: `A player has tried to spawn a vehicle, they don't have access to!\n\n**Veh Data**: ${JSON.stringify(vehData, null, 4)}\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Playtime**: ${await player.GetPlaytime.FormatTime()}\n**Whitelisted**: ${await player.Whitelisted()}\n**Discord**: ${discord != "Unknown" ? `<@${discord}>` : discord}\n**Identifiers**: ${JSON.stringify(player.identifiers, null, 4)}`,
-                        footer: {
-                          text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
-                          icon_url: sharedConfig.serverLogo
-                        }
-                      }]
-                    }));
                   }
                 }
               } else { // General vehicles
@@ -384,8 +394,13 @@ export class VehicleManager {
                   // Make you leave the vehicle (since you aren't in the vehicle, basically just clears the task)
                   ClearPedTasksImmediately(ped);
 
-                  const requiredRank = formatRank(Ranks[rank]);
-                  await player.Notify("Vehicles", `You aren't the correct rank to drive this vehicle! (${requiredRank})`, NotificationTypes.Error, 4000);
+                  if (this.notifiesSent[player.Handle] === undefined) {
+                    this.notifiesSent[player.Handle] = true;
+                    const requiredRank = formatRank(Ranks[rank]);
+                    await player.Notify("Vehicles", `You aren't the correct rank to spawn this vehicle! (${requiredRank})`, NotificationTypes.Error, 4000);
+                    await Delay(500);
+                    this.notifiesSent[player.Handle] = undefined;
+                  }
 
                   await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
                     username: "Vehicle Logs", embeds: [{

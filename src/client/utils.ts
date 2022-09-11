@@ -1,4 +1,4 @@
-import { Audio, Font, Game, Model, Ped, RadioStation, RaycastResult, Vector3, Vehicle, World } from 'fivem-js';
+import { Audio, Font, Game, Model, Ped, RadioStation, RaycastResult, Vector3, Vehicle, VehicleSeat, World } from 'fivem-js';
 
 import { client } from './client';
 
@@ -550,6 +550,20 @@ export async function getVehPassengers(vehicle: Vehicle): Promise<Passenger[]> {
   }
 
   return passengers;
+}
+
+export function getPedsVehSeat(ped: Ped): VehicleSeat {
+  if (IsPedInAnyVehicle(ped.Handle, false)) {
+    const currVeh = ped.CurrentVehicle;
+    const maxPassengers = GetVehicleMaxNumberOfPassengers(currVeh.Handle);
+    for (let i = -2; i < maxPassengers; i++) {
+      if (currVeh.getPedOnSeat(i).Handle == ped.Handle) {
+        return i;
+      }
+    }
+  }
+
+  return VehicleSeat.None;
 }
 
 export function speedToMph(speed: number): number {
