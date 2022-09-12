@@ -41,13 +41,11 @@ export class ModelBlacklist {
         const pedData = serverConfig.peds[pedHash];
 
         if (pedData !== undefined) {
-          console.log("changed", GetEntityModel(GetPlayerPed(player.Handle)), pedHash );
           const hasPermission = await this.hasPermission(player.Rank, pedData.rank);
 
           if (!hasPermission) {
             const randomModel = sharedConfig.aop.spawnModels[Math.floor(Math.random() * sharedConfig.aop.spawnModels.length)];
             SetPlayerModel(player.Handle, randomModel);
-            await player.TriggerEvent(Events.changedPed, randomModel)
 
             if (this.notifiesSent[player.Handle] === undefined) {
               this.notifiesSent[player.Handle] = true;

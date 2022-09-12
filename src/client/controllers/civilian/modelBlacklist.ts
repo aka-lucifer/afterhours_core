@@ -19,10 +19,6 @@ export class ModelBlacklist {
   constructor(client: Client) {
     this.client = client;
 
-    onNet(Events.setPed, (newModel: string) => {
-      this.currentModel = new Model(newModel);
-    })
-
     Inform("ModelBlacklist | Civilian Controller", "Started!");
   }
 
@@ -46,7 +42,6 @@ export class ModelBlacklist {
           this.currentModel = myPed.Model;
         } else { // If it is assigned check if it's different
           const currModel = myPed.Model;
-          console.log("model stuff", currModel.Hash, this.currentModel.Hash)
           if (currModel.Hash !== this.currentModel.Hash) {
             this.currentModel = currModel; // Set new model
             this.changedModel = true; // Set changed our model to true

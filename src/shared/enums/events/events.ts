@@ -160,9 +160,6 @@ export enum Events {
   createGhostPlayer = "afterhours:client:controllers:staff:ghostPlayers:createGhostPlayer",
   deleteGhostPlayer = "afterhours:client:controllers:staff:ghostPlayers:deleteGhostPlayer",
 
-  // AfterHours Client ([Controllers] | Civilian] - Model Blacklist)
-  setPed = "afterhours:client:controllers:civilian:setPed",
-
   // AfterHours Client (Syncers)
   syncTime = "afterhours:client:syncTime",
   freezeTime = "afterhours:client:freezeTime",
