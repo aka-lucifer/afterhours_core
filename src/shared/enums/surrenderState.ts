@@ -1,5 +1,6 @@
 export enum SurrenderState {
   Down,
   Up,
-  Kneeling
+  Kneeling,
+  Kneeled
 }

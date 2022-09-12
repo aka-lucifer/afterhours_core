@@ -1,13 +1,13 @@
-import { Game } from "fivem-js";
+import {Game} from "fivem-js";
 
-import { Delay, Inform, LoadAnim, PlayAnim } from "../../utils";
-import { Client } from "../../client";
+import {Delay, Inform, LoadAnim, PlayAnim} from "../../utils";
+import {Client} from "../../client";
 
-import { Notification } from "../../models/ui/notification";
+import {Notification} from "../../models/ui/notification";
 
-import { Events } from "../../../shared/enums/events/events";
-import { SurrenderState } from "../../../shared/enums/surrenderState";
-import { NotificationTypes } from "../../../shared/enums/ui/notifications/types";
+import {Events} from "../../../shared/enums/events/events";
+import {SurrenderState} from "../../../shared/enums/surrenderState";
+import {NotificationTypes} from "../../../shared/enums/ui/notifications/types";
 
 export class Surrending {
   private client: Client;
@@ -35,7 +35,7 @@ export class Surrending {
     if (this.surrenderState === SurrenderState.Down || toggleState !== undefined && toggleState) {
       // console.log("put hands up");
 
-      if (this.surrenderState === SurrenderState.Kneeling) {
+      if (this.surrenderState === SurrenderState.Kneeling || this.surrenderState === SurrenderState.Kneeled) {
         const notification = new Notification("Surrendering", "You can't put your hands up whilst already kneeling!", NotificationTypes.Error);
         await notification.send();
         return;
@@ -61,7 +61,7 @@ export class Surrending {
         this.surrenderState = SurrenderState.Down;
         playerStates.state.surrenderState = SurrenderState.Down;
         if (this.controlTick !== undefined) this.stopControlDisabler();
-      } else if (this.surrenderState === SurrenderState.Kneeling) { // Stop Kneeling
+      } else if (this.surrenderState === SurrenderState.Kneeling || this.surrenderState === SurrenderState.Kneeled) { // Stop Kneeling
         // console.log("stop kneeling");
         const loadedAnim = await LoadAnim("random@arrests@busted");
         if (loadedAnim) {
@@ -86,7 +86,7 @@ export class Surrending {
   private async EVENT_startKneeling(): Promise<void> {
     const playerStates = Player(this.client.Player.NetworkId);
 
-    if (this.surrenderState !== SurrenderState.Kneeling) {
+    if (this.surrenderState !== SurrenderState.Kneeling && this.surrenderState !== SurrenderState.Kneeled) {
       const myPed = Game.PlayerPed;
 
       if (!IsPedInAnyVehicle(myPed.Handle, false)) {
@@ -95,12 +95,16 @@ export class Surrending {
           // if (IsPedInAnyVehicle(myPed.Handle, false)) ClearPedTasksImmediately(myPed.Handle);
           const playingIntro = await PlayAnim(myPed, "random@arrests", "idle_2_hands_up", 2, -1, 8.0, 1.0, 0, false, false, false) || IsEntityPlayingAnim(myPed.Handle, "random@arrests", "idle_2_hands_up", 3); // Play it or return true if we already are
           if (playingIntro) {
+            this.surrenderState = SurrenderState.Kneeling;
+            playerStates.state.surrenderState = SurrenderState.Kneeling;
+            if (this.controlTick === undefined) this.disableControls();
             await Delay(4000);
-            const playingIdle = await PlayAnim(myPed, "random@arrests", "kneeling_arrest_idle", 2, -1, 8.0, 1.0, 0, false, false, false) || IsEntityPlayingAnim(myPed.Handle, "random@arrests", "kneeling_arrest_idle", 3); // Play it or return true if we already are
-            if (playingIdle) {
-              this.surrenderState = SurrenderState.Kneeling;
-              playerStates.state.surrenderState = SurrenderState.Kneeling;
-              if (this.controlTick === undefined) this.disableControls();
+            if (this.surrenderState === SurrenderState.Kneeling) { // If we're still kneeling
+              const playingIdle = await PlayAnim(myPed, "random@arrests", "kneeling_arrest_idle", 2, -1, 8.0, 1.0, 0, false, false, false) || IsEntityPlayingAnim(myPed.Handle, "random@arrests", "kneeling_arrest_idle", 3); // Play it or return true if we already are
+              if (playingIdle) {
+                this.surrenderState = SurrenderState.Kneeled;
+                playerStates.state.surrenderState = SurrenderState.Kneeled;
+              }
             }
           }
         }
@@ -116,7 +120,7 @@ export class Surrending {
 
   private disableControls(): void {
     if (this.controlTick === undefined) this.controlTick = setTick(async() => {
-      if (this.surrenderState === SurrenderState.Up || this.surrenderState === SurrenderState.Kneeling) {
+      if (this.surrenderState === SurrenderState.Up || this.surrenderState === SurrenderState.Kneeling || this.surrenderState === SurrenderState.Kneeled) {
         const myPed = Game.PlayerPed;
         if (IsPedInAnyVehicle(myPed.Handle, false)) {
           Game.disableControlThisFrame(0, 24); // Attack
@@ -156,6 +160,28 @@ export class Surrending {
 					Game.disableControlThisFrame(0, 141); // Melee Heavy
 					Game.disableControlThisFrame(0, 143); // melee Dodge
 					Game.disableControlThisFrame(0, 142); // Attack Alternative
+        }
+
+        // Handles cancelling if no longer doing anims
+        if (this.surrenderState === SurrenderState.Up) {
+          const playingAnim = IsEntityPlayingAnim(myPed.Handle, "rcmminute2", "arrest_walk", 3);
+          if (!playingAnim) { // If no longer playing the anim, cancel everything
+            // console.log("No longer playing hands up anim, cancel the controls tick and clear your surrender state!");
+            const playerStates = Player(this.client.Player.NetworkId);
+            this.stopControlDisabler();
+            this.surrenderState = SurrenderState.Down;
+            playerStates.state.surrenderState = SurrenderState.Down;
+          }
+        } else if (this.surrenderState === SurrenderState.Kneeling || this.surrenderState === SurrenderState.Kneeled) {
+          const playingAnim = IsEntityPlayingAnim(myPed.Handle, "random@arrests", "idle_2_hands_up", 3)
+            || IsEntityPlayingAnim(myPed.Handle, "random@arrests", "kneeling_arrest_idle", 3); // If playing intro or idle kneel anim
+          if (!playingAnim) { // If no longer playing the anim, cancel everything
+            // console.log("No longer playing kneel anim, cancel the controls tick and clear your surrender state!");
+            const playerStates = Player(this.client.Player.NetworkId);
+            this.stopControlDisabler();
+            this.surrenderState = SurrenderState.Down;
+            playerStates.state.surrenderState = SurrenderState.Down;
+          }
         }
       } else {
         await Delay(1000);
