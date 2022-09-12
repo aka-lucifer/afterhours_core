@@ -1,27 +1,28 @@
-import { Client } from "../client";
+import {Client} from "../client";
 
 // Controllers
 // import { Speedzones } from "../controllers/vehicles/speedzones";
-import { VehicleWeapon } from "../controllers/vehicles/vehWeapon";
-import { AntiControl } from "../controllers/vehicles/antiControl";
-import { LeaveDoorOpen } from "../controllers/vehicles/leaveDoorOpen";
-import { CruiseControl } from "../controllers/vehicles/cruiseControl";
-import { RepairShops } from "../controllers/vehicles/repairShops";
-import { GPS } from "../controllers/vehicles/gps";
+import {VehicleWeapon} from "../controllers/vehicles/vehWeapon";
+import {AntiControl} from "../controllers/vehicles/antiControl";
+import {LeaveDoorOpen} from "../controllers/vehicles/leaveDoorOpen";
+import {CruiseControl} from "../controllers/vehicles/cruiseControl";
+import {RepairShops} from "../controllers/vehicles/repairShops";
+import {GPS} from "../controllers/vehicles/gps";
 // import { KeepWheel } from "../controllers/vehicles/keepWheel";
-import { Rolling } from "../controllers/vehicles/rolling";
-import { Seatbelt } from "../controllers/vehicles/seatbelt";
-import { ReverseBraking } from '../controllers/vehicles/reverseBraking';
-import { Seating } from "../controllers/vehicles/seating";
-import { Shuffling } from '../controllers/vehicles/shuffling';
-import { DriveBy } from '../controllers/vehicles/driveBy';
+import {Rolling} from "../controllers/vehicles/rolling";
+import {Seatbelt} from "../controllers/vehicles/seatbelt";
+import {ReverseBraking} from '../controllers/vehicles/reverseBraking';
+import {Seating} from "../controllers/vehicles/seating";
+import {Shuffling} from '../controllers/vehicles/shuffling';
+import {DriveBy} from '../controllers/vehicles/driveBy';
 
-import { LXEvents } from "../../shared/enums/events/lxEvents";
-import { SystemTypes } from "../../shared/enums/ui/chat/types";
-import { Events } from "../../shared/enums/events/events";
-import { Message } from "../../shared/models/ui/chat/message";
-import { Vehicle } from "fivem-js";
-import { Callbacks } from "../../shared/enums/events/callbacks";
+import {LXEvents} from "../../shared/enums/events/lxEvents";
+import {SystemTypes} from "../../shared/enums/ui/chat/types";
+import {Events} from "../../shared/enums/events/events";
+import {Message} from "../../shared/models/ui/chat/message";
+import {Game, VehicleSeat} from "fivem-js";
+import {Callbacks} from "../../shared/enums/events/callbacks";
+import {getPedsVehSeat} from "../utils";
 
 export class VehicleManager {
   private readonly client: Client;
@@ -73,7 +74,7 @@ export class VehicleManager {
     this.seatbelt = new Seatbelt(this.client); // done - (0.10ms)
     this.reverseBraking = new ReverseBraking(); // done - (0.10ms)
     this.seating = new Seating(this.client);
-    // this.shuffling = new Shuffling();
+    this.shuffling = new Shuffling();
     this.driveBy = new DriveBy(this.client);
 
     // Inits
@@ -89,6 +90,7 @@ export class VehicleManager {
   }
 
   private EVENT_enteredVeh(): void {
+    const currSeat = getPedsVehSeat(Game.PlayerPed);
     // if (!this.speedZones.Started) this.speedZones.start(); // done (0.01ms-0.02ms)
     if (!this.weapon.Started) this.weapon.start(); // done (0.01ms-0.03ms)
     if (!this.antiControl.RollStarted) this.antiControl.startRoll(); // done (0.01ms)
@@ -98,7 +100,7 @@ export class VehicleManager {
     if (!this.seatbelt.Started) this.seatbelt.start(); // done - (0.10ms)
     if (!this.reverseBraking.Started) this.reverseBraking.start(); // done - (0.10ms)
     if (!this.repairShops.Started) this.repairShops.start(); // done
-    // if (!this.shuffling.Started) this.shuffling.start();
+    if (currSeat === VehicleSeat.Passenger) if (!this.shuffling.Started) this.shuffling.start();
     if (!this.driveBy.Started) this.driveBy.start();
     if (!this.client.hud.VehStarted) this.client.hud.startVeh(); // Display vehicle HUD (If not showing)
 
@@ -125,7 +127,7 @@ export class VehicleManager {
     if (this.seatbelt.Started) this.seatbelt.stop(); // done - (0.10ms)
     if (this.reverseBraking.Started) this.reverseBraking.stop(); // done - (0.10ms)
     if (this.repairShops.Started) this.repairShops.stop(); // done
-    // if (this.shuffling.Started) this.shuffling.stop();
+    if (this.shuffling.Started) this.shuffling.stop();
     if (this.driveBy.Started) this.driveBy.stop();
     if (this.client.hud.VehStarted) this.client.hud.stopVeh(); // Hide the vehicle HUD (If showing)
   }

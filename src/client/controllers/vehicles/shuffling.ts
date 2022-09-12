@@ -1,18 +1,14 @@
-import { Game, VehicleSeat } from 'fivem-js';
+import {Control, Game, InputMode, Screen, VehicleSeat} from 'fivem-js';
 
-import { Delay, Inform } from '../../utils';
-
-import { Events } from '../../../shared/enums/events/events';
+import {Delay, Inform} from '../../utils';
 
 export class Shuffling {
   private shufflingDisabled: boolean = false;
+  private sentNotify: boolean = false;
   private tick: number = undefined;
 
   constructor() {
     Inform("Vehicle | Shuffling Controller", "Started!");
-
-    // Events
-    onNet(Events.shuffleSeats, this.EVENT_shuffleSeats.bind(this));
   }
 
   // Getters
@@ -31,6 +27,24 @@ export class Shuffling {
             if (GetPedInVehicleSeat(currVeh.Handle, VehicleSeat.Passenger) === myPed.Handle) {
               if (!GetIsTaskActive(myPed.Handle, 164) && GetIsTaskActive(myPed.Handle, 165)) {
                 myPed.setIntoVehicle(currVeh, VehicleSeat.Passenger);
+              }
+
+              if (!this.sentNotify) {
+                this.sentNotify = true;
+                if (currVeh.Driver.Handle === 0) {
+                  Screen.displayHelpTextThisFrame("~INPUT_CONTEXT~ Shuffle Seat");
+                }
+              }
+
+              if (Game.isControlJustPressed(InputMode.MouseAndKeyboard, Control.Context) || Game.isDisabledControlJustPressed(InputMode.MouseAndKeyboard, Control.Context)) {
+                this.shufflingDisabled = true;
+
+                // Wait until you're in the driver seat
+                while (currVeh.getPedOnSeat(VehicleSeat.Driver).Handle !== myPed.Handle) {
+                  await Delay(100);
+                }
+
+                this.shufflingDisabled = false;
               }
             } else {
               await Delay(500);
@@ -52,13 +66,5 @@ export class Shuffling {
       clearTick(this.tick);
       this.tick = undefined;
     }
-  }
-
-  // Events
-  private EVENT_shuffleSeats(): void {
-    this.shufflingDisabled = true;
-    setTimeout(() => {
-      this.shufflingDisabled = false;
-    }, 3000);
   }
 }
