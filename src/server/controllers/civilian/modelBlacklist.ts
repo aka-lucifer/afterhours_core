@@ -1,19 +1,21 @@
-import { Server } from "../../server";
+import {Server} from "../../server";
 
-import { LogTypes } from '../../enums/logging';
+import {LogTypes} from '../../enums/logging';
 
 import WebhookMessage from '../../models/webhook/discord/webhookMessage';
 
-import { Events } from "../../../shared/enums/events/events";
-import { Ranks } from '../../../shared/enums/ranks';
-import { NotificationTypes } from '../../../shared/enums/ui/notifications/types';
-import { EmbedColours } from '../../../shared/enums/logging/embedColours';
+import {Events} from "../../../shared/enums/events/events";
+import {Ranks} from '../../../shared/enums/ranks';
+import {NotificationTypes} from '../../../shared/enums/ui/notifications/types';
+import {EmbedColours} from '../../../shared/enums/logging/embedColours';
 
 import serverConfig from '../../../configs/server.json';
 import sharedConfig from '../../../configs/shared.json';
+import {Delay} from "../../utils";
 
 export class ModelBlacklist {
   private server: Server;
+  private notifiesSent: Record<string, any> = {};
 
   constructor(server: Server) {
     this.server = server;
@@ -39,22 +41,33 @@ export class ModelBlacklist {
         const pedData = serverConfig.peds[pedHash];
 
         if (pedData !== undefined) {
+          console.log("changed", GetEntityModel(GetPlayerPed(player.Handle)), pedHash );
           const hasPermission = await this.hasPermission(player.Rank, pedData.rank);
 
           if (!hasPermission) {
             const randomModel = sharedConfig.aop.spawnModels[Math.floor(Math.random() * sharedConfig.aop.spawnModels.length)];
             SetPlayerModel(player.Handle, randomModel);
+            await player.TriggerEvent(Events.changedPed, randomModel)
 
-            await player.Notify("Model", "You aren't the correct rank to use this model!", NotificationTypes.Error, 4000);
+            if (this.notifiesSent[player.Handle] === undefined) {
+              this.notifiesSent[player.Handle] = true;
+              await player.Notify("Model", "You aren't the correct rank to use this model!", NotificationTypes.Error, 4000);
 
-            await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
-              username: "Ped Logs", embeds: [{
-                color: EmbedColours.Green,
-                title: "__Ped Blacklisted__",
-                description: `A player has tried to use a blacklisted ped they don't have access to!\n\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Ped Data**: ${JSON.stringify(pedData, null, 4)}\n`,
-                footer: {text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`, icon_url: sharedConfig.serverLogo}
-              }]
-            }));
+              await this.server.logManager.Send(LogTypes.Action, new WebhookMessage({
+                username: "Ped Logs", embeds: [{
+                  color: EmbedColours.Green,
+                  title: "__Ped Blacklisted__",
+                  description: `A player has tried to use a blacklisted ped they don't have access to!\n\n**Id**: ${player.Id}\n**Name**: ${player.GetName}\n**Rank**: ${Ranks[player.Rank]}\n**Ped Data**: ${JSON.stringify(pedData, null, 4)}\n`,
+                  footer: {
+                    text: `${sharedConfig.serverName} - ${new Date().toUTCString()}`,
+                    icon_url: sharedConfig.serverLogo
+                  }
+                }]
+              }));
+
+              await Delay(500);
+              this.notifiesSent[player.Handle] = undefined;
+            }
           }
         }
       }
