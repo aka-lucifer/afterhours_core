@@ -123,7 +123,6 @@ export class StaffManager {
             await player.TriggerEvent(Events.sendSystemMessage, new Message("Current vehicle repaired.", SystemTypes.Success));
           } else {
             const [closestVeh, vehDistance] = await getClosestVehicle(player);
-            console.log("closest vehicle data", closestVeh, vehDistance, closestVeh.Position);
 
             if (vehDistance <= 5.0) {
               SetVehicleBodyHealth(closestVeh.Handle, 1000.0);
