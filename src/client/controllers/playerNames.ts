@@ -67,7 +67,7 @@ export class PlayerNames {
           // If the other connected players aren't you
 
           // if (this.client.player.NetworkId != netId) { (Disables so you can see your own name)
-            if (svPlayers[i].spawned) {
+          //   if (svPlayers[i].spawned) {
               const playerId = GetPlayerFromServerId(netId);
 
               // If they're inside your scope or not (THIS IS HOW U BEAT ONESYNC INFINITY PLAYER ID NOT FOUND BS)
@@ -78,20 +78,24 @@ export class PlayerNames {
                 // Name formatting
                 let name;
 
-                // If you're a mod or above, display player & character names on ped, otherwise just the character name
-                if (this.client.Player.Rank >= Ranks.Moderator) {
-                  name = `${svPlayers[i].Name} | ${svPlayers[i].Character.firstName} ${svPlayers[i].Character.lastName}`;
-                } else {
-                  name = `${svPlayers[i].Character.firstName} ${svPlayers[i].Character.lastName}`;
-                }
-
-                // Job department and rank in name (if their job is LEO, Fire, or EMS & they're on duty)
-                if (svPlayers[i].Character.job.name == Jobs.State || svPlayers[i].Character.job.name == Jobs.County || svPlayers[i].Character.job.name == Jobs.Police) { // If LEO
-                  if (svPlayers[i].Character.job.status) { // If on duty
-                    name = `${name} | ${svPlayers[i].Character.job.label} (${await getRankFromValue(svPlayers[i].Character.job.rank, svPlayers[i].Character.job.name)})`;
+                if (svPlayers[i].spawned) {
+                  // If you're a mod or above, display player & character names on ped, otherwise just the character name
+                  if (this.client.Player.Rank >= Ranks.Moderator) {
+                    name = `${svPlayers[i].Name} | ${svPlayers[i].Character.firstName} ${svPlayers[i].Character.lastName}`;
+                  } else {
+                    name = `${svPlayers[i].Character.firstName} ${svPlayers[i].Character.lastName}`;
                   }
-                } else if (svPlayers[i].Character.job.name === Jobs.Community && svPlayers[i].Character.job.status) { // If on duty Community Officer
-                  name = `${name} | ${svPlayers[i].Character.job.label}`;
+
+                  // Job department and rank in name (if their job is LEO, Fire, or EMS & they're on duty)
+                  if (svPlayers[i].Character.job.name == Jobs.State || svPlayers[i].Character.job.name == Jobs.County || svPlayers[i].Character.job.name == Jobs.Police) { // If LEO
+                    if (svPlayers[i].Character.job.status) { // If on duty
+                      name = `${name} | ${svPlayers[i].Character.job.label} (${await getRankFromValue(svPlayers[i].Character.job.rank, svPlayers[i].Character.job.name)})`;
+                    }
+                  } else if (svPlayers[i].Character.job.name === Jobs.Community && svPlayers[i].Character.job.status) { // If on duty Community Officer
+                    name = `${name} | ${svPlayers[i].Character.job.label}`;
+                  }
+                } else {
+                  name = svPlayers[i].Name;
                 }
 
                 // Whether or not to display staffs ranks in their name
@@ -292,7 +296,7 @@ export class PlayerNames {
                   }
                 }
               }
-            }
+            // }
           // }
         }
 
