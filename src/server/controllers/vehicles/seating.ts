@@ -14,6 +14,7 @@ import WebhookMessage from '../../models/webhook/discord/webhookMessage';
 import { EmbedColours } from '../../../shared/enums/logging/embedColours';
 import { Ranks } from '../../../shared/enums/ranks';
 import sharedConfig from '../../../configs/shared.json';
+import {CarryStates} from "../../../shared/enums/carryStates";
 
 export class Seating {
   private server: Server;
@@ -54,6 +55,17 @@ export class Seating {
                 if (closestPlayersStates.state.grabState == GrabState.Held) { // If the fat cunt is being held (Maybe this is cause the detach issue when unseat grabbing)
                   closestPlayersStates.state.grabState = GrabState.Seated;
                   await closestPlayer.TriggerEvent(JobEvents.stopGrabbing);
+                }
+
+                if (playerStates.state.carryState === CarryStates.Carrying) {
+                  playerStates.state.carryState = CarryStates.Free; // Set you to free
+                  await player.TriggerEvent(Events.stopCarrying);
+                  console.log("stop grabbing on me!");
+                }
+
+                if (closestPlayersStates.state.carryState === CarryStates.Carried) {
+                  closestPlayersStates.state.carryState = CarryStates.Carried
+                  await closestPlayer.TriggerEvent(Events.stopCarrying);
                 }
 
                 closestPlayersStates.state.interactionState = InteractionStates.Seated;
