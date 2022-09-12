@@ -39,13 +39,18 @@ export class Grabbing {
     this.animTicks = setTick(() => {
       if (this.grabbed) {
         if (this.grabType == GrabState.Held) {
+          const myPed = Game.PlayerPed;
           const myStates = Player(this.client.player.NetworkId);
           // if cuffed do mp arresting
 
           if (myStates.state.cuffState == CuffState.Cuffed || myStates.state.cuffState == CuffState.Shackled) {
-            if (!IsEntityPlayingAnim(Game.PlayerPed.Handle, this.grabbedDict, "idle", 3)) {
-              TaskPlayAnim(Game.PlayerPed.Handle, this.grabbedDict, "idle", 2.0, 1.0, -1, 14, 1.0, false, false, false);
+            if (!IsEntityPlayingAnim(myPed.Handle, this.grabbedDict, "idle", 3)) {
+              TaskPlayAnim(myPed.Handle, this.grabbedDict, "idle", 2.0, 1.0, -1, 14, 1.0, false, false, false);
             }
+          }
+
+          if (!IsEntityAttached(myPed.Handle)) {
+            if (this.grabbedBy !== undefined) AttachEntityToEntity(myPed.Handle, this.grabbedBy, 0, 0.2, 0.5, 0.0, 0.5, 0.5, 0, false, false, true, false, 2, false);
           }
         } else if (this.grabType == GrabState.Holding) {
           if (!IsEntityPlayingAnim(Game.PlayerPed.Handle, this.grabbingDict, "base", 3)) {
@@ -100,7 +105,7 @@ export class Grabbing {
           const playerStates = Player(grabbersId);
           this.grabbedBy = grabbersPed;
 
-          AttachEntityToEntity(Game.PlayerPed.Handle, grabbersPed, 0, 0.2, 0.5, 0.0, 0.5, 0.5, 0, false, false, true, false, 2, false);
+          AttachEntityToEntity(Game.PlayerPed.Handle, this.grabbedBy, 0, 0.2, 0.5, 0.0, 0.5, 0.5, 0, false, false, true, false, 2, false);
 
           playerStates.state.grabState = GrabState.Held;
           this.grabType = GrabState.Held;
