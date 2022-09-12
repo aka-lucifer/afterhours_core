@@ -35,7 +35,7 @@ export class PlayerNames {
     this.client = client;
     
     // Keymappings
-    RegisterCommand("+toggle_names", this.toggleNames.bind(this), false);
+    RegisterCommand("+toggle_player_names", this.toggleNames.bind(this), false);
     
     Inform("Player Names | Disablers Controller", "Started!");
   }
