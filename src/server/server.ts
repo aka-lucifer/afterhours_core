@@ -317,16 +317,13 @@ export class Server {
           if (currVeh > 0) {
             DeleteEntity(currVeh);
             await player.TriggerEvent(Events.sendSystemMessage, new Message("Current vehicle deleted.", SystemTypes.Success));
-            Error("Del Veh Cmd", "Vehicle Deleted");
             await logCommand("/dv", player);
           } else {
             const [closestVeh, vehDistance] = await getClosestVehicle(player);
-            console.log("closest vehicle data", closestVeh, vehDistance, closestVeh.Position);
 
             if (vehDistance <= 5.0) {
               DeleteEntity(closestVeh.Handle);
               await player.TriggerEvent(Events.sendSystemMessage, new Message("Vehicle deleted.", SystemTypes.Success));
-              Error("Del Veh Cmd", "Vehicle Deleted");
               await logCommand("/dv", player);
             } else {
               await player.Notify("Vehicle Deleter", "No vehicle found!", NotificationTypes.Error);
@@ -591,7 +588,7 @@ export class Server {
 
   private async EVENT_resourceStopped(resourceName: string): Promise<void> {
     if (resourceName !== GetCurrentResourceName()) {
-      if (resourceName === "astrid_metas" || resourceName == "astrid_notify") {
+      if (resourceName === "ah_metas" || resourceName == "ah_notify") {
         await Delay(1000); // Wait until resource has stopped
         StartResource(resourceName); // Start it back up
       }
@@ -692,6 +689,8 @@ export class Server {
 
       // Sync chat data
       await this.chatManager.generateTypes(player);
+      await this.commandManager.deleteChatSuggestions(player);
+      this.commandManager.createChatSuggestions(player);
 
       // Sync Characters
       const loadedChars = await player.getCharacters();

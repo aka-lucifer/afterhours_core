@@ -42,20 +42,22 @@ export class CommandManager {
       }
     });
 
-    this.registeredJobCommands.forEach(async(command) => {
-      let hasPermission = false;
+    if (player.selectedCharacter !== undefined) { // If you've selected a character
+      this.registeredJobCommands.forEach(async (command) => {
+        let hasPermission = false;
 
-      if (typeof command.permission == "object") {
-        const permissionIndex = command.permission.findIndex(permission => permission == player.selectedCharacter.job.name);
-        hasPermission = permissionIndex !== -1;
-      } else {
-        hasPermission = player.selectedCharacter.job.name == command.permission;
-      }
+        if (typeof command.permission == "object") {
+          const permissionIndex = command.permission.findIndex(permission => permission == player.selectedCharacter.job.name);
+          hasPermission = permissionIndex !== -1;
+        } else {
+          hasPermission = player.selectedCharacter.job.name == command.permission;
+        }
 
-      if (hasPermission) {
-        command.argsRequired || Object.keys(command.args).length > 0 ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
-      }
-    });
+        if (hasPermission) {
+          command.argsRequired || Object.keys(command.args).length > 0 ? await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description, command.args)) : await player.TriggerEvent(Events.addSuggestion, new Suggestion(command.name, command.description));
+        }
+      });
+    }
   }
 
   public async deleteChatSuggestions(player: Player): Promise<void> {

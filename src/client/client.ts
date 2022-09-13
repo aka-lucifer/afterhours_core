@@ -128,7 +128,7 @@ export class Client {
   private spawner: Spawner;
   public characters: Characters;
   public vehicles: Vehicles;
-  private chatManager: ChatManager;
+  public chatManager: ChatManager;
   private scoreboard: Scoreboard;
   private warnings: Warnings;
   private commends: Commends;

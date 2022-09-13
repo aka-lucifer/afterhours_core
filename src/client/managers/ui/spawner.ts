@@ -1,18 +1,17 @@
-
 import { Vector3 } from "fivem-js";
+
 import {Client} from "../../client";
 import { RegisterNuiCallback } from "../../utils";
 
 import { BoxZone } from "../../helpers/boxZone";
 import { PolyZone } from "../../helpers/polyZone";
 
-import clientConfig from "../../../configs/client.json";
-
-import sharedConfig from "../../../configs/shared.json";
-
 import {NuiMessages} from "../../../shared/enums/ui/nuiMessages";
 import { NuiCallbacks } from "../../../shared/enums/ui/nuiCallbacks";
 import { Events } from "../../../shared/enums/events/events";
+
+import clientConfig from "../../../configs/client.json";
+import sharedConfig from "../../../configs/shared.json";
 
 export class Spawner {
   private client: Client;
@@ -83,7 +82,7 @@ export class Spawner {
   public requestUI(): void {
     SetNuiFocus(true, true);
     DoScreenFadeOut(500);
-  
+
     SendNuiMessage(JSON.stringify({
       event: NuiMessages.OpenSpawner,
       data: {
@@ -95,7 +94,7 @@ export class Spawner {
         },
         changelog: clientConfig.spawnInfo.changelog,
         keybinds: clientConfig.spawnInfo.keybinds,
-        commands: clientConfig.spawnInfo.commands,
+        commands: this.client.chatManager.Commands,
         rules: clientConfig.spawnInfo.rules,
       }
     }));

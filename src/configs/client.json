@@ -8546,25 +8546,6 @@
             {"key": "U", "description": "Toggle player ragdoll."},
             {"key": "Caps Lock", "description": "Plays your favourite assigned emote."}
         ],
-        "commands": [
-            {"name": "dv", "description": "Deletes your current vehicle"},
-            {"name": "warnings", "description": "View all your warnings"},
-            {"name": "commends", "description": "View all your commends"},
-            {"name": "characters", "description": "Change your current selected character"},
-            {"name": "vehicles", "description": "View, edit or delete your selected characters CAD/MDT vehicles"},
-            {"name": "report", "description": "Report a player to server staff."},
-            {"name": "911", "description": "Make a 911 call to dispatch."},
-            {"name": "311", "description": "Make a 311 call to dispatch."},
-            {"name": "bug", "description": "Report a bug to development."},
-            {"name": "gps", "description": "Set a street or postal on the gps."},
-            {"name": "cleargps", "description": "Clear the current route on the GPS."},
-            {"name": "streets", "description": "Display all available streets, available on the GPS."},
-            {"name": "shuffle", "description": "Shuffle to the driver seat in a vehicle."},
-            {"name": "me", "description": "Send an action in chat."},
-            {"name": "ad", "description": "Send an advert in chat."},
-            {"name": "showid", "description": "Show your ID to the closest players."},
-            {"name":  "e", "description": "Plays the provided emote."}
-        ],
         "rules": [
           {"title": "Age Requirement", "description": "Players must be 13 years of age to play in order to comply with Discord ToS."},
           {"title": "Microphones", "description": "Although are required do not have to be used at all times depending on RP scenarios. Use of /me is required when the roleplay props such a response. Use of any homophobic, racist, overly sexual or derogatory remarks out of character is prohibited. Screaming and/or spamming music loudly to hinder people from hearing is not allowed."},

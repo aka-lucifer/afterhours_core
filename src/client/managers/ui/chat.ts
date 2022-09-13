@@ -37,6 +37,11 @@ export class ChatManager {
     onNet(Events.freezeChat, this.EVENT_freezeChat.bind(this));
   }
 
+  // Getters
+  public get Commands(): Suggestion[] {
+    return this.chatSuggestions;
+  }
+
   public init(): void {
     // Register NUI Callbacks & Chat Keybinds
     this.registerCallbacks();
