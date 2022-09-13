@@ -95,9 +95,18 @@ export class JobManager {
                 myPed.giveWeapon(Weapons.AR15, arAmmo, false, false);
               }
 
+              if (!HasPedGotWeapon(myPed.Handle, Weapons.Remington870, false)) {
+                const [_1, shotgunAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.AssaultRifle);
+                myPed.giveWeapon(Weapons.Remington870, shotgunAmmo, false, false);
+              }
+
               if (!HasPedGotWeapon(myPed.Handle, Weapons.Glock17, false)) {
                 const [_2, pistolAmmo] = GetMaxAmmoByType(myPed.Handle, AmmoType.Pistol);
                 myPed.giveWeapon(Weapons.Glock17, pistolAmmo, false, false);
+              }
+
+              if (!HasPedGotWeapon(myPed.Handle, Weapons.X26Tazer, false)) {
+                myPed.giveWeapon(Weapons.X26Tazer, 0, false, false);
               }
 
               if (!HasPedGotWeapon(myPed.Handle, Weapons.Nightstick, false)) {
