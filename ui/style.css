@@ -1101,6 +1101,10 @@ body {
   font-weight: bold;
 }
 
+.pm {
+  font-weight: bold;
+}
+
 .fault {
   color: #e21e1e;
   /* color: rgb(255, 81, 0); */

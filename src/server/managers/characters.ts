@@ -19,7 +19,7 @@ import {Message} from "../../shared/models/ui/chat/message";
 import {SystemTypes} from "../../shared/enums/ui/chat/types";
 import {Ranks} from "../../shared/enums/ranks";
 import {JobEvents} from "../../shared/enums/events/jobs/jobEvents";
-import {NumToVector3} from "../../shared/utils";
+import {concatArgs, NumToVector3} from "../../shared/utils";
 
 import sharedConfig from "../../configs/shared.json";
 import serverConfig from "../../configs/server.json";
@@ -34,6 +34,7 @@ export class CharacterManager {
   public server: Server;
   private characters: Character[] = [];
   private meDrawnings: meDrawing[] = [];
+  private lastMessages: Record<string, any> = {};
   
   constructor(server: Server) {
     this.server = server;
@@ -165,6 +166,52 @@ export class CharacterManager {
         }
       } else {
         await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
+      }
+    }, Ranks.User);
+
+    new Command("pm", "Send an PM to another player.", [{name: "server_id", help: "The server ID of the player to PM."}, {name: "message", help: "The content of your message"}], true, async(source: string, args: any[]) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+      if (player) {
+        if (player.Spawned) {
+          const messagedPlayer = await this.server.connectedPlayerManager.GetPlayer(args[0]);
+          if (messagedPlayer) {
+            const messageContents = concatArgs(1, args);
+            if (messageContents.length > 0) {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message(`^3(PM | To - ${messagedPlayer.GetName}): ^0${messageContents}`, SystemTypes.PM));
+              await messagedPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3(PM | From - ${player.GetName}): ^0${messageContents}`, SystemTypes.PM));
+              this.lastMessages[messagedPlayer.Handle] = player.Handle;
+              await logCommand("/pm", player, messageContents);
+            } else {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
+            }
+          } else {
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("No player found with that server ID!", SystemTypes.Error));
+          }
+        }
+      }
+    }, Ranks.User);
+
+    new Command("reply", "Reply to a PM.", [{name: "message", help: "The content of your message"}], true, async(source: string, args: any[]) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+      if (player) {
+        if (player.Spawned) {
+          const messagedPlayer = await this.server.connectedPlayerManager.GetPlayer(this.lastMessages[player.Handle]);
+          if (messagedPlayer) {
+            const messageContents = concatArgs(0, args);
+            if (messageContents.length > 0) {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message(`^3(PM | To - ${messagedPlayer.GetName}): ^0${messageContents}`, SystemTypes.PM));
+              await messagedPlayer.TriggerEvent(Events.sendSystemMessage, new Message(`^3(PM | From - ${player.GetName}): ^0${messageContents}`, SystemTypes.PM));
+              this.lastMessages[messagedPlayer.Handle] = player.Handle;
+              await logCommand("/pm", player, messageContents);
+            } else {
+              await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
+            }
+          } else {
+            await player.TriggerEvent(Events.sendSystemMessage, new Message("No player found with that server ID!", SystemTypes.Error));
+          }
+        }
       }
     }, Ranks.User);
 

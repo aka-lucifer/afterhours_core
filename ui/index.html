@@ -591,11 +591,12 @@
             <div id="Chat-Message" class="characterId" v-if="message.notificationType == 'id'">(ID): <span v-html="message.contents"></div>
             <div id="Chat-Message" class="tweet" v-if="message.notificationType == 'tweet'"><span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="do" v-if="message.notificationType == 'do'">(Action - {{ message.sender }}): <span v-html="message.contents"></span></div>
+            <div id="Chat-Message" class="pm" v-if="message.notificationType == 'pm'"><span v-html="message.contents"></span></div>
           </div>
 
           <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
           <div id="Chat-Message" class="global" v-else-if="message.type != 'system' && chatTypes[message.type] == 'global'">(( Global | OOC - {{ message.sender}} )): {{message.contents}}</div>
-          <div id="Chat-Message" class="admin" v-else-if="message.type != 'system' && chatTypes[message.type] == 'admin'">(( Administration Chat - {{ message.sender}} )): {{message.contents}}</div>
+          <div id="Chat-Message" class="admin" v-else-if="message.type != 'system' && chatTypes[message.type] == 'admin'">(Administration - {{ message.sender}}): {{message.contents}}</div>
         </div>
       </div>
 

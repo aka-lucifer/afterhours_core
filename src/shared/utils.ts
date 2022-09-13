@@ -46,8 +46,12 @@ export async function getRankFromValue(rank: PoliceRanks | StateRanks | CountyRa
  * @returns // The message content ting!
  */
 export function concatArgs(startPosition: number, args: string[]): string {
-  args.splice(0, startPosition);
-  return args.join(" ");
+  if (args.length > 1) { // If more than one array entry
+    args.splice(0, startPosition);
+    return args.join(" ");
+  } else { // If just one word
+    return args[startPosition];
+  }
 }
 
 export function isDateValid(date: Date): boolean {
