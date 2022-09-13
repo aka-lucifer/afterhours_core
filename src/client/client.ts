@@ -157,7 +157,7 @@ export class Client {
 
   // [Controllers] Civilian
   private kidnapping: Kidnapping;
-  private surrending: Surrending;
+  public surrending: Surrending;
   public carrying: Carrying;
   private gagging: Gagging;
   public modelBlacklist: ModelBlacklist;
@@ -625,7 +625,7 @@ export class Client {
 
       if (this.jobManager !== undefined) {
         if (this.jobManager.policeJob !== undefined) {
-          this.jobManager.policeJob.cuffing.stop();
+          // this.jobManager.policeJob.cuffing.stop();
           this.jobManager.policeJob.grabbing.stop();
         }
       }

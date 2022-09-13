@@ -258,7 +258,7 @@ export class PoliceJob {
   }
 
   public stop(): void {
-    // this.cuffing.stop();
+    this.cuffing.stop();
     this.commandMenu.stop();
   }
 
@@ -269,7 +269,7 @@ export class PoliceJob {
   }
 
   private EVENT_deleteCall(id: number): void {
-    console.log("try to delete 911 call blip with id", id);
+    console.log("try to delete 911/311 call blip with id", id);
     const callIndex = this.callBlips.findIndex(call => call.id == id);
     if (callIndex !== -1) {
       console.log("call with id found", id, "call index", callIndex);

@@ -189,10 +189,16 @@ export class Surrending {
     });
   }
 
-  private stopControlDisabler(): void {
+  public stopControlDisabler(): void {
     if (this.controlTick !== undefined) {
       clearTick(this.controlTick);
       this.controlTick = undefined;
+
+      if (this.surrenderState !== SurrenderState.Down) {
+        const playerStates = Player(this.client.Player.NetworkId);
+        this.surrenderState = SurrenderState.Down;
+        playerStates.state.surrenderState = SurrenderState.Down;
+      }
     }
   }
 }

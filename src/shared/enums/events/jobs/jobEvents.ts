@@ -31,9 +31,6 @@ export enum JobEvents {
   // LEO (Client | Cuffing)
   startCuffing = "afterhours:client:jobs:police:startCuffing",
   startUncuffing = "afterhours:client:jobs:police:startUncuffing",
-  playPerpBackAnim = "afterhours:client:jobs:police:playPerpBackAnim",
-  playPerpFrontAnim = "afterhours:client:jobs:police:playPerpFrontAnim",
-  setCuffed = "afterhours:client:jobs:police:setCuffed",
   setUncuffed = "afterhours:client:jobs:police:setUncuffed",
 
   // LEO (Client | Remove Mask)

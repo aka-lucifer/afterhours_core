@@ -9,6 +9,10 @@ export enum Callbacks {
   getKilled = "afterhours:client:controllers:staff:menu:getKilled",
   getSummonReturned = "afterhours:client:controllers:staff:menu:getSummonReturned",
 
+  // AfterHours Client -> Server Callbacks ([Controllers] | Police] - Cuffing)
+  getCuffed = "afterhours:client:controllers:police:cuffing:getCuffed",
+  startUncuffing = "afterhours:client:controllers:police:cuffing:startUncuffing",
+
   // AfterHours Client -> Server Callbacks ([Managers] | Vehicle)
   getVehicleLabel = "afterhours:client:managers:vehicle:getVehicleLabel",
 

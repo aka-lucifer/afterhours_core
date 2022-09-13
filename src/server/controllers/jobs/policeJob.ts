@@ -327,16 +327,17 @@ export class PoliceJob {
             if (character) {
               if (character.isLeoJob() || character.isSAFREMSJob()) {
                 if (character.Job.Status) {
-                  await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId,  myPlayer.Position, myCharacter.Name);
                   const callIndex = this.activeCalls.findIndex(call => call.id == callId);
                   if (callIndex !== -1) {
+                    console.log("delete 911/311 call with id", callId);
+                    await svPlayers[i].TriggerEvent(JobEvents.deleteCall, callId);
                     this.activeCalls.splice(callIndex, 1);
                   }
                 }
               }
             }
           }
-        }, 300000); // Delete blip after 5 minutes.
+        }, 5000); // Delete blip after 5 minutes.
 
         await myPlayer.TriggerEvent(Events.sendSystemMessage, new Message("911 Call Sent!", SystemTypes.Success));
       }
