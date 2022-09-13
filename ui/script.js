@@ -665,7 +665,7 @@ const HUD = new Vue({
           '_': 'text-decoration: underline;',
           '~': 'text-decoration: line-through;',
           '=': 'text-decoration: underline line-through;',
-          'r': 'text-decoration: none;font-weight: normal;',
+          'r': 'text-decoration: none; font-style: normal; font-weight: normal;',
         };
 
         const styleRegex = /\^(\_|\*|\=|\~|\/|r)(.*?)(?=$|\^r|<\/em>)/;

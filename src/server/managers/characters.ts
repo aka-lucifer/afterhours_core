@@ -125,6 +125,49 @@ export class CharacterManager {
       }
     }, Ranks.User);
 
+    new Command("tweet", "Send a tweet to the server.", [{name: "content", help: "The content of your tweet."}], true, async(source: string, args: any[]) => {
+      const messageContents = args.join(" ");
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+      if (messageContents.length > 0) {
+        if (player) {
+          if (player.Spawned) {
+            const character = await this.Get(player);
+
+            if (character) {
+              const formattedName = `${character.firstName}_${character.lastName}`;
+              await emitNet(Events.sendSystemMessage, -1, new Message(`^0[^4Twitter^0] (^4@${formattedName}^0): ${messageContents}`, SystemTypes.Tweet));
+              await logCommand("/tweet", player, messageContents);
+            }
+          }
+        }
+      } else {
+        await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
+      }
+    }, Ranks.User);
+
+    new Command("do", "Send an action to the server.", [{name: "content", help: "The content of your action."}], true, async(source: string, args: any[]) => {
+      const messageContents = args.join(" ");
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+
+      if (messageContents.length > 0) {
+        if (player) {
+          if (player.Spawned) {
+            const character = await this.Get(player);
+
+            if (character) {
+              const sent = await this.proximityMessage(ProximityTypes.Do, new Message(messageContents, SystemTypes.Do), character);
+              if (sent) {
+                await logCommand("/do", player, messageContents);
+              }
+            }
+          }
+        }
+      } else {
+        await player.TriggerEvent(Events.sendSystemMessage, new Message("No message provided!", SystemTypes.Error));
+      }
+    }, Ranks.User);
+
     new Command("showid", "Show your ID to the closest players.", [], false, async(source: string) => {
       const player = await this.server.connectedPlayerManager.GetPlayer(source);
 
@@ -144,7 +187,7 @@ export class CharacterManager {
   }
 
   public async proximityMessage(type: ProximityTypes, message: Message, character: Character): Promise<boolean> {
-    if (type == ProximityTypes.Me) {
+    if (type == ProximityTypes.Me || type === ProximityTypes.Do) {
       const players = this.server.connectedPlayerManager.GetPlayers;
 
       for (let i = 0; i < players.length; i++) {
@@ -496,5 +539,6 @@ export class CharacterManager {
 export enum ProximityTypes {
   Local,
   Me,
-  ID
+  ID,
+  Do
 }
