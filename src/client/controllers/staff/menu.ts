@@ -1304,18 +1304,7 @@ export class StaffMenu {
       const foundPlayer = new svPlayer(data.player);
 
       if (foundPlayer) {
-        // const newPos = new Vector3(data.playerPos.x, data.playerPos.y, data.playerPos.z);
         if (this.summonLastLocation === undefined) this.summonLastLocation = Game.PlayerPed.Position;
-
-        // this.client.Teleporting = true;
-        // SetEntityCoords(Game.PlayerPed.Handle, newPos.x, newPos.y, newPos.z, false, false, false, false);
-        //
-        // emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
-        // cb("SUCCESS"); // CB true to the staff summoning you
-        //
-        // await Delay(3000);
-        // this.client.Teleporting = false;
-
         const teleported = await teleportToCoords(data.playerPos, false);
         if (teleported) {
           emit(Events.sendSystemMessage, new Message(`You've been summoned by ^3[${Ranks[foundPlayer.Rank]}] ^0- ^3${foundPlayer.Name}^0.`, SystemTypes.Admin));
