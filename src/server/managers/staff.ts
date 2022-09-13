@@ -233,6 +233,13 @@ export class StaffManager {
         Error("Offline Warn Command", "Player license not entered!");
       }
     }, Ranks.Moderator);
+
+    new Command("remove_bag", "Removes a kidnap bag that another player has placed on your head.", [], false, async(source: string) => {
+      const player = await this.server.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        await player.TriggerEvent(Events.kidnapPlayer, false); // Passing the false parameter removes the bag from your head.
+      }
+    }, Ranks.Moderator);
   }
 
   private registerRCONCommands(): void {
