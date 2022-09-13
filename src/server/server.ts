@@ -439,6 +439,22 @@ export class Server {
         await player.TriggerEvent(Events.playEmote, args);
       }
     }, Ranks.User);
+
+    new Command("stats", "View your server stats.", [], false, async(source: string) => {
+      const player = await this.connectedPlayerManager.GetPlayer(source);
+      if (player) {
+        const playtime = await player.GetPlaytime.FormatTime();
+        const [trustscore, bans, kicks, warnings, commends] = await player.getTrustscore();
+
+        await player.TriggerEvent(Events.sendSystemMessage, new Message(`^0(^2${trustscore}% Trustscore ^0| 
+        ^1${bans} ${bans > 1 || bans < 1 ? "Bans" : "Ban"} ^0| 
+        ^4${kicks} ${kicks > 1 || kicks < 1 ? "Kicks" : "Kick"} ^0| 
+        ^3${warnings} ${warnings > 1 || warnings < 1 ? "Warnings" : "Warning"} ^0| 
+        ^5${commends} ${commends > 1 || commends < 1 ? "Commends" : "Commend"} ^0 | 
+        ^9Playtime - ${playtime}^0)`,
+          SystemTypes.Stats));
+      }
+    }, Ranks.User);
   }
 
   private registerRCONCommands(): void {

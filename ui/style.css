@@ -1127,6 +1127,11 @@ body {
   font-weight: bold;
 }
 
+.stats {
+  color: rgb(255, 128, 0);
+  font-weight: bold;
+}
+
 .local {
   color: white;
   font-weight: bold;

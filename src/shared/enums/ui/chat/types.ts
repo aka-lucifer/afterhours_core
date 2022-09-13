@@ -20,5 +20,6 @@ export enum SystemTypes {
   ID = "id", // Requires you to pass player name param to client,
   Tweet = "tweet",
   Do = "do",
-  PM = "pm"
+  PM = "pm",
+  Stats = "stats"
 }

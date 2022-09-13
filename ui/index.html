@@ -325,11 +325,7 @@
                 <div id="Keybinds_Contents">
                   <div v-for="(command, index) in searchCommands">
                     <div id="Keybind_Card" class="cardShadow">
-                      <span style="font-weight: bold; font-size: 1.2em;"><kbd>/{{ command.name }}</kbd> {{ command.description }}</span>
-                      <!-- <h2>/{{ command.name }}</h2><br> -->
-                      <!-- <h4>{{ command.description }}</h4> -->
-                      <!-- {{ command.name }} | {{ command.description }} -->
-                      <!-- <span style="font-size: 2em;"><kbd>{{ keybind.key }}</kbd></span><span style="margin-top: 15px; margin-left: 10px; font-family: PT-Sans-Bold;">{{ keybind.description }}</span> -->
+                      <span style="font-weight: bold; font-size: 1.2em;"><kbd>{{ command.name }}</kbd> {{ command.description }}</span>
                     </div>
                   </div>
                 </div>
@@ -592,6 +588,7 @@
             <div id="Chat-Message" class="tweet" v-if="message.notificationType == 'tweet'"><span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="do" v-if="message.notificationType == 'do'">(Action - {{ message.sender }}): <span v-html="message.contents"></span></div>
             <div id="Chat-Message" class="pm" v-if="message.notificationType == 'pm'"><span v-html="message.contents"></span></div>
+            <div id="Chat-Message" v-if="message.notificationType == 'stats'"><span class="gps">[Server Stats]: </span><span style="color: white; font-weight: bold;" v-html="message.contents"></span></div>
           </div>
 
           <div id="Chat-Message" class="local" v-if="message.type != 'system' && chatTypes[message.type] == 'local'">(Local - {{ message.sender}}): {{message.contents}}</div>
