@@ -1,5 +1,5 @@
 {
-  "debug": true,
+  "debug": false,
   "whitelist": false,
   "maxPing": 350,
   "trustscore": {
@@ -1483,11 +1483,7 @@
             "brand": "Nagaskai",
             "name": "Buzzard",
             "type": "helicopters",
-            "rank": [
-                10,
-                11,
-                12
-            ]
+            "rank": 0
         },
         "758895617": {
             "model": "Ztype",
@@ -1935,11 +1931,7 @@
             "brand": "Nagaskai",
             "name": "Skylift",
             "type": "helicopters",
-            "rank": [
-                10,
-                11,
-                12
-            ]
+            "rank": 0
         },
         "1046206681": {
             "model": "michelli",
@@ -2154,11 +2146,7 @@
             "brand": "Nagaskai",
             "name": "Sparrow",
             "type": "helicopters",
-            "rank": [
-                10,
-                11,
-                12
-            ]
+          "rank": [10, 11, 12]
         },
         "1233534620": {
             "model": "marshall",
@@ -2606,11 +2594,7 @@
             "brand": "Nagaskai",
             "name": "Sparrow",
             "type": "helicopters",
-            "rank": [
-                10,
-                11,
-                12
-            ]
+            "rank": [10, 11, 12]
         },
         "1617472902": {
             "model": "fagaloa",
@@ -5050,17 +5034,6 @@
             "type": "off-road",
             "rank": 0
         },
-        "-726768679": {
-            "model": "seasparrow",
-            "brand": "Nagasaki",
-            "name": "Sea Sparrow",
-            "type": "helicopters",
-            "rank": [
-                10,
-                11,
-                12
-            ]
-        },
         "-440768424": {
             "model": "blazer4",
             "brand": "Nagasaki",
@@ -6011,7 +5984,7 @@
           "brand": "Enus",
           "name": "Cognoscenti 55 (Armored)",
           "type": "Sedans",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "906642318": {
           "model": "cog55",
@@ -6207,7 +6180,7 @@
           "brand": "Benefactor",
           "name": "Turreted Limo",
           "type": "Sedans",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "2809443750": {
           "model": "schafter3",
@@ -6256,7 +6229,7 @@
           "brand": "Benefactor",
           "name": "Schafter V12 (Armoured)",
           "type": "Sedans",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "1104234922": {
           "model": "sentinel3",
@@ -6349,26 +6322,19 @@
           "type": "Boat",
           "rank": 2
         },
-        "3314393930": {
-          "model": "dinghy5",
-          "brand": "Nagasaki",
-          "name": "Weaponized Dinghy",
-          "type": "Boat",
-          "rank": [11, 12, 13, 14]
-        },
         "-276744698": {
           "model": "patrolboat",
           "brand": "Warstock",
           "name": "Kurtz 31 Patrol Boat",
           "type": "Boat",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "1336872304": {
           "model": "kosatka",
           "brand": "RUNE",
           "name": "Kosatka",
           "type": "Submarine",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "1861786828": {
           "model": "longfin",
@@ -6382,7 +6348,7 @@
           "brand": "Warstock",
           "name": "Police Predator",
           "type": "Boat",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "4244420235": {
           "model": "Cargobob",
@@ -6395,63 +6361,64 @@
           "model": "pranger",
           "brand": "Declasse",
           "name": "Park Ranger",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "1171614426": {
           "model": "AMBULANCE",
           "brand": "Declasse",
           "name": "Ambulance",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "1922257928": {
           "model": "sheriff2",
           "brand": "Declasse",
           "name": "Sheriff SUV",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "2287941233": {
           "model": "pbus",
           "brand": "Declasse",
           "name": "Prison Bus",
-          "type": "Emergency",
-          "rank": 0
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "2611638396": {
           "model": "SHERIFF",
           "brand": "Declasse",
           "name": "Sheriff Cruiser",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "2758042359": {
           "model": "policeold1",
           "brand": "Declasse",
           "name": "Police Rancher",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "469291905": {
           "model": "lguard",
           "brand": "Declasse",
           "name": "Lifeguard",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "2667966721": {
           "model": "police2",
           "brand": "Declasse",
           "name": "Police Cruiser",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "353883353": {
           "model": "polmav",
           "brand": "Buckingham",
           "name": "Police Maverick",
-          "type": "Helicopter",
+          "type": "emergency",
+          "job": ["police", "county", "state", "ems", "fire"],
           "rank": 0
         },
         "2601952180": {
@@ -6459,70 +6426,70 @@
           "brand": "HVY",
           "name": "RCV",
           "type": "Industrial",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "1543134283": {
           "model": "valkyrie2",
           "brand": "Buckingham",
           "name": "Valkyrie MOD.0",
           "type": "Helicopter",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "2321795001": {
           "model": "police4",
           "brand": "Declasse",
           "name": "Unmarked Cruiser",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "1127131465": {
           "model": "FBI",
           "brand": "Declasse",
           "name": "FIB",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "4260343491": {
           "model": "policeb",
           "brand": "Declasse",
           "name": "Police Bike",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "456714581": {
           "model": "policet",
           "brand": "Vapid",
           "name": "Police Transporter",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "1938952078": {
           "model": "firetruk",
           "brand": "MTL",
           "name": "Fire Truck",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "2515846680": {
           "model": "policeold2",
           "brand": "Declasse",
           "name": "Police Roadcruiser",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         },
         "2306538597": {
           "model": "terbyte",
           "brand": "Benefactor",
           "name": "Terrorbyte",
           "type": "Commercial",
-          "rank": [11, 12, 13, 14]
+          "rank": [10, 11, 12]
         },
         "3089277354": {
           "model": "RIOT",
           "brand": "MTL",
           "name": "Police Riot",
-          "type": "Emergency",
-          "rank": [11, 12, 13, 14]
+          "type": "Police",
+          "rank": [10, 11, 12]
         }
     },
     "oldBlacklister": {
@@ -8289,17 +8256,6 @@
           "type": "super",
           "rank": 6
       },
-      "1044954915": {
-          "model": "skylift",
-          "brand": "Nagaskai",
-          "name": "Skylift",
-          "type": "helicopters",
-          "rank": [
-              10,
-              11,
-              12
-          ]
-      },
       "1046206681": {
           "model": "michelli",
           "brand": "Lampadati",
@@ -8510,17 +8466,6 @@
           "name": "Seminole",
           "type": "SUVs",
           "rank": 0
-      },
-      "1229411063": {
-          "model": "seasparrow2",
-          "brand": "Nagaskai",
-          "name": "Sparrow",
-          "type": "helicopters",
-          "rank": [
-              10,
-              11,
-              12
-          ]
       },
       "1233534620": {
           "model": "marshall",
@@ -8962,17 +8907,6 @@
           "name": "Deveste Eight",
           "type": "super",
           "rank": 6
-      },
-      "1593933419": {
-          "model": "seasparrow3",
-          "brand": "Nagaskai",
-          "name": "Sparrow",
-          "type": "helicopters",
-          "rank": [
-              10,
-              11,
-              12
-          ]
       },
       "1617472902": {
           "model": "fagaloa",
@@ -11432,11 +11366,7 @@
           "brand": "Nagasaki",
           "name": "Sea Sparrow",
           "type": "helicopters",
-          "rank": [
-              10,
-              11,
-              12
-          ]
+          "rank": [10, 11, 12]
       },
       "-440768424": {
           "model": "blazer4",
@@ -12394,7 +12324,7 @@
         "brand": "Enus",
         "name": "Cognoscenti 55 (Armored)",
         "type": "Sedans",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "906642318": {
         "model": "cog55",
@@ -12590,7 +12520,7 @@
         "brand": "Benefactor",
         "name": "Turreted Limo",
         "type": "Sedans",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "2809443750": {
         "model": "schafter3",
@@ -12639,7 +12569,7 @@
         "brand": "Benefactor",
         "name": "Schafter V12 (Armoured)",
         "type": "Sedans",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "1104234922": {
         "model": "sentinel3",
@@ -12737,21 +12667,21 @@
         "brand": "Nagasaki",
         "name": "Weaponized Dinghy",
         "type": "Boat",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "-276744698": {
         "model": "patrolboat",
         "brand": "Warstock",
         "name": "Kurtz 31 Patrol Boat",
         "type": "Boat",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "1336872304": {
         "model": "kosatka",
         "brand": "RUNE",
         "name": "Kosatka",
         "type": "Submarine",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "1861786828": {
         "model": "longfin",
@@ -12765,7 +12695,7 @@
         "brand": "Warstock",
         "name": "Police Predator",
         "type": "Boat",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "4244420235": {
         "model": "Cargobob",
@@ -12778,57 +12708,57 @@
         "model": "pranger",
         "brand": "Declasse",
         "name": "Park Ranger",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "1171614426": {
         "model": "AMBULANCE",
         "brand": "Declasse",
         "name": "Ambulance",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "1922257928": {
         "model": "sheriff2",
         "brand": "Declasse",
         "name": "Sheriff SUV",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "2287941233": {
         "model": "pbus",
         "brand": "Declasse",
         "name": "Prison Bus",
-        "type": "Emergency",
+        "type": "Police",
         "rank": 0
       },
       "2611638396": {
         "model": "SHERIFF",
         "brand": "Declasse",
         "name": "Sheriff Cruiser",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "2758042359": {
         "model": "policeold1",
         "brand": "Declasse",
         "name": "Police Rancher",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "469291905": {
         "model": "lguard",
         "brand": "Declasse",
         "name": "Lifeguard",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "2667966721": {
         "model": "police2",
         "brand": "Declasse",
         "name": "Police Cruiser",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "353883353": {
         "model": "polmav",
@@ -12842,70 +12772,77 @@
         "brand": "HVY",
         "name": "RCV",
         "type": "Industrial",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "1543134283": {
         "model": "valkyrie2",
         "brand": "Buckingham",
         "name": "Valkyrie MOD.0",
         "type": "Helicopter",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "2321795001": {
         "model": "police4",
         "brand": "Declasse",
         "name": "Unmarked Cruiser",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "1127131465": {
-        "model": "FBI",
+        "model": "fbi",
         "brand": "Declasse",
         "name": "FIB",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
+      },
+      "GET_HASH": {
+        "model": "fbi2",
+        "brand": "Declasse",
+        "name": "FIB 2",
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "4260343491": {
         "model": "policeb",
         "brand": "Declasse",
         "name": "Police Bike",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "456714581": {
         "model": "policet",
         "brand": "Vapid",
         "name": "Police Transporter",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "1938952078": {
         "model": "firetruk",
         "brand": "MTL",
         "name": "Fire Truck",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "2515846680": {
         "model": "policeold2",
         "brand": "Declasse",
         "name": "Police Roadcruiser",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       },
       "2306538597": {
         "model": "terbyte",
         "brand": "Benefactor",
         "name": "Terrorbyte",
         "type": "Commercial",
-        "rank": [11, 12, 13, 14]
+        "rank": [10, 11, 12]
       },
       "3089277354": {
         "model": "RIOT",
         "brand": "MTL",
         "name": "Police Riot",
-        "type": "Emergency",
-        "rank": [11, 12, 13, 14]
+        "type": "Police",
+        "rank": [10, 11, 12]
       }
     }
   },
