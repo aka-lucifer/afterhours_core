@@ -23,7 +23,7 @@ export class CallbackManager {
       onNet(returnEvent, (returnedData: any[], triggeredHandle: number) => {
         cb = this.clCallbacks[returnEvent];
         cb(returnedData, source, triggeredHandle);
-        console.log("server -> client -> server (CB DATA)", sendEvent, returnedData, passedHandle, handle, source);
+        console.log("server -> client -> server (CB DATA)", sendEvent, returnedData, source, triggeredHandle);
       });
     }
 

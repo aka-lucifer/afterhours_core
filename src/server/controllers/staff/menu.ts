@@ -699,14 +699,16 @@ export class StaffMenu {
                 await player.TriggerEvent(Events.showLoading, "Summoning Player...");
                 foundStates.state.beingSummoned = true;
 
+                console.log("Summon Info (ONE)", src, netId, player.GetName, foundPlayer.GetName);
+
                 this.server.cbManager.TriggerClientCallback(Callbacks.getSummoned, async(returnedData: string, clientHandle: number, triggeredBy: number) => {
                   // Redefine them as the callback doesn't understand them in memory for some reason
                   player = await this.server.connectedPlayerManager.GetPlayer(triggeredBy.toString());
                   foundPlayer = await this.server.connectedPlayerManager.GetPlayer(clientHandle.toString());
                   
                   const foundStates = Player(foundPlayer.Handle);
-                  
-                  console.log("Check final", triggeredBy, player.Handle, player.GetName, clientHandle, foundPlayer.Handle, foundPlayer.GetName);
+
+                  console.log("Summon Info (TWO)", triggeredBy, player.Handle, player.GetName, clientHandle, foundPlayer.Handle, foundPlayer.GetName);
 
                   await player.TriggerEvent(Events.stopLoading);
                   foundStates.state.beingSummoned = false;

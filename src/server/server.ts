@@ -590,13 +590,13 @@ export class Server {
 
   // Events
   private async EVENT_resourceStarted(resourceName: string): Promise<void> { // Database Connection Processor
-    if (GetCurrentResourceName() == resourceName) {
+    if (GetCurrentResourceName() === resourceName) {
       const [dbStatus, connectionError] = await Database.isConnected();
       if (!dbStatus){ // DB offline or failed connection
-        if (this.debugMode) Error("Database Connection", `Unable to connect to the database! | ${connectionError}`);
+        Error("Database Connection", `Unable to connect to the database! | ${connectionError}`);
         return;
       } else { // DB online, initiate all required managers
-        if (this.debugMode) Inform("Database Connection", "Database connection successful!");
+        Inform("Database Connection", "Database connection successful!");
         await this.initialize();
       }
     }
