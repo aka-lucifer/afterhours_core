@@ -127,6 +127,8 @@ export class Cuffing {
   }
 
   public EVENT_setUncuffed(): void {
+    const myPed = Game.PlayerPed;
+
     // Delete Handcuff Prop
     console.log("handcuff prop", this.handcuffs)
     if (this.handcuffs !== undefined) {
@@ -138,7 +140,7 @@ export class Cuffing {
       }
     }
 
-    SetEnableHandcuffs(Game.PlayerPed.Handle, false); // Allows you to pull out weapons
+    SetEnableHandcuffs(myPed.Handle, false); // Allows you to pull out weapons
 
     // Clear Handcuff Animation Tick
     if (this.cuffTick !== undefined) {
@@ -146,7 +148,10 @@ export class Cuffing {
       this.cuffTick = undefined;
     }
 
-    if (IsEntityPlayingAnim(Game.PlayerPed.Handle, "mp_arresting", "idle", 3)) ClearPedTasks(Game.PlayerPed.Handle); // Stop cuffed animation
+    if (IsEntityPlayingAnim(myPed.Handle, "mp_arresting", "idle", 3)) {
+      ClearPedTasks(myPed.Handle); // Stop cuffed animation
+      StopAnimTask(myPed.Handle, "mp_arresting", "idle", 1.0); // Handles unloading the anim, so we don't have constant cuff anim behind us.
+    }
   }
 
   // Callbacks
