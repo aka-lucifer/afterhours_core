@@ -51,8 +51,8 @@ export class WeaponModes {
     this.client = client;
 
     // Keybinds
-    RegisterCommand("+next_firing_mode", this.nextFiringMode.bind(this), false);
-    RegisterCommand("+prev_firing_mode", this.prevFiringMode.bind(this), false);
+    RegisterCommand("+next_fire_mode", this.nextFiringMode.bind(this), false);
+    RegisterCommand("+prev_fire_mode", this.prevFiringMode.bind(this), false);
     RegisterCommand("+safety_mode", this.toggleSafety.bind(this), false);
 
     // Events
@@ -74,6 +74,8 @@ export class WeaponModes {
 
   private async nextFiringMode(): Promise<void> {
     const currWeapon = GetSelectedPedWeapon(Game.PlayerPed.Handle);
+
+    console.log("cycle modes", currWeapon);
 
     if (currWeapon !== Weapons.Unarmed) {
       // Shoots bullets
