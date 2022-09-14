@@ -258,7 +258,7 @@ export class PoliceJob {
   }
 
   public stop(): void {
-    this.cuffing.stop();
+    this.cuffing.EVENT_setUncuffed();
     this.commandMenu.stop();
   }
 

@@ -46,27 +46,6 @@ export class Cuffing {
     await this.loadAnim(); // Load cuffing animation
   }
 
-  public stop(): void {
-    // Delete Handcuff Prop
-    console.log("handcuff prop", this.handcuffs)
-    if (this.handcuffs !== undefined) {
-      if (this.handcuffs.Handle > 0) {
-        if (this.handcuffs.exists()) {
-          this.handcuffs.delete();
-          this.handcuffs = undefined;
-        }
-      }
-    }
-
-    // Clear Handcuff Animation Tick
-    if (this.cuffTick !== undefined) {
-      clearTick(this.cuffTick);
-      this.cuffTick = undefined;
-    }
-
-    if (IsEntityPlayingAnim(Game.PlayerPed.Handle, "mp_arresting", "idle", 3)) ClearPedTasks(Game.PlayerPed.Handle); // Stop cuffed animation
-  }
-
   private async loadAnim(): Promise<void> {
     if (this.dictLoaded) return;
     
@@ -147,8 +126,27 @@ export class Cuffing {
     }
   }
 
-  private EVENT_setUncuffed(): void {
-    this.stop();
+  public EVENT_setUncuffed(): void {
+    // Delete Handcuff Prop
+    console.log("handcuff prop", this.handcuffs)
+    if (this.handcuffs !== undefined) {
+      if (this.handcuffs.Handle > 0) {
+        if (this.handcuffs.exists()) {
+          this.handcuffs.delete();
+          this.handcuffs = undefined;
+        }
+      }
+    }
+
+    SetEnableHandcuffs(Game.PlayerPed.Handle, false); // Allows you to pull out weapons
+
+    // Clear Handcuff Animation Tick
+    if (this.cuffTick !== undefined) {
+      clearTick(this.cuffTick);
+      this.cuffTick = undefined;
+    }
+
+    if (IsEntityPlayingAnim(Game.PlayerPed.Handle, "mp_arresting", "idle", 3)) ClearPedTasks(Game.PlayerPed.Handle); // Stop cuffed animation
   }
 
   // Callbacks
@@ -198,7 +196,7 @@ export class Cuffing {
               AttachEntityToEntity(this.handcuffs.Handle, Game.PlayerPed.Handle, bone, 0.005, 0.060, 0.03, -180.0, 280.0, 70.0, true, true, false, true, 1, true);
             }
 
-            SetEnableHandcuffs(myPed.Handle, true);
+            SetEnableHandcuffs(myPed.Handle, true); // Disables you pulling out weapons
             SetCurrentPedWeapon(myPed.Handle, Weapons.Unarmed, false);
             playerStates.state.cuffState = CuffState.Cuffed;
             cb(true);
