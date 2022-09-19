@@ -201,7 +201,7 @@ export class CommandMenu {
                                         }
                                       }, {
                                         unitsId: receievedUnits[b].id,
-                                        unitsPlayerId: receievedUnits[b].playerId,
+                                        unitsNet: receievedUnits[b].NetworkId,
                                         job: this.menuLocations[a].type,
                                         newRank: c,
                                         callsign: receievedUnits[b].callsign

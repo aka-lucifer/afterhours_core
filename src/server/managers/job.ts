@@ -434,7 +434,7 @@ export class JobManager {
                       this.server.commandManager.createChatSuggestions(playerConnected);
                       await playerConnected.TriggerEvent(Events.updateSuggestions);
                       await playerConnected.TriggerEvent(Events.updateCharacter, Object.assign({}, connectedCharacter)); // Update our character on our client (char info, job, etc)
-                      await playerConnected.Notify("Character", `You've been fired from ${character.Job.label}.`, NotificationTypes.Error);
+                      await playerConnected.Notify("Character", `You've been promoted to ${character.Job.label}.`, NotificationTypes.Error);
                     }
                   }
                 }
@@ -470,7 +470,7 @@ export class JobManager {
         if (character) {
           if (character.isLeoJob()) {
             if (character.Job.Boss) {
-              const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(data.unitsNet);
+              const foundPlayer = await this.server.connectedPlayerManager.GetPlayer(data.unitsNet.toString());
               if (foundPlayer) {
                 if (foundPlayer.Spawned) {
                   const foundCharacter = await this.server.characterManager.Get(foundPlayer);
@@ -509,7 +509,7 @@ export class JobManager {
                       await foundPlayer.TriggerEvent(Events.updateSuggestions);
 
                       await foundPlayer.TriggerEvent(Events.updateCharacter, Object.assign({}, foundCharacter)); // Update our character on our client (char info, job, etc)
-                      await foundPlayer.Notify("Character", `You've have been set to [${data.jobLabel}] - ${data.jobLabel}`, NotificationTypes.Info);
+                      await foundPlayer.Notify("Character", `You've have been recruited to [${data.jobLabel}] - ${data.jobLabel}`, NotificationTypes.Info);
                     }
 
                     cb(updatedJob); // Returns true or false, if it sucessfully updated players job (promoted them)
