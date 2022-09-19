@@ -1095,7 +1095,11 @@ const HUD = new Vue({
         this.vehicleData.speed = data.speed;
         this.vehicleData.fuel = data.fuel;
         this.vehicleData.gear = data.gear;
-        this.vehicleData.seatbelt = data.seatbelt;
+        if (!data.motorcycle) {
+          this.vehicleData.seatbelt = data.seatbelt;
+        } else {
+          this.vehicleData.seatbelt = "BIKE";
+        }
         // await Delay(300);
         this.vehicleData.visible = data.visible;
       } else {

@@ -157,7 +157,8 @@ export class Hud {
               speed: speedToMph(currVeh.Speed),
               fuel: Math.floor(currVeh.FuelLevel),
               gear: gear,
-              seatbelt: this.client.vehicleManager.seatbelt.Toggled ? "ON" : "OFF"
+              seatbelt: this.client.vehicleManager.seatbelt.Toggled ? "ON" : "OFF",
+              motorcycle: currVeh.Model.IsBicycle || currVeh.Model.IsQuadbike || currVeh.Model.IsBike
             }
           }));
         } else {

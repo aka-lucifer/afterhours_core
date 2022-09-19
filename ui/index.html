@@ -836,13 +836,13 @@
                       'fuelUsed': vehicleData.gear === 'P',
                       'fuelLow': vehicleData.gear === 'R'
                     }"
-              > {{ vehicleData.gear }}</span> |
+              > {{ vehicleData.gear }}</span><span v-if="vehicleData.seatbelt !== 'BIKE'"> |
               <span class="vehSeatbelt">SEATBELT <span class="seatbeltOn"
                     v-bind:class="{
                       'fullFuel': vehicleData.seatbelt === 'ON',
                       'fuelLow': vehicleData.seatbelt === 'OFF'
                     }"
-              >{{ vehicleData.seatbelt }}</span></span>
+              >{{ vehicleData.seatbelt }}</span></span></span>
             </div>
           </div>
 
