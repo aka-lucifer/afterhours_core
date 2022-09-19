@@ -108,7 +108,7 @@ export class ConnectedPlayerManager {
   }
 
   public async GetPlayer(playerHandle: string): Promise<Player> {
-    let newHandle = String(playerHandle); // Forcefully converts to a string
+    const newHandle = String(playerHandle); // Forcefully converts to a string
 
     const playerIndex = this.connectedPlayers.findIndex(player => player.Handle === newHandle);
     if (playerIndex != -1) {
