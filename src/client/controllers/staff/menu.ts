@@ -433,7 +433,7 @@ export class StaffMenu {
         });
       });
 
-      this.weaponActionsMenu.BindCheckbox("Gravity Gun", this.usingGravityGun, (newState: boolean) => {
+      this.weaponActionsMenu.BindCheckbox("Gravity Gun (In-Alpha)", this.usingGravityGun, (newState: boolean) => {
         this.usingGravityGun = newState;
 
         if (this.usingGravityGun) {
@@ -1316,6 +1316,8 @@ export class StaffMenu {
           cb("ERROR_TPING"); // CB false to the staff summoning you
         }
       }
+
+      cb("ERROR_BITCH")
     }
   }
   
