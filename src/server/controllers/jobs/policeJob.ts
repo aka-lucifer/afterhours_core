@@ -286,6 +286,7 @@ export class PoliceJob {
   private async EVENT_send911Call(street: string, crossing: string, postal: string, zone: string, description: string): Promise<void> {
     const myPlayer = await this.server.connectedPlayerManager.GetPlayer(source.toString());
     if (myPlayer && myPlayer.Spawned) {
+      console.log("send 911 call", street, crossing, postal, zone, description);
       const myCharacter = await this.server.characterManager.Get(myPlayer);
 
       if (myCharacter) {
@@ -320,6 +321,8 @@ export class PoliceJob {
           }
         }
 
+        await myPlayer.TriggerEvent(Events.sendSystemMessage, new Message("911 Call Sent!", SystemTypes.Success));
+
         setTimeout(async() => {
           for (let i = 0; i < svPlayers.length; i++) {
             const character = await this.server.characterManager.Get(svPlayers[i]);
@@ -337,9 +340,7 @@ export class PoliceJob {
               }
             }
           }
-        }, 5000); // Delete blip after 5 minutes.
-
-        await myPlayer.TriggerEvent(Events.sendSystemMessage, new Message("911 Call Sent!", SystemTypes.Success));
+        }, 300000); // Delete blip after 5 minutes.
       }
     }
   }
