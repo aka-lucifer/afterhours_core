@@ -174,6 +174,9 @@ export class Ban {
             }));
           }
         } else { // Perm ban
+          console.log("standard perm ban", this.issuedById, this.receiverId);
+          console.log("issuedBy", this.issuedBy);
+          console.log("recieved", this.receiver);
           if (this.issuedById !== this.receiverId) {
             const bannersDiscord = await this.issuedBy.GetIdentifier("discord");
             
