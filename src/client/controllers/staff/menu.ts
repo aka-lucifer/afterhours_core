@@ -592,8 +592,45 @@ export class StaffMenu {
         menu = this.playersMenu.BindSubmenu(`[${playerData.NetworkId}] ${playerData.Name}`);
       }
 
-      // [Player Banning]
-      if (this.client.Player.Rank >= Ranks.Admin) {
+      if (this.client.player.Rank >= Ranks.Moderator) {
+        menu.BindButton("Teleport To", () => {
+          emitNet(Events.tpToPlayer, playerData.NetworkId);
+        });
+
+        menu.BindButton("Teleport Inside Vehicle", () => {
+          emitNet(Events.tpToVehicle, playerData.NetworkId);
+        });
+
+        menu.BindButton("Summon", () => {
+          emitNet(Events.summonPlayer, playerData.NetworkId);
+        });
+
+        menu.BindButton("Return Player", () => {
+          emitNet(Events.returnSummonedPlayer, playerData.NetworkId);
+        });
+
+        menu.BindButton("Spectate", () => {
+          emitNet(Events.spectatePlayer, playerData.NetworkId);
+        });
+      }
+
+      if (this.client.player.Rank >= Ranks.Admin) {
+        menu.BindButton("Kill", () => {
+          emitNet(Events.killPlayer, playerData.NetworkId);
+        });
+      }
+
+      if (this.client.player.Rank >= Ranks.Moderator) {
+        menu.BindButton("Revive", () => {
+          emitNet(Events.revivePlayer, playerData.NetworkId);
+        });
+
+        menu.BindButton("Freeze", () => {
+          emitNet(Events.freezePlayer, playerData.NetworkId);
+        });
+      }
+
+      if (this.client.player.Rank >= Ranks.Admin) {
         const banMenu = menu.BindSubmenu("Ban");
         banMenu.BindButton("Reason", async () => {
           const banReason = await keyboardInput("Ban Reason", 250);
@@ -671,8 +708,8 @@ export class StaffMenu {
           }
         });
       }
-
-      if (this.client.Player.Rank >= Ranks.Moderator) {
+      
+      if (this.client.player.Rank >= Ranks.Moderator) {
         menu.BindButton("Kick", async () => {
           const kickReason = await keyboardInput("Kick Reason", 250);
           if (kickReason != null) {
@@ -719,6 +756,8 @@ export class StaffMenu {
           }
         });
       }
+
+      
 
       if (this.client.Player.Rank >= Ranks.SeniorAdmin) {
         const rankMenu = menu.BindSubmenu("Update Rank");
@@ -858,42 +897,6 @@ export class StaffMenu {
             });
           }
         }
-      }
-
-      if (this.client.player.Rank >= Ranks.Admin) {
-        menu.BindButton("Crumpet Dis Fuker", () => {
-          emitNet(Events.killPlayer, playerData.NetworkId);
-        });
-      }
-
-      if (this.client.player.Rank >= Ranks.Moderator) {
-        menu.BindButton("Freeze", () => {
-          emitNet(Events.freezePlayer, playerData.NetworkId);
-        });
-
-        menu.BindButton("Revive", () => {
-          emitNet(Events.revivePlayer, playerData.NetworkId);
-        });
-
-        menu.BindButton("Teleport To", () => {
-          emitNet(Events.tpToPlayer, playerData.NetworkId);
-        });
-
-        menu.BindButton("Teleport Inside Vehicle", () => {
-          emitNet(Events.tpToVehicle, playerData.NetworkId);
-        });
-
-        menu.BindButton("Summon", () => {
-          emitNet(Events.summonPlayer, playerData.NetworkId);
-        });
-
-        menu.BindButton("Return Player", () => {
-          emitNet(Events.returnSummonedPlayer, playerData.NetworkId);
-        });
-
-        menu.BindButton("Spectate", () => {
-          emitNet(Events.spectatePlayer, playerData.NetworkId);
-        });
       }
 
       this.playerMenus.push({
