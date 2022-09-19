@@ -8320,6 +8320,51 @@
     "spawnInfo": {
         "changelog": [
           {
+            "version": "1.0.6",
+            "additions": [
+              "Anticheat updates & improvements."
+            ],
+            "fixes": [
+              "When you’re uncuffed you can now pull out a weapon, as it would prevent you from pulling out a weapon, but you could hit people.",
+              "Weapon cycling modes.",
+              "Character name not showing in radio list, just your callsign when you’re an on-duty police officer."
+            ],
+            "removals": []
+          },
+          {
+            "version": "1.0.5",
+            "additions": [
+              "The vehicle seat shuffling system has been rewritten and now supports a key down for shuffling to the driver's seat.",
+              "Player names default key has been changed to “F10” as it conflicts with the “Community Officer” menu.",
+              "Player names now show for unspawned players, instead of them having no player name.",
+              "Community officers now have a weapons submenu and a “Join RTO” button in their F11 menu, in case they need access to weapons, or to re-join RTO, e.g. changing to a non-RTO radio channel, and then forgetting the frequency.",
+              "Wrote a “!role add/remove” command for human resources to add and/or remove specific allowed roles to members.",
+              "Rewrote the handcuffing to fix any issues.",
+              "Commands for private messaging “/pm” and “/reply” for replying to your previously received message.",
+              "Police now receive a shotgun and tazer when going on duty.",
+              "The commands in the spawn UI are now automatic and require no data inside the “client.json” config file.",
+              "A “/stats” command to view your trustscore, bans, kicks, warns, commends, and playtime.",
+              "A variety of changes and improvements to the radio UI."
+            ],
+            "fixes": [
+              "Client-to-server callbacks are now fully working after mass investigation.",
+              "Entering a police vehicle passenger seats now are fully functioning, it no longer kicks you out of the vehicle, due to lack of permissions.",
+              "LODs on the “Mercedez Benz 190E Evolution II” no longer disappear from a distance.",
+              "The C20 now has a working engine sound.",
+              "Kneeling/hands up should now be fully functioning so there shouldn’t be any controls disabled when you’ve stopped kneeling or putting your hands up.",
+              "Being placed into the driver's seat when you’re seated by another player.",
+              "When you seat a player when you carry them, it now stops carrying them, so they’re not under the vehicle.",
+              "People reattach if they detach when they’re grabbed by other players.",
+              "The addon ped spam to bypass the peds rank.",
+              "Repair locations are no longer offset.",
+              "Deformation no longer breaks repairing vehicles in a repair shop.",
+              "NoClip speed increase/decrease notifications are no longer broken."
+            ],
+            "removals": [
+              "Weapon damage/accuracy modified damaged detector, as we are now streaming custom weapon damage/accuracy meta’s to prevent this."
+            ]
+          },
+          {
             "version": "1.0.4",
             "additions": [
               "The server status no longer sends a bunch of embeds, it simply edits the old one and updates it with the new information.",
