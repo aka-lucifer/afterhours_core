@@ -82,7 +82,7 @@ export class ConnectedPlayerManager {
 
   public init(): void {
     this.processRanks();
-    this.processPing();
+    // this.processPing();
   }
 
   public async Add(player: Player): Promise<number> {
@@ -108,7 +108,9 @@ export class ConnectedPlayerManager {
   }
 
   public async GetPlayer(playerHandle: string): Promise<Player> {
-    const playerIndex = this.connectedPlayers.findIndex(player => player.Handle == playerHandle);
+    let newHandle = String(playerHandle); // Forcefully converts to a string
+
+    const playerIndex = this.connectedPlayers.findIndex(player => player.Handle === newHandle);
     if (playerIndex != -1) {
       return this.connectedPlayers[playerIndex];
     }
