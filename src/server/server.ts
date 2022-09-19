@@ -489,11 +489,12 @@ export class Server {
     });
 
     global.exports("getPlayer", async(source: string) => {
-      return await this.connectedPlayerManager.GetPlayer(source);
+      const playerData = await this.connectedPlayerManager.GetPlayer(source.toString());
+      return playerData;
     });
 
     global.exports("getCharacter", async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source)
+      const player = await this.connectedPlayerManager.GetPlayer(source.toString())
       if (player) {
         return await this.characterManager.Get(player);
       } else {
@@ -503,7 +504,7 @@ export class Server {
     });
 
     global.exports("isBanned", async(source: string) => {
-      const player = await this.connectedPlayerManager.GetPlayer(source);
+      const player = await this.connectedPlayerManager.GetPlayer(source.toString());
       return await player.isBanned();
     });
 
@@ -520,11 +521,12 @@ export class Server {
     global.exports("anticheatBan", async(playerHandle: number, hardwareId: string, reason: string, takeScreenshot: boolean, issuedBy?: number) => {
       // console.log(playerId, hardwareId, reason, issuedBy);
 
-      const player = await this.connectedPlayerManager.GetPlayer(playerHandle.toString());
+      let player = await this.connectedPlayerManager.GetPlayer(playerHandle.toString());
       if (player) {
-        this.cbManager.TriggerClientCallback(Callbacks.takeScreenshot, async(imageURL: string) => {
-          console.log("server -> client -> server (SCREENSHOT)", `(${JSON.stringify(imageURL)})`);
-          const ban = new Ban(playerHandle, hardwareId, reason, issuedBy);
+        this.cbManager.TriggerClientCallback(Callbacks.takeScreenshot, async(imageURL: string, clientHandle: number, triggeredBy: number) => {
+          player = await this.connectedPlayerManager.GetPlayer(clientHandle.toString());
+          console.log("server -> client -> server (SCREENSHOT)", `(${JSON.stringify(imageURL)})`, playerHandle, player.Handle, player.GetName, hardwareId, player.HardwareId, reason, issuedBy);
+          const ban = new Ban(clientHandle, player.HardwareId, reason, issuedBy);
           ban.Receiver = player;
           ban.Logger = LogTypes.Anticheat;
           ban.State = BanStates.Anticheat;
@@ -540,14 +542,15 @@ export class Server {
       }
     });
 
-    global.exports("kickPlayer", async(playerId: number, reason: string, anticheatKick: boolean, issuedBy?: number) => {
+    global.exports("kickPlayer", async(playerHandle: number, reason: string, anticheatKick: boolean, issuedBy?: number) => {
       // console.log(playerId, reason, issuedBy);
       if (anticheatKick) {
-        const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
+        let player = await this.connectedPlayerManager.GetPlayer(playerHandle.toString());
         if (player) {
-          this.cbManager.TriggerClientCallback(Callbacks.takeScreenshot, async(imageURL: string) => {
+          this.cbManager.TriggerClientCallback(Callbacks.takeScreenshot, async(imageURL: string, clientHandle: number, triggeredBy: number) => {
+            player = await this.connectedPlayerManager.GetPlayer(clientHandle.toString());
             console.log("server -> client -> server (SCREENSHOT)", `(${JSON.stringify(imageURL)})`);
-            const kick = new Kick(playerId, reason, issuedBy);
+            const kick = new Kick(player.Id, reason, issuedBy);
 
             kick.Logger = LogTypes.Anticheat;
 
@@ -563,9 +566,9 @@ export class Server {
           }, {}, parseInt(player.Handle), parseInt(player.Handle));
         }
       } else {
-        const player = await this.connectedPlayerManager.GetPlayerFromId(playerId);
+        const player = await this.connectedPlayerManager.GetPlayer(playerHandle.toString());
         if (player) {
-          const kick = new Kick(playerId, reason, issuedBy);
+          const kick = new Kick(player.Id, reason, issuedBy);
           kick.Receiver = player;
 
           if (issuedBy !== undefined) {
@@ -750,6 +753,7 @@ export class Server {
 
               const victimsDisc = await player.GetIdentifier("discord");
               const killersDisc = await killer.GetIdentifier("discord");
+              
               await this.logManager.Send(LogTypes.Kill, new WebhookMessage({
                 username: "Kill Logs", embeds: [{
                   color: EmbedColours.Green,
